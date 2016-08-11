@@ -11,6 +11,14 @@
 #*             make clean                                        *
 #*             make print                                        *
 #*****************************************************************
+
+#*****************************************************************
+#*                        Version                                *
+#*****************************************************************
+
+#Defines your current version
+VER=""
+
  
 #*****************************************************************
 #*                        Architecture                           *
@@ -36,13 +44,13 @@ CBIND = TRUE
 ifeq ($(CBIND), TRUE)          #F03 c-bindings
  
   ifeq ($(ARCH), LOCAL_INTEL)
-    FFTW_PATH=/usr/local
+    FFTW_PATH=/home/ph500915/.fftw
   endif
   ifeq ($(ARCH), LOCAL_GFORTRAN)
-    FFTW_PATH=/usr/local
+    FFTW_PATH=/home/ph500915/.fftw
   endif
   ifeq ($(ARCH), ALARIK_INTEL)
-    FFTW_PATH=$(FFTW3_HOME)    # read from Lunarc module
+    FFTW_PATH=/home/ph500915/.fftw
   endif
 
 endif
@@ -64,7 +72,7 @@ ifeq ($(ARCH), LOCAL_INTEL)
   OPT_SER  = -O0 -traceback -check                     # provide useful info at exceptions
   OPT_SER  = -O3                                       # normal
   
-  COMP_PAR = mpifort
+  COMP_PAR = $(MPIFC)
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
    
@@ -96,7 +104,7 @@ ifeq ($(ARCH), ALARIK_INTEL)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3
 
-  COMP_PAR = mpif90
+  COMP_PAR = $(MPIFC)
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
  
@@ -118,7 +126,7 @@ ifeq ($(ARCH), ALARIK_GFORTRAN)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none  -g
 
-  COMP_PAR = mpif90
+  COMP_PAR = $(MPIFC)
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
  
@@ -254,13 +262,13 @@ par     : molsim_par
  
 molsim_ser     : molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
-	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe; cp molsim_ser $(HOME)/bin
+	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe; cp molsim_ser $(HOME)/bin/molsim_ser.ver
 molsim_par     : molsim_par.o $(OBJS2)
 	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
-	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe; cp molsim_par $(HOME)/bin
+	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe; cp molsim_par $(HOME)/bin/molsim_par.ver
 moldyn         : moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
-	mkdir -p ../Bin; mv moldyn.exe ../Bin/moldyn.exe; cp moldyn $(HOME)/bin
+	mkdir -p ../Bin; mv moldyn.exe ../Bin/moldyn.exe; cp moldyn $(HOME)/bin/moldyn.ver
 
 testmesh       : testmesh.o mesh.o
 	$(COMP_SER) $(FLAG_SER) -o testmesh.exe testmesh.o mesh.o

@@ -8,7 +8,7 @@
 #*      Start of definition section                          *
 #*************************************************************
 
-bin=$HOME/Molsim/Bin
+bin=/home/ph500915/Molsim/master/Molsim/Bin
 
 #*************************************************************
 #*      End of definition section                            *
@@ -26,10 +26,31 @@ date
 echo
 echo 'Make file links'
 echo
+  
 ln -fs ./$Project.in       FIN
+hpc=$2
+if [ "$hpc" == "hpc" ] 
+then 
+   if [ ! -f $Project.pos ] 
+   then 
+      dir=`pwd` 
+      hpcdir=$(echo $dir | sed "s|^.*.$USER|/lustreb/hpcwork/$USER|g" ) 
+      if [ ! "$dir" == "$hpc" ] 
+      then 
+         mkdir -p $hpcdir 
+         echo 
+         echo "save pos dump in HPCWORK" 
+         echo 
+         ln -vfs $hpcdir/$Project.pos $Project.pos 
+         dat="$(date)" 
+         echo "$dat : linked by molsim from $dir" >> $hpcdir/$Project.pos.log 
+      fi 
+   fi 
+fi 
+  
 ln -fs ./$Project.out      FOUT
 ln -fs ./$Project.cnf      FCNF
-ln -fs $HOME/Molsim/Src/molsim.lib        FLIB
+ln -fs $bin/../Src/molsim.lib        FLIB
 ln -fs ./$Project.group    FGROUP
 ln -fs ./$Project.list     FLIST
 ln -fs ./$Project.wrl      FIMG
@@ -48,7 +69,7 @@ ln -fs ./$Project.user     FUSER
 echo
 echo 'Execute'
 echo
-$bin/molsim_ser.exe
+$bin/molsim_ser.exe ; e=$?
 echo
 echo 'Remove file links'
 echo
@@ -62,3 +83,4 @@ echo '   End of molsim_ser, Project:' $Project
 echo '--------------------------------------'
 echo
  
+exit $e

@@ -2813,7 +2813,7 @@ subroutine CpuLeft(maxcpu,unit)
          write(unit,'(a,f8.2)') 'total cpu time used (h) =',t2/3600.0
          write(unit,*)
          write(unit,*)'program stopped due to too little cpu time left'
-         stop
+         stop 1
       end if
    end if
    t1 = t2
@@ -3122,7 +3122,7 @@ subroutine WriteIOStat(name,text,iostat,iopt,unit)
    write(unit,'(a,t'//fmt//',a)') ':',':'
    write(unit,'('//fmt//'a)')    (':',i = 1,nw)
 
-   if ((iopt==1 .and. iostat>=1) .or. (iopt==2 .and. iostat/=0)) stop
+   if ((iopt==1 .and. iostat>=1) .or. (iopt==2 .and. iostat/=0)) stop 1
 end subroutine WriteIOStat
 
 !************************************************************************
@@ -3180,7 +3180,7 @@ subroutine Stop(name,text,unit)
 #if defined (_PAR_)
    call par_finalize
 #endif
-   stop
+   stop 1
 
 contains
 
