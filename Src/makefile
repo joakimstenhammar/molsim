@@ -48,13 +48,13 @@ CBIND = TRUE
 ifeq ($(CBIND), TRUE)          #F03 c-bindings
  
   ifeq ($(ARCH), LOCAL_INTEL)
-    FFTW_PATH=/home/ph500915/.fftw
+    FFTW_PATH=/home/$(USER)/.fftw
   endif
   ifeq ($(ARCH), LOCAL_GFORTRAN)
-    FFTW_PATH=/home/ph500915/.fftw
+    FFTW_PATH=/home/$(USER)/.fftw
   endif
   ifeq ($(ARCH), ALARIK_INTEL)
-    FFTW_PATH=/home/ph500915/.fftw
+    FFTW_PATH=/home/$(USER)/.fftw
   endif
 
 endif
