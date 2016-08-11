@@ -1,0 +1,46 @@
+#*************************************************************
+#*                                                           *
+#*            Archiving the MOLSIM software                  *
+#*                                                           *
+#*************************************************************
+
+#*************************************************************
+#*      Start of definition section                          *
+#*************************************************************
+
+prog='molsim'
+
+#*************************************************************
+#*      End of definition section                            *
+#*************************************************************
+
+# check for version number
+
+if [ -z "$1" ]
+then
+   echo "syntax: archive version" 
+   exit 1
+else
+   ver=$1
+fi
+
+cd ..
+
+# archive source files
+
+mkdir -p Archive
+tar -zcvf Archive/$prog.$ver.tar.gz Src/*90 \
+                                    Src/$prog.ver \
+                                    Src/molsim.lib \
+                                    Src/molsim_ser \
+                                    Src/molsim_par \
+                                    Src/makefile \
+                                    Src/archive 
+chmod 444 Archive/$prog.$ver.tar.gz
+
+# copy  ...tar.gz file to /home/Molsim
+
+cp -r Archive/$prog.$ver.tar.gz /home/Molsim/$prog.$ver.tar.gz
+chmod 644 /home/Molsim/$prog.$ver.tar.gz
+
+

@@ -1,0 +1,87 @@
+#*************************************************************
+#*                                                           *
+#*             Link files and execute molsim_par             *
+#*                                                           *
+#*************************************************************
+ 
+#*************************************************************
+#*      Start of definition section                          *
+#*************************************************************
+
+bin=$HOME/Molsim/Bin
+
+#*************************************************************
+#*      End of definition section                            *
+#*************************************************************
+
+#*************************************************************
+#*                  Architecture                             *
+#*************************************************************
+ 
+ARCH=LOCAL_INTEL
+#ARCH=ALARIK_INTEL
+ 
+Project=$1
+ 
+echo
+echo '--------------------------------------'
+echo '  Start of molsim_par, Project:' $Project
+echo '--------------------------------------'
+echo
+date
+ 
+echo
+echo 'Make file links'
+echo
+ln -fs ./$Project.in       FIN
+ln -fs ./$Project.out      FOUT
+ln -fs ./$Project.cnf      FCNF
+ln -fs $HOME/Molsim/Src/molsim.lib        FLIB
+ln -fs ./$Project.group    FGROUP
+ln -fs ./$Project.list     FLIST
+ln -fs ./$Project.wrl      FIMG
+ln -fs ./$Project.vtf      FVTF
+ln -fs ./$Project.tcl      FTCL
+ln -fs ./$Project.pos      FPOS
+ln -fs ./$Project.ori      FORI
+ln -fs ./$Project.liv      FLIV
+ln -fs ./$Project.anv      FANV
+ln -fs ./$Project.for      FFOR
+ln -fs ./$Project.tor      FTOR
+ln -fs ./$Project.idm      FIDM
+ln -fs ./$Project.laz      FLAZ
+ln -fs ./$Project.utot     FUTOT
+ln -fs ./$Project.user     FUSER
+ln -fs $bin/molsim_par.exe EMOLSIM
+echo
+echo 'Execute'
+echo
+if test $ARCH = LOCAL_INTEL
+then
+if [ -z "$2" ]
+then
+   echo "syntax: molsim_par job cores"
+   exit 1
+fi
+    mpiexec -np $2 EMOLSIM
+fi
+if test $ARCH = ALARIK_INTEL
+then
+#    mpiexec -pernode ls -la
+    mpiexec -bind-to-core EMOLSIM
+fi
+echo
+echo 'Remove file links'
+echo
+rm FIN;  rm FOUT; rm FCNF; rm FLIB; rm FGROUP; rm FLIST; rm FIMG; rm FVTF; rm FTCL
+rm FPOS; rm FORI; rm FLIV; rm FANV; rm FFOR; rm FTOR; rm FIDM; rm FLAZ; rm FUTOT; rm FUSER
+rm EMOLSIM
+ 
+ 
+date
+echo
+echo '--------------------------------------'
+echo '   End of molsim_par, Project:' $Project
+echo '--------------------------------------'
+echo
+ 
