@@ -1393,7 +1393,7 @@ subroutine SetObjectParam2
 !          write(*,'(a,i5)') 'atom type carrying counterion charge: jatweakcharge', jatweakcharge
 !          write(*,'(a,i5)') 'particle type carrying counterion charge', iptat(jatweakcharge)
 !          write(*,'(a,2i5)') ("iananweakcharge", ia, iananweakcharge(ia), ia = 1, na)
-!         stop
+!         stop 1
       end if
 
    end if

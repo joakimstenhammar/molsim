@@ -5134,7 +5134,7 @@ subroutine UmbrellaIO(iStage)
 
      if ((umbcoord/= 'r') .and. (umbcoord/= 'x') .and. (umbcoord/= 'y') .and. (umbcoord/= 'z')) then
         write(uout,'(2a)') 'the specified value of umbcoord is not supported: ', umbcoord
-        stop
+        stop 1
      end if
 
 ! ... set lradumb; if the umbrella potential coordinate is a distance, we should calculate g(r)
@@ -5158,7 +5158,7 @@ subroutine UmbrellaIO(iStage)
          write(uout,'(a,2i5)') 'use atoms     labeled          = ', iaumb1, iaumb2
       else
          write(uout,'(a)') 'type of umbrella potential not defined'
-         stop
+         stop 1
       end if
       if (umbcoord /= 'r') then
          write(uout,'(2a)') 'the considered particles are allowed to move along axis: ', umbcoord
@@ -5925,7 +5925,6 @@ subroutine SSODriver(iStage)
 
       integer(4), intent(in)  :: issopt
 
-      real(8)              :: fac
       real(16)             :: tmpsum
       real(16)             :: tmpsume
       real(8)              :: InvInt, InvFlt

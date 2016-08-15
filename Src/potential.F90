@@ -1847,7 +1847,7 @@ subroutine integrand_LT_depletion(phi, value0, value1, value2)
       endif
    else
       write(*,*) 'wrong option of geometry'
-      stop
+      stop 1
    endif
 
    fac = 1.0d0/(FourPiThird*Rg**3) * dP

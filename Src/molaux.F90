@@ -2043,7 +2043,7 @@ subroutine updatenn(iobj, nn, idnn)  ! update nn and idnn
       write(unit,*)
       write(unit,*) 'no hit in updatenn'
       write(unit,*) 'iobj, nn, idnn(1:nn)', iobj, nn, idnn(1:nn)
-      stop
+      stop 1
    end if
 end subroutine updatenn
 
@@ -2395,7 +2395,7 @@ logical function EllipsoidOverlap(r2, r12_, ori1_, ori2_, rad2_, e_)
 
    end if
 
-   if (ltest) stop
+   if (ltest) stop 1
 
    if (funcmax < one) then
       EllipsoidOverlap = .true.
@@ -2528,7 +2528,7 @@ logical function SuperballOverlap(r2, r21, ori1, ori2) result(loverlap)
          loverlap2 = OverlapMesh(superBallMesh,r12_1,ori2_1)
          call WriteHead(3, 'SuperballOverlap', uout)
          write(uout,'(a,2l3,a)') 'overlap (NR, Mesh): (',loverlap,loverlap2,')'
-         stop
+         stop 1
       end if
    end if
 
@@ -2674,7 +2674,7 @@ logical function SuperballOverlap_NR(r21, ori1, ori2, of) result(loverlap)
       call warn('SuperballOverlap_NR', 'no convergence in NR iterattion', 6)
       call warn('SuperballOverlap_NR', 'no convergence in NR iterattion', uout)
       call TestSuperballOverlap_NR(4)
-      stop
+      stop 1
    end if
  999  continue
 
