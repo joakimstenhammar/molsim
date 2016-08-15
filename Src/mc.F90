@@ -1032,7 +1032,7 @@ subroutine MCPass(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    drostep= Zero
 
@@ -1094,7 +1094,7 @@ subroutine MCPass(iStage)
 
    end do
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine MCPass
 
@@ -1124,7 +1124,7 @@ subroutine SPartMove(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ispartmove
 
@@ -1195,7 +1195,7 @@ subroutine SPartMove(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -1320,7 +1320,7 @@ subroutine SPartCl2Move(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 #if defined (_PAR_)
    if (.not.master) call Stop(txroutine, 'SPartCl2Move not addapted for _PAR_', uout)
@@ -1390,7 +1390,7 @@ subroutine SPartCl2Move(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -1477,7 +1477,7 @@ subroutine PivotMove(iStage)
       return
    end if
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! .............. define particle(s) to be moved ..............
 
@@ -1623,7 +1623,7 @@ subroutine PivotMove(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -2026,7 +2026,7 @@ subroutine ChainMove(iStage)
 
    if (icnpn(ipmove) == 0) call Stop(txroutine, 'chain move based on a non-chain particle', uout)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ichainmove
 
@@ -2064,7 +2064,7 @@ subroutine ChainMove(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -2124,7 +2124,7 @@ subroutine SlitherMove(iStage)
       if (nh /= 0 .and. ngen /= 1) call Stop(txroutine, 'ngen /= 1', uout)
    end if
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = islithermove
 
@@ -2238,7 +2238,7 @@ subroutine SlitherMove(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -2325,7 +2325,7 @@ subroutine BrushMove(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ibrushmove
 
@@ -2369,7 +2369,7 @@ subroutine BrushMove(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -2502,7 +2502,7 @@ subroutine BrushCl2Move(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ibrushcl2move
 
@@ -2566,7 +2566,7 @@ subroutine BrushCl2Move(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -2636,7 +2636,7 @@ subroutine HierarichalMove(iStage)
 
 !xx  if (icnpn(ipmove) == 0) call Stop(txroutine, 'hierarchical move based on a non-chain particle', uout)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ihierarchicalmove
 
@@ -2673,7 +2673,7 @@ subroutine HierarichalMove(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -2718,7 +2718,7 @@ subroutine NetworkMove(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = inetworkmove
 
@@ -2754,7 +2754,7 @@ subroutine NetworkMove(iStage)
    if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -2854,7 +2854,7 @@ subroutine VolChange(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ivolumemove
 
@@ -2912,7 +2912,7 @@ subroutine VolChange(iStage)
 
    end if
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 !........................................................................
 
@@ -2959,7 +2959,7 @@ subroutine NPartChange(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = inpartmove
 
@@ -3063,7 +3063,7 @@ subroutine NPartChange(iStage)
    end if
    if (itestmc == 3) call TestNPartChange2(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 contains
 
@@ -3135,7 +3135,7 @@ subroutine ChargeChange(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ichargemove
 
@@ -3189,7 +3189,7 @@ end if
 
 !   call SetTrialAtomProp
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
@@ -3486,9 +3486,9 @@ subroutine MCAllPass(iStage)
    real(8), allocatable, save :: idmsave(:,:)   ! temporary use (need not to be saved)
    real(8), allocatable, save :: forcesave(:,:) ! temporary use (need not to be saved)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
-   call CpuAdd('start', trim(txroutine)//'_move', 1, uout)
+   if (ltime) call CpuAdd('start', trim(txroutine)//'_move', 1, uout)
 
    if(.not.allocated(rosave)) then 
       allocate(rosave(3,np_alloc), orisave(3,3,np_alloc), boxlensave(1:3), &
@@ -3549,7 +3549,7 @@ subroutine MCAllPass(iStage)
    call SetAtomProp(1, np, lintsite)
  ! if (lradatbox) call CheckAtomBCTM(na, r, lboxoverlap)  ! CheckAtomBCTM does not work here
 
-   call CpuAdd('stop', trim(txroutine)//'_move', 1, uout)
+   if (ltime) call CpuAdd('stop', trim(txroutine)//'_move', 1, uout)
 
 ! ............. calculate energy difference ...............
 
@@ -3608,7 +3608,7 @@ subroutine MCAllPass(iStage)
 
    if (itest == 1) call TestSimulation
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine MCAllPass
 
@@ -6003,7 +6003,7 @@ subroutine SSOMove(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ispartsso
 
@@ -6069,7 +6069,7 @@ subroutine SSOMove(iStage)
 !    if (lradatbox) call CheckAtomBCTM(natm, rtm, lboxoverlap)
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 

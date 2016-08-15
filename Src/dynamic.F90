@@ -123,7 +123,7 @@ subroutine DynamicDriver(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -193,7 +193,7 @@ subroutine DynamicDriver(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 contains
 
@@ -241,7 +241,7 @@ subroutine MSD(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -270,7 +270,7 @@ subroutine MSD(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine MSD
 
@@ -300,7 +300,7 @@ subroutine OrixTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -320,7 +320,7 @@ subroutine OrixTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OrixTCF
 
@@ -349,7 +349,7 @@ subroutine OriyTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -369,7 +369,7 @@ subroutine OriyTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OriyTCF
 
@@ -398,7 +398,7 @@ subroutine OrizTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -418,7 +418,7 @@ subroutine OrizTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OrizTCF
 
@@ -447,7 +447,7 @@ subroutine LinVelTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -468,7 +468,7 @@ subroutine LinVelTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine LinVelTCF
 
@@ -497,7 +497,7 @@ subroutine AngVelTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -517,7 +517,7 @@ subroutine AngVelTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine AngVelTCF
 
@@ -546,7 +546,7 @@ subroutine ForTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -566,7 +566,7 @@ subroutine ForTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ForTCF
 
@@ -595,7 +595,7 @@ subroutine TorTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -615,7 +615,7 @@ subroutine TorTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine TorTCF
 
@@ -644,7 +644,7 @@ subroutine IDMTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -664,7 +664,7 @@ subroutine IDMTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine IDMTCF
 
@@ -693,7 +693,7 @@ subroutine UtotTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = 1
@@ -713,7 +713,7 @@ subroutine UtotTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine UtotTCF
 

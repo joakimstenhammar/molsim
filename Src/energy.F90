@@ -282,7 +282,7 @@ subroutine UTotal(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    if(.not.allocated(uaux)) then 
       allocate(uaux(2*((nptpt+1+npt+1)+8)))  ! 2* for scratch use
@@ -373,12 +373,12 @@ end if
 
 #if defined (_PAR_)
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_before Pack', iStage)
-   call CpuAdd('start', 'comm', 2, uout)
+   if (ltime) call CpuAdd('start', 'comm', 2, uout)
    call PackReduceU(nptpt+1, npt+1, u%tot, u%twob, u%oneb, u%rec, u%stat, u%pol, u%bond, u%angle, u%crosslink, u%external, uaux)
    call par_allreduce_reals(force , vaux, 3*na)
    if (ldipole .or. lpolarization .or. ldipolesph) call par_allreduce_reals(torque, vaux, 3*na)
    call par_allreduce_reals(virial, vaux, 1)
-   call CpuAdd('stop', 'comm', 4, uout)
+   if (ltime) call CpuAdd('stop', 'comm', 4, uout)
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_after Pack', iStage)
 #endif
 
@@ -411,7 +411,7 @@ end if
 
    prsr = (np*Boltz*temp*scltem-virial*sclene/(Three*AvNo))/(vol*sclvol)/sclpre
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine UTotal
 
@@ -436,7 +436,7 @@ subroutine UTwoBodyA
 
    if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    u%twob(0:nptpt) = Zero
    virtwob         = Zero
@@ -491,7 +491,7 @@ subroutine UTwoBodyA
    u%tot     = u%tot     + u%twob(0)
    virial    = virial    + virtwob
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -545,7 +545,7 @@ subroutine UTwoBodyALList
 
    if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    u%twob(0:nptpt) = Zero
    virtwob         = Zero
@@ -605,7 +605,7 @@ subroutine UTwoBodyALList
    u%tot     = u%tot         + u%twob(0)
    virial    = virial        + virtwob
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -658,7 +658,7 @@ subroutine UTwoBodyP
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r2, d, usum, fsum, virtwob
    real(8)    :: dxopbcnew, dyopbcnew, dzopbcnew
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    u%twob(0:nptpt) = Zero
    virtwob         = Zero
@@ -729,7 +729,7 @@ subroutine UTwoBodyP
    u%tot     = u%tot     + u%twob(0)
    virial    = virial    + virtwob
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -776,7 +776,7 @@ subroutine UEwald
    character(40), parameter :: txroutine ='UEwald'
    real(8)    :: virrec, Second
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
    time_ewald = Second()
 
    if (itest == 3 .and. master) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real)', uout)
@@ -813,7 +813,7 @@ subroutine UEwald
    if (itest == 3 .and. slave ) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)_slave', uout)
 
    time_ewald = Second() - time_ewald
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -825,7 +825,7 @@ subroutine UEwaldRecStd
     real(8)    :: kx, ky, kz, k2, term
     real(8)    :: kfac2, facmm, facmp, facpm, facpp
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... calculate eikx, eiky, and eikz
 
@@ -955,7 +955,7 @@ subroutine UEwaldRecStd
 
 #endif
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 end subroutine UEwaldRecStd
 
@@ -976,7 +976,7 @@ subroutine UEwaldRecStd2dlc
 #endif
    if (lbcrd .or. lbcto) call Stop(txroutine, 'lewald2dlc not implemented for RD and TO boundary conditions',uout)
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... calculate sinkx, coskx, sinky, and cosky
 
@@ -1056,7 +1056,7 @@ subroutine UEwaldRecStd2dlc
       end do
    end do
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 end subroutine UEwaldRecStd2dlc
 
@@ -1076,11 +1076,11 @@ subroutine UEwaldRecSPM
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... make generalized charge mesh
 
-   call CpuAdd('start', 'MakeGQMesh', 4, uout)
+   if (ltime) call CpuAdd('start', 'MakeGQMesh', 4, uout)
    Qmesh = Zero
    do ia = iamyid(1), iamyid(2)
       do m = 1,3                    ! Cardinal B-spline, used for calculating exp(i*k(1:3)*r(1:3))
@@ -1101,7 +1101,7 @@ subroutine UEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'MakeGQMesh', 4, uout)
+   if (ltime) call CpuAdd('stop', 'MakeGQMesh', 4, uout)
 
 #if defined (_PAR_)
    call par_allreduce_reals(QMesh, meshaux, MeshMemSize)
@@ -1113,7 +1113,7 @@ subroutine UEwaldRecSPM
 
 ! ... calculate potential, field, field gradient, and virial
 
-   call CpuAdd('start', 'CalcProp', 4, uout)
+   if (ltime) call CpuAdd('start', 'CalcProp', 4, uout)
    do ia = iamyid(1), iamyid(2)
       esum = Zero
       do iz = 0,order-1
@@ -1141,14 +1141,14 @@ subroutine UEwaldRecSPM
       end do
       force(1:3,ia) = force(1:3,ia) - az(ia)*esum(1:3)*dkdr(1:3)*EpsiFourPi   ! E = -dU/dr = -dU/dk * dk/dr
    end do
-   call CpuAdd('stop', 'CalcProp', 4, uout)
+   if (ltime) call CpuAdd('stop', 'CalcProp', 4, uout)
 
    if (lmc) then
        QMesh = QMeshTM ! unmodifed particle mesh
        urecold = u%rec
    end if
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 # endif
 
@@ -1344,7 +1344,7 @@ subroutine UDipole
    real(8)    :: forcex, forcey, forcez, torquex, torquey, torquez
    real(8)    :: ureal
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
 ! ... calculate potential, field, field gradient, and virial from charges and static dipoles
 
@@ -1361,11 +1361,11 @@ subroutine UDipole
    if (lewald) call UDipoleEwald
 
 #if defined (_PAR_)
-   call CpuAdd('start', 'comm', 3, uout)
+   if (ltime) call CpuAdd('start', 'comm', 3, uout)
    call par_allreduce_reals(potstat, vaux, na  )
    call par_allreduce_reals(estat,   vaux, 3*na)
    call par_allreduce_reals(efg    , vaux, 6*na)
-   call CpuAdd('stop', 'comm', 3, uout)
+   if (ltime) call CpuAdd('stop', 'comm', 3, uout)
 #endif
 
     u%stat = Zero
@@ -1411,7 +1411,7 @@ subroutine UDipole
 
    if (itest == 3 .and. master) call TestUDipole(uout)
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -1461,7 +1461,7 @@ subroutine UDipoleP
    real(8)    :: fldx, fldy, fldz, efgxx, efgyy, efgzz, efgxy, efgxz, efgyz
    real(8), external :: ErfLocal
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... initiate
 
@@ -1639,7 +1639,7 @@ subroutine UDipoleP
 
    if (itest == 3 .and. master) call TestUDipoleP(uout)
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -1675,7 +1675,7 @@ subroutine UDipoleEwald
    character(40), parameter :: txroutine ='UDipoleEwald'
    real(8) :: Second
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
    time_ewald = Second()
 
    if (txewaldrec == 'std') then
@@ -1690,7 +1690,7 @@ subroutine UDipoleEwald
    if (itest == 3 .and. master) call TestUDipoleEwald('(real + rec + self + sur)', uout)
 
    time_ewald = Second() - time_ewald
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -1704,7 +1704,7 @@ subroutine UDipoleEwaldRecStd
    real(8)    :: kx, ky, kz, kxkx, kyky, kzkz, kxky, kxkz, kykz
    complex(8) :: cmm, cmp, cpm, cpp
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... calculate eikx, eiky, and eikz
 
@@ -1900,7 +1900,7 @@ subroutine UDipoleEwaldRecStd
 
 #endif
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 end subroutine UDipoleEwaldRecStd
 
@@ -1920,11 +1920,11 @@ subroutine UDipoleEwaldRecSPM
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... make generalized charge mesh
 
-   call CpuAdd('start', 'MakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('start', 'MakeGQMesh', 5, uout)
    Qmesh = Zero
    do ia = iamyid(1), iamyid(2)
       dipx2 = dip(1,ia)*dkdr(1)
@@ -1958,12 +1958,12 @@ subroutine UDipoleEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'MakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('stop', 'MakeGQMesh', 5, uout)
 
 #if defined (_PAR_)
-   call CpuAdd('start', 'MeshComm', 5, uout)
+   if (ltime) call CpuAdd('start', 'MeshComm', 5, uout)
    call par_allreduce_reals(QMesh, meshaux, MeshMemSize)
-   call CpuAdd('stop', 'MeshComm', 5, uout)
+   if (ltime) call CpuAdd('stop', 'MeshComm', 5, uout)
 #endif
 
     if (lmc) QMeshTM = QMesh
@@ -1974,7 +1974,7 @@ subroutine UDipoleEwaldRecSPM
 
    ! ... calculate potential, field, field gradient, and virial
 
-   call CpuAdd('start', 'CalcProp', 5, uout)
+   if (ltime) call CpuAdd('start', 'CalcProp', 5, uout)
    do ia = iamyid(1), iamyid(2)
       dipx2 = dip(1,ia)*dkdr(1)
       dipy2 = dip(2,ia)*dkdr(2)
@@ -2022,11 +2022,11 @@ subroutine UDipoleEwaldRecSPM
        estat(1:3,ia) = estat(1:3,ia) - esum(1:3)*dkdr(1:3)               ! E = -dU/dr = -dU/dk * dk/dr
        efg(1:6,ia) = efg(1:6,ia) - efgsum(1:6)*d2kdr(1:6)
    end do
-   call CpuAdd('stop', 'CalcProp', 5, uout)
+   if (ltime) call CpuAdd('stop', 'CalcProp', 5, uout)
 
    if (lmc) QMesh = QMeshTM
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 # endif
 
@@ -2200,7 +2200,7 @@ subroutine UManyBodyP
    integer(4) :: ia, ialow
    real(8)    :: forcex, forcey, forcez, torquex, torquey, torquez
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
 ! ... calculate potential and field from charges and static dipoles
 
@@ -2209,10 +2209,10 @@ subroutine UManyBodyP
    if (lewald) call FieldStatEwald
 
 #if defined (_PAR_)
-   call CpuAdd('start', 'comm', 3, uout)
+   if (ltime) call CpuAdd('start', 'comm', 3, uout)
    call par_allreduce_reals(potstat, vaux, na  )
    call par_allreduce_reals(estat, vaux, 3*na)
-   call CpuAdd('stop', 'comm', 3, uout)
+   if (ltime) call CpuAdd('stop', 'comm', 3, uout)
 #endif
 
    if (itest == 3 .and. master) call TestUManyBodyP1(uout)
@@ -2239,10 +2239,10 @@ subroutine UManyBodyP
    if (lewald) call FieldTotEwald
 
 #if defined (_PAR_)
-   call CpuAdd('start', 'comm', 3, uout)
+   if (ltime) call CpuAdd('start', 'comm', 3, uout)
    call par_allreduce_reals(etot   , vaux, 3*na)
    call par_allreduce_reals(efg    , vaux, 6*na)
-   call CpuAdd('stop', 'comm', 3, uout)
+   if (ltime) call CpuAdd('stop', 'comm', 3, uout)
 #endif
 
    u%stat = Zero
@@ -2321,7 +2321,7 @@ subroutine UManyBodyP
 
    if (itest == 3 .and. master) call TestUManyBodyP2(uout)
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -2384,7 +2384,7 @@ subroutine FieldStat
    real(8)    :: s, v, d2, d1, d0
    real(8), external :: ErfLocal
 
-   call CpuAdd('start', txroutine,  3, uout)
+   if (ltime) call CpuAdd('start', txroutine,  3, uout)
 
 ! ... initiate
 
@@ -2508,7 +2508,7 @@ subroutine FieldStat
 
    if (itest == 3 .and. master) call TestFieldStat(uout)
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -2540,7 +2540,7 @@ subroutine FieldStatEwald
 
    character(40), parameter :: txroutine ='FieldStatEwald'
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
    if (txewaldrec == 'std') then
        call FieldStatEwaldRecStd
@@ -2553,7 +2553,7 @@ subroutine FieldStatEwald
    if (lsurf) call FieldStatEwaldSurf
    if (itest == 3 .and. master) call TestFieldStatEwald('(real + rec + self + sur)', uout)
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -2565,7 +2565,7 @@ subroutine FieldStatEwaldRecStd
    real(8)    :: kfac2, kx, ky, kz, termx, termy, termz
    complex(8) :: cmm, cmp, cpm, cpp
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... calculate eikx, eiky, and eikz
 
@@ -2703,7 +2703,7 @@ subroutine FieldStatEwaldRecStd
 
 #endif
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 end subroutine FieldStatEwaldRecStd
 
@@ -2723,11 +2723,11 @@ subroutine FieldStatEwaldRecSPM
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... make generalized charge mesh
 
-   call CpuAdd('start', 'StatMakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('start', 'StatMakeGQMesh', 5, uout)
    Qmesh = Zero
    do ia = 1, na
       dipx2 = dip(1,ia)*dkdr(1)
@@ -2761,7 +2761,7 @@ subroutine FieldStatEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'StatMakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('stop', 'StatMakeGQMesh', 5, uout)
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
 
@@ -2769,7 +2769,7 @@ subroutine FieldStatEwaldRecSPM
 
 ! ... calculate potential, field, field gradient, and virial
 
-   call CpuAdd('start', 'StatCalcProp', 5, uout)
+   if (ltime) call CpuAdd('start', 'StatCalcProp', 5, uout)
    do ia=1,na
       psum = Zero
       esum = Zero
@@ -2797,9 +2797,9 @@ subroutine FieldStatEwaldRecSPM
       potstat(ia) = potstat(ia) + psum
       estat(1:3,ia) = estat(1:3,ia) - esum(1:3)*dkdr(1:3)               ! E = -dU/dr = -dU/dk * dk/dr
    end do
-   call CpuAdd('stop', 'StatCalcProp', 5, uout)
+   if (ltime) call CpuAdd('stop', 'StatCalcProp', 5, uout)
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 # endif
 
@@ -2925,7 +2925,7 @@ subroutine IterIdm(lforceiter)
    integer(4) :: iter, ia
    real(8)    :: ex, ey, ez, idmdiff, idmsize, ratio
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... loop over induced dipole iterations
 
@@ -2938,9 +2938,9 @@ subroutine IterIdm(lforceiter)
       if (lewald) call FieldIdmEwald
 
 #if defined (_PAR_)
-      call CpuAdd('start', 'comm', 4, uout)
+      if (ltime) call CpuAdd('start', 'comm', 4, uout)
       call par_allreduce_reals(eidm, vaux, 3*na)
-      call CpuAdd('stop', 'comm', 4, uout)
+      if (ltime) call CpuAdd('stop', 'comm', 4, uout)
 #endif
 
       if (itest == 3 .and. master) call TestIterIdm1(uout)
@@ -2992,7 +2992,7 @@ subroutine IterIdm(lforceiter)
 
    if (iter > mpolit) lidmconv =.false.
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -3040,7 +3040,7 @@ subroutine FieldIdm
    real(8)    :: s, v, d2, d1, d0
    real(8), external :: ErfLocal
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... initiate
 
@@ -3132,7 +3132,7 @@ subroutine FieldIdm
 
    if (itest == 3 .and. master) call TestFieldIdm(uout)
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 contains
 
@@ -3165,7 +3165,7 @@ subroutine FieldIdmEwald
 
    character(40), parameter :: txroutine ='FieldIdmEwald'
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
    if (txewaldrec == 'std') then
        call FieldIdmEwaldRecStd
@@ -3176,7 +3176,7 @@ subroutine FieldIdmEwald
    if (lsurf) call FieldIdmEwaldSurf
    if (itest == 3 .and. master) call TestFieldIdmEwald(uout)
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -3189,7 +3189,7 @@ subroutine FieldIdmEwaldRecStd
    real(8)    :: kfac2, kx, ky, kz
    real(8)    :: termx, termy, termz, facmm, facmp, facpm, facpp
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 #if defined (_PAR_)
 
@@ -3319,7 +3319,7 @@ subroutine FieldIdmEwaldRecStd
 
 #endif
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 
 end subroutine FieldIdmEwaldRecStd
@@ -3341,11 +3341,11 @@ subroutine FieldIdmEwaldRecSPM
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... make generalized charge mesh
 
-   call CpuAdd('start', 'IdmMakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('start', 'IdmMakeGQMesh', 5, uout)
    Qmesh = Zero
    do ia = 1, na
       dipx2 = idm(1,ia)*dkdr(1)
@@ -3378,7 +3378,7 @@ subroutine FieldIdmEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'IdmMakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('stop', 'IdmMakeGQMesh', 5, uout)
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
 
@@ -3386,7 +3386,7 @@ subroutine FieldIdmEwaldRecSPM
 
 ! ... calculate potential, field, field gradient, and virial
 
-   call CpuAdd('start', 'IdmCalcProp', 5, uout)
+   if (ltime) call CpuAdd('start', 'IdmCalcProp', 5, uout)
    do ia=1,na
       psum = Zero
       esum = Zero
@@ -3412,9 +3412,9 @@ subroutine FieldIdmEwaldRecSPM
       end do
       eidm(1:3,ia) = eidm(1:3,ia) - esum(1:3)*dkdr(1:3)               ! E = -dU/dr = -dU/dk * dk/dr
    end do
-   call CpuAdd('stop', 'IdmCalcProp', 5, uout)
+   if (ltime) call CpuAdd('stop', 'IdmCalcProp', 5, uout)
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 # endif
 
@@ -3520,7 +3520,7 @@ subroutine FieldTot
    real(8)    :: s, v, d2, d1, d0, d3
    real(8), external :: ErfLocal
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... initiate
 
@@ -3690,7 +3690,7 @@ subroutine FieldTot
 
    if (itest == 3 .and. master) call TestFieldTot(uout)
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -3726,7 +3726,7 @@ subroutine FieldTotEwald
 
    character(40), parameter :: txroutine ='FieldTotEwald'
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
    if (txewaldrec == 'std') then
        call FieldTotEwaldRecStd
@@ -3739,7 +3739,7 @@ subroutine FieldTotEwald
    if (lsurf) call FieldTotEwaldSurf
    if (itest == 3 .and. master) call TestFieldTotEwald('(real + rec + self + sur)', uout)
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -3754,7 +3754,7 @@ subroutine FieldTotEwaldRecStd
    real(8)    :: kx, ky, kz, kxkx, kyky, kzkz, kxky, kxkz, kykz
    complex(8) :: cmm, cmp, cpm, cpp
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 #if defined (_PAR_)
 
@@ -3941,7 +3941,7 @@ subroutine FieldTotEwaldRecStd
 
 #endif
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 end subroutine FieldTotEwaldRecStd
 
@@ -3961,11 +3961,11 @@ subroutine FieldTotEwaldRecSPM
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... make generalized charge mesh
 
-   call CpuAdd('start', 'TotMakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('start', 'TotMakeGQMesh', 5, uout)
    Qmesh = Zero
    do ia = 1, na
       dipx2 = diptot(1,ia)*dkdr(1)
@@ -3998,7 +3998,7 @@ subroutine FieldTotEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'TotMakeGQMesh', 5, uout)
+   if (ltime) call CpuAdd('stop', 'TotMakeGQMesh', 5, uout)
 
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
@@ -4007,7 +4007,7 @@ subroutine FieldTotEwaldRecSPM
 
 ! ... calculate potential, field, field gradient, and virial
 
-   call CpuAdd('start', 'TotCalcProp', 5, uout)
+   if (ltime) call CpuAdd('start', 'TotCalcProp', 5, uout)
    do ia=1,na
       psum = Zero
       esum = Zero
@@ -4051,9 +4051,9 @@ subroutine FieldTotEwaldRecSPM
       etot(1:3,ia) = etot(1:3,ia) - esum(1:3)*dkdr(1:3)               ! E = -dU/dr = -dU/dk * dk/dr
       efg(1:6,ia) = efg(1:6,ia) - efgsum(1:6)*d2kdr(1:6)
    end do
-   call CpuAdd('start', 'TotCalcProp', 5, uout)
+   if (ltime) call CpuAdd('start', 'TotCalcProp', 5, uout)
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 # endif
 
@@ -4306,7 +4306,7 @@ subroutine UDipoleSph
    real(8)    :: fldx, fldy, fldz, efgxx, efgyy, efgzz, efgxy, efgxz, efgyz
    real(8), external :: ErfLocal
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    u%twob(0:nptpt) = Zero
    u%stat           = Zero
@@ -4513,11 +4513,11 @@ subroutine UDipoleSph
      end if
 
 #if defined (_PAR_)
-   call CpuAdd('start', 'comm', 3, uout)
+   if (ltime) call CpuAdd('start', 'comm', 3, uout)
    call par_allreduce_reals(potstat, vaux, na  )
    call par_allreduce_reals(estat,   vaux, 3*na)
    call par_allreduce_reals(efg    , vaux, 6*na)
-   call CpuAdd('stop', 'comm', 3, uout)
+   if (ltime) call CpuAdd('stop', 'comm', 3, uout)
 #endif
 
     do ip = ipmyid(1), ipmyid(2)
@@ -4547,7 +4547,7 @@ subroutine UDipoleSph
    u%tot  = u%tot  + u%stat
    virial = virial + EpsiFourPi*virelec
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -4617,7 +4617,7 @@ subroutine UDielDisPlane
    integer(4) :: ipt, jpt, ip, jp, iptjpt, iploc, jploc, Getnpmyid
    real(8) :: dx, dy, dz, r2, ri, rip
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
 ! ... setup
 
@@ -4679,7 +4679,7 @@ subroutine UDielDisPlane
 
 !  call TestUDielDisPlane(uout)
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -4715,7 +4715,7 @@ subroutine UDielDisSph
    integer(4) :: ipt, jpt, ip, jp, iptjpt, l, iploc, jploc, Getnpmyid
    real(8) :: r1, r2, ri, r12, fac, cosa, ImageIntSph
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
 ! ... setup
 
@@ -4783,7 +4783,7 @@ subroutine UDielDisSph
 
 !  call TestUDielDisSph(uout)
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -5215,7 +5215,7 @@ subroutine UBond
    integer(4) :: ic, ict, iseg, ip, jp
    real(8)    :: dx, dy, dz, r1, r2, term, fac, virbond
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    u%bond = Zero
    virbond = Zero
@@ -5254,7 +5254,7 @@ subroutine UBond
    u%tot  = u%tot  + u%bond
    virial = virial + virbond
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -5294,7 +5294,7 @@ subroutine UAngle
    u%angle = Zero
    if (count(angle(1:nct)%k /= Zero) == 0) return
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    do ic = icmyid(1), icmyid(2)
       ict = ictcn(ic)
@@ -5361,7 +5361,7 @@ subroutine UAngle
 
    u%tot  = u%tot + u%angle
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -5397,7 +5397,7 @@ subroutine UCrossLink
    integer(4)   :: ip, jp, icl
    real(8)      :: dx, dy, dz, r1, r2, term, fac, vircrosslink
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    u%crosslink = Zero
    vircrosslink = Zero
@@ -5434,7 +5434,7 @@ subroutine UCrossLink
    u%tot  = u%tot  + u%crosslink
    virial = virial + vircrosslink
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 contains
 
@@ -5474,7 +5474,7 @@ subroutine UExternal
    integer(4) :: imyid(1:2)
    character(1) :: str
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
 ! ... initiate
 
@@ -5551,7 +5551,7 @@ subroutine UExternal
 
    u%tot = u%tot + u%external
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -6424,16 +6424,16 @@ subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
    real(8)    :: Qsum
    complex(8)  :: v1, v2, v3, v4
 
-   call CpuAdd('start', txFFT, level, uout)
+   if (ltime) call CpuAdd('start', txFFT, level, uout)
    call fftw_execute_dft_r2c(plan_fwd, Qmesh, FQmesh)   ! transform Qmesh into FQmesh
-   call CpuAdd('stop',  txFFT, level, uout)
+   if (ltime) call CpuAdd('stop',  txFFT, level, uout)
 
    if (lsave) QMeshTM = QMesh
    if (linit) uloc = Zero
 
 ! ... calculate the generalized influence function in the reciprocal space
 
-   call CpuAdd('start', txRec, level, uout)
+   if (ltime) call CpuAdd('start', txRec, level, uout)
    do nz = 0,s(3)/2
       nza = mod(s(3)-nz,s(3))
       do ny = 0,s(2)/2
@@ -6459,13 +6459,13 @@ subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
          end do
       end do
    end do
-   call CpuAdd('stop', txRec, level, uout)
+   if (ltime) call CpuAdd('stop', txRec, level, uout)
 
 ! ... calculate the convoluted (Green function)*(multipole) in real space
 
-   call CpuAdd('start', txFFT, level, uout)
+   if (ltime) call CpuAdd('start', txFFT, level, uout)
    call fftw_execute_dft_c2r(plan_bwd, FQMesh, QMesh )
-   call CpuAdd('stop',  txFFT, level, uout)
+   if (ltime) call CpuAdd('stop',  txFFT, level, uout)
 
 # endif
 
@@ -7069,7 +7069,7 @@ subroutine UWeakChargeA
 
    if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    u%twob(0:nptpt) = Zero
    virtwob         = Zero
@@ -7122,7 +7122,7 @@ subroutine UWeakChargeA
    u%tot     = u%tot     + u%twob(0)
    virial    = virial    + virtwob
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -7177,7 +7177,7 @@ subroutine UWeakChargeP
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r2, d, usum, fsum, virtwob
    real(8)    :: dxopbcnew, dyopbcnew, dzopbcnew
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    u%twob(0:nptpt) = Zero
    virtwob         = Zero
@@ -7257,7 +7257,7 @@ subroutine UWeakChargeP
    u%tot     = u%tot     + u%twob(0)
    virial    = virial    + virtwob
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 

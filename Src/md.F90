@@ -101,7 +101,7 @@ subroutine MDDriver(iStage)
 
    case (iSimulationStep)
 
-      call CpuAdd('start', txroutine, 0, uout)
+      if (ltime) call CpuAdd('start', txroutine, 0, uout)
       if (integ == 'velver') then
          call VelVer(iStage)
       else if (integ(1:4) == 'gear') then
@@ -113,7 +113,7 @@ subroutine MDDriver(iStage)
       if (tvscl > Zero) call ScaleVel
       if (tlscl > Zero) call ScaleLength
       if (itest == 1) call TestSimulation
-      call CpuAdd('stop', txroutine, 0, uout)
+      if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
    case (iAfterSimulation)
 
@@ -234,7 +234,7 @@ subroutine VelVer(iStage)
    ipupp = np
 #endif
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ............... new positions and quaternions ...............
 
@@ -287,11 +287,11 @@ subroutine VelVer(iStage)
 
 ! ............... energy and force evaulation ...............
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    call UTotal(iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ............... new linear and quaternion acceleration and velocity ...............
 
@@ -357,7 +357,7 @@ subroutine VelVer(iStage)
 
    if (lintsite) call SetAtomPos(iplow, ipupp, .false.)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine VelVer
 
@@ -389,7 +389,7 @@ subroutine Gear(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iSimulationStep)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ... set taylor and gear coefficients  (need only to be done once)
 
@@ -464,11 +464,11 @@ subroutine Gear(iStage)
 
 ! ............... energy and force evaulation ...............
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    call UTotal(iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ............   correct   .............
 
@@ -538,7 +538,7 @@ subroutine Gear(iStage)
 
    call SetAtomProp(iplow, ipupp, .false.)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine Gear
 

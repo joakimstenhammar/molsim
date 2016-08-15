@@ -432,7 +432,7 @@ subroutine SSOMove(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ispartsso
 
@@ -498,7 +498,7 @@ subroutine SSOMove(iStage)
 !    if (lradatbox) call CheckAtomBCTM(natm, rtm, lboxoverlap)
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 

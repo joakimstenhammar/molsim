@@ -2889,7 +2889,7 @@ end subroutine TabulationQl
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -2974,7 +2974,7 @@ end subroutine TabulationQl
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ChainBeadCylContact
 
@@ -3409,7 +3409,7 @@ subroutine CylDistFunc(iStage)
 
    if(ltrace) call WriteTrace(1,'CylDistFunc', iStage)
 
-   call CpuAdd('start', 'CylDistFunc', 1, uout)
+   if (ltime) call CpuAdd('start', 'CylDistFunc', 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3596,7 +3596,7 @@ subroutine CylDistFunc(iStage)
 
    end select
 
-    call CpuAdd('stop', 'CylDistFunc', 1, uout)
+    if (ltime) call CpuAdd('stop', 'CylDistFunc', 1, uout)
 
 end subroutine CylDistFunc
 
@@ -3633,7 +3633,7 @@ subroutine SFPBC2D(iStage)
 
    if(ltrace) call WriteTrace(1,'SFPBC2D', iStage)
 
-   call CpuAdd('start', 'SFPBC2D', 1, uout)
+   if (ltime) call CpuAdd('start', 'SFPBC2D', 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3834,7 +3834,7 @@ subroutine SFPBC2D(iStage)
 
    end select
 
-   call CpuAdd('stop', 'SFPBC2D', 1, uout)
+   if (ltime) call CpuAdd('stop', 'SFPBC2D', 1, uout)
 
 end subroutine SFPBC2D
 
@@ -3874,7 +3874,7 @@ subroutine SFPBC2DNoAv(iStage)
 
    if(ltrace) call WriteTrace(1,'SFPBC2DNoAv', iStage)
 
-   call CpuAdd('start', 'SFPBC2DNoAv', 1, uout)
+   if (ltime) call CpuAdd('start', 'SFPBC2DNoAv', 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4083,7 +4083,7 @@ subroutine SFPBC2DNoAv(iStage)
 
    end select
 
-   call CpuAdd('stop', 'SFPBC2DNoAv', 1, uout)
+   if (ltime) call CpuAdd('stop', 'SFPBC2DNoAv', 1, uout)
 
 end subroutine SFPBC2DNoAv
 
@@ -4214,7 +4214,7 @@ subroutine MacroionOneSph(iStage)
 
    namelist /nmlMacroionOneSph/ vtype, iptmacroion, iptproject
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4339,7 +4339,7 @@ subroutine MacroionOneSph(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine MacroionOneSph
 
@@ -4753,7 +4753,7 @@ subroutine DomainDriver(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4800,7 +4800,7 @@ subroutine DomainDriver(iStage)
       call TCFDipDomain(iStage)
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine DomainDriver
 
@@ -5955,7 +5955,7 @@ subroutine AdsBondOrder(iStage)
 
    if (slave) return   ! only master
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -6091,7 +6091,7 @@ subroutine AdsBondOrder(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine AdsBondOrder
 
@@ -6147,7 +6147,7 @@ subroutine AdsPropDyn(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -6257,7 +6257,7 @@ subroutine AdsPropDyn(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine AdsPropDyn
 
@@ -6477,7 +6477,7 @@ subroutine AdsEventDyn(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -6631,7 +6631,7 @@ subroutine AdsEventDyn(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine AdsEventDyn
 
@@ -7509,7 +7509,7 @@ subroutine XYProjectDF(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -7624,7 +7624,7 @@ subroutine XYProjectDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine XYProjectDF
 
@@ -7674,7 +7674,7 @@ subroutine SPDF_COMB(iStage)
 
    if(ltrace) call WriteTrace(2,txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -7950,7 +7950,7 @@ subroutine SPDF_COMB(iStage)
 	
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine SPDF_COMB
 
@@ -8002,7 +8002,7 @@ subroutine COMB_DF(iStage)
 
    if(slave) return
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -8226,7 +8226,7 @@ subroutine COMB_DF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine COMB_DF
 
@@ -8525,7 +8525,7 @@ subroutine SFPBC_COMB(iStage)
 
    if (ltrace) call WriteTrace(2,txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -8786,7 +8786,7 @@ subroutine SFPBC_COMB(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 contains
 
@@ -8848,7 +8848,7 @@ subroutine OCF(iStage)
 
    if(ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -9026,7 +9026,7 @@ subroutine OCF(iStage)
 	
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OCF
 
@@ -9072,7 +9072,7 @@ subroutine OCF_DF(iStage)
 
    if(slave) return
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -9259,7 +9259,7 @@ subroutine OCF_DF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OCF_DF
 
@@ -9298,7 +9298,7 @@ subroutine ChainBeadBeadContact(iStage)
    if (slave) return   ! master only
 
    if (ltrace) call WriteTrace(2,txroutine, iStage)
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -9412,7 +9412,7 @@ subroutine ChainBeadBeadContact(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ChainBeadBeadContact
 
@@ -9448,7 +9448,7 @@ subroutine ElPot(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -9559,7 +9559,7 @@ subroutine ElPot(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ElPot
 

@@ -121,7 +121,7 @@ program MolsimDriver
    if (ilist/= 0 .and. master) close(ulist)
 
    if (master) call WriteHead(2, 'timing statistics', uout)
-   if (master) call CpuAdd('write', ' ', 0, uout)
+   if (ltime .and. master) call CpuAdd('write', ' ', 0, uout)
    if (master) call CpuTot(uout)
 
 #if defined (_PAR_)
@@ -187,7 +187,7 @@ subroutine IOMolsim(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -272,7 +272,7 @@ subroutine IOMolsim(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine IOMolsim
 
@@ -303,7 +303,8 @@ subroutine IOSystem(iStage)
                         iseed, maxcpu,                                                         &
                         lcont, laver, lti,   ldist, ldump, lgroup, lstatic, ldynamic, limage,  &
                         itest, ipart, iatom, iaver, ishow, iplot,  ilist,                      &
-                        ltrace, lblockaver
+                        ltrace, lblockaver,                                                    &
+                        ltime
 
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -333,6 +334,7 @@ subroutine IOSystem(iStage)
       ilist    = 0
       ltrace   = .false.
       lblockaver= .false.
+      ltime    = .true.
 
       rewind(uin)
       read(uin,nmlSystem)
@@ -793,7 +795,7 @@ subroutine ControlAver(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iAfterMacrostep, iAfterSimulation)
@@ -807,7 +809,7 @@ subroutine ControlAver(iStage)
    call OriOrderAver(iStage)
    call PosOriAver(iStage)
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine ControlAver
 
@@ -1312,13 +1314,13 @@ subroutine MainAver(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
                       call ThermoAver(iStage)
    if (lweakcharge)   call ChargeAver(iStage)
    if (lpolarization) call IndDipMomAver(iStage)
    if (lchain)        call ChainAver(iStage)
    if (lhierarchical) call HierarichalAver(iStage)
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine MainAver
 
@@ -1431,15 +1433,15 @@ subroutine ThermoAver(iStage)
 
 ! ... initiate energy, forces, and pressure
 
-      call CpuAdd('stop', txroutine_aux, 0, uout)
-      call CpuAdd('interrupt', ' ', 0, uout)
+      if (ltime) call CpuAdd('stop', txroutine_aux, 0, uout)
+      if (ltime) call CpuAdd('interrupt', ' ', 0, uout)
 
       call SetAtomProp(1, np, lintsite)
       call UTotal(iStage)
       if (lintsite) call SetAtomPos(1, np, .false.)
 
-      call CpuAdd('resume', ' ', 0, uout)
-      call CpuAdd('start', txroutine_aux, 0, uout)
+      if (ltime) call CpuAdd('resume', ' ', 0, uout)
+      if (ltime) call CpuAdd('start', txroutine_aux, 0, uout)
 
       if (lmd)                 call GetLinAcc(1, np)
       if (lmd .and. lpolyatom) call GetAngAcc(1, np)
@@ -1534,8 +1536,8 @@ subroutine ThermoAver(iStage)
          allocate(ucheck%twob(0:nptpt))
       end if
       if (lmc) then
-         call CpuAdd('stop', txroutine_aux, 0, uout)
-         call CpuAdd('interrupt', ' ', 0, uout)
+         if (ltime) call CpuAdd('stop', txroutine_aux, 0, uout)
+         if (ltime) call CpuAdd('interrupt', ' ', 0, uout)
          ucheck = u                                          ! save current u
          call UTotal(iStage)                                 ! calcuate potential energies from scratch
          ucheck%crosslink     = GetRelDiff(ucheck%crosslink,u%crosslink)
@@ -1552,8 +1554,8 @@ subroutine ThermoAver(iStage)
          ucheck%bond          = GetRelDiff(ucheck%bond,u%bond)
          ucheck%angle         = GetRelDiff(ucheck%angle,u%angle)
          ucheck%external      = GetRelDiff(ucheck%external,u%external)
-         call CpuAdd('resume', ' ', 0, uout)
-         call CpuAdd('start', txroutine_aux, 0, uout)
+         if (ltime) call CpuAdd('resume', ' ', 0, uout)
+         if (ltime) call CpuAdd('start', txroutine_aux, 0, uout)
       end if
 
       call ScalarSample(iStage, 1, nvar, var)
@@ -2350,12 +2352,12 @@ subroutine DistFunc(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
 #if defined (_PAR_)
 ! ... to get right position of ' comm'
-      call CpuAdd('start', 'comm', 1, uout)
-      call CpuAdd('stop', 'comm', 1, uout)
+      if (ltime) call CpuAdd('start', 'comm', 1, uout)
+      if (ltime) call CpuAdd('stop', 'comm', 1, uout)
 #endif
 
    select case (iStage)
@@ -2723,8 +2725,8 @@ subroutine DistFunc(iStage)
 ! ... add contributions to forces and the virial from other interactions
 
       if (lmc .or. lmcall .or. lbd) then
-         call CpuAdd('stop', txroutine, 0, uout)
-         call CpuAdd('interrupt', ' ', 0, uout)
+         if (ltime) call CpuAdd('stop', txroutine, 0, uout)
+         if (ltime) call CpuAdd('interrupt', ' ', 0, uout)
          usave = u                   ! save potential energies
          if (lcharge .and. lewald) call UEwald
          if (ldipole .and. lewald) call UDipoleEwald
@@ -2734,17 +2736,17 @@ subroutine DistFunc(iStage)
 !        if (ldieldis) call UDielDis !  no forces are included in UDielDis
          if (luext)  call UExternal
          u = usave                   ! restore potential energies
-         call CpuAdd('resume', ' ', 0, uout)
-         call CpuAdd('start', txroutine, 0, uout)
+         if (ltime) call CpuAdd('resume', ' ', 0, uout)
+         if (ltime) call CpuAdd('start', txroutine, 0, uout)
       end if
 
 #if defined (_PAR_)
 ! ... allreduce of ubind, force, and virial
-      call CpuAdd('start', 'comm', 0, uout)
+      if (ltime) call CpuAdd('start', 'comm', 0, uout)
       call par_allreduce_reals(ubind, vaux, np  )
       call par_allreduce_reals(force, vaux, 3*na)
       call par_allreduce_reals(virial, vaux, 1   )
-      call CpuAdd('stop', 'comm', 0, uout)
+      if (ltime) call CpuAdd('stop', 'comm', 0, uout)
 #endif
 
       if (master) then   ! could be parallelized later
@@ -2835,11 +2837,11 @@ subroutine DistFunc(iStage)
 ! ... reduce var%avs2 to master
 
 #if defined (_PAR_)
-         call CpuAdd('start', 'comm', 0, uout)
+         if (ltime) call CpuAdd('start', 'comm', 0, uout)
          do ivar = 1, nvar
             call par_reduce_reals(var(ivar)%avs2(-1), vaux, mnbin_df+2)
          end do
-         call CpuAdd('stop', 'comm', 0, uout)
+         if (ltime) call CpuAdd('stop', 'comm', 0, uout)
 #endif
 
       if (master) then
@@ -2965,7 +2967,7 @@ subroutine DistFunc(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 contains
 

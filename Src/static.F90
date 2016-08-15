@@ -59,7 +59,7 @@ subroutine StaticDriver(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -203,7 +203,7 @@ subroutine StaticDriver(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 contains
 
@@ -298,7 +298,7 @@ subroutine SPDF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -605,7 +605,7 @@ subroutine SPDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 contains
 
@@ -678,7 +678,7 @@ subroutine RDF(iStage)
 
    if (ltrace) call WriteTrace(2, txheading, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -1006,7 +1006,7 @@ subroutine RDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    contains
 
@@ -1125,7 +1125,7 @@ subroutine RDFChain(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -1267,7 +1267,7 @@ subroutine RDFChain(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine RDFChain
 
@@ -1305,7 +1305,7 @@ subroutine RDFSph(iStage)
 
    if (slave) return                   ! only master
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -1410,7 +1410,7 @@ subroutine RDFSph(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine RDFSph
 
@@ -1445,7 +1445,7 @@ subroutine RDFCond(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -1560,7 +1560,7 @@ subroutine RDFCond(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine RDFCond
 
@@ -1607,7 +1607,7 @@ subroutine G3Dist(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -1775,7 +1775,7 @@ subroutine G3Dist(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine G3Dist
 
@@ -1850,7 +1850,7 @@ subroutine SFPBC(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -2081,7 +2081,7 @@ subroutine SFPBC(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 contains
 
@@ -2251,7 +2251,7 @@ subroutine SFNoPBC(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -2392,7 +2392,7 @@ subroutine SFNoPBC(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine SFNoPBC
 
@@ -2450,7 +2450,7 @@ subroutine AngDF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -2716,7 +2716,7 @@ subroutine AngDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine AngDF
 
@@ -2753,7 +2753,7 @@ subroutine AngExtDF(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -2850,7 +2850,7 @@ subroutine AngExtDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine AngExtDF
 
@@ -2899,7 +2899,7 @@ subroutine OriDipDF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3036,7 +3036,7 @@ subroutine OriDipDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OriDipDF
 
@@ -3070,7 +3070,7 @@ subroutine SphHarAver(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3148,7 +3148,7 @@ subroutine SphHarAver(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine SphHarAver
 
@@ -3188,7 +3188,7 @@ subroutine RadAngDF(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3319,12 +3319,12 @@ subroutine RadAngDF(iStage)
 ! ... reduce var%avs2 to master
 
 #if defined (_PAR_)
-      call CpuAdd('start', 'comm', 1, uout)
+      if (ltime) call CpuAdd('start', 'comm', 1, uout)
       do ivar = 1, nvar
          call par_reduce_reals(var(ivar)%avs2(-1,-1), vaux, (mnbin_df2D+2)**2)
          call par_reduce_reals(var2(ivar)%avs2(-1,-1), vaux, (mnbin_df2D+2)**2)
       end do
-      call CpuAdd('stop', 'comm', 1, uout)
+      if (ltime) call CpuAdd('stop', 'comm', 1, uout)
 #endif
 
 ! ... normalization
@@ -3385,7 +3385,7 @@ subroutine RadAngDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine RadAngDF
 
@@ -3426,7 +3426,7 @@ subroutine Kirkwoodgk(iStage)
 
    if (npt /= 1) call Stop(txroutine, 'npt /=1', uout) ! not yet fully adapted for npt /= 1
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3549,7 +3549,7 @@ subroutine Kirkwoodgk(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine Kirkwoodgk
 
@@ -3598,7 +3598,7 @@ subroutine OriPolDF(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3715,11 +3715,11 @@ subroutine OriPolDF(iStage)
 ! ... reduce var%avs2 to master
 
 #if defined (_PAR_)
-      call CpuAdd('start', 'comm', 1, uout)
+      if (ltime) call CpuAdd('start', 'comm', 1, uout)
       do ivar = 1, nvar
          call par_reduce_reals(var(ivar)%avs2(-1), vaux, mnbin_df+2)
       end do
-      call CpuAdd('stop', 'comm', 1, uout)
+      if (ltime) call CpuAdd('stop', 'comm', 1, uout)
 #endif
 
 ! ... normalization
@@ -3757,7 +3757,7 @@ subroutine OriPolDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OriPolDF
 
@@ -3803,7 +3803,7 @@ subroutine NNHB(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -3953,7 +3953,7 @@ subroutine NNHB(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine NNHB
 
@@ -3992,7 +3992,7 @@ end subroutine NNHB
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4079,7 +4079,7 @@ end subroutine NNHB
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine NNDF
 
@@ -4134,7 +4134,7 @@ subroutine ChainDF(iStage)
 
    if (slave) return                   ! only master
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4294,7 +4294,7 @@ subroutine ChainDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ChainDF
 
@@ -4341,7 +4341,7 @@ subroutine ChainTypeDF(iStage)
 
    if (slave) return                   ! only master
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4451,7 +4451,7 @@ subroutine ChainTypeDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ChainTypeDF
 
@@ -4495,7 +4495,7 @@ subroutine ChainTypeExtDF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4599,7 +4599,7 @@ subroutine ChainTypeExtDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ChainTypeExtDF
 
@@ -4637,7 +4637,7 @@ end subroutine ChainTypeExtDF
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4728,7 +4728,7 @@ end subroutine ChainTypeExtDF
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ChainBeadPartContact
 
@@ -4784,7 +4784,7 @@ subroutine LoopTailTrain(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -4892,7 +4892,7 @@ subroutine LoopTailTrain(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine LoopTailTrain
 
@@ -5016,7 +5016,7 @@ end subroutine CheckAdsChainSeg
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -5271,7 +5271,7 @@ end subroutine CheckAdsChainSeg
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 contains
 
@@ -5696,7 +5696,7 @@ subroutine MultipoleDF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -5879,7 +5879,7 @@ subroutine MultipoleDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine MultipoleDF
 
@@ -6007,7 +6007,7 @@ subroutine EnergyDF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -6165,7 +6165,7 @@ subroutine EnergyDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine EnergyDF
 
@@ -6208,7 +6208,7 @@ end subroutine EnergyDF
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -6312,7 +6312,7 @@ end subroutine EnergyDF
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine Widom1
 
@@ -6356,7 +6356,7 @@ end subroutine Widom1
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    if (lnvt) then
 
@@ -6500,7 +6500,7 @@ end subroutine Widom1
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine Widom2
 
@@ -6782,7 +6782,7 @@ subroutine MeanForce1(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -6905,7 +6905,7 @@ subroutine MeanForce1(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 contains
 
@@ -6976,7 +6976,7 @@ subroutine MeanForce2(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -7165,7 +7165,7 @@ subroutine MeanForce2(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 contains
 
@@ -7283,7 +7283,7 @@ subroutine PotMeanForce(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -7381,7 +7381,7 @@ subroutine PotMeanForce(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine PotMeanForce
 
@@ -7556,7 +7556,7 @@ subroutine Crystalformat(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iAfterSimulation)
@@ -7824,7 +7824,7 @@ subroutine SubStructureDF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -8274,7 +8274,7 @@ subroutine SubStructureDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine SubStructureDF
 

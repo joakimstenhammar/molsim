@@ -49,11 +49,11 @@ subroutine BDDriver(iStage)
 
    case (iSimulationStep)
 
-      call CpuAdd('start', txroutine, 0, uout)
+      if (ltime) call CpuAdd('start', txroutine, 0, uout)
       call BDStep
       call UTotal(iStage)
       if (itest == 1) call TestSimulation
-      call CpuAdd('stop', txroutine,  0, uout)
+      if (ltime) call CpuAdd('stop', txroutine,  0, uout)
 
    end select
 

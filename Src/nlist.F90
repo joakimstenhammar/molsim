@@ -197,6 +197,7 @@ subroutine IONList(iStage)
       maxnneigh = max(500, maxnneigh)                                        ! 2014-11-30
       maxnneigh = max(1000, maxnneigh)                                       ! 2015-06-09
       maxnneigh = max(2000, maxnneigh)                                       ! 2015-08-06
+      maxnneigh = max(np-1, maxnneigh)                                         ! 2016-08-15
       if(maxnneigh < 0) call Stop('IONlist', 'maxnneigh < 0', uout)
 
 ! ... set npartperproc
@@ -631,7 +632,7 @@ subroutine SetVList
 
    character(40), parameter :: txroutine ='SetVList'
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
 ! ... generate npmyid, ipnploc, nneighpn, and jpnlist
 
@@ -651,7 +652,7 @@ subroutine SetVList
       end if
    end if
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine SetVList
 
@@ -1122,7 +1123,7 @@ subroutine SetLList(distance)
 
    if (txbc /= 'xyz') call Stop(txroutine, 'txbc /= ''xyz''', uout)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    do ip = 1, np
      ipnploc(ip) = ip
@@ -1161,7 +1162,7 @@ subroutine SetLList(distance)
       headllist(icell) = ip
    end do
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine SetLList
 
