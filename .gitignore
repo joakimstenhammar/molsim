@@ -2,3 +2,7 @@
 *.mod
 Bin/
 version.conf
+Testin/in/
+Testin/Save/
+Testin/out/
+Testin/diff.out
