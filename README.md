@@ -5,9 +5,18 @@ MOLSIM is an  integrated MC/molecular dynamics/Brownian dynamics simulation pack
 
 Installation of Molsim
 ----------------------
-To install Molsim clone the current repository; go to the Src directory; make all:
+*the following describes the installation of Molsim on the [RWTH-Compute Cluster](https://doc.itc.rwth-aachen.de/display/CC/Home).*
+First Molsim clone the current repository.
 ```shell
 git clone https://git.rwth-aachen.de/pascal.hebbeker/Molsim
+```
+Now run the configure script. This will check some dependencies. Molsim requires FFTW 3.3.4. In can be install automatically within the configure script (Note: This might take some time). The configure script will also ask you for a version name. This version name will be appended to the executables of molsim (`molsim_ser.ver` instead of `molsim_ser`). Leave it blank for no special version name.
+```shell
+cd Molsim
+./configure.sh
+```
+Now go to the Src directory and make Molsim:
+```shell
 cd Molsim/Src
 make all
 ```
@@ -15,4 +24,4 @@ For more details confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem
 
 Usage
 -----
-Confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem1.lu.se/Molsim/Molsim.htm).
+Confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem1.lu.se/Molsim/Molsim.htm) for the standard commands. Confer the [wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home) for additional changes and features.
