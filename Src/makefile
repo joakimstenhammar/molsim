@@ -20,7 +20,7 @@
 VER=
 VERFILE = ../version.conf
 ifneq ("$(wildcard $(VERFILE))","")
-VER= .$(shell cat ${VERFILE} )
+VER=.$(shell cat ${VERFILE} )
 endif
 
  
