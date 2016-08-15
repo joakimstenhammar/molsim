@@ -77,11 +77,17 @@ subroutine MDDriver(iStage)
 
       call IOMD(iStage)
       allocate(rodd(3,np_alloc))
+      rodd = 0.0E+00
       allocate(roddo(3,np_alloc))
+      roddo = 0.0E+00
       allocate(roddd(3,np_alloc))
+      roddd = 0.0E+00
       allocate(quadd(0:3,np_alloc))
+      quadd = 0.0E+00
       allocate(quaddo(0:3,np_alloc))
+      quaddo = 0.0E+00
       allocate(quaddd(0:3,np_alloc))
+      quaddd = 0.0E+00
       rodd = Zero
       roddo = Zero
       roddd = Zero
@@ -209,7 +215,10 @@ subroutine VelVer(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iSimulationStep)
 
-   if(.not.allocated(quado)) allocate(quado(0:3,np))
+   if(.not.allocated(quado)) then 
+      allocate(quado(0:3,np))
+      quado = 0.0E+00
+   end if
 
 #if defined (_XXXPAR_)
    load = ceiling(np/float(nproc))    ! mpi_gather requires eqaual load (ipmyid(1:2) may provide unequal load)

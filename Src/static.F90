@@ -352,6 +352,7 @@ subroutine SPDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(ngr(1),ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -718,6 +719,7 @@ subroutine RDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nat**2,ngrgr,ntype))
+      ipnt = 0
 
 !jvr ... if sample tau for pressure calculations, allocate memory
 !     possible further improvement: move the complete hard sphere pressure calculation to this routine, as for single particles type 1 distribution functions can be used
@@ -1153,6 +1155,8 @@ subroutine RDFChain(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nctct), rcom(3,nc))
+      ipnt = 0
+      rcom = 0.0E+00
 
       ivar = 0
       itype = 1
@@ -1470,6 +1474,7 @@ subroutine RDFCond(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(1,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -1633,6 +1638,8 @@ subroutine G3Dist(iStage)
       abini = One/abin
 
       allocate(g2(-1:snbin), g3(-1:anbin,-1:tnbin,-1:snbin))
+      g2 = 0.0E+00
+      g3 = 0.0E+00
 
    case (iBeforeSimulation)
 
@@ -1873,6 +1880,11 @@ subroutine SFPBC(iStage)
 ! ... allocate memory
 
       allocate(eikr(0:nbin,13,npt), eikr1(13), q(3*nbin), sfpar(3*nbin,nptpt), sfparsd(3*nbin,nptpt))
+      eikr = cmplx(Zero,Zero)
+      eikr1 = cmplx(Zero,Zero)
+      q = 0.0E+00
+      sfpar = 0.0E+00
+      sfparsd = 0.0E+00
 
    case (iWriteInput)
 
@@ -1881,6 +1893,7 @@ subroutine SFPBC(iStage)
       nvartype(1:ntype) = [(npt*(npt+1))/2, npt*(npt+1)/2, npt*(npt+1)/2]
       nvar = sum(nvartype(1:ndim))
       allocate(var(nvar), ipnt(nptpt,ndim))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -2120,7 +2133,12 @@ subroutine ScatIntens(nbin, q, sfpar)
 
    namelist /nmlScatIntens/ nshell, rshell, cshell
 
-    if (.not.allocated(nshell)) allocate(nshell(npt), rshell(mnshell,npt), cshell(mnshell,npt))
+    if (.not.allocated(nshell)) then 
+       allocate(nshell(npt), rshell(mnshell,npt), cshell(mnshell,npt))
+       nshell = 0
+       rshell = 0.0E+00
+       cshell = 0.0E+00
+    end if
 
     nshell(1:npt) = 1
     rshell(1,1:npt) = [ (radat(ipt), ipt = 1,npt) ]
@@ -2459,6 +2477,7 @@ subroutine AngDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(ngrgr,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -2761,6 +2780,7 @@ subroutine AngExtDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(npt,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -2913,6 +2933,7 @@ subroutine OriDipDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(maxval(ndir(1:ntype)),ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -3216,6 +3237,7 @@ subroutine RadAngDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), var2(nvar), ipnt(1,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -3431,6 +3453,7 @@ subroutine Kirkwoodgk(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nptpt,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -3612,6 +3635,7 @@ subroutine OriPolDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nrad,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -3802,7 +3826,17 @@ subroutine NNHB(iStage)
 ! ... allocate memory
 
       allocate(inns2(0:nnnhb,nthnn,ngr(1)), inns1(0:nnnhb,nthnn,ngr(1)), ihbs2(0:nnnhb,nthnn,ngr(1)), ihbs1(0:nnnhb,nthnn,ngr(1)))
+      inns2 = 0
+      inns1 = 0
+      ihbs2 = 0
+      ihbs1 = 0
       allocate(nnav(nthnn,ngr(1)), nnsd(nthnn,ngr(1)), hbav(nthnn,ngr(1)), hbsd(nthnn,ngr(1)), nnnorm(nthnn,ngr(1)), hbnorm(nthnn,ngr(1)))
+      nnav = 0.0E+00
+      nnsd = 0.0E+00
+      hbav = 0.0E+00
+      hbsd = 0.0E+00
+      nnnorm = 0.0E+00
+      hbnorm = 0.0E+00
 
 ! ... check that only one field group is selected
 
@@ -3983,6 +4017,7 @@ end subroutine NNHB
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), r2low(maxngr))
+      r2low = 0.0E+00
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -4125,6 +4160,7 @@ subroutine ChainDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nc,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -4221,6 +4257,9 @@ subroutine ChainDF(iStage)
       vtype%nvar = nct
       nvar2 = sum(vtype%nvar, 1, vtype%l)
       allocate(ilow(nvar2), iupp(nvar2), var2(nvar2), vspread(nvar2))
+      ilow = 0
+      iupp = 0
+      vspread = 0.0E+00
 
 ! ... set label, min, max, nbin, and bin
 
@@ -4328,6 +4367,7 @@ subroutine ChainTypeDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nct,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -4481,6 +4521,7 @@ subroutine ChainTypeExtDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nct,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -4616,6 +4657,7 @@ end subroutine ChainTypeExtDF
 
       nvar = nc*nppt(iptpart)
       allocate(var(nvar), ipnt(nc, ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -4753,12 +4795,17 @@ subroutine LoopTailTrain(iStage)
       call LowerCase(adscond%txobject)
       call LowerCase(adscond%txsurface)
 
-      if (.not.allocated(ladsseg)) allocate(ladsseg(maxval(npct(1:nct))))
+      if (.not.allocated(ladsseg)) then 
+         allocate(ladsseg(maxval(npct(1:nct))))
+         ladsseg = .false.
+      end if
 
 ! ... set nvar as well as allocate memory
 
       nvar = nct*ntype
       allocate(var(nvar), nadschain(nct), nadsseg(nct))
+      nadschain = 0
+      nadsseg = 0
 
 ! ... set label
 
@@ -4974,7 +5021,10 @@ end subroutine CheckAdsChainSeg
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(iobjt)) allocate(iobjt(npt))
+      if (.not.allocated(iobjt)) then 
+         allocate(iobjt(npt))
+         iobjt = 0
+      end if
 
       txobj = 'particle'
       l1d = .true.
@@ -4995,7 +5045,9 @@ end subroutine CheckAdsChainSeg
 
    case (iWriteInput)
 
-     if (.not.allocated(txobjt)) allocate(txobjt(nobjt))
+     if (.not.allocated(txobjt)) then 
+        allocate(txobjt(nobjt))
+     end if
 
      if (nobjt > npt) call Stop(txroutine, 'nobjt > npt', uout)
      if (l2d .and. nobjt/= 2)  call Stop(txroutine, 'l2d .and. nobjt/= 2', uout)
@@ -5427,6 +5479,11 @@ subroutine ZeroSecondMoment(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(npt,npt,ntype), vsum(nvar), amcond(-1:vtype(1)%nbin,npt+1), ugr(0:nptpt), dens(npt))
+      ipnt = 0
+      vsum = 0.0E+00
+      amcond = 0.0E+00
+      ugr = 0.0E+00
+      dens = 0.0E+00
 
       nvar = 0
       do itype = 1, ntype
@@ -5683,7 +5740,10 @@ subroutine MultipoleDF(iStage)
 
       allocate(var(nvar),svar(nvar),lvar(nvar))
       allocate(index(0:2*lmax+1,0:lmax,nrad), lindex(0:lmax,nrad))
+      index = 0
+      lindex = 0
       allocate(mpm(0:lmax,0:lmax,nrad))
+      mpm = cmplx(Zero,Zero)
 
       ivar = 0
       ilvar = 0
@@ -5974,6 +6034,9 @@ subroutine EnergyDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(ngrgr,ntype), uigr(np_alloc,ngr(2)), ui(np_alloc))
+      ipnt = 0
+      uigr = 0.0E+00
+      ui = 0.0E+00
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -6325,6 +6388,10 @@ end subroutine Widom1
       nlam = 5
       dlam = One/nlam
       allocate(utop(0:nlam,nset), ubot(0:nlam,nset), uratio(0:nlam), zati(nat))
+      utop = 0.0E+00
+      ubot = 0.0E+00
+      uratio = 0.0E+00
+      zati = 0.0E+00
 
 ! ... set nvar as well as allocate memory
 
@@ -7352,7 +7419,10 @@ subroutine SurfaceArea(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(wradat)) allocate(wradat(nat))
+      if (.not.allocated(wradat)) then 
+         allocate(wradat(nat))
+         wradat = 0.0E+00
+      end if
 
       rprobe = 1.7
       wradat = zero
@@ -7365,6 +7435,10 @@ subroutine SurfaceArea(iStage)
 ! ... allocate memory
 
       allocate(var(na_alloc), xran(nrandom), yran(nrandom), zran(nrandom), nsurf(na_alloc))
+      xran = 0.0E+00
+      yran = 0.0E+00
+      zran = 0.0E+00
+      nsurf = 0
 
 ! ... set the number and the list of surface atoms as well as label and norm
 
@@ -7494,6 +7568,8 @@ subroutine Crystalformat(iStage)
       npmax = 50
 
       allocate(r2(np_alloc), index(np_alloc))
+      r2 = 0.0E+00
+      index = 0
 
 ! ... set up the order
 
@@ -7575,6 +7651,9 @@ end subroutine Crystalformat
    case (iBeforeSimulation)
 
       allocate(indx(np_alloc), roold(3,np_alloc), ronopbc(3,np_alloc))
+      indx = 0
+      roold = 0.0E+00
+      ronopbc = 0.0E+00
 
       nsamp = 0
       nhit = 0
@@ -7790,6 +7869,7 @@ subroutine SubStructureDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(maxval(vtype(1:ntype)%nvar),ntype)) !for distribution function
+      ipnt = 0
       allocate(sclvar(nvar)) ! for scalar measurement
 
 ! ... set ipnt, label, min, max, and nbin

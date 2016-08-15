@@ -109,7 +109,9 @@ function BuildSuperBall(radius, m, nlevels, max_err, rms_err) result(mesh)
        allocate( mesh%c(3,np) )
        allocate( mesh%t(3,nt) )
        allocate( d(3,nt) )
+       d = 0
        allocate( neigh(3,nt) )
+       neigh = 0
 
        r = radius
        mesh%c(:,1:6) = reshape( [ &

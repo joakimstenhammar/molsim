@@ -2852,6 +2852,9 @@ subroutine SuperballAver(iStage, rr, loverlap, time)
       bini = One/bin
       nvar = 4
       allocate(samp(-1:nbin), sum1(nvar,-1:nbin), sum2(nvar,-1:nbin))
+      samp = 0.0E+00
+      sum1 = 0.0E+00
+      sum2 = 0.0E+00
       samp = 0
       sum1 = 0
       sum2 = 0
@@ -2958,6 +2961,7 @@ subroutine SuperballDF(iStage, rr, loverlap, time)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nvar,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 

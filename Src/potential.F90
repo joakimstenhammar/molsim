@@ -207,7 +207,13 @@ subroutine IOPotTwoBody(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(txpot)) allocate(txpot(nptpt), npot(natat), ipot(mninpot,natat), ucoff(mninpot,natat))
+      if (.not.allocated(txpot)) then 
+         allocate(txpot(nptpt), npot(natat), ipot(mninpot,natat), ucoff(mninpot,natat))
+         txpot = ""
+         npot = 0
+         ipot = 0
+         ucoff = 0.0E+00
+      end if
 
 ! ... set initial values
 
@@ -406,7 +412,10 @@ subroutine IOPotTwoBody(iStage)
 
 ! ... check that ucoff(1,:) is consistent to zat(:)
 
-      if(.not.allocated(lucoffmod)) allocate(lucoffmod(natat))
+      if(.not.allocated(lucoffmod)) then 
+         allocate(lucoffmod(natat))
+         lucoffmod = .false.
+      end if
 
       lucoffmod =.false.
       if (count(zat(1:nat) /= Zero) > 0) then
@@ -452,7 +461,10 @@ subroutine IOPotTwoBody(iStage)
       if (npotm > mninpot) call Stop(txroutine, 'npotm > mninpot', uout) ! largest number of terms
       if (ipotm > mninpot) call Stop(txroutine, 'ipotm > mninpot', uout) ! largest exponent
 
-      if(.not.allocated(ucoffx)) allocate(ucoffx(ipotm,natat))
+      if(.not.allocated(ucoffx)) then 
+         allocate(ucoffx(ipotm,natat))
+         ucoffx = 0.0E+00
+      end if
 
 ! ... set ucoffx from ucoff
 
@@ -756,8 +768,19 @@ subroutine PotTwoBodyTab1(lwrite)
 
    if (ltrace) call WriteTrace(2, txroutine, iWriteInput)
 
-   if(.not.allocated(nugrid)) allocate(iubuflow(natat), nugrid(natat), rumin(natat), rumax(natat), r2umin(natat), r2umax(natat))
-   if(.not.allocated(lsetatat)) allocate(lsetatat(natat))
+   if(.not.allocated(nugrid)) then 
+      allocate(iubuflow(natat), nugrid(natat), rumin(natat), rumax(natat), r2umin(natat), r2umax(natat))
+      iubuflow = 0
+      nugrid = 0
+      rumin = 0.0E+00
+      rumax = 0.0E+00
+      r2umin = 0.0E+00
+      r2umax = 0.0E+00
+   end if
+   if(.not.allocated(lsetatat)) then 
+      allocate(lsetatat(natat))
+      lsetatat = .false.
+   end if
 
    nbuf = nbufinit                              ! initial memory size for potential table
 
@@ -767,6 +790,7 @@ subroutine PotTwoBodyTab1(lwrite)
          nbuf = nbuffac*nbuf                    ! increase memory for potential table
       end if
       allocate(ubuf(nbuf), stat = ierr)
+      ubuf = 0.0E+00
       if(ierr /= 0) call WriteIOStat(txroutine, 'memory allocation of ubuf failed', ierr, 2, 6)
 
 ! ... loop over all types of particle pairs
@@ -1912,9 +1936,22 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
    if (str(1:4) == 'init') then
 
-      if(.not.allocated(nab)) allocate(nab(natat), &
+      if(.not.allocated(nab)) then 
+         allocate(nab(natat), &
         qa(natat), qb(natat), aab(natat), bab(natat), cab(natat), dab(natat), eab(natat), fab(natat), &
         acht(natat), kcht(natat) )
+         nab = 0
+         qa = 0.0E+00
+         qb = 0.0E+00
+         aab = 0.0E+00
+         bab = 0.0E+00
+         cab = 0.0E+00
+         dab = 0.0E+00
+         eab = 0.0E+00
+         fab = 0.0E+00
+         acht = 0.0E+00
+         kcht = 0.0E+00
+      end if
 
       iptjpt = iptpt(ipt,jpt)
 
@@ -2630,7 +2667,10 @@ subroutine PlotPotTwoBodyTab
 
    call WriteHead(3, txroutine, uout)
 
-   if(.not.allocated(lsetatat)) allocate(lsetatat(1:natat))
+   if(.not.allocated(lsetatat)) then 
+      allocate(lsetatat(1:natat))
+      lsetatat = .false.
+   end if
    lsetatat = .false.
 
    write(uout,'()')
@@ -3279,9 +3319,18 @@ subroutine SetImageSph(iplow, ipupp, mode)
    real(8), save          :: rad2img, zfac
 
    if (first) then
-      if (.not.allocated(zimg)) allocate(zimg(na_alloc))
-      if (.not.allocated(rimg)) allocate(rimg(3,na_alloc))
-      if (.not.allocated(dipimg)) allocate(dipimg(3,na_alloc))
+      if (.not.allocated(zimg)) then 
+         allocate(zimg(na_alloc))
+         zimg = 0.0E+00
+      end if
+      if (.not.allocated(rimg)) then 
+         allocate(rimg(3,na_alloc))
+         rimg = 0.0E+00
+      end if
+      if (.not.allocated(dipimg)) then 
+         allocate(dipimg(3,na_alloc))
+         dipimg = 0.0E+00
+      end if
       rad2img = radimg**2
       zfac = ((epsimg-1)/(epsimg+1))*radimg
       first = .false.
@@ -3370,8 +3419,12 @@ subroutine IOPotChain(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(bond)) allocate(bond(nct))
-      if (.not.allocated(angle)) allocate(angle(nct))
+      if (.not.allocated(bond)) then 
+         allocate(bond(nct))
+      end if
+      if (.not.allocated(angle)) then 
+         allocate(angle(nct))
+      end if
 
 ! ... set initial values
 
@@ -3532,8 +3585,14 @@ subroutine BondLengthTab(action, ictx, b)
 
    if (action == 'setup') then
 
-      if(.not.allocated(btab)) allocate(btab(0:nbin,nct))
-      if(.not.allocated(ptab)) allocate(ptab(0:nbin,nct))
+      if(.not.allocated(btab)) then 
+         allocate(btab(0:nbin,nct))
+         btab = 0.0E+00
+      end if
+      if(.not.allocated(ptab)) then 
+         allocate(ptab(0:nbin,nct))
+         ptab = 0.0E+00
+      end if
 
       do ict = 1, nct
 
@@ -3624,8 +3683,14 @@ subroutine BondAngleTab(action, ictx, a)
 
    if (action == 'setup') then
 
-      if(.not.allocated(atab)) allocate(atab(0:nbin,nct))
-      if(.not.allocated(ptab)) allocate(ptab(0:nbin,nct))
+      if(.not.allocated(atab)) then 
+         allocate(atab(0:nbin,nct))
+         atab = 0.0E+00
+      end if
+      if(.not.allocated(ptab)) then 
+         allocate(ptab(0:nbin,nct))
+         ptab = 0.0E+00
+      end if
 
       do ict = 1, nct
 
@@ -3722,8 +3787,19 @@ subroutine IOPotExternal(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(sigma_ext)) allocate(sigma_ext(nat), epsilon_ext(nat), z3coeff_ext(nat), z9coeff_ext(nat))
-      if (.not.allocated(txuext)) allocate(txuext(npt), ruext(3,npt), ruexti(3,npt))
+      if (.not.allocated(sigma_ext)) then 
+         allocate(sigma_ext(nat), epsilon_ext(nat), z3coeff_ext(nat), z9coeff_ext(nat))
+         sigma_ext = 0.0E+00
+         epsilon_ext = 0.0E+00
+         z3coeff_ext = 0.0E+00
+         z9coeff_ext = 0.0E+00
+      end if
+      if (.not.allocated(txuext)) then 
+         allocate(txuext(npt), ruext(3,npt), ruexti(3,npt))
+         txuext = ""
+         ruext = 0.0E+00
+         ruexti = 0.0E+00
+      end if
 
 ! ... set initial values
 
@@ -3822,7 +3898,11 @@ subroutine IOPotExternal(iStage)
          endif
       end do
 
-      if(.not.allocated(zmin_ext)) allocate(zmin_ext(nat), delta_ext(nat))
+      if(.not.allocated(zmin_ext)) then 
+         allocate(zmin_ext(nat), delta_ext(nat))
+         zmin_ext = 0.0E+00
+         delta_ext = 0.0E+00
+      end if
 
       do ipt = 1, npt
          if (txuext(ipt) == 'lj_wall_z_mod') then

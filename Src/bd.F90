@@ -84,7 +84,10 @@ subroutine IOBD(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(dcoeff)) allocate(dcoeff(npt))
+      if (.not.allocated(dcoeff)) then 
+         allocate(dcoeff(npt))
+         dcoeff = 0.0E+00
+      end if
 
       rewind(uin)
       read(uin,nmlBD)
@@ -129,6 +132,8 @@ subroutine BDStep
 
    if (first) then
       allocate(fac1(npt), fac2(npt))
+      fac1 = 0.0E+00
+      fac2 = 0.0E+00
       fac1(1:npt) = tstep*scltim*dcoeff(1:npt)*scldif*sclfor/(GasConstant*temp*scltem)/scllen
       fac2(1:npt) = sqrt(Two*dcoeff(1:npt)*scldif*tstep*scltim)/scllen
       first = .false.

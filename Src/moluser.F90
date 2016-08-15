@@ -1653,7 +1653,10 @@ subroutine ChainCOMDump(iStage)
 
    case (iBeforeSimulation)
 
-      if (.not.allocated(rcom)) allocate(rcom(3,nc))
+      if (.not.allocated(rcom)) then 
+         allocate(rcom(3,nc))
+         rcom = 0.0E+00
+      end if
 
       if (txstart /= 'continue') then                  ! dump initial value
          call GetChainData
@@ -1733,7 +1736,10 @@ subroutine ChainReeDump(iStage)
 
    case (iBeforeSimulation)
 
-      if (.not.allocated(ree)) allocate(ree(3,nc))
+      if (.not.allocated(ree)) then 
+         allocate(ree(3,nc))
+         ree = 0.0E+00
+      end if
 
       if (txstart /= 'continue') then                  ! dump initial value
          call GetChainData
@@ -1872,6 +1878,7 @@ subroutine xy_coordinates_Jasper(iStage)
    case (iBeforeSimulation)
 
      allocate(xy(1:2,1:np))
+     xy = 0.0E+00
 
    case (iSimulationStep)
 
@@ -2430,7 +2437,11 @@ subroutine GroupAds1(iStage, m)
    logical,   allocatable, save :: ladsseg(:)      ! .true. if segment is adsorbed
    integer(4) :: ip, igr, ic
 
-   if (.not.allocated(ladschain)) allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
+   if (.not.allocated(ladschain)) then 
+      allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
+      ladschain = .false.
+      ladsseg = .false.
+   end if
 
    select case (iStage)
    case (iReadInput)
@@ -2897,6 +2908,7 @@ end subroutine TabulationQl
 
       nvar = nc
       allocate(var(nvar), ipnt(nc, ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -3423,7 +3435,10 @@ subroutine CylDistFunc(iStage)
 ! ... set nvar and allocate memory
 
       nvar = ntype*npt
-      if (.not.allocated(var)) allocate(var(nvar), ipnt(ntype,nvar))
+      if (.not.allocated(var)) then 
+         allocate(var(nvar), ipnt(ntype,nvar))
+         ipnt = 0
+      end if
 
 ! ... set ipnt, label, vlow, vupp, and nbin
 
@@ -3644,8 +3659,15 @@ subroutine SFPBC2D(iStage)
 ! ... set nvar and allocate memory
 
       nvar = ntype*npt**2
-      if (.not.allocated(var)) allocate(var(nvar), Withff(nvar), ff(nvar))
-      if (.not.allocated(ipnt)) allocate(ipnt(ntype,nptpt), sfpar(2*mnbin_df2d,2*mnbin_df,nptpt), sfparsd(2*mnbin_df2d,nptpt))
+      if (.not.allocated(var)) then 
+         allocate(var(nvar), Withff(nvar), ff(nvar))
+      end if
+      if (.not.allocated(ipnt)) then 
+         allocate(ipnt(ntype,nptpt), sfpar(2*mnbin_df2d,2*mnbin_df,nptpt), sfparsd(2*mnbin_df2d,nptpt))
+         ipnt = 0
+         sfpar = 0.0E+00
+         sfparsd = 0.0E+00
+      end if
 
 ! ... set ipnt, label, vlow, vupp, and nbin
 
@@ -3875,6 +3897,9 @@ subroutine SFPBC2DNoAv(iStage)
    case (iWriteInput)
 
       allocate(ipnt(mntype,nptpt), sfpar(2*mnbin_df2d,2*mnbin_df,nptpt), sfparsd(2*mnbin_df2d,nptpt))
+      ipnt = 0
+      sfpar = 0.0E+00
+      sfparsd = 0.0E+00
 
 ! ... set nvar, ipnt, label, vlow, vupp, and nbin
 
@@ -4095,6 +4120,8 @@ subroutine PosMeanSph(iStage)
 
      nvar = npt*ntype
      allocate(var(nvar), ipnt(npt,ntype), rosum(3,npt))
+     ipnt = 0
+     rosum = 0.0E+00
 
 ! ... set ipnt, label, and norm
 
@@ -4219,6 +4246,7 @@ subroutine MacroionOneSph(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(1,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -4385,6 +4413,7 @@ subroutine MacroionTwoCyl(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(1,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -4557,6 +4586,7 @@ subroutine MeanElFieldZCyl(iStage)
       if (nppt(iptmacroion) /= 2) call Stop (txroutine, 'nppt(iptmacroion) /=2',uout) ! 2 particles of type iptmacroion
 
       allocate(var(nvar), var_2(nvar_2), ipnt(3, npoint, nlayer))
+      ipnt = 0
 
       ivar = 0                                                               ! set var()%label, var()%norm
       do ilayer = 1, nlayer
@@ -4915,7 +4945,11 @@ subroutine CalcDomain
    var(1)%nbin = vtype(1)%nbin
 
    call DistFuncSample(iWriteInput, nvar, var)
-   if (.not.allocated(gmax)) allocate(gmax(np), rmax(np))
+   if (.not.allocated(gmax)) then 
+      allocate(gmax(np), rmax(np))
+      gmax = 0.0E+00
+      rmax = 0.0E+00
+   end if
 
 #if defined (_PAR_)
     gmax = Zero
@@ -5363,6 +5397,10 @@ subroutine TCFDipDomain(iStage)
    case (iWriteInput)
 
       allocate(c0(nvar), c(nvar,0:nti), norm(nvar),ctemp(mndommax,0:nti))
+      c0 = 0.0E+00
+      c = 0.0E+00
+      norm = 0
+      ctemp = 0.0E+00
 
       c = Zero
       norm = 0
@@ -5572,6 +5610,7 @@ subroutine SCDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nctct,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -5759,7 +5798,11 @@ subroutine AdsRadGyr(iStage)
 
    case (iWriteInput)
 
-      if (.not.allocated(ladschainold)) allocate(ladschainold(nc), ladsseg(maxval(npct(1:nct))))
+      if (.not.allocated(ladschainold)) then 
+         allocate(ladschainold(nc), ladsseg(maxval(npct(1:nct))))
+         ladschainold = .false.
+         ladsseg = .false.
+      end if
 
 ! ... set remaining elements of vtype
 
@@ -5770,6 +5813,7 @@ subroutine AdsRadGyr(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nct,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -5932,8 +5976,20 @@ subroutine AdsBondOrder(iStage)
 
    case (iWriteInput)
 
-   if (.not.allocated(ladschain)) allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
-   if (.not.allocated(bondorder)) allocate(bondorder(mnbond), bondlist(2,mnbond), nq(mnbond), rdir(3,mnbond), rc(3,mnbond), q(6,mnbond))
+   if (.not.allocated(ladschain)) then 
+      allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
+      ladschain = .false.
+      ladsseg = .false.
+   end if
+   if (.not.allocated(bondorder)) then 
+      allocate(bondorder(mnbond), bondlist(2,mnbond), nq(mnbond), rdir(3,mnbond), rc(3,mnbond), q(6,mnbond))
+      bondorder = 0.0E+00
+      bondlist = 0
+      nq = 0
+      rdir = 0.0E+00
+      rc = 0.0E+00
+      q = 0.0E+00
+   end if
 
 ! ... set remaining elements of vtype
 
@@ -5943,6 +5999,7 @@ subroutine AdsBondOrder(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(nct,ntype), var_s(nvar))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -6103,10 +6160,15 @@ subroutine AdsPropDyn(iStage)
       read(uin,nmlAdsPropDyn)
       if (lana .and. lbd) call IOBD(iStage)                                     ! to read tstep
 
-      if (.not.allocated(ladschain)) allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
+      if (.not.allocated(ladschain)) then 
+         allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
+         ladschain = .false.
+         ladsseg = .false.
+      end if
 
       nvar = ntype
       allocate(var(nvar,nct))
+      var = 0.0E+00
 
    case (iBeforeSimulation)
 
@@ -6224,7 +6286,15 @@ subroutine CalcAvBondOrder(ictbond, ladschain, radius, avbondorder)
    real(8), allocatable, save :: bondorder(:), rdir(:,:), rc(:,:), q(:,:)
    integer(4) :: nbond, ib, ibsum
 
-   if (.not.allocated(bondorder)) allocate(bondorder(mnbond), bondlist(2,mnbond), nq(mnbond), rdir(3,mnbond), rc(3,mnbond), q(6,mnbond))
+   if (.not.allocated(bondorder)) then 
+      allocate(bondorder(mnbond), bondlist(2,mnbond), nq(mnbond), rdir(3,mnbond), rc(3,mnbond), q(6,mnbond))
+      bondorder = 0.0E+00
+      bondlist = 0
+      nq = 0
+      rdir = 0.0E+00
+      rc = 0.0E+00
+      q = 0.0E+00
+   end if
 
    call CalcBondOrder(ictbond, ladschain, radius, nbond, mnbond, bondorder, bondlist, nq, rdir, rc, q)
    ibsum = 0
@@ -6421,10 +6491,24 @@ subroutine AdsEventDyn(iStage)
 
    case (iWriteInput)
 
-      if (.not.allocated(ladschainold)) allocate(ladschainold(nc),ladsseg(maxval(npct(1:nct))))
-      if (.not.allocated(nAdsEvent)) allocate(nAdsEvent(nc))
-      if (.not.allocated(AdsStart)) allocate(AdsStart(mnadsevent,nc), AdsLength(mnadsevent,nc))
-      if (.not.allocated(ResTime)) allocate(ResTime(nc))
+      if (.not.allocated(ladschainold)) then 
+         allocate(ladschainold(nc),ladsseg(maxval(npct(1:nct))))
+         ladschainold = .false.
+         ladsseg = .false.
+      end if
+      if (.not.allocated(nAdsEvent)) then 
+         allocate(nAdsEvent(nc))
+         nAdsEvent = 0
+      end if
+      if (.not.allocated(AdsStart)) then 
+         allocate(AdsStart(mnadsevent,nc), AdsLength(mnadsevent,nc))
+         AdsStart = 0.0E+00
+         AdsLength = 0.0E+00
+      end if
+      if (.not.allocated(ResTime)) then 
+         allocate(ResTime(nc))
+         ResTime = 0.0E+00
+      end if
 
    case (iBeforeSimulation)
 
@@ -6639,7 +6723,13 @@ subroutine sort                                ! sort in ascending AdsStart(1,i)
    integer(4) :: i, ict, ic, ilow, ioff, idx
 
    allocate(IdtSave(nc), IdSave(nc), nAdsEventSave(nc), AdsStartSave(mnAdsEvent,nc), AdsLengthSave(mnAdsEvent,nc))
+   IdtSave = 0
+   IdSave = 0
+   nAdsEventSave = 0
+   AdsStartSave = 0.0E+00
+   AdsLengthSave = 0.0E+00
    allocate(index(nc))
+   index = 0
 
    do i = 1, nc
       IdtSave(i) = Idt(i)
@@ -6744,6 +6834,7 @@ subroutine AdsExam2
 
    nvar = ntype*nct
    allocate(var(nvar),ipnt(nct,ntype))
+   ipnt = 0
 
    nvar = 0
    do itype = 1, ntype
@@ -6862,6 +6953,7 @@ subroutine AdsExam3
 
    nvar = ntype*nct
    allocate(var(nvar),ipnt(nct,ntype))
+   ipnt = 0
 
    if (nbin > mnbin_df) call Stop(txroutine, 'nbin > mnbin_df', uout)
 
@@ -7004,6 +7096,7 @@ subroutine AdsExam4
 
    nvar = ntype*nct
    allocate(var(nvar),ipnt(nct,ntype))
+   ipnt = 0
 
    if (ntype > mntype) call Stop(txroutine, 'ntype > mntype', uout)
    if (nbin > mnbin_df) call Stop(txroutine, 'nbin > mnbin_df', uout)
@@ -7077,7 +7170,14 @@ subroutine ReadPrimAdsData
    read(uuser,'(5x,i8)') nct
    read(uuser,'(5x,i8)') nc
 
-   if (.not.allocated(Idt)) allocate(Idt(nc), Id(nc), nAdsEvent(nc), AdsStart(mnAdsEvent,nc), AdsLength(mnAdsEvent,nc))
+   if (.not.allocated(Idt)) then 
+      allocate(Idt(nc), Id(nc), nAdsEvent(nc), AdsStart(mnAdsEvent,nc), AdsLength(mnAdsEvent,nc))
+      Idt = 0
+      Id = 0
+      nAdsEvent = 0
+      AdsStart = 0.0E+00
+      AdsLength = 0.0E+00
+   end if
    ncct = 0
 
    read(uuser,*)
@@ -7175,6 +7275,7 @@ subroutine Z_DF_Slit(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -7439,6 +7540,7 @@ subroutine XYProjectDF(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(1,ntype))
+      ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -7595,12 +7697,18 @@ subroutine SPDF_COMB(iStage)
 
      if(.not.lclink) call stop(txroutine, '.not.lclink', uout)
 
-     if (.not.allocated(rotemp)) allocate(rotemp(3,np), ro_loc(3,np), ro_temp(3,np))
+     if (.not.allocated(rotemp)) then 
+        allocate(rotemp(3,np), ro_loc(3,np), ro_temp(3,np))
+        rotemp = 0.0E+00
+        ro_loc = 0.0E+00
+        ro_temp = 0.0E+00
+     end if
 
 ! ... set nvar as well as allocate memory
 
       nvar  = ngr(1)*count(ltype(1:ntype))
       allocate(var(nvar), ipnt(ngrgr,ntype))
+      ipnt = 0
 
       nvar = 0
     do itype = 1, ntype
@@ -7929,10 +8037,15 @@ subroutine COMB_DF(iStage)
 
 	  if(.not.lclink) call stop(txroutine, '.not.lclink', uout)
 
-      if (.not.allocated(ro_loc)) allocate(ro_loc(3,np), ro_temp(3,np))
+      if (.not.allocated(ro_loc)) then 
+         allocate(ro_loc(3,np), ro_temp(3,np))
+         ro_loc = 0.0E+00
+         ro_temp = 0.0E+00
+      end if
 
       nvar = nct*count(ltype(1:ntype))
       allocate(var(nvar), ipnt(nct,ntype))
+      ipnt = 0
 
       nvar = 0
       do itype = 1, ntype
@@ -8160,6 +8273,9 @@ subroutine COMBAver(iStage)
 
       nvar = ntype
       allocate(var(nvar),mimat(3,3,nh),ro_temp(3,na),ro_loc(3,np))
+      mimat = 0.0E+00
+      ro_temp = 0.0E+00
+      ro_loc = 0.0E+00
 	  		
       var(1)%label = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
       var(1)%norm = One
@@ -8443,6 +8559,11 @@ subroutine SFPBC_COMB(iStage)
       nvar = nptpt*ndim
       allocate(var(nvar), ipnt(nptpt,ntype), eikr(0:nbin,1:13,1:npt), &
               q(3*nbin), sfpar(3*nbin,nptpt), sfparsd(3*nbin,nptpt))
+      ipnt = 0
+      eikr = cmplx(Zero,Zero)
+      q = 0.0E+00
+      sfpar = 0.0E+00
+      sfparsd = 0.0E+00
 
       nvar = 0
       do itype = 1, ndim
@@ -8973,6 +9094,12 @@ subroutine OCF_DF(iStage)
 
 	  nvar =  nct*count(ltype(1:ntype) )
       allocate(var(nvar), ipnt(nptpt, ntype), ro_loc(3,np), ro_temp(3,na), n(3,np), corr(np), corrh(np))
+      ipnt = 0
+      ro_loc = 0.0E+00
+      ro_temp = 0.0E+00
+      n = 0.0E+00
+      corr = 0.0E+00
+      corrh = 0.0E+00
 	
 	  do s = 1, np	
 		corr(s) = 0
@@ -9187,6 +9314,9 @@ subroutine ChainBeadBeadContact(iStage)
 	
       if(.not.lclink) call stop(txroutine, '.not.lclink',uout)
 	  allocate(var(nvar), ro_temp(3,np), ro_loc(3,np), r_dist(np))
+	  ro_temp = 0.0E+00
+	  ro_loc = 0.0E+00
+	  r_dist = 0.0E+00
 	
       var(1:nvar)%label = 'complexation                = '
       var(1:nvar)%norm = One

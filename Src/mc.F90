@@ -378,46 +378,166 @@ subroutine IOMC(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(lptmove)) allocate(lptmove(npt))
-      if (.not. allocated(pspart)) allocate(pspart(npt))
-      if (.not. allocated(dtran)) allocate(dtran(npt))
-      if (.not. allocated(drot)) allocate(drot(npt))
-      if (.not. allocated(lcl1spart)) allocate(lcl1spart(npt))
-      if (.not. allocated(lfixzcoord)) allocate(lfixzcoord(npt))
-      if (.not. allocated(lfixxycoord)) allocate(lfixxycoord(npt))
-      if (.not. allocated(lshiftzcom)) allocate(lshiftzcom(npt))
-      if (.not. allocated(pspartcl2)) allocate(pspartcl2(npt))
-      if (.not. allocated(txmembcl2)) allocate(txmembcl2(npt))
-      if (.not. allocated(radcl2)) allocate(radcl2(npt))
-      if (.not. allocated(dtrancl2)) allocate(dtrancl2(npt))
-      if (.not. allocated(ppivot)) allocate(ppivot(npt))
-      if (.not. allocated(txpivot)) allocate(txpivot(npt))
-      if (.not. allocated(drotpivot)) allocate(drotpivot(npt))
-      if (.not. allocated(drotminpivot)) allocate(drotminpivot(npt))
-      if (.not. allocated(lcl1pivot)) allocate(lcl1pivot(npt))
-      if (.not. allocated(pchain)) allocate(pchain(npt))
-      if (.not. allocated(dtranchain)) allocate(dtranchain(npt))
-      if (.not. allocated(drotchain)) allocate(drotchain(npt))
-      if (.not. allocated(lcl1chain)) allocate(lcl1chain(npt))
-      if (.not. allocated(pslither)) allocate(pslither(npt))
-      if (.not. allocated(pbrush)) allocate(pbrush(npt))
-      if (.not. allocated(dtranbrush)) allocate(dtranbrush(npt))
-      if (.not. allocated(drotbrush)) allocate(drotbrush(npt))
-      if (.not. allocated(lcl1brush)) allocate(lcl1brush(npt))
-      if (.not. allocated(pbrushcl2)) allocate(pbrushcl2(npt))
-      if (.not. allocated(dtranbrushcl2)) allocate(dtranbrushcl2(npt))
-      if (.not. allocated(drotbrushcl2)) allocate(drotbrushcl2(npt))
-      if (.not. allocated(phierarchical)) allocate(phierarchical(npt))
-      if (.not. allocated(dtranhierarchical)) allocate(dtranhierarchical(npt))
-      if (.not. allocated(pnetwork)) allocate(pnetwork(npt))
-      if (.not. allocated(dtrannetwork)) allocate(dtrannetwork(npt))
-      if (.not. allocated(pvol)) allocate(pvol(npt))
-      if (.not. allocated(pnpart)) allocate(pnpart(npt))
-      if (.not. allocated(chempot)) allocate(chempot(npt))
-      if (.not. allocated(radcl1)) allocate(radcl1(npt))
-      if (.not. allocated(pselectcl1)) allocate(pselectcl1(npt))
-      if (.not. allocated(pcharge)) allocate(pcharge(npt))
-      if (.not. allocated(pspartsso)) allocate(pspartsso(npt))
+      if (.not. allocated(lptmove)) then 
+         allocate(lptmove(npt))
+         lptmove = .false.
+      end if
+      if (.not. allocated(pspart)) then 
+         allocate(pspart(npt))
+         pspart = 0.0E+00
+      end if
+      if (.not. allocated(dtran)) then 
+         allocate(dtran(npt))
+         dtran = 0.0E+00
+      end if
+      if (.not. allocated(drot)) then 
+         allocate(drot(npt))
+         drot = 0.0E+00
+      end if
+      if (.not. allocated(lcl1spart)) then 
+         allocate(lcl1spart(npt))
+         lcl1spart = .false.
+      end if
+      if (.not. allocated(lfixzcoord)) then 
+         allocate(lfixzcoord(npt))
+         lfixzcoord = .false.
+      end if
+      if (.not. allocated(lfixxycoord)) then 
+         allocate(lfixxycoord(npt))
+         lfixxycoord = .false.
+      end if
+      if (.not. allocated(lshiftzcom)) then 
+         allocate(lshiftzcom(npt))
+         lshiftzcom = .false.
+      end if
+      if (.not. allocated(pspartcl2)) then 
+         allocate(pspartcl2(npt))
+         pspartcl2 = 0.0E+00
+      end if
+      if (.not. allocated(txmembcl2)) then 
+         allocate(txmembcl2(npt))
+         txmembcl2 = ""
+      end if
+      if (.not. allocated(radcl2)) then 
+         allocate(radcl2(npt))
+         radcl2 = 0.0E+00
+      end if
+      if (.not. allocated(dtrancl2)) then 
+         allocate(dtrancl2(npt))
+         dtrancl2 = 0.0E+00
+      end if
+      if (.not. allocated(ppivot)) then 
+         allocate(ppivot(npt))
+         ppivot = 0.0E+00
+      end if
+      if (.not. allocated(txpivot)) then 
+         allocate(txpivot(npt))
+         txpivot = ""
+      end if
+      if (.not. allocated(drotpivot)) then 
+         allocate(drotpivot(npt))
+         drotpivot = 0.0E+00
+      end if
+      if (.not. allocated(drotminpivot)) then 
+         allocate(drotminpivot(npt))
+         drotminpivot = 0.0E+00
+      end if
+      if (.not. allocated(lcl1pivot)) then 
+         allocate(lcl1pivot(npt))
+         lcl1pivot = .false.
+      end if
+      if (.not. allocated(pchain)) then 
+         allocate(pchain(npt))
+         pchain = 0.0E+00
+      end if
+      if (.not. allocated(dtranchain)) then 
+         allocate(dtranchain(npt))
+         dtranchain = 0.0E+00
+      end if
+      if (.not. allocated(drotchain)) then 
+         allocate(drotchain(npt))
+         drotchain = 0.0E+00
+      end if
+      if (.not. allocated(lcl1chain)) then 
+         allocate(lcl1chain(npt))
+         lcl1chain = .false.
+      end if
+      if (.not. allocated(pslither)) then 
+         allocate(pslither(npt))
+         pslither = 0.0E+00
+      end if
+      if (.not. allocated(pbrush)) then 
+         allocate(pbrush(npt))
+         pbrush = 0.0E+00
+      end if
+      if (.not. allocated(dtranbrush)) then 
+         allocate(dtranbrush(npt))
+         dtranbrush = 0.0E+00
+      end if
+      if (.not. allocated(drotbrush)) then 
+         allocate(drotbrush(npt))
+         drotbrush = 0.0E+00
+      end if
+      if (.not. allocated(lcl1brush)) then 
+         allocate(lcl1brush(npt))
+         lcl1brush = .false.
+      end if
+      if (.not. allocated(pbrushcl2)) then 
+         allocate(pbrushcl2(npt))
+         pbrushcl2 = 0.0E+00
+      end if
+      if (.not. allocated(dtranbrushcl2)) then 
+         allocate(dtranbrushcl2(npt))
+         dtranbrushcl2 = 0.0E+00
+      end if
+      if (.not. allocated(drotbrushcl2)) then 
+         allocate(drotbrushcl2(npt))
+         drotbrushcl2 = 0.0E+00
+      end if
+      if (.not. allocated(phierarchical)) then 
+         allocate(phierarchical(npt))
+         phierarchical = 0.0E+00
+      end if
+      if (.not. allocated(dtranhierarchical)) then 
+         allocate(dtranhierarchical(npt))
+         dtranhierarchical = 0.0E+00
+      end if
+      if (.not. allocated(pnetwork)) then 
+         allocate(pnetwork(npt))
+         pnetwork = 0.0E+00
+      end if
+      if (.not. allocated(dtrannetwork)) then 
+         allocate(dtrannetwork(npt))
+         dtrannetwork = 0.0E+00
+      end if
+      if (.not. allocated(pvol)) then 
+         allocate(pvol(npt))
+         pvol = 0.0E+00
+      end if
+      if (.not. allocated(pnpart)) then 
+         allocate(pnpart(npt))
+         pnpart = 0.0E+00
+      end if
+      if (.not. allocated(chempot)) then 
+         allocate(chempot(npt))
+         chempot = 0.0E+00
+      end if
+      if (.not. allocated(radcl1)) then 
+         allocate(radcl1(npt))
+         radcl1 = 0.0E+00
+      end if
+      if (.not. allocated(pselectcl1)) then 
+         allocate(pselectcl1(npt))
+         pselectcl1 = 0.0E+00
+      end if
+      if (.not. allocated(pcharge)) then 
+         allocate(pcharge(npt))
+         pcharge = 0.0E+00
+      end if
+      if (.not. allocated(pspartsso)) then 
+         allocate(pspartsso(npt))
+         pspartsso = 0.0E+00
+      end if
 
       isamp           = 1
 
@@ -486,9 +606,18 @@ subroutine IOMC(iStage)
 
 ! ... allocate memory for MC-specific pointers
 
-      if (.not.allocated(ianatm)) allocate(ianatm(na_alloc))
-      if (.not.allocated(iptmpn)) allocate(iptmpn(np_alloc))
-      if (.not.allocated(ipnptm)) allocate(ipnptm(np_alloc))
+      if (.not.allocated(ianatm)) then 
+         allocate(ianatm(na_alloc))
+         ianatm = 0
+      end if
+      if (.not.allocated(iptmpn)) then 
+         allocate(iptmpn(np_alloc))
+         iptmpn = 0
+      end if
+      if (.not.allocated(ipnptm)) then 
+         allocate(ipnptm(np_alloc))
+         ipnptm = 0
+      end if
 
 ! ... initiate lptmdutwob
 
@@ -496,7 +625,10 @@ subroutine IOMC(iStage)
 
 ! ... initiate lptm
 
-      if (.not.allocated(lptm)) allocate(lptm(np_alloc))
+      if (.not.allocated(lptm)) then 
+         allocate(lptm(np_alloc))
+         lptm = .false.
+      end if
       lptm =.false.
 
 ! ... check conditions
@@ -534,7 +666,10 @@ subroutine IOMC(iStage)
 
 ! ... normalize probabilities of different trial moves
 
-      if (.not.allocated(psum)) allocate(psum(npt))
+      if (.not.allocated(psum)) then 
+         allocate(psum(npt))
+         psum = 0.0E+00
+      end if
 
       psum(1:npt)  = pspart(1:npt)   + pspartcl2(1:npt) + &
                      ppivot(1:npt)   +                    &
@@ -1200,7 +1335,13 @@ subroutine SPartCl2Move(iStage)
 
 ! ... consider first primary cluster particles
 
-   if (.not.allocated(n1)) allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
+   if (.not.allocated(n1)) then 
+      allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
+      n1 = 0
+      n2 = 0
+      iobjcluster = 0
+      icllis = 0
+   end if
 
    if (txmembcl2(iptmove) == 'ipt') then   ! selection among particles of type iptmove including particle ipmove
       call CalcPartPairListIpt(iptmove,radcl2(iptmove)**2,mnpair,npair,n1,n2) ! list of particle pair for particles of type iptmove
@@ -1522,7 +1663,10 @@ subroutine PivotDual    ! dual pivot rotation
    real(8)    :: dx1, dy1, dz1, dx2, dy2, dz2, dtemp_min(2), r1, r2
    real(8)    :: dinf, r_dist
 
-   if (.not.allocated(dtemp)) allocate(dtemp(np_alloc,2))
+   if (.not.allocated(dtemp)) then 
+      allocate(dtemp(np_alloc,2))
+      dtemp = 0.0E+00
+   end if
 
    dtemp(1:np,2) = 0.0
    dtemp_min(1:2) = 10000
@@ -2369,7 +2513,13 @@ subroutine BrushCl2Move(iStage)
 
 ! ... consider first primary cluster particles (particles of type iptmove including particle ipmove)
 
-   if (.not.allocated(n1)) allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
+   if (.not.allocated(n1)) then 
+      allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
+      n1 = 0
+      n2 = 0
+      iobjcluster = 0
+      icllis = 0
+   end if
 
    call CalcPartPairListIpt(iptmove,radcl2(iptmove)**2,mnpair,npair,n1,n2) ! list of particle pair for particles of type iptmove
    call MakeCluster(nppt(iptmove), npair, n1, n2, iobjcluster)
@@ -3266,8 +3416,14 @@ subroutine IOMCAll(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(dtranall)) allocate(dtranall(npt))
-      if (.not. allocated(drotall)) allocate(drotall(npt))
+      if (.not. allocated(dtranall)) then 
+         allocate(dtranall(npt))
+         dtranall = 0.0E+00
+      end if
+      if (.not. allocated(drotall)) then 
+         allocate(drotall(npt))
+         drotall = 0.0E+00
+      end if
 
       lautumb = .false.
 
@@ -3334,8 +3490,17 @@ subroutine MCAllPass(iStage)
 
    call CpuAdd('start', trim(txroutine)//'_move', 1, uout)
 
-   if(.not.allocated(rosave)) allocate(rosave(3,np_alloc), orisave(3,3,np_alloc), boxlensave(1:3), &
+   if(.not.allocated(rosave)) then 
+      allocate(rosave(3,np_alloc), orisave(3,3,np_alloc), boxlensave(1:3), &
            idmsyssave(1:3), idmosave(1:3,1:np), idmsave(1:3,1:na), forcesave(1:3,1:na))
+      rosave = 0.0E+00
+      orisave = 0.0E+00
+      boxlensave = 0.0E+00
+      idmsyssave = 0.0E+00
+      idmosave = 0.0E+00
+      idmsave = 0.0E+00
+      forcesave = 0.0E+00
+   end if
 
 ! .............. calculate a trial configuration ...............
 
@@ -4580,9 +4745,22 @@ subroutine MCAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if (.not.allocated(nys1)) allocate(nys1(0:nevent,0:npt,nmovetype), nys2(0:nevent,0:npt,nmovetype), &
+      if (.not.allocated(nys1)) then 
+         allocate(nys1(0:nevent,0:npt,nmovetype), nys2(0:nevent,0:npt,nmovetype), &
       npcl1s1(2,npt,nmovetype), npcl1s2(2,npt,nmovetype), npcl2s1(2,npt), npcl2s2(2,npt), nprimpartclmax(npt))
-      if (.not.allocated(nazs1)) allocate(nazs1(1:nat), nazs2(1:nat))
+         nys1 = 0
+         nys2 = 0
+         npcl1s1 = 0
+         npcl1s2 = 0
+         npcl2s1 = 0
+         npcl2s2 = 0
+         nprimpartclmax = 0
+      end if
+      if (.not.allocated(nazs1)) then 
+         allocate(nazs1(1:nat), nazs2(1:nat))
+         nazs1 = 0
+         nazs2 = 0
+      end if
 
       nys1           = 0
       npcl1s1        = 0
@@ -5461,9 +5639,18 @@ subroutine SSODriver(iStage)
    case (iWriteInput) ! Question: can the reading be moved to iReadInput?
 !  Reply: not yet: firt the content of SSODriver has to be moved to IOMC, but let's wait
 
-      if (.not. allocated(dtransso)) allocate(dtransso(npt))
-      if (.not. allocated(maxdtransso)) allocate(maxdtransso(npt))
-      if (.not. allocated(dtranfac)) allocate(dtranfac(npt))
+      if (.not. allocated(dtransso)) then 
+         allocate(dtransso(npt))
+         dtransso = 0.0E+00
+      end if
+      if (.not. allocated(maxdtransso)) then 
+         allocate(maxdtransso(npt))
+         maxdtransso = 0.0E+00
+      end if
+      if (.not. allocated(dtranfac)) then 
+         allocate(dtranfac(npt))
+         dtranfac = 0.0E+00
+      end if
 
       dtransso  = One
       nstepzero   = ceiling(sqrt(real(nstep)))
@@ -5502,21 +5689,54 @@ subroutine SSODriver(iStage)
          if(nstepzero * (One - partfac**(nssopart + 1))/(One - partfac) < nstep) nssopart = nssopart + 1
       end if
 
-      if(.not. allocated(curdtranpt)) allocate(curdtranpt(npt))
-      if(.not. allocated(invrsso)) allocate(invrsso(npt))
+      if(.not. allocated(curdtranpt)) then 
+         allocate(curdtranpt(npt))
+         curdtranpt = 0.0E+00
+      end if
+      if(.not. allocated(invrsso)) then 
+         allocate(invrsso(npt))
+         invrsso = 0.0E+00
+      end if
 
-      if(.not. allocated(d2tot)) allocate(d2tot(npt))
-      if(.not. allocated(steptot)) allocate(steptot(npt))
+      if(.not. allocated(d2tot)) then 
+         allocate(d2tot(npt))
+         d2tot = 0.0E+00
+      end if
+      if(.not. allocated(steptot)) then 
+         allocate(steptot(npt))
+         steptot = 0
+      end if
 
-      if(.not. allocated(locmob)) allocate(locmob(0:nssobin))
-      if(.not. allocated(locmobe)) allocate(locmobe(0:nssobin))
-      if(.not. allocated(locmobs)) allocate(locmobs(0:nssobin))
+      if(.not. allocated(locmob)) then 
+         allocate(locmob(0:nssobin))
+         locmob = 0.0E+00
+      end if
+      if(.not. allocated(locmobe)) then 
+         allocate(locmobe(0:nssobin))
+         locmobe = 0.0E+00
+      end if
+      if(.not. allocated(locmobs)) then 
+         allocate(locmobs(0:nssobin))
+         locmobs = 0.0E+00
+      end if
 
-      if(.not. allocated(nssostep)) allocate(nssostep(npt,nssobin))
-      if(.not. allocated(dssostep)) allocate(dssostep(npt,nssobin))
-      if(.not. allocated(dssostep2)) allocate(dssostep2(npt,nssobin))
+      if(.not. allocated(nssostep)) then 
+         allocate(nssostep(npt,nssobin))
+         nssostep = 0
+      end if
+      if(.not. allocated(dssostep)) then 
+         allocate(dssostep(npt,nssobin))
+         dssostep = 0.0E+00
+      end if
+      if(.not. allocated(dssostep2)) then 
+         allocate(dssostep2(npt,nssobin))
+         dssostep2 = 0.0E+00
+      end if
 
-      if(.not.allocated(dtranout)) allocate(dtranout(npt,nssopart,3))
+      if(.not.allocated(dtranout)) then 
+         allocate(dtranout(npt,nssopart,3))
+         dtranout = 0.0E+00
+      end if
 !     if(.not.allocated(dtranfac)) allocate(dtranfac(npt))
 
    case (iBeforeSimulation)

@@ -649,6 +649,7 @@ subroutine par_handshake(myid,master,slave,nproc,unit)
    character(50), allocatable :: procname(:)
 
    allocate(procname(0:nproc))
+   procname = ""
 
 ! ... get hostnames where the processes are residing
 

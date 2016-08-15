@@ -284,13 +284,30 @@ subroutine UTotal(iStage)
 
    call CpuAdd('start', txroutine, 1, uout)
 
-   if(.not.allocated(uaux)) allocate(uaux(2*((nptpt+1+npt+1)+8)))  ! 2* for scratch use
-   if(.not.allocated(u%twob)) allocate(u%twob(0:nptpt), du%twob(0:nptpt), u%oneb(0:npt), du%oneb(0:npt))
+   if(.not.allocated(uaux)) then 
+      allocate(uaux(2*((nptpt+1+npt+1)+8)))  ! 2* for scratch use
+      uaux = 0.0E+00
+   end if
+   if(.not.allocated(u%twob)) then 
+      allocate(u%twob(0:nptpt), du%twob(0:nptpt), u%oneb(0:npt), du%oneb(0:npt))
+   end if
    if(ldipole .or. ldipolesph) then
-      if(.not.allocated(potstat)) allocate(potstat(na_alloc), estat(3,na_alloc), efg(6,na_alloc))
+      if(.not.allocated(potstat)) then 
+         allocate(potstat(na_alloc), estat(3,na_alloc), efg(6,na_alloc))
+         potstat = 0.0E+00
+         estat = 0.0E+00
+         efg = 0.0E+00
+      end if
    end if
    if(lpolarization) then
-      if(.not.allocated(potstat)) allocate(potstat(na_alloc), estat(3,na_alloc), eidm(3,na_alloc), etot(3,na_alloc), efg(6,na_alloc))
+      if(.not.allocated(potstat)) then 
+         allocate(potstat(na_alloc), estat(3,na_alloc), eidm(3,na_alloc), etot(3,na_alloc), efg(6,na_alloc))
+         potstat = 0.0E+00
+         estat = 0.0E+00
+         eidm = 0.0E+00
+         etot = 0.0E+00
+         efg = 0.0E+00
+      end if
    end if
 
 ! ... initiate
@@ -4818,6 +4835,7 @@ real(8) function ImageIntSph(lmaxdiel, boundaryrad, eta, r1, r2, cosa)
    if (first) then
       first = .false.
       allocate(lfac3(lmaxdiel))
+      lfac3 = 0.0E+00
       lfac1 = (one-eta)/(one+eta)
       lfac2 = lfac1/(one+eta)
       do l = 1, lmaxdiel
@@ -4935,7 +4953,12 @@ subroutine UTwoBodyPair(ip, jp, uuu, fforce)
       call stop(txroutine, 'lwealcharge = .true. is not appropiate', uout)
    else if (ldipole) then  ! atoms possening charges and dipoles
       if(ldipole) then
-         if(.not.allocated(potstat)) allocate(potstat(na_alloc), estat(3,na_alloc), efg(6,na_alloc))
+         if(.not.allocated(potstat)) then 
+            allocate(potstat(na_alloc), estat(3,na_alloc), efg(6,na_alloc))
+            potstat = 0.0E+00
+            estat = 0.0E+00
+            efg = 0.0E+00
+         end if
       end if
       call UTwoBodyPPair
       call UDipolePair
@@ -5757,7 +5780,12 @@ subroutine UExternalLJWallZlowDesorb                    ! Niklas 2006-12-20 deso
    real(8), parameter :: Sixth  = 1.0d0/6.0d0, TwoThree = 2.0d0/3.0d0
    real(8), allocatable, save :: z_min(:), uz_min(:), wallcut(:)
    real(8) :: zi1, zi3, ulj, flj
-   if(.not.allocated(z_min)) allocate(z_min(nat), uz_min(nat), wallcut(nat))
+   if(.not.allocated(z_min)) then 
+      allocate(z_min(nat), uz_min(nat), wallcut(nat))
+      z_min = 0.0E+00
+      uz_min = 0.0E+00
+      wallcut = 0.0E+00
+   end if
    do iat = 1, nat
       z_min(iat) = ((-3*z9coeff_ext(iat) / z3coeff_ext(iat))**(Sixth))
       uz_min(iat) = TwoThree*((-z3coeff_ext(iat)**3) / (3*z9coeff_ext(iat)))**(Half)
@@ -6584,20 +6612,37 @@ subroutine EwaldSetup
       if(allocated(eikraux)) deallocate(eikraux)
 
       allocate(kfac(nkvec), stat = ierr)
+      kfac = 0.0E+00
       allocate(eikx(naewald,0:ncut),eiky(naewald,0:ncut), eikz(naewald,0:ncut), stat = ierr)
+      eikx = cmplx(Zero,Zero)
+      eiky = cmplx(Zero,Zero)
+      eikz = cmplx(Zero,Zero)
       allocate(eikyzm(naewald), eikyzp(naewald), stat = ierr)
+      eikyzm = cmplx(Zero,Zero)
+      eikyzp = cmplx(Zero,Zero)
       allocate(eikr(naewald,4), stat = ierr)
+      eikr = cmplx(Zero,Zero)
       allocate(sumeikr(nkvec,4), stat = ierr)
+      sumeikr = cmplx(Zero,Zero)
       allocate(sumeikrd(nkvec,4), stat = ierr)
+      sumeikrd = cmplx(Zero,Zero)
 
       if(lmc .or. lmcall) then
           allocate(eikxtm(naewald,0:ncut),eikytm(naewald,0:ncut), eikztm(naewald,0:ncut), stat = ierr)
+          eikxtm = cmplx(Zero,Zero)
+          eikytm = cmplx(Zero,Zero)
+          eikztm = cmplx(Zero,Zero)
           allocate(eikyzmtm(naewald), eikyzptm(naewald), stat = ierr)
+          eikyzmtm = cmplx(Zero,Zero)
+          eikyzptm = cmplx(Zero,Zero)
           allocate(eikrtm(naewald,4), stat = ierr)
+          eikrtm = cmplx(Zero,Zero)
           allocate(sumeikrtm(nkvec,4), stat = ierr)
+          sumeikrtm = cmplx(Zero,Zero)
       end if
 
       allocate(eikraux(nkvec_word), stat = ierr)
+      eikraux = cmplx(Zero,Zero)
 
       if (ierr /= 0) call WriteIOStat(txroutine, 'memory allocation failed', ierr, 2, 6)
 
@@ -6644,12 +6689,31 @@ subroutine EwaldSetup
          if(allocated(sinkxtm)) deallocate(sinkxtm, coskxtm, sinkytm, coskytm)
          if(allocated(sumtrigtm)) deallocate(sumtrigtm)
          allocate(kfac2d(nkvec2d), stat = ierr)
+         kfac2d = 0.0E+00
          allocate(sinkx(naewald,0:ncut2d), coskx(naewald,0:ncut2d), sinky(naewald,0:ncut2d), cosky(naewald,0:ncut2d), stat = ierr)
+         sinkx = 0.0E+00
+         coskx = 0.0E+00
+         sinky = 0.0E+00
+         cosky = 0.0E+00
          allocate(sumtrig(nkvec2d,9), stat = ierr)
+         sumtrig = 0.0E+00
          allocate(termsss(nkvec2d), termcss(nkvec2d), termscs(nkvec2d), termccs(nkvec2d), &
                   termssc(nkvec2d), termcsc(nkvec2d), termscc(nkvec2d), termccc(nkvec2d), stat = ierr)
+         termsss = 0.0E+00
+         termcss = 0.0E+00
+         termscs = 0.0E+00
+         termccs = 0.0E+00
+         termssc = 0.0E+00
+         termcsc = 0.0E+00
+         termscc = 0.0E+00
+         termccc = 0.0E+00
          allocate(sinkxtm(naewald,0:ncut2d), coskxtm(naewald,0:ncut2d), sinkytm(naewald,0:ncut2d), coskytm(naewald,0:ncut2d), stat = ierr)
+         sinkxtm = 0.0E+00
+         coskxtm = 0.0E+00
+         sinkytm = 0.0E+00
+         coskytm = 0.0E+00
          allocate(sumtrigtm(nkvec2d,9), stat = ierr)
+         sumtrigtm = 0.0E+00
          if (ierr /= 0) call WriteIOStat(txroutine, 'memory allocation failed', ierr, 2, 6)
 
 ! ... determine ncut2d
@@ -6739,8 +6803,11 @@ subroutine EwaldSetup
                                                                            ! Memory
       if (allocated(meshfac)) deallocate(meshfac,energyfac,virfac)
       allocate(meshfac(0:s(1)/2,0:s(2)/2,0:s(3)/2))                        ! 8 M / 8
+      meshfac = 0.0E+00
       allocate(energyfac(0:s(1)/2,0:s(2)/2,0:s(3)/2))                      ! 8 M / 8
+      energyfac = 0.0E+00
       allocate(virfac(0:s(1)/2,0:s(2)/2,0:s(3)/2))                         ! 8 M / 8
+      virfac = 0.0E+00
       if (lmc) then
          if (associated(QMeshTM)) then
              call fftw_free(QmeshTM_PTR)
@@ -6764,20 +6831,29 @@ subroutine EwaldSetup
 #if defined (_PAR_)
       if (allocated(meshaux)) deallocate(meshaux)
       allocate(meshaux(MeshMemSize))
+      meshaux = 0.0E+00
 #endif
 
       if (allocated(spline)) deallocate(spline, deriv, deriv2, meshmax)
       allocate(spline(0:order-1,3,na_alloc))                               ! 8 * N * O**3
+      spline = 0.0E+00
       allocate(deriv(0:order-1,3,na_alloc))                                ! 8 * N * O**3
+      deriv = 0.0E+00
       allocate(deriv2(0:order-1,3,na_alloc))                               ! 8 * N * O**3
+      deriv2 = 0.0E+00
       allocate(meshmax(3,na_alloc))                                        ! 8 * 3 * N
+      meshmax = 0
       if (lmc) then
          natm = na ! FIXME
          if (allocated(splinetm)) deallocate(splinetm, derivtm, deriv2tm, meshmaxtm)
          allocate(splinetm(0:order-1,3,natm))                              ! 8 * N * O**3
+         splinetm = 0.0E+00
          allocate(derivtm(0:order-1,3,natm))                               ! 8 * N * O**3
+         derivtm = 0.0E+00
          allocate(deriv2tm(0:order-1,3,natm))                              ! 8 * N * O**3
+         deriv2tm = 0.0E+00
          allocate(meshmaxtm(3,natm))                                       ! 8 * 3 * N
+         meshmaxtm = 0
       end if
 !                                                                        --------------------
 !                                                                        28 M + 48 NO**3 + 48 N

@@ -156,7 +156,11 @@ subroutine ImageVRML(iStage, iimage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(atsize)) allocate(atsize(nat), rgbcolor(3,nat))
+      if (.not.allocated(atsize)) then 
+         allocate(atsize(nat), rgbcolor(3,nat))
+         atsize = 0.0E+00
+         rgbcolor = 0.0E+00
+      end if
 
 ! ... set default values
 
@@ -366,7 +370,10 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    real(8) :: corner(1:3,1:8)
    real(8), save :: rgbcolor_dipole(1:3,1:2) = reshape([One, One, Zero,  Zero, One, One],[3,2])
 
-   if (.not.allocated(ro_temp)) allocate(ro_temp(1:3,1:na))
+   if (.not.allocated(ro_temp)) then 
+      allocate(ro_temp(1:3,1:na))
+      ro_temp = 0.0E+00
+   end if
 
 ! ... initializing label
 
@@ -419,7 +426,10 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
 ! ... make bonds
 
    mnbond = 2*na                                          ! maximal number of bonds that can be made
-   if(.not.allocated(bondlist)) allocate(bondlist(2,mnbond))
+   if(.not.allocated(bondlist)) then 
+      allocate(bondlist(2,mnbond))
+      bondlist = 0
+   end if
    call MakeBondList(vaux, mnbond, blmax, nbond, bondlist)
 
 ! ... draw objects
@@ -800,7 +810,10 @@ end subroutine DrawAtom_jasper
 !........................................................................
 
 subroutine DrawAtom
-      if(.not.allocated(icount)) allocate(icount(nat))
+      if(.not.allocated(icount)) then 
+         allocate(icount(nat))
+         icount = 0
+      end if
       icount = 0
       write(unit,'(a)') '# ... object: atom'
       do ia = 1, na
@@ -907,7 +920,12 @@ subroutine ImageVTF(iStage, iimage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(atsize)) allocate(atsize(nat), rgbcolor(3,nat), lptinnw(mnpt))
+      if (.not.allocated(atsize)) then 
+         allocate(atsize(nat), rgbcolor(3,nat), lptinnw(mnpt))
+         atsize = 0.0E+00
+         rgbcolor = 0.0E+00
+         lptinnw = .false.
+      end if
 
 ! ... set default values
 
@@ -1095,7 +1113,10 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
 ! ... determine connectivity of atoms
 
    mnbond = 2*na
-   if (.not. allocated(bondlist)) allocate(bondlist(2,mnbond))
+   if (.not. allocated(bondlist)) then 
+      allocate(bondlist(2,mnbond))
+      bondlist = 0
+   end if
    call MakeBondList(vaux,mnbond,blmax,nbond,bondlist)
 
 ! ... declare bonds
@@ -1157,7 +1178,10 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
       end if
    end if
 
-   if (.not. allocated(ro_vtf)) allocate(ro_vtf(1:3,1:na))
+   if (.not. allocated(ro_vtf)) then 
+      allocate(ro_vtf(1:3,1:na))
+      ro_vtf = 0.0E+00
+   end if
 
 ! ... write coordinates in ro_vtf
 

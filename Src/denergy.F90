@@ -105,7 +105,11 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
 
    call CpuAdd('start', txroutine, 1, uout)
 
-   if(.not.allocated(utwobnew)) allocate(utwobnew(0:nptpt), utwobold(0:nptpt))
+   if(.not.allocated(utwobnew)) then 
+      allocate(utwobnew(0:nptpt), utwobold(0:nptpt))
+      utwobnew = 0.0E+00
+      utwobold = 0.0E+00
+   end if
 
 ! ............... initiate ...............
 

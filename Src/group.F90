@@ -100,13 +100,21 @@ subroutine Group(iStage)
 
       allocate(grvar(ngrvar))
       allocate(igrpn(np_alloc,2))
+      igrpn = 0
       allocate(iptgr(maxngr,2))
+      iptgr = 0
       allocate(iatgr(maxngr,2))
+      iatgr = 0
       allocate(natgr(maxngr,2))
+      natgr = 0
       allocate(igrgr(maxngr,maxngr))
+      igrgr = 0
       allocate(igrpnt(2,0:maxngr))
+      igrpnt = 0
       allocate(txgr(maxngr))
+      txgr = ""
       allocate(txgrgr(ngrgr))
+      txgrgr = ""
 
 ! ... set igrpnt
 

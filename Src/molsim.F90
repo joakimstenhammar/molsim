@@ -842,8 +842,22 @@ subroutine MDAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(for2s2)) allocate( for2s2(npt), for2s1(npt), tor2s2(3,npt), tor2s1(3,npt), &
+      if(.not.allocated(for2s2)) then 
+         allocate( for2s2(npt), for2s1(npt), tor2s2(3,npt), tor2s1(3,npt), &
          lims2(3,npt), lims1(3,npt), anms2(3,npt), anms1(3,npt), ttras2(npt), ttras1(npt), trots2(npt), trots1(npt) )
+         for2s2 = 0.0E+00
+         for2s1 = 0.0E+00
+         tor2s2 = 0.0E+00
+         tor2s1 = 0.0E+00
+         lims2 = 0.0E+00
+         lims1 = 0.0E+00
+         anms2 = 0.0E+00
+         anms1 = 0.0E+00
+         ttras2 = 0.0E+00
+         ttras1 = 0.0E+00
+         trots2 = 0.0E+00
+         trots1 = 0.0E+00
+      end if
 
       nsamp1 = 0
       for2s1 = Zero
@@ -977,7 +991,15 @@ subroutine DispAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(dros2)) allocate(dros2(3,np_alloc), dros1(3,np_alloc), rr2(npt), rr2sd(npt), rr3(npt), rr3sd(npt))
+      if(.not.allocated(dros2)) then 
+         allocate(dros2(3,np_alloc), dros1(3,np_alloc), rr2(npt), rr2sd(npt), rr3(npt), rr3sd(npt))
+         dros2 = 0.0E+00
+         dros1 = 0.0E+00
+         rr2 = 0.0E+00
+         rr2sd = 0.0E+00
+         rr3 = 0.0E+00
+         rr3sd = 0.0E+00
+      end if
 
       nsamp1 = 0
       dros1  = Zero
@@ -1105,7 +1127,12 @@ subroutine OriOrderAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(orist)) allocate(orist(3,3,np_alloc), oris2(3,npt), oris1(3,npt))
+      if(.not.allocated(orist)) then 
+         allocate(orist(3,3,np_alloc), oris2(3,npt), oris1(3,npt))
+         orist = 0.0E+00
+         oris2 = 0.0E+00
+         oris1 = 0.0E+00
+      end if
 
       nsamp1 = 0
       orist  = ori
@@ -1189,7 +1216,13 @@ subroutine PosOriAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(roavs2)) allocate(roavs2(3,npt), roavs1(3,npt), oriavs2(3,3,npt), oriavs1(3,3,npt))
+      if(.not.allocated(roavs2)) then 
+         allocate(roavs2(3,npt), roavs1(3,npt), oriavs2(3,3,npt), oriavs1(3,3,npt))
+         roavs2 = 0.0E+00
+         roavs1 = 0.0E+00
+         oriavs2 = 0.0E+00
+         oriavs1 = 0.0E+00
+      end if
 
       nsamp1  = 0
       roavs1  = Zero
@@ -1497,7 +1530,9 @@ subroutine ThermoAver(iStage)
 
    case (iAfterMacrostep)
 
-      if(.not.allocated(ucheck%twob)) allocate(ucheck%twob(0:nptpt))
+      if(.not.allocated(ucheck%twob)) then 
+         allocate(ucheck%twob(0:nptpt))
+      end if
       if (lmc) then
          call CpuAdd('stop', txroutine_aux, 0, uout)
          call CpuAdd('interrupt', ' ', 0, uout)
@@ -2351,7 +2386,11 @@ subroutine DistFunc(iStage)
 
       rcutdist2 = rcutdist**2
 
-      if (.not.allocated(ixat)) allocate(ixat(nat), ixatat(nat,nat))
+      if (.not.allocated(ixat)) then 
+         allocate(ixat(nat), ixatat(nat,nat))
+         ixat = 0
+         ixatat = 0
+      end if
 
 ! ... set ixatat (for selecting atom-atom pairs with masses > maslim)
 
@@ -2394,6 +2433,8 @@ subroutine DistFunc(iStage)
 
       nvar = sum(vtype%nvar, 1, vtype%l)
       allocate(var(nvar), ipnt(natat,ntype), ubind(np_alloc))
+      ipnt = 0
+      ubind = 0.0E+00
 
 ! ... set ipnt, label, min, max, and nbin
 
@@ -2894,6 +2935,7 @@ subroutine DistFunc(iStage)
 
          if (lmonoatom .and. vtype(5)%l) then     ! get contact contribution to reduced pressure
             allocate(gcont(nptpt))
+            gcont = 0.0E+00
             do iptjpt = 1, nptpt
                ivar = ipnt(iptjpt,5)
                call gcontact(var(ivar)%min, var(ivar)%bin, var(ivar)%avs1(-1), r1atat(iptjpt), gcont(iptjpt))
