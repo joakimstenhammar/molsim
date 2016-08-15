@@ -18,7 +18,7 @@
 
 #Defines your current version from ../version.name
 VER=
-VERFILE = ../version.name
+VERFILE = ../version.conf
 ifneq ("$(wildcard $(VERFILE))","")
 VER= .$(shell cat ${VERFILE} )
 endif
