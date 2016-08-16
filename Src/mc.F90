@@ -152,6 +152,7 @@ module MCModule
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
    logical                    :: lmcsep              ! flag for sparating local from global moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
+   real(8), allocatable :: plocal(:)
 
 ! ... mcall trial move variables
 
@@ -262,6 +263,49 @@ module MCModule
                                              ! = 3, call of TestChargeChange1 from ChargeChange
                                              ! = 3, call of TestChargeChange2 from ChargeChange
 
+   contains
+      subroutine CallMove(prandom, iptmove, iStage)
+
+         implicit none
+         real(8), intent(in) :: prandom
+         integer(4), intent(in) :: iptmove
+         integer(4), intent(in) :: iStage
+
+         !first local moves
+         if (prandom < pspart(iptmove)) then
+            call SPartMove(iStage)                             ! single-particle trial move
+         else if (prandom < pspartsso(iptmove)) then
+            call SSOMove(iStage)
+
+         !then global moves
+         else if (prandom < pspartcl2(iptmove)) then
+            call SPartCl2Move(iStage)                          ! single-particle + cluster2 trial move
+         else if (prandom < ppivot(iptmove)) then
+            call PivotMove(iStage)                             ! pivot rotation trial move
+         else if (prandom < pchain(iptmove)) then
+            call ChainMove(iStage)                             ! chain trial move
+         else if (prandom < pslither(iptmove)) then
+            call SlitherMove(iStage)                           ! chain slithering trial move
+         else if (prandom < pbrush(iptmove)) then
+            call BrushMove(iStage)                             ! brush trial move
+         else if (prandom < pbrushcl2(iptmove)) then
+            call BrushCl2Move(iStage)                          ! brush + cluster2 trial move
+         else if (prandom < phierarchical(iptmove)) then
+            call HierarichalMove(iStage)                       ! hierarchical trial move
+         else if (prandom < pnetwork(iptmove)) then
+            call NetworkMove(iStage)                           ! network trial move
+         else if (prandom < pvol(iptmove)) then
+            call VolChange(iStage)                             ! volume change trial move
+         else if (prandom < pnpart(iptmove)) then
+            call NPartChange(iStage)                           ! number of particle change trial move
+         !else if (prandom < pcharge(iptmove)) then
+         else
+            call ChargeChange(iStage)                          ! charge change trial move
+         end if
+
+      end subroutine
+
+
 end module MCModule
 
 !************************************************************************
@@ -314,7 +358,12 @@ subroutine MCDriver(iStage)
 
    case (iSimulationStep)
 
-      call MCPass(iStage)                         ! MCAver(iSimulationStep) is called in MCPass
+      if(.not. lmcsep) then
+         call MCPass(iStage)                         ! MCAver(iSimulationStep) is called in MCPass
+      else
+         call MCPassSep(iStage)
+      end if
+
       if (lpspartsso) call SSODriver(iStage)   ! Pascal Hebbeker
 
    case (iAfterMacrostep)
@@ -372,7 +421,7 @@ subroutine IOMC(iStage)
                     radcl1, pselectcl1,                                                          &
                     lmcweight, lautumb, lmcpmf,                                                  &
                     itestmc,                                                                     &
-                    pspartsso                                                                       ! Pascal Hebbeker
+                    pspartsso, lmcsep                                                               ! Pascal Hebbeker
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -396,37 +445,30 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(lfixzcoord)) then 
          allocate(lfixzcoord(npt))
-         lfixzcoord = .false.
       end if
       if (.not. allocated(lfixxycoord)) then 
          allocate(lfixxycoord(npt))
-         lfixxycoord = .false.
       end if
       if (.not. allocated(lshiftzcom)) then 
          allocate(lshiftzcom(npt))
-         lshiftzcom = .false.
       end if
       if (.not. allocated(pspartcl2)) then 
          allocate(pspartcl2(npt))
       end if
       if (.not. allocated(txmembcl2)) then 
          allocate(txmembcl2(npt))
-         txmembcl2 = ""
       end if
       if (.not. allocated(radcl2)) then 
          allocate(radcl2(npt))
-         radcl2 = 0.0E+00
       end if
       if (.not. allocated(dtrancl2)) then 
          allocate(dtrancl2(npt))
       end if
       if (.not. allocated(ppivot)) then 
          allocate(ppivot(npt))
-         ppivot = 0.0E+00
       end if
       if (.not. allocated(txpivot)) then 
          allocate(txpivot(npt))
-         txpivot = ""
       end if
       if (.not. allocated(drotpivot)) then 
          allocate(drotpivot(npt))
@@ -439,7 +481,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(pchain)) then 
          allocate(pchain(npt))
-         pchain = 0.0E+00
       end if
       if (.not. allocated(dtranchain)) then 
          allocate(dtranchain(npt))
@@ -452,7 +493,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(pslither)) then 
          allocate(pslither(npt))
-         pslither = 0.0E+00
       end if
       if (.not. allocated(pbrush)) then 
          allocate(pbrush(npt))
@@ -516,6 +556,10 @@ subroutine IOMC(iStage)
       if (.not. allocated(pspartsso)) then 
          allocate(pspartsso(npt))
       end if
+      if (.not. allocated(plocal)) then 
+         allocate(plocal(npt))
+      end if
+
 
       isamp           = 1
 
@@ -570,6 +614,8 @@ subroutine IOMC(iStage)
       lautumb         = .false.
       lmcpmf          = .false.
 
+      lmcsep          = .false.
+
       itestmc         = 0
 
       rewind(uin)
@@ -608,6 +654,12 @@ subroutine IOMC(iStage)
          lptm = .false.
       end if
       lptm =.false.
+
+! ... initialte lmcsep
+
+      if (lmcsep .and. (.not. allocated(plocal))) then 
+         allocate(plocal(npt))
+      end if
 
 ! ... check conditions
 
@@ -761,6 +813,7 @@ subroutine IOMC(iStage)
       end if
 
       call WriteHead(2, 'mc data', uout)
+      if (lmcsep) write(uout,'(a)') 'sperating moves types (lmcsep)'
       if (isamp == 0) write(uout,'(a)') 'uniform sampling, sequence'
       if (isamp == 1) write(uout,'(a)') 'uniform sampling, random'
       if (dtran(1) < 0) write(uout,'(a)') 'spherical displacement area'
@@ -896,7 +949,14 @@ subroutine IOMC(iStage)
 
 ! ... modify the representation of the probability for their use in MCPass
 
-      pspartcl2(1:npt)      = pspartcl2(1:npt)      + pspart(1:npt)
+! ... first the local moves
+      pspartsso(1:npt)      = pspartsso(1:npt)      + pspart(1:npt)
+      if (lmcsep) then
+         plocal(1:npt) = pspartsso(1:npt)       !the probability to perform a local move
+      end if
+
+! ... then the global moves
+      pspartcl2(1:npt)      = pspartcl2(1:npt)      + pspartsso(1:npt)
       ppivot(1:npt)         = ppivot(1:npt)         + pspartcl2(1:npt)
       pchain(1:npt)         = pchain(1:npt)         + ppivot(1:npt)
       pslither(1:npt)       = pslither(1:npt)       + pchain(1:npt)
@@ -907,6 +967,7 @@ subroutine IOMC(iStage)
       pvol(1:npt)           = pvol(1:npt)           + pnetwork(1:npt)
       pnpart(1:npt)         = pnpart(1:npt)         + pvol(1:npt)
       pcharge(1:npt)        = pcharge(1:npt)        + pnpart(1:npt)
+
       if (itestmc == 1) call TestIOMCProb('after modification', uout)
 
    case (iBeforeMacrostep)
@@ -974,6 +1035,7 @@ subroutine TestIOMCProb(txheading,unit)   ! test output of probabilities of MC m
    integer(4),   intent(in) :: unit
    call WriteHead(3, 'Test'//trim(txroutine)//' '//txheading, unit)
    write(unit,'(a,6f10.3)') 'pspart(1:npt)        ', pspart(1:npt)
+   write(unit,'(a,6f10.3)') 'pspartsso(1:npt)     ', pspartsso(1:npt)
    write(unit,'(a,6f10.3)') 'pspartcl2(1:npt)     ', pspartcl2(1:npt)
    write(unit,'(a,6f10.3)') 'ppivot(1:npt)        ', ppivot(1:npt)
    write(unit,'(a,6f10.3)') 'pchain(1:npt)        ', pchain(1:npt)
@@ -1036,33 +1098,7 @@ subroutine MCPass(iStage)
          call SPartMove(iStage)
       else
          prandom = Random(iseed)
-         if (prandom < pspart(iptmove)) then
-            call SPartMove(iStage)                             ! single-particle trial move
-         else if (prandom < pspartcl2(iptmove)) then
-            call SPartCl2Move(iStage)                          ! single-particle + cluster2 trial move
-         else if (prandom < ppivot(iptmove)) then
-            call PivotMove(iStage)                             ! pivot rotation trial move
-         else if (prandom < pchain(iptmove)) then
-            call ChainMove(iStage)                             ! chain trial move
-         else if (prandom < pslither(iptmove)) then
-            call SlitherMove(iStage)                           ! chain slithering trial move
-         else if (prandom < pbrush(iptmove)) then
-            call BrushMove(iStage)                             ! brush trial move
-         else if (prandom < pbrushcl2(iptmove)) then
-            call BrushCl2Move(iStage)                          ! brush + cluster2 trial move
-         else if (prandom < phierarchical(iptmove)) then
-            call HierarichalMove(iStage)                       ! hierarchical trial move
-         else if (prandom < pnetwork(iptmove)) then
-            call NetworkMove(iStage)                           ! network trial move
-         else if (prandom < pvol(iptmove)) then
-            call VolChange(iStage)                             ! volume change trial move
-         else if (prandom < pnpart(iptmove)) then
-            call NPartChange(iStage)                           ! number of particle change trial move
-         else if (prandom < pcharge(iptmove)) then
-            call ChargeChange(iStage)                          ! charge change trial move
-         else
-            call SSOMove(iStage)
-         end if
+         call CallMove(prandom, iptmove, iStage)
       end if
 
       call Restorelptm(nptm, ipnptm, lptm)                     ! restore lptm
@@ -1075,6 +1111,116 @@ subroutine MCPass(iStage)
    if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine MCPass
+
+!************************************************************************
+!*                                                                      *
+!*     MCPassSep                                                        *
+!*                                                                      *
+!************************************************************************
+
+! ... perform one mc pass (np trial moves) by only local or global moves (not mixed)
+
+subroutine MCPassSep(iStage)
+
+   use MCModule
+   use NListModule, only : drnlist, drosum
+   implicit none
+
+   integer(4), intent(in) :: iStage
+
+   character(40), parameter :: txroutine ='MCPassSep'
+   integer(4) :: ict, ipt
+   real(8)    :: Random, prandom, drnold, rchain
+   logical :: lnonloc
+
+   if (ltrace) call WriteTrace(2, txroutine, iStage)
+
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
+
+   drostep= Zero
+
+   prandom = Random(iseed)
+   lnonloc = .false.
+   if (any( prandom > plocal(1:npt) )) then !only also non-local moves are present
+      lnonloc = .true.
+   end if
+
+   if(lnonloc) then
+      drosum = Zero
+      drnold = drnlist
+      rchain = Zero
+      do ipt = 1, npt
+         ict = ictpt(ipt)
+         if ((prandom > plocal(ipt)) .and. (ict > 0)) then !non-local moves of this particle type and particle is in chain
+            rchain=max(rchain, sum(npptct(1:npt,ict))*bond(ict)%eq)
+         end if
+      end do
+
+      drnlist = 4*rchain + drnold !set drnlist to four times contour length + drnlist (old)
+      ! four times as 1 particle can move at max 2 times contour length using pivot move, and therefore two particles can approach each at max 4 times the contour length
+      ! added drnold to reflect any possible local moves
+
+      !get neighbor list
+      if (lvlist) then
+         call SetVList
+         call VListAver(iStage)
+      end if
+      if (lllist) then
+         call SetLList(rcut+drnlist)
+         call LListAver(iStage)
+      end if
+   end if
+
+
+   do ipass = 1, np
+
+      if (ltrace) call WriteTrace(3, txroutine//' (start of new ipass)', iStage)
+
+! ... select a particle
+
+      if (isamp == 0) ipmove = ipass
+      if (isamp == 1) ipmove = 1+int(np*Random(iseed))
+      ipmove = max(1,int(min(ipmove,np)))
+      iptmove = iptpn(ipmove)
+
+
+! ... check if particle should be moved
+
+      if (.not.lptmove(iptmove)) cycle
+
+! ... select a trial move method
+
+      if (pspart(iptmove) > One - 1d-15) then
+         call SPartMove(iStage)
+      else
+         call CallMove(prandom, iptmove, iStage)
+      end if
+
+      call Restorelptm(nptm, ipnptm, lptm)                     ! restore lptm
+
+      if (itest == 1) call TestSimulation
+      if (lcont) call MCAver(iSimulationStep)
+
+   end do
+
+   ! restore neighbour list
+   if(lnonloc) then
+      drnlist = drnold
+      drosum = Zero
+
+      if (lvlist) then
+         call SetVList
+         call VListAver(iStage)
+      end if
+      if (lllist) then
+         call SetLList(rcut+drnlist)
+         call LListAver(iStage)
+      end if
+   end if
+
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
+
+end subroutine MCPassSep
 
 !************************************************************************
 !*                                                                      *
