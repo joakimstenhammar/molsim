@@ -15,9 +15,9 @@ do
    ln -s $job.$i $job.ana.$i
 done
 }
-
+version=`cat ../version.conf 2>/dev/null`
 #####################
-molsim="../../Src/molsim_ser"
+molsim="molsim_ser.$version"
 core=1
 ####################
 rm -r out
@@ -264,6 +264,9 @@ $molsim  ellipsoidpro.dip.mc      $core
 $molsim  w.mc.mix                 $core
 $molsim  b.md.mix                 $core
 $molsim  hs.b2.mix                $core
+
+#bigfixes
+$molsim  ltime                    $core
 
 echo
 echo "Remove group and dump files"
