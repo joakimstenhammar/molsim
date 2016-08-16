@@ -364,6 +364,8 @@ module MolModule
    logical, allocatable   :: lpset(:)      ! logical valiable being .true. for setted paricles
    logical                :: lradatbox     ! use atom and atom radius when checking if particle inside box
 
+   integer(4)             :: nnwt          !number of network types
+
                                            ! equivalences:
                                            ! nc         = sum(ncct(1:nct))
                                            ! np         = sum(nppt(1:npt))
