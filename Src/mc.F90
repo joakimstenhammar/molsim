@@ -150,6 +150,7 @@ module MCModule
    real(8), allocatable       :: pcharge(:)          ! probability of charge-change move
 
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
+   logical                    :: lmcsep              ! flag for sparating local from global moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
 
 ! ... mcall trial move variables
@@ -380,23 +381,18 @@ subroutine IOMC(iStage)
 
       if (.not. allocated(lptmove)) then 
          allocate(lptmove(npt))
-         lptmove = .false.
       end if
       if (.not. allocated(pspart)) then 
          allocate(pspart(npt))
-         pspart = 0.0E+00
       end if
       if (.not. allocated(dtran)) then 
          allocate(dtran(npt))
-         dtran = 0.0E+00
       end if
       if (.not. allocated(drot)) then 
          allocate(drot(npt))
-         drot = 0.0E+00
       end if
       if (.not. allocated(lcl1spart)) then 
          allocate(lcl1spart(npt))
-         lcl1spart = .false.
       end if
       if (.not. allocated(lfixzcoord)) then 
          allocate(lfixzcoord(npt))
@@ -412,7 +408,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(pspartcl2)) then 
          allocate(pspartcl2(npt))
-         pspartcl2 = 0.0E+00
       end if
       if (.not. allocated(txmembcl2)) then 
          allocate(txmembcl2(npt))
@@ -424,7 +419,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(dtrancl2)) then 
          allocate(dtrancl2(npt))
-         dtrancl2 = 0.0E+00
       end if
       if (.not. allocated(ppivot)) then 
          allocate(ppivot(npt))
@@ -436,15 +430,12 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(drotpivot)) then 
          allocate(drotpivot(npt))
-         drotpivot = 0.0E+00
       end if
       if (.not. allocated(drotminpivot)) then 
          allocate(drotminpivot(npt))
-         drotminpivot = 0.0E+00
       end if
       if (.not. allocated(lcl1pivot)) then 
          allocate(lcl1pivot(npt))
-         lcl1pivot = .false.
       end if
       if (.not. allocated(pchain)) then 
          allocate(pchain(npt))
@@ -452,15 +443,12 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(dtranchain)) then 
          allocate(dtranchain(npt))
-         dtranchain = 0.0E+00
       end if
       if (.not. allocated(drotchain)) then 
          allocate(drotchain(npt))
-         drotchain = 0.0E+00
       end if
       if (.not. allocated(lcl1chain)) then 
          allocate(lcl1chain(npt))
-         lcl1chain = .false.
       end if
       if (.not. allocated(pslither)) then 
          allocate(pslither(npt))
@@ -468,7 +456,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(pbrush)) then 
          allocate(pbrush(npt))
-         pbrush = 0.0E+00
       end if
       if (.not. allocated(dtranbrush)) then 
          allocate(dtranbrush(npt))
@@ -484,7 +471,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(pbrushcl2)) then 
          allocate(pbrushcl2(npt))
-         pbrushcl2 = 0.0E+00
       end if
       if (.not. allocated(dtranbrushcl2)) then 
          allocate(dtranbrushcl2(npt))
@@ -496,7 +482,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(phierarchical)) then 
          allocate(phierarchical(npt))
-         phierarchical = 0.0E+00
       end if
       if (.not. allocated(dtranhierarchical)) then 
          allocate(dtranhierarchical(npt))
@@ -504,7 +489,6 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(pnetwork)) then 
          allocate(pnetwork(npt))
-         pnetwork = 0.0E+00
       end if
       if (.not. allocated(dtrannetwork)) then 
          allocate(dtrannetwork(npt))
@@ -512,11 +496,9 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(pvol)) then 
          allocate(pvol(npt))
-         pvol = 0.0E+00
       end if
       if (.not. allocated(pnpart)) then 
          allocate(pnpart(npt))
-         pnpart = 0.0E+00
       end if
       if (.not. allocated(chempot)) then 
          allocate(chempot(npt))
@@ -524,19 +506,15 @@ subroutine IOMC(iStage)
       end if
       if (.not. allocated(radcl1)) then 
          allocate(radcl1(npt))
-         radcl1 = 0.0E+00
       end if
       if (.not. allocated(pselectcl1)) then 
          allocate(pselectcl1(npt))
-         pselectcl1 = 0.0E+00
       end if
       if (.not. allocated(pcharge)) then 
          allocate(pcharge(npt))
-         pcharge = 0.0E+00
       end if
       if (.not. allocated(pspartsso)) then 
          allocate(pspartsso(npt))
-         pspartsso = 0.0E+00
       end if
 
       isamp           = 1
