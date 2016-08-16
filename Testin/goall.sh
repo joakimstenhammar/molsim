@@ -15,9 +15,15 @@ do
    ln -s $job.$i $job.ana.$i
 done
 }
-version=`cat ../version.conf 2>/dev/null`
+
+if [ -f "../version.conf" ]
+then
+        version=".$(cat ../version.conf)"
+else
+        verson=""
+fi
 #####################
-molsim="molsim_ser.$version"
+molsim="molsim_ser$version"
 core=1
 ####################
 rm -r out
