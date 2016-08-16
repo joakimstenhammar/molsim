@@ -7,7 +7,7 @@ Installation of Molsim
 ----------------------
 *The following describes the installation of Molsim on the [RWTH-Compute Cluster](https://doc.itc.rwth-aachen.de/display/CC/Home).*
 
-First Molsim clone the current repository. This requires having [set up your ssh key](https://git.rwth-aachen.de/help/ssh/README) at [git.rwth-aachen.de].
+First Molsim clone the current repository. This requires having [set up your ssh key](https://git.rwth-aachen.de/help/ssh/README) at [git.rwth-aachen.de](git.rwth-aachen.de).
 ```shell
 git clone git@git.rwth-aachen.de:pascal.hebbeker/Molsim.git
 ```
