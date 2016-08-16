@@ -1,6 +1,7 @@
 *.o
 *.mod
 *.i90
+*.swp
 Bin/
 version.conf
 Testin/in/
