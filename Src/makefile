@@ -20,7 +20,10 @@
 VER=
 VERFILE = ../version.conf
 ifneq ("$(wildcard $(VERFILE))","")
-VER=.$(shell cat ${VERFILE} )
+   VER=.$(shell cat ${VERFILE} )
+   ifeq ($(strip $(shell cat ${VERFILE})),)
+      VER=""
+   endif
 endif
 
 BINDIR:=$(abspath ../Bin)
@@ -266,7 +269,8 @@ all     : molsim_ser molsim_par
 ser     : molsim_ser
 par     : molsim_par
 ver	:
-	@echo Version is specified as \"$(VER) $(BINDIR)\"
+	@echo Version is specified as \"$(VER)\"
+	@echo bindir is \"$(BINDIR)\"
  
 molsim_ser     : molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
