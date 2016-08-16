@@ -49,11 +49,11 @@ subroutine BDDriver(iStage)
 
    case (iSimulationStep)
 
-      call CpuAdd('start', txroutine, 0, uout)
+      if (ltime) call CpuAdd('start', txroutine, 0, uout)
       call BDStep
       call UTotal(iStage)
       if (itest == 1) call TestSimulation
-      call CpuAdd('stop', txroutine,  0, uout)
+      if (ltime) call CpuAdd('stop', txroutine,  0, uout)
 
    end select
 
@@ -84,7 +84,10 @@ subroutine IOBD(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(dcoeff)) allocate(dcoeff(npt))
+      if (.not.allocated(dcoeff)) then 
+         allocate(dcoeff(npt))
+         dcoeff = 0.0E+00
+      end if
 
       rewind(uin)
       read(uin,nmlBD)
@@ -129,6 +132,8 @@ subroutine BDStep
 
    if (first) then
       allocate(fac1(npt), fac2(npt))
+      fac1 = 0.0E+00
+      fac2 = 0.0E+00
       fac1(1:npt) = tstep*scltim*dcoeff(1:npt)*scldif*sclfor/(GasConstant*temp*scltem)/scllen
       fac2(1:npt) = sqrt(Two*dcoeff(1:npt)*scldif*tstep*scltim)/scllen
       first = .false.

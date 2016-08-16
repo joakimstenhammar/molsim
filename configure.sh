@@ -14,7 +14,7 @@
 #        AUTHOR: YOUR NAME (), 
 #  ORGANIZATION: 
 #       CREATED: 28/07/2016 09:09
-#      REVISION: 2016-08-11 14:26
+#      REVISION: 2016-08-16 11:18
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
@@ -105,4 +105,3 @@ case ${doconf:0:1} in
         echo "not changing $conffile"
     ;;
 esac
-

@@ -103,9 +103,13 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
 
    if (ltrace) call WriteTrace(4, trim(txroutine), iSimulationStep)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
-   if(.not.allocated(utwobnew)) allocate(utwobnew(0:nptpt), utwobold(0:nptpt))
+   if(.not.allocated(utwobnew)) then 
+      allocate(utwobnew(0:nptpt), utwobold(0:nptpt))
+      utwobnew = 0.0E+00
+      utwobold = 0.0E+00
+   end if
 
 ! ............... initiate ...............
 
@@ -178,7 +182,7 @@ end if
 
 !  call TestDUTotal
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 !........................................................................
 
@@ -227,7 +231,7 @@ subroutine DUTwoBody(lhsoverlap, utwobodynew, twobodyold)
    external utwobodynew
    external twobodyold
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    du%twob(0:nptpt) = Zero                      ! initiate
 
@@ -245,7 +249,7 @@ subroutine DUTwoBody(lhsoverlap, utwobodynew, twobodyold)
 
 400 continue
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 end subroutine DUTwoBody
 
@@ -1011,7 +1015,7 @@ subroutine DUTwoBodyEwald
 
    character(40), parameter :: txroutine ='DUTwoBodyEwald'
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
 ! ... initiate
 
@@ -1033,7 +1037,7 @@ subroutine DUTwoBodyEwald
    du%rec = EpsiFourPi*du%rec
    du%tot = du%tot + du%rec
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -1045,7 +1049,7 @@ subroutine DUTwoBodyEwaldRecStd
    real(8)    :: term, termnew, termold
    real(8)    :: kx, ky, kp, sinhkpztm, coshkpztm, sinhkpz, coshkpz, termi
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... calculate eikxtm, eikytm, and eikztm for moving particles
 
@@ -1098,7 +1102,7 @@ subroutine DUTwoBodyEwaldRecStd
       end do
    end do
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 end subroutine DUTwoBodyEwaldRecStd
 
@@ -1113,7 +1117,7 @@ subroutine DUTwoBodyEwaldRec2dlc
    real(8)    :: term, termnew, termold
    real(8)    :: kx, ky, kp, sinhkpztm, coshkpztm, sinhkpz, coshkpz, termi
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
    call EwaldSetArray2dTM                 ! calculate sinkxt, coskxt, sinkyt, and coskyt for moving particles
 
@@ -1172,7 +1176,7 @@ subroutine DUTwoBodyEwaldRec2dlc
       end do
    end do
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 end subroutine DUTwoBodyEwaldRec2dlc
 
@@ -1193,7 +1197,7 @@ subroutine DUTwoBodyEwaldRecSPM
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval
    complex(8) :: vtm(4)
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... initiate
 
@@ -1201,7 +1205,7 @@ subroutine DUTwoBodyEwaldRecSPM
 
 ! ... make generalized charge mesh for trial move
 
-   call CpuAdd('start', 'DUMakeGQMesh', 4, uout)
+   if (ltime) call CpuAdd('start', 'DUMakeGQMesh', 4, uout)
    QMeshTM = QMesh
    do ialoc = 1, natm
       ia = ianatm(ialoc)
@@ -1231,17 +1235,17 @@ subroutine DUTwoBodyEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'DUMakeGQMesh', 4, uout)
+   if (ltime) call CpuAdd('stop', 'DUMakeGQMesh', 4, uout)
 
 ! ... Fourier transformation of the generalized charge distribution
 
-   call CpuAdd('start', 'DUMakeFFT', 4, uout)
+   if (ltime) call CpuAdd('start', 'DUMakeFFT', 4, uout)
    call fftw_execute_dft_r2c( plan_fwd, QmeshTM, FQMesh)
-   call CpuAdd('stop', 'DUMakeFFT', 4, uout)
+   if (ltime) call CpuAdd('stop', 'DUMakeFFT', 4, uout)
 
 ! ... calculate the generalized influence function in the reciprocal space
 
-   call CpuAdd('start', 'DUCalcGIF', 4, uout)
+   if (ltime) call CpuAdd('start', 'DUCalcGIF', 4, uout)
    do nz = 0,s(3)/2
       nza = mod(s(3)-nz,s(3))
       do ny = 0,s(2)/2
@@ -1256,9 +1260,9 @@ subroutine DUTwoBodyEwaldRecSPM
       end do
    end do
    du%rec = urecnew - urecold
-   call CpuAdd('stop', 'DUCalcGIF', 4, uout)
+   if (ltime) call CpuAdd('stop', 'DUCalcGIF', 4, uout)
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 # endif
 
@@ -1452,7 +1456,7 @@ subroutine DUDipole
 
    character(40), parameter :: txroutine ='DUDipole'
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    du%stat = Zero                  ! initiate
 
@@ -1465,7 +1469,7 @@ subroutine DUDipole
    du%stat = EpsiFourPi*du%stat
    du%tot  = du%tot + du%stat      ! update
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 end subroutine DUDipole
 
@@ -1652,7 +1656,7 @@ subroutine DUDipoleEwald
    character(40), parameter :: txroutine ='DUDipoleEwald'
    real(8)    :: dusum
 
-   call CpuAdd('start', txroutine, 3, uout)
+   if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
 ! ... initiate
 
@@ -1672,7 +1676,7 @@ subroutine DUDipoleEwald
 
    du%stat = du%stat + dusum
 
-   call CpuAdd('stop', txroutine, 3, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
 
@@ -1685,7 +1689,7 @@ subroutine DUDipoleEwaldRecStd
    real(8)    :: facmm, facmp, facpm, facpp, facmmtm, facmptm, facpmtm, facpptm
    real(8)    :: kx, ky, kz, termnew, termold
 
-   call CpuAdd('start', txroutine, 4, uout)
+   if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
 ! ... calculate eikxtm, eikytm, and eikztm for moving particles
 
@@ -1764,7 +1768,7 @@ subroutine DUDipoleEwaldRecStd
       end do
    end do
 
-   call CpuAdd('stop', txroutine, 4, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 4, uout)
 
 end subroutine DUDipoleEwaldRecStd
 
@@ -1786,13 +1790,13 @@ subroutine DUDipoleEwaldRecSPM
    real(8)    :: dsdztm, Qsumtm
    complex(8) :: vtm(4)
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    urecnew = Zero
 
 ! ... make generalized charge mesh for trial move
 
-   call CpuAdd('start', 'DUMakeGQMesh', 4, uout)
+   if (ltime) call CpuAdd('start', 'DUMakeGQMesh', 4, uout)
    QMeshTM = QMesh
    do ialoc = 1, natm
       ia = ianatm(ialoc)
@@ -1848,17 +1852,17 @@ subroutine DUDipoleEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'DUMakeGQMesh', 4, uout)
+   if (ltime) call CpuAdd('stop', 'DUMakeGQMesh', 4, uout)
 
 ! ... Fourier transformation of the generalized charge distribution
 
-   call CpuAdd('start', 'DUMakeFFT', 4, uout)
+   if (ltime) call CpuAdd('start', 'DUMakeFFT', 4, uout)
    call fftw_execute_dft_r2c( plan_fwd , QmeshTM, FQMesh)
-   call CpuAdd('stop', 'DUMakeFFT', 4, uout)
+   if (ltime) call CpuAdd('stop', 'DUMakeFFT', 4, uout)
 
 ! ... calculate the generalized influence function in the reciprocal space
 
-   call CpuAdd('start', 'DUCalcGIF', 4, uout)
+   if (ltime) call CpuAdd('start', 'DUCalcGIF', 4, uout)
    do nz = 0,s(3)/2
       nza = mod(s(3)-nz,s(3))
       do ny = 0,s(2)/2
@@ -1872,10 +1876,10 @@ subroutine DUDipoleEwaldRecSPM
          end do
       end do
    end do
-   call CpuAdd('stop', 'DUCalcGIF', 4, uout)
+   if (ltime) call CpuAdd('stop', 'DUCalcGIF', 4, uout)
    dusum =  urecnew - urecold
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 # endif
 
@@ -1947,7 +1951,7 @@ subroutine DUDipoleSph(lhsoverlap)
    character(40), parameter :: txroutine ='DUDipoleSph'
    integer(4) :: jp
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    du%twob(0:nptpt) = Zero                      ! initiate
    du%stat = Zero                               ! initiate
@@ -1967,7 +1971,7 @@ subroutine DUDipoleSph(lhsoverlap)
 
 400 continue
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 end subroutine DUDipoleSph
 
@@ -2284,7 +2288,7 @@ subroutine DUDielDis(lhsoverlap)
 
    character(40), parameter :: txroutine ='DUDielDis'
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    du%twob(0:nptpt) = Zero                      ! initiate
    du%oneb(0:npt) = Zero                        ! initiate
@@ -2308,7 +2312,7 @@ subroutine DUDielDis(lhsoverlap)
        write(*,*) 'du%tot,du%twob(0),du%oneb(0)',du%tot,du%twob(0),du%oneb(0)
     end if
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 end subroutine DUDielDis
 
@@ -2525,7 +2529,7 @@ subroutine DUBond
    character(40), parameter :: txroutine ='DUBond'
    integer(4) :: ict, ip, iploc, jp_p, jp_m, ia_last, ia_last_loc, ja_first, ja_first_loc
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    du%bond = Zero
    do iploc = 1, nptm
@@ -2555,7 +2559,7 @@ subroutine DUBond
    du%bond = du%bond/nproc
    du%tot = du%tot + du%bond
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -2600,7 +2604,7 @@ subroutine DUAngle
    du%angle = Zero
    if (count(angle(1:nct)%k /= Zero) == 0) return
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    do iploc = 1, nptm
       ip = ipnptm(iploc)                         ! moving particle
@@ -2647,7 +2651,7 @@ subroutine DUAngle
    du%angle = du%angle/nproc
    du%tot = du%tot + du%angle
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
@@ -2707,7 +2711,7 @@ subroutine DUCrossLink
    character(40), parameter :: txroutine ='DUCrossLink'
    integer(4) :: ip, iploc, jp, jploc, icl
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    du%crosslink = Zero
    do iploc = 1, nptm
@@ -2727,7 +2731,7 @@ subroutine DUCrossLink
    du%crosslink = du%crosslink/nproc                    ! prepare for allreduce
    du%tot = du%tot + du%crosslink
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 contains
 
@@ -2770,7 +2774,7 @@ subroutine DUExternal(lhepoverlap)
    integer(4) :: ip, iploc, ipt, ia, iat, ialoc
    real(8)    :: r1, r2
 
-   call CpuAdd('start', txroutine, 2, uout)
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
 ! ... initiate
 
@@ -2850,7 +2854,7 @@ subroutine DUExternal(lhepoverlap)
 
 400 continue
 
-   call CpuAdd('stop', txroutine, 2, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 

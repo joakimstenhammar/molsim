@@ -83,7 +83,7 @@ subroutine Coordinate(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -248,7 +248,7 @@ subroutine Coordinate(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 contains
 
@@ -330,9 +330,23 @@ subroutine SetConfiguration
                                   radlimit,                                                          &
                                   itestcoordinate
 
-    if (.not.allocated(txsetconf)) allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt), &
+    if (.not.allocated(txsetconf)) then 
+       allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt), &
      roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
-    if (.not.allocated(radatset)) allocate(radatset(nat))
+       txsetconf = ""
+       nucell = 0
+       rclow = 0.0E+00
+       rcupp = 0.0E+00
+       roshift = 0.0E+00
+       radatset = 0.0E+00
+       lranori = .false.
+       bondscl = 0.0E+00
+       anglemin = 0.0E+00
+    end if
+    if (.not.allocated(radatset)) then 
+       allocate(radatset(nat))
+       radatset = 0.0E+00
+    end if
 
 ! ... read input data
 
@@ -404,7 +418,10 @@ subroutine SetConfiguration
 
    anglemin = anglemin*sclang
 
-   if (.not.allocated(lpset)) allocate(lpset(np_alloc))
+   if (.not.allocated(lpset)) then 
+      allocate(lpset(np_alloc))
+      lpset = .false.
+   end if
    lpset =.false.
 
 ! ... back compatibility
@@ -2023,6 +2040,10 @@ subroutine SetPeriodicNetwork(ipt)
 ! ... allocate memory
 
     allocate(ipclbeg(nnode), ipclend(2*nstrand), rbond(3,nct), r2bond(nct))
+    ipclbeg = 0
+    ipclend = 0
+    rbond = 0.0E+00
+    r2bond = 0.0E+00
 
 ! ... store all particles of type iptnode in ipclbeg
 
@@ -2144,6 +2165,8 @@ subroutine SetNetwork(ipt)
 ! ... allocate memory
 
    allocate(ronode(3,np_alloc), rostrand(3,np_alloc))
+   ronode = 0.0E+00
+   rostrand = 0.0E+00
 
 ! ... determine nnode, ronode, nstrand, rostrand, nclnode
 
@@ -2160,6 +2183,8 @@ subroutine SetNetwork(ipt)
 ! ... allocate memory
 
    allocate(ipclbeg(nnode), ipclend(2*nstrand))
+   ipclbeg = 0
+   ipclend = 0
 
 ! ... set gels
 

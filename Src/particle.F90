@@ -165,33 +165,106 @@ subroutine Particle(iStage)
 
 ! ... allocate memory
 
-      if (.not.allocated(ro)) allocate(ro(3,np_alloc))
-      if (.not.allocated(rotm)) allocate(rotm(3,np_alloc))
-      if (.not.allocated(drotm)) allocate(drotm(3,np_alloc))
-      if (.not.allocated(ori)) allocate(ori(3,3,np_alloc))
-      if (.not.allocated(oritm)) allocate(oritm(3,3,np_alloc))
-      if (.not.allocated(rod)) allocate(rod(3,np_alloc))
-      if (.not.allocated(qua)) allocate(qua(0:3,np_alloc))
-      if (.not.allocated(quad)) allocate(quad(0:3,np_alloc))
-      if (.not.allocated(r)) allocate(r(3,na_alloc))
-      if (.not.allocated(rtm)) allocate(rtm(3,na_alloc))
+      if (.not.allocated(ro)) then 
+         allocate(ro(3,np_alloc))
+         ro = 0.0E+00
+      end if
+      if (.not.allocated(rotm)) then 
+         allocate(rotm(3,np_alloc))
+         rotm = 0.0E+00
+      end if
+      if (.not.allocated(drotm)) then 
+         allocate(drotm(3,np_alloc))
+         drotm = 0.0E+00
+      end if
+      if (.not.allocated(ori)) then 
+         allocate(ori(3,3,np_alloc))
+         ori = 0.0E+00
+      end if
+      if (.not.allocated(oritm)) then 
+         allocate(oritm(3,3,np_alloc))
+         oritm = 0.0E+00
+      end if
+      if (.not.allocated(rod)) then 
+         allocate(rod(3,np_alloc))
+         rod = 0.0E+00
+      end if
+      if (.not.allocated(qua)) then 
+         allocate(qua(0:3,np_alloc))
+         qua = 0.0E+00
+      end if
+      if (.not.allocated(quad)) then 
+         allocate(quad(0:3,np_alloc))
+         quad = 0.0E+00
+      end if
+      if (.not.allocated(r)) then 
+         allocate(r(3,na_alloc))
+         r = 0.0E+00
+      end if
+      if (.not.allocated(rtm)) then 
+         allocate(rtm(3,na_alloc))
+         rtm = 0.0E+00
+      end if
 
-      if (.not.allocated(dip)) allocate(dip(3,na_alloc))
-      if (.not.allocated(diptm)) allocate(diptm(3,na_alloc))
-      if (.not.allocated(idm)) allocate(idm(3,na_alloc))
-      if (.not.allocated(idm1)) allocate(idm1(3,na_alloc))
-      if (.not.allocated(idm2)) allocate(idm2(3,na_alloc))
-      if (.not.allocated(idmo)) allocate(idmo(3,np_alloc))
-      if (.not.allocated(diptot)) allocate(diptot(3,na_alloc))
-      if (.not.allocated(vaux)) allocate(vaux(3,max(1000,2*na_alloc)))
+      if (.not.allocated(dip)) then 
+         allocate(dip(3,na_alloc))
+         dip = 0.0E+00
+      end if
+      if (.not.allocated(diptm)) then 
+         allocate(diptm(3,na_alloc))
+         diptm = 0.0E+00
+      end if
+      if (.not.allocated(idm)) then 
+         allocate(idm(3,na_alloc))
+         idm = 0.0E+00
+      end if
+      if (.not.allocated(idm1)) then 
+         allocate(idm1(3,na_alloc))
+         idm1 = 0.0E+00
+      end if
+      if (.not.allocated(idm2)) then 
+         allocate(idm2(3,na_alloc))
+         idm2 = 0.0E+00
+      end if
+      if (.not.allocated(idmo)) then 
+         allocate(idmo(3,np_alloc))
+         idmo = 0.0E+00
+      end if
+      if (.not.allocated(diptot)) then 
+         allocate(diptot(3,na_alloc))
+         diptot = 0.0E+00
+      end if
+      if (.not.allocated(vaux)) then 
+         allocate(vaux(3,max(1000,2*na_alloc)))
+         vaux = 0.0E+00
+      end if
 
-      if (.not.allocated(angvelo)) allocate(angvelo(3,np_alloc))
-      if (.not.allocated(forceo)) allocate(forceo(3,np_alloc))
-      if (.not.allocated(torqueo)) allocate(torqueo(3,np_alloc))
-      if (.not.allocated(force)) allocate(force(3,na_alloc), torque(3,na_alloc))
-      if (.not.allocated(drostep)) allocate(drostep(3,np_alloc))
+      if (.not.allocated(angvelo)) then 
+         allocate(angvelo(3,np_alloc))
+         angvelo = 0.0E+00
+      end if
+      if (.not.allocated(forceo)) then 
+         allocate(forceo(3,np_alloc))
+         forceo = 0.0E+00
+      end if
+      if (.not.allocated(torqueo)) then 
+         allocate(torqueo(3,np_alloc))
+         torqueo = 0.0E+00
+      end if
+      if (.not.allocated(force)) then 
+         allocate(force(3,na_alloc), torque(3,na_alloc))
+         force = 0.0E+00
+         torque = 0.0E+00
+      end if
+      if (.not.allocated(drostep)) then 
+         allocate(drostep(3,np_alloc))
+         drostep = 0.0E+00
+      end if
 
-      if (.not.allocated(laztm)) allocate(laztm(na_alloc))
+      if (.not.allocated(laztm)) then 
+         allocate(laztm(na_alloc))
+         laztm = .false.
+      end if
 
 ! ... set object parameters
 
@@ -469,8 +542,14 @@ subroutine SetObjectParam1
 
    if (lclink) then
       maxvalnbondcl = maxval(maxnbondcl(1:npt))
-      if (.not.allocated(nbondcl)) allocate(nbondcl(np_alloc))
-      if (.not.allocated(bondcl)) allocate(bondcl(maxvalnbondcl,np_alloc))
+      if (.not.allocated(nbondcl)) then 
+         allocate(nbondcl(np_alloc))
+         nbondcl = 0
+      end if
+      if (.not.allocated(bondcl)) then 
+         allocate(bondcl(maxvalnbondcl,np_alloc))
+         bondcl = 0
+      end if
    end if
 
    if (master .and. itestpart == 10) then
@@ -542,7 +621,10 @@ end subroutine Set_nphn
 !........................................................................
 
 subroutine Set_napt  ! number of atoms of a particle type
-   if (.not.allocated(napt)) allocate(napt(npt))
+   if (.not.allocated(napt)) then 
+      allocate(napt(npt))
+      napt = 0
+   end if
    do ipt = 1, npt
       napt(ipt) = sum(naatpt(1:natpt(ipt),ipt))
    end do
@@ -604,7 +686,10 @@ end subroutine Set_nat
 !........................................................................
 
 subroutine Set_naat  ! number of atoms of a given atom type
-   if (.not.allocated(naat)) allocate(naat(nat))
+   if (.not.allocated(naat)) then 
+      allocate(naat(nat))
+      naat = 0
+   end if
    iat = 0
    do ipt = 1, npt
       do iatloc = 1, natpt(ipt)
@@ -648,7 +733,10 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    character(40), parameter :: txroutine ='Set_ipnsegcn'
    integer(4) :: nrep, irep, nreplen
 
-   if (.not.allocated(ipnsegcn)) allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
+   if (.not.allocated(ipnsegcn)) then 
+      allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
+      ipnsegcn = 0
+   end if
    ic = 0
    do ict = 1, nct
       if (txcopolymer(ict) == 'block') then
@@ -693,7 +781,10 @@ end subroutine Set_ipnsegcn
 !........................................................................
 
 subroutine Set_ictcn  ! chain -> its chain type
-   if (.not.allocated(ictcn)) allocate(ictcn(nc))
+   if (.not.allocated(ictcn)) then 
+      allocate(ictcn(nc))
+      ictcn = 0
+   end if
    ic = 0
    do ict = 1, nct
       do icloc = 1, ncct(ict)
@@ -706,7 +797,10 @@ end subroutine Set_ictcn
 !........................................................................
 
 subroutine Set_ictpt  ! partcle type -> its chain type
-   if (.not.allocated(ictpt)) allocate(ictpt(npt))
+   if (.not.allocated(ictpt)) then 
+      allocate(ictpt(npt))
+      ictpt = 0
+   end if
    ictpt(1:npt) = 0
    do ict = 1, nct
       do ipt = 1, npt
@@ -719,8 +813,14 @@ end subroutine Set_ictpt
 
 subroutine Set_ihnpn  ! particle -> its hierarchical structure
    integer(4) :: ih, igen, ict, ic, iseg, ip
-   if (.not.allocated(ihnpn)) allocate(ihnpn(np_alloc))
-   if (.not.allocated(icihigen)) allocate(icihigen(nh,0:ngen))
+   if (.not.allocated(ihnpn)) then 
+      allocate(ihnpn(np_alloc))
+      ihnpn = 0
+   end if
+   if (.not.allocated(icihigen)) then 
+      allocate(icihigen(nh,0:ngen))
+      icihigen = 0
+   end if
    do ih = 1, nh
       do igen = 0, ngen
          ict = ictgen(igen)
@@ -739,7 +839,10 @@ end subroutine Set_ihnpn
 !........................................................................
 
 subroutine Set_ictpn  ! particle -> its chain type
-   if (.not.allocated(ictpn)) allocate(ictpn(np_alloc))
+   if (.not.allocated(ictpn)) then 
+      allocate(ictpn(np_alloc))
+      ictpn = 0
+   end if
    ictpn(1:np) = 0
    ic = 0
    do ict = 1, nct
@@ -755,7 +858,10 @@ end subroutine Set_ictpn
 !........................................................................
 
 subroutine Set_icnpn  ! particle -> its chain
-   if (.not.allocated(icnpn)) allocate(icnpn(np_alloc))
+   if (.not.allocated(icnpn)) then 
+      allocate(icnpn(np_alloc))
+      icnpn = 0
+   end if
    icnpn(1:np) = 0
    ic = 0
    do ict = 1, nct
@@ -771,7 +877,10 @@ end subroutine Set_icnpn
 !........................................................................
 
 subroutine Set_iptpn  ! particle -> its particle type
-   if (.not.allocated(iptpn)) allocate(iptpn(np_alloc))
+   if (.not.allocated(iptpn)) then 
+      allocate(iptpn(np_alloc))
+      iptpn = 0
+   end if
    ip = 0
    do ipt = 1, npt
       do iploc = 1, nppt(ipt)
@@ -784,7 +893,10 @@ end subroutine Set_iptpn
 !........................................................................
 
 subroutine Set_iptat  ! atom type -> its particle type
-   if (.not.allocated(iptat)) allocate(iptat(nat))
+   if (.not.allocated(iptat)) then 
+      allocate(iptat(nat))
+      iptat = 0
+   end if
    iat = 0
    do ipt = 1, npt
       do iatloc = 1, natpt(ipt)
@@ -797,7 +909,10 @@ end subroutine Set_iptat
 !........................................................................
 
 subroutine Set_iptan  ! atom -> its particle type
-   if (.not.allocated(iptan)) allocate(iptan(na_alloc))
+   if (.not.allocated(iptan)) then 
+      allocate(iptan(na_alloc))
+      iptan = 0
+   end if
    ia = 0
    do ipt = 1, npt
       do ialoc = 1, napt(ipt)*nppt(ipt)
@@ -810,7 +925,10 @@ end subroutine Set_iptan
 !........................................................................
 
 subroutine Set_ipnan  ! atom -> its particle
-   if (.not.allocated(ipnan)) allocate(ipnan(na_alloc))
+   if (.not.allocated(ipnan)) then 
+      allocate(ipnan(na_alloc))
+      ipnan = 0
+   end if
    ia = 0
    ip = 0
    ia = 0
@@ -828,7 +946,10 @@ end subroutine Set_ipnan
 !........................................................................
 
 subroutine Set_iatan  ! atom -> its atom type
-   if (.not.allocated(iatan)) allocate(iatan(na_alloc))
+   if (.not.allocated(iatan)) then 
+      allocate(iatan(na_alloc))
+      iatan = 0
+   end if
    ia0 = 0
    iat = 0
    do ipt = 1, npt
@@ -855,7 +976,10 @@ end subroutine Set_iatan
 !........................................................................
 
 subroutine Set_icnct  ! chain type -> its first chain
-   if (.not.allocated(icnct)) allocate(icnct(nct))
+   if (.not.allocated(icnct)) then 
+      allocate(icnct(nct))
+      icnct = 0
+   end if
    ic = 1
    do ict = 1, nct
       icnct(ict) = ic
@@ -866,7 +990,10 @@ end subroutine Set_icnct
 !........................................................................
 
 subroutine Set_ipnpt  ! particle type -> its first particle
-   if (.not.allocated(ipnpt)) allocate(ipnpt(npt))
+   if (.not.allocated(ipnpt)) then 
+      allocate(ipnpt(npt))
+      ipnpt = 0
+   end if
    ip = 1
    do ipt = 1, npt
       ipnpt(ipt) = ip
@@ -877,7 +1004,10 @@ end subroutine Set_ipnpt
 !........................................................................
 
 subroutine Set_iatpt  ! particle type -> its first atom type
-   if (.not.allocated(iatpt)) allocate(iatpt(npt))
+   if (.not.allocated(iatpt)) then 
+      allocate(iatpt(npt))
+      iatpt = 0
+   end if
    iat = 1
    do ipt = 1, npt
       iatpt(ipt) = iat
@@ -888,7 +1018,10 @@ end subroutine Set_iatpt
 !........................................................................
 
 subroutine Set_ianpn  ! particle -> its first atom
-   if (.not.allocated(ianpn)) allocate(ianpn(np_alloc))
+   if (.not.allocated(ianpn)) then 
+      allocate(ianpn(np_alloc))
+      ianpn = 0
+   end if
    ip = 0
    ia = 1
    do ipt = 1, npt
@@ -903,7 +1036,10 @@ end subroutine Set_ianpn
 !........................................................................
 
 subroutine Set_ianat  ! atom type -> its first atom
-   if (.not.allocated(ianat)) allocate(ianat(nat))
+   if (.not.allocated(ianat)) then 
+      allocate(ianat(nat))
+      ianat = 0
+   end if
 !   ia = 1
 !   do iat = 1, nat
 !      ianat(iat) = ia
@@ -931,7 +1067,10 @@ end subroutine Set_ianat
 !........................................................................
 
 subroutine Set_ictct  ! two chain types -> chain type pair
-   if (.not.allocated(ictct)) allocate(ictct(nct,nct))
+   if (.not.allocated(ictct)) then 
+      allocate(ictct(nct,nct))
+      ictct = 0
+   end if
    ictjct = 0
    do ict = 1, nct
       do jct = ict, nct
@@ -945,7 +1084,10 @@ end subroutine Set_ictct
 !........................................................................
 
 subroutine Set_iptpt  ! two particle types -> particle type pair
-   if (.not.allocated(iptpt)) allocate(iptpt(npt,npt))
+   if (.not.allocated(iptpt)) then 
+      allocate(iptpt(npt,npt))
+      iptpt = 0
+   end if
    iptjpt = 0
    do ipt = 1, npt
       do jpt = ipt, npt
@@ -959,7 +1101,10 @@ end subroutine Set_iptpt
 !........................................................................
 
 subroutine Set_iatat  ! two atom types -> atom type pair
-   if (.not.allocated(iatat)) allocate(iatat(nat,nat))
+   if (.not.allocated(iatat)) then 
+      allocate(iatat(nat,nat))
+      iatat = 0
+   end if
    iatjat = 0
    do iat = 1, nat
       do jat = iat, nat
@@ -973,7 +1118,10 @@ end subroutine Set_iatat
 !........................................................................
 
 subroutine Set_isegpn   ! particle number -> segment number
-   if (.not.allocated(isegpn)) allocate(isegpn(np_alloc))
+   if (.not.allocated(isegpn)) then 
+      allocate(isegpn(np_alloc))
+      isegpn = 0
+   end if
    isegpn(1:np) = 0
    do ic = 1, nc
       ict = ictcn(ic)
@@ -987,7 +1135,10 @@ end subroutine Set_isegpn
 !........................................................................
 
 subroutine Set_bondnn   ! bond and particle -> bonded particle
-   if (.not.allocated(bondnn)) allocate(bondnn(2,np))
+   if (.not.allocated(bondnn)) then 
+      allocate(bondnn(2,np))
+      bondnn = 0
+   end if
    do ic = 1, nc
       ict = ictcn(ic)
       iseg = 1                                     ! first segment
@@ -1024,7 +1175,10 @@ end subroutine Set_ipnhn
 !........................................................................
 
 subroutine Set_genic  ! chain number -> generation number
-   if (.not.allocated(genic)) allocate(genic(nc))
+   if (.not.allocated(genic)) then 
+      allocate(genic(nc))
+      genic = 0
+   end if
    do igen = 0, ngen                                                    ! loop over generations
       ict = ictgen(igen)                                                ! chain type
       do ic = icnct(ict), icnct(ict)+ncct(ict)-1                        ! loop over chains
@@ -1041,8 +1195,14 @@ subroutine Set_bondcl   ! crosslink and particle -> crosslinked particle
    integer(4) :: jploc
 
    maxvalnbondcl = maxval(maxnbondcl(1:npt))
-   if (.not.allocated(nbondcl)) allocate(nbondcl(np_alloc))
-   if (.not.allocated(bondcl)) allocate(bondcl(maxvalnbondcl,np_alloc))
+   if (.not.allocated(nbondcl)) then 
+      allocate(nbondcl(np_alloc))
+      nbondcl = 0
+   end if
+   if (.not.allocated(bondcl)) then 
+      allocate(bondcl(maxvalnbondcl,np_alloc))
+      bondcl = 0
+   end if
 
    nbondcl = 0
    do igen = 0, ngen                                                    ! loop over generations
@@ -1158,9 +1318,18 @@ subroutine SetObjectParam2
 
 ! ... set txctct, txptpt, and txatat
 
-   if (.not.allocated(txctct)) allocate(txctct(nctct))
-   if (.not.allocated(txptpt)) allocate(txptpt(nptpt))
-   if (.not.allocated(txatat)) allocate(txatat(natat))
+   if (.not.allocated(txctct)) then 
+      allocate(txctct(nctct))
+      txctct = ""
+   end if
+   if (.not.allocated(txptpt)) then 
+      allocate(txptpt(nptpt))
+      txptpt = ""
+   end if
+   if (.not.allocated(txatat)) then 
+      allocate(txatat(natat))
+      txatat = ""
+   end if
 
    do ict = 1, nct
        do jct = ict, nct
@@ -1180,7 +1349,10 @@ subroutine SetObjectParam2
 
 ! ... set az
 
-    if (.not.allocated(az)) allocate(az(na_alloc))
+    if (.not.allocated(az)) then 
+       allocate(az(na_alloc))
+       az = 0.0E+00
+    end if
     do ia = 1, na
        iat     = iatan(ia)
        az(ia)  = zat(iat)
@@ -1189,7 +1361,10 @@ subroutine SetObjectParam2
 ! ... weak charge: allocate memory, set iatweakcharge, and set pointer iananweakcharge
 
    if (lweakcharge) then
-      if (.not.allocated(laz)) allocate(laz(na_alloc)) ! allocate memory for laz
+      if (.not.allocated(laz)) then 
+         allocate(laz(na_alloc)) ! allocate memory for laz
+         laz = .false.
+      end if
       if (jatweakcharge ==0) then   ! no explicit counterions
       elseif (jatweakcharge > 0) then   ! explcit countersions
          if (count(latweakcharge(1:nat)) /= 1) call Stop(txroutine,'count(latweakcharge(1:nat)) /= 1', uout)
@@ -1200,7 +1375,10 @@ subroutine SetObjectParam2
          if (iatweakcharge == 0) call Stop(txroutine,'iatweakcharge == 0', uout)
          if (naat(jatweakcharge) /= 1) call Stop(txroutine,'naat(jatweakcharge) /= 1', uout) ! particle carrying counter charge has to be an ion
 
-         if (.not.allocated(iananweakcharge)) allocate(iananweakcharge(na_alloc))
+         if (.not.allocated(iananweakcharge)) then 
+            allocate(iananweakcharge(na_alloc))
+            iananweakcharge = 0
+         end if
          iananweakcharge = 0                          ! set iananweakcharge
          ja = ianat(jatweakcharge)-1
 !!         write(*,*) ianat(jatweakcharge)-1; stop 99
@@ -1215,14 +1393,18 @@ subroutine SetObjectParam2
 !          write(*,'(a,i5)') 'atom type carrying counterion charge: jatweakcharge', jatweakcharge
 !          write(*,'(a,i5)') 'particle type carrying counterion charge', iptat(jatweakcharge)
 !          write(*,'(a,2i5)') ("iananweakcharge", ia, iananweakcharge(ia), ia = 1, na)
-!         stop
+!         stop 1
       end if
 
    end if
 
 ! ... calculate particle masses, masspt, and massipt
 
-    if (.not.allocated(masspt)) allocate(masspt(npt), massipt(npt))
+    if (.not.allocated(masspt)) then 
+       allocate(masspt(npt), massipt(npt))
+       masspt = 0.0E+00
+       massipt = 0.0E+00
+    end if
     iat = 0
     do ipt = 1, npt
        masspt(ipt) = Zero
@@ -1235,10 +1417,23 @@ subroutine SetObjectParam2
 
 ! ... calculate atom coordinates in the principal axes system and mompt and momipt
 
-    if (.not.allocated(poltens)) allocate(poltens(6,na_alloc))
+    if (.not.allocated(poltens)) then 
+       allocate(poltens(6,na_alloc))
+       poltens = 0.0E+00
+    end if
     ntemp = maxval(napt(1:npt))
-    if (.not.allocated(ra)) allocate(ra(3,ntemp,npt), dipa(3,ntemp,npt), poltensa(6,ntemp,npt), rasite(3,ntemp,npt))
-    if (.not.allocated(mompt)) allocate(mompt(3,npt), momipt(3,npt))
+    if (.not.allocated(ra)) then 
+       allocate(ra(3,ntemp,npt), dipa(3,ntemp,npt), poltensa(6,ntemp,npt), rasite(3,ntemp,npt))
+       ra = 0.0E+00
+       dipa = 0.0E+00
+       poltensa = 0.0E+00
+       rasite = 0.0E+00
+    end if
+    if (.not.allocated(mompt)) then 
+       allocate(mompt(3,npt), momipt(3,npt))
+       mompt = 0.0E+00
+       momipt = 0.0E+00
+    end if
     do ipt = 1, npt
        call PAxesSystem(ipt)
     end do
@@ -1250,7 +1445,10 @@ subroutine SetObjectParam2
 ! ... set lapolarization
 
     if (lpolarization) then
-       if (.not.allocated(lapolarization)) allocate(lapolarization(na_alloc))
+       if (.not.allocated(lapolarization)) then 
+          allocate(lapolarization(na_alloc))
+          lapolarization = .false.
+       end if
        lapolarization(1:na) =.false.
        do ia = 1, na
           ip = ipnan(ia)
@@ -1262,7 +1460,13 @@ subroutine SetObjectParam2
 
 ! ... calculate massp, massip, momp, and momip
 
-    if (.not.allocated(massp)) allocate(massp(np_alloc), massip(np_alloc), momp(3,np_alloc), momip(3,np_alloc))
+    if (.not.allocated(massp)) then 
+       allocate(massp(np_alloc), massip(np_alloc), momp(3,np_alloc), momip(3,np_alloc))
+       massp = 0.0E+00
+       massip = 0.0E+00
+       momp = 0.0E+00
+       momip = 0.0E+00
+    end if
     do ip = 1, np
        ipt = iptpn(ip)
        massp(ip) = masspt(ipt)
@@ -1273,7 +1477,10 @@ subroutine SetObjectParam2
 
 ! ... calculate the maximal atom-com distance, racom
 
-    if (.not.allocated(racom)) allocate(racom(npt))
+    if (.not.allocated(racom)) then 
+       allocate(racom(npt))
+       racom = 0.0E+00
+    end if
     do ipt = 1, npt
        racom(ipt) = Zero
        do iatloc = 1, natpt(ipt)
@@ -1284,7 +1491,11 @@ subroutine SetObjectParam2
 
 ! ... set r1atat and r2atat
 
-    if (.not.allocated(r1atat)) allocate(r1atat(natat), r2atat(natat))
+    if (.not.allocated(r1atat)) then 
+       allocate(r1atat(natat), r2atat(natat))
+       r1atat = 0.0E+00
+       r2atat = 0.0E+00
+    end if
     do iat = 1, nat
        do jat = iat, nat
           iatjat = iatat(iat,jat)
@@ -1295,7 +1506,11 @@ subroutine SetObjectParam2
 
 ! ... calculate the number of translational and rotational degrees of freedom
 
-    if (.not.allocated(itradegfree)) allocate(itradegfree(1:npt), irotdegfree(1:npt))
+    if (.not.allocated(itradegfree)) then 
+       allocate(itradegfree(1:npt), irotdegfree(1:npt))
+       itradegfree = 0
+       irotdegfree = 0
+    end if
     do ipt = 1, npt
        itradegfree(ipt) = 3*nppt(ipt)
        irotdegfree(ipt) = 3*nppt(ipt)

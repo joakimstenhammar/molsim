@@ -197,6 +197,7 @@ subroutine IONList(iStage)
       maxnneigh = max(500, maxnneigh)                                        ! 2014-11-30
       maxnneigh = max(1000, maxnneigh)                                       ! 2015-06-09
       maxnneigh = max(2000, maxnneigh)                                       ! 2015-08-06
+      maxnneigh = max(np-1, maxnneigh)                                         ! 2016-08-15
       if(maxnneigh < 0) call Stop('IONlist', 'maxnneigh < 0', uout)
 
 ! ... set npartperproc
@@ -224,6 +225,9 @@ subroutine IONList(iStage)
 
       if (.not.allocated(ipnploc)) then
          allocate(ipnploc(npartperproc), nneighpn(npartperproc), jpnlist(maxnneigh,npartperproc), stat = ierr)
+         ipnploc = 0
+         nneighpn = 0
+         jpnlist = 0
          if(ierr /= 0) then
             write(*,'(a,i10)') 'maxnneigh   = ', maxnneigh
             call WriteIOStat(txroutine, 'memory allocation failed', ierr, 2, 6)
@@ -421,6 +425,7 @@ subroutine LoadBalanceRecSpace
    integer(4) :: iproc, ikvec2, nz, ny, nx, Getnkvec
 
    allocate(load(0:ncut,0:ncut))
+   load = 0
 
 ! ... determine load for each (nz,ny)
 
@@ -525,7 +530,10 @@ subroutine NList(iStage)
          if (itest == 4) call TestLList(uout)
       end if
 
-      if (.not.allocated(drosum)) allocate(drosum(3,np_alloc))
+      if (.not.allocated(drosum)) then 
+         allocate(drosum(3,np_alloc))
+         drosum = 0.0E+00
+      end if
 
    case (iBeforeMacrostep)
 
@@ -624,7 +632,7 @@ subroutine SetVList
 
    character(40), parameter :: txroutine ='SetVList'
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
 ! ... generate npmyid, ipnploc, nneighpn, and jpnlist
 
@@ -644,7 +652,7 @@ subroutine SetVList
       end if
    end if
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine SetVList
 
@@ -1030,7 +1038,10 @@ subroutine TestVList(unit)
 
 ! ... allocate memory
 
-   if (.not.allocated(nneighbour)) allocate(nneighbour(maxnneigh))
+   if (.not.allocated(nneighbour)) then 
+      allocate(nneighbour(maxnneigh))
+      nneighbour = 0
+   end if
 
 ! ... write process, number of particles, and total number of neighbours
 
@@ -1112,7 +1123,7 @@ subroutine SetLList(distance)
 
    if (txbc /= 'xyz') call Stop(txroutine, 'txbc /= ''xyz''', uout)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    do ip = 1, np
      ipnploc(ip) = ip
@@ -1130,6 +1141,9 @@ subroutine SetLList(distance)
       ncellllist = min(ncellllist, 1000)
       if (.not.allocated(lcellllist)) then
          allocate(lcellllist(ncellllist), headllist(ncellllist), jpllist(np_alloc), stat = ierr)
+         lcellllist = .false.
+         headllist = 0
+         jpllist = 0
          if(ierr /= 0) then
             write(*,'(a,i10)') 'ncellllist   = ', ncellllist
             call WriteIOStat(txroutine, 'memory allocation failed', ierr, 2, 6)
@@ -1148,7 +1162,7 @@ subroutine SetLList(distance)
       headllist(icell) = ip
    end do
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine SetLList
 

@@ -77,11 +77,17 @@ subroutine MDDriver(iStage)
 
       call IOMD(iStage)
       allocate(rodd(3,np_alloc))
+      rodd = 0.0E+00
       allocate(roddo(3,np_alloc))
+      roddo = 0.0E+00
       allocate(roddd(3,np_alloc))
+      roddd = 0.0E+00
       allocate(quadd(0:3,np_alloc))
+      quadd = 0.0E+00
       allocate(quaddo(0:3,np_alloc))
+      quaddo = 0.0E+00
       allocate(quaddd(0:3,np_alloc))
+      quaddd = 0.0E+00
       rodd = Zero
       roddo = Zero
       roddd = Zero
@@ -95,7 +101,7 @@ subroutine MDDriver(iStage)
 
    case (iSimulationStep)
 
-      call CpuAdd('start', txroutine, 0, uout)
+      if (ltime) call CpuAdd('start', txroutine, 0, uout)
       if (integ == 'velver') then
          call VelVer(iStage)
       else if (integ(1:4) == 'gear') then
@@ -107,7 +113,7 @@ subroutine MDDriver(iStage)
       if (tvscl > Zero) call ScaleVel
       if (tlscl > Zero) call ScaleLength
       if (itest == 1) call TestSimulation
-      call CpuAdd('stop', txroutine, 0, uout)
+      if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
    case (iAfterSimulation)
 
@@ -209,7 +215,10 @@ subroutine VelVer(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iSimulationStep)
 
-   if(.not.allocated(quado)) allocate(quado(0:3,np))
+   if(.not.allocated(quado)) then 
+      allocate(quado(0:3,np))
+      quado = 0.0E+00
+   end if
 
 #if defined (_XXXPAR_)
    load = ceiling(np/float(nproc))    ! mpi_gather requires eqaual load (ipmyid(1:2) may provide unequal load)
@@ -225,7 +234,7 @@ subroutine VelVer(iStage)
    ipupp = np
 #endif
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ............... new positions and quaternions ...............
 
@@ -278,11 +287,11 @@ subroutine VelVer(iStage)
 
 ! ............... energy and force evaulation ...............
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    call UTotal(iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ............... new linear and quaternion acceleration and velocity ...............
 
@@ -348,7 +357,7 @@ subroutine VelVer(iStage)
 
    if (lintsite) call SetAtomPos(iplow, ipupp, .false.)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine VelVer
 
@@ -380,7 +389,7 @@ subroutine Gear(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iSimulationStep)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ... set taylor and gear coefficients  (need only to be done once)
 
@@ -455,11 +464,11 @@ subroutine Gear(iStage)
 
 ! ............... energy and force evaulation ...............
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    call UTotal(iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
 ! ............   correct   .............
 
@@ -529,7 +538,7 @@ subroutine Gear(iStage)
 
    call SetAtomProp(iplow, ipupp, .false.)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine Gear
 

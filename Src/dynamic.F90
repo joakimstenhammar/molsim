@@ -123,7 +123,7 @@ subroutine DynamicDriver(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -193,7 +193,7 @@ subroutine DynamicDriver(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 contains
 
@@ -241,7 +241,7 @@ subroutine MSD(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -270,7 +270,7 @@ subroutine MSD(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine MSD
 
@@ -300,7 +300,7 @@ subroutine OrixTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -320,7 +320,7 @@ subroutine OrixTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OrixTCF
 
@@ -349,7 +349,7 @@ subroutine OriyTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -369,7 +369,7 @@ subroutine OriyTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OriyTCF
 
@@ -398,7 +398,7 @@ subroutine OrizTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -418,7 +418,7 @@ subroutine OrizTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine OrizTCF
 
@@ -447,7 +447,7 @@ subroutine LinVelTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -468,7 +468,7 @@ subroutine LinVelTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine LinVelTCF
 
@@ -497,7 +497,7 @@ subroutine AngVelTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -517,7 +517,7 @@ subroutine AngVelTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine AngVelTCF
 
@@ -546,7 +546,7 @@ subroutine ForTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -566,7 +566,7 @@ subroutine ForTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine ForTCF
 
@@ -595,7 +595,7 @@ subroutine TorTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -615,7 +615,7 @@ subroutine TorTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine TorTCF
 
@@ -644,7 +644,7 @@ subroutine IDMTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = sfnplow
@@ -664,7 +664,7 @@ subroutine IDMTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine IDMTCF
 
@@ -693,7 +693,7 @@ subroutine UtotTCF(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    select case (iStage)
    case (iWriteInput)
       sf%nplow = 1
@@ -713,7 +713,7 @@ subroutine UtotTCF(iStage)
       call CFWrite(txheading, sf, cf)
       call MemoryDynamic('deallocate', sf, cf)
    end select
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine UtotTCF
 
@@ -786,14 +786,30 @@ subroutine MemoryDynamic(str, sf, cf)
    integer(4) :: ierr
 
    if (str(1:1) == 'a') then
-      if(.not. allocated(cf%sf)) allocate(cf%sf(cf%nolevel,cf%nlevel,sf%ndim,np), stat = ierr)
-      if(.not. allocated(cf%sf_aver)) allocate(cf%sf_aver(sf%ndim,cf%nolevel,np), stat = ierr)
-      if(.not. allocated(cf%sf_mean)) allocate(cf%sf_mean(sf%ndim,sf%ngr), stat = ierr)
-      if(.not. allocated(cf%cf)) allocate(cf%cf(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
-      if(.not. allocated(cf%cf2)) allocate(cf%cf2(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
-      if(.not. allocated(cf%Np)) allocate(cf%Np(cf%nlevel,cf%nolevel,np), stat = ierr)
-      if(.not. allocated(cf%Ngr)) allocate(cf%Ngr(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
-      if(.not. allocated(cf%Nlev)) allocate(cf%Nlev(cf%nolevel,np), stat = ierr)
+      if(.not. allocated(cf%sf)) then 
+         allocate(cf%sf(cf%nolevel,cf%nlevel,sf%ndim,np), stat = ierr)
+      end if
+      if(.not. allocated(cf%sf_aver)) then 
+         allocate(cf%sf_aver(sf%ndim,cf%nolevel,np), stat = ierr)
+      end if
+      if(.not. allocated(cf%sf_mean)) then 
+         allocate(cf%sf_mean(sf%ndim,sf%ngr), stat = ierr)
+      end if
+      if(.not. allocated(cf%cf)) then 
+         allocate(cf%cf(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
+      end if
+      if(.not. allocated(cf%cf2)) then 
+         allocate(cf%cf2(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
+      end if
+      if(.not. allocated(cf%Np)) then 
+         allocate(cf%Np(cf%nlevel,cf%nolevel,np), stat = ierr)
+      end if
+      if(.not. allocated(cf%Ngr)) then 
+         allocate(cf%Ngr(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
+      end if
+      if(.not. allocated(cf%Nlev)) then 
+         allocate(cf%Nlev(cf%nolevel,np), stat = ierr)
+      end if
       if (ierr /= 0) call WriteIOStat(txroutine, 'memory allocation failed', ierr, 2, 6)
    else if (str(1:1) == 'd') then
       if(allocated(cf%sf)) deallocate(cf%sf)
@@ -1059,9 +1075,16 @@ subroutine CFWrite(txheading, sf, cf)
    character(5) :: str
 
    allocate(CF0(1:sf%ngr), CF0sd(1:sf%ngr))
+   CF0 = 0.0E+00
+   CF0sd = 0.0E+00
    allocate(CFinf(1:sf%ngr), CFinfsd(1:sf%ngr))
+   CFinf = 0.0E+00
+   CFinfsd = 0.0E+00
    allocate(CFnorm(1:sf%ngr), CFnormsd(1:sf%ngr))
+   CFnorm = 0.0E+00
+   CFnormsd = 0.0E+00
    allocate(nbin(1:sf%ngr))
+   nbin = 0
 
 ! ... initiate t_low, t_mid, and t_upp
 

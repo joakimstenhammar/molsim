@@ -52,7 +52,7 @@ subroutine Group(iStage)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 0, uout)
+   if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -100,13 +100,21 @@ subroutine Group(iStage)
 
       allocate(grvar(ngrvar))
       allocate(igrpn(np_alloc,2))
+      igrpn = 0
       allocate(iptgr(maxngr,2))
+      iptgr = 0
       allocate(iatgr(maxngr,2))
+      iatgr = 0
       allocate(natgr(maxngr,2))
+      natgr = 0
       allocate(igrgr(maxngr,maxngr))
+      igrgr = 0
       allocate(igrpnt(2,0:maxngr))
+      igrpnt = 0
       allocate(txgr(maxngr))
+      txgr = ""
       allocate(txgrgr(ngrgr))
+      txgrgr = ""
 
 ! ... set igrpnt
 
@@ -237,7 +245,7 @@ subroutine Group(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 0, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine Group
 

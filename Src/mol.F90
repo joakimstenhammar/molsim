@@ -230,6 +230,8 @@ module MolModule
    logical       :: lana                   !=.true. analysis
    logical       :: lmix                   !=.true. mixed tasks
 
+   logical       :: ltime                  !=.true. timing statistics
+
    logical       :: lnve                   !=.true. if NVE ensemble
    logical       :: lnvt                   !=.true. if NVT ensemble
    logical       :: lntp                   !=.true. if NTP ensemble

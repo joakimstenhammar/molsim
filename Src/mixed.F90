@@ -483,6 +483,7 @@ subroutine Mixed6(ip)
    rewind(uin)
    read(uin,nmlMixed6)
    allocate(sa(-1:nbin))
+   sa = 0.0E+00
    call WriteHead(1, txheading, uout)
    write(uout,'(a,6f10.3)') 'lower and upper radial dist.   = ', rlow, rupp
    write(uout,'(a,6f10.3)') 'lower and upper theta angel    = ', thlow, thupp

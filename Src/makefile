@@ -20,8 +20,10 @@
 VER=
 VERFILE = ../version.conf
 ifneq ("$(wildcard $(VERFILE))","")
-VER= .$(shell cat ${VERFILE} )
+VER=.$(shell cat ${VERFILE} )
 endif
+
+BINDIR:=$(abspath ../Bin)
 
  
 #*****************************************************************
@@ -264,14 +266,16 @@ all     : molsim_ser molsim_par
 ser     : molsim_ser
 par     : molsim_par
 ver	:
-	@echo Version is specified as \"$(VER)\"
+	@echo Version is specified as \"$(VER) $(BINDIR)\"
  
 molsim_ser     : molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
-	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe; cp molsim_ser $(HOME)/bin/molsim_ser$(VER)
+	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe; 
+	cp molsim_ser $(HOME)/bin/molsim_ser$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_ser$(VER)
 molsim_par     : molsim_par.o $(OBJS2)
 	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
-	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe; cp molsim_par $(HOME)/bin/molsim_par$(VER)
+	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe; 
+	cp molsim_par $(HOME)/bin/molsim_par$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_par$(VER)
 moldyn         : moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
 	mkdir -p ../Bin; mv moldyn.exe ../Bin/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
@@ -381,7 +385,7 @@ tidy 	:
 #*****************************************************************
 
 clean 	:
-	rm -f *.o *.mod ../bin/*.exe
+	rm -f *.o *.mod *.i90 ../bin/*.exe
  
 #*****************************************************************
 #*                         Print                                 *

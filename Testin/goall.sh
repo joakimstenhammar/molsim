@@ -16,8 +16,14 @@ do
 done
 }
 
+if [ -f "../version.conf" ]
+then
+        version=".$(cat ../version.conf)"
+else
+        verson=""
+fi
 #####################
-molsim="../../Src/molsim_ser"
+molsim="molsim_ser$version"
 core=1
 ####################
 rm -r out
@@ -264,6 +270,9 @@ $molsim  ellipsoidpro.dip.mc      $core
 $molsim  w.mc.mix                 $core
 $molsim  b.md.mix                 $core
 $molsim  hs.b2.mix                $core
+
+#bugfixes
+$molsim  ltime                    $core
 
 echo
 echo "Remove group and dump files"

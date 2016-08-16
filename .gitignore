@@ -1,5 +1,6 @@
 *.o
 *.mod
+*.i90
 Bin/
 version.conf
 Testin/in/

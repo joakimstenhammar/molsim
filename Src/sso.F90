@@ -68,9 +68,18 @@ subroutine SSODriver(iStage)
    case (iWriteInput) ! Question: can the reading be moved to iReadInput?
 !  Reply: not yet: firt the content of SSODriver has to be moved to IOMC, but let's wait
 
-      if (.not. allocated(dtransso)) allocate(dtransso(npt))
-      if (.not. allocated(maxdtransso)) allocate(maxdtransso(npt))
-      if (.not. allocated(dtranfac)) allocate(dtranfac(npt))
+      if (.not. allocated(dtransso)) then 
+         allocate(dtransso(npt))
+         dtransso = 0.0E+00
+      end if
+      if (.not. allocated(maxdtransso)) then 
+         allocate(maxdtransso(npt))
+         maxdtransso = 0.0E+00
+      end if
+      if (.not. allocated(dtranfac)) then 
+         allocate(dtranfac(npt))
+         dtranfac = 0.0E+00
+      end if
 
       dtransso  = One
       nstepzero   = ceiling(sqrt(real(nstep)))
@@ -109,21 +118,54 @@ subroutine SSODriver(iStage)
          if(nstepzero * (One - partfac**(nssopart + 1))/(One - partfac) < nstep) nssopart = nssopart + 1
       end if
 
-      if(.not. allocated(curdtranpt)) allocate(curdtranpt(npt))
-      if(.not. allocated(invrsso)) allocate(invrsso(npt))
+      if(.not. allocated(curdtranpt)) then 
+         allocate(curdtranpt(npt))
+         curdtranpt = 0.0E+00
+      end if
+      if(.not. allocated(invrsso)) then 
+         allocate(invrsso(npt))
+         invrsso = 0.0E+00
+      end if
 
-      if(.not. allocated(d2tot)) allocate(d2tot(npt))
-      if(.not. allocated(steptot)) allocate(steptot(npt))
+      if(.not. allocated(d2tot)) then 
+         allocate(d2tot(npt))
+         d2tot = 0.0E+00
+      end if
+      if(.not. allocated(steptot)) then 
+         allocate(steptot(npt))
+         steptot = 0
+      end if
 
-      if(.not. allocated(locmob)) allocate(locmob(0:nssobin))
-      if(.not. allocated(locmobe)) allocate(locmobe(0:nssobin))
-      if(.not. allocated(locmobs)) allocate(locmobs(0:nssobin))
+      if(.not. allocated(locmob)) then 
+         allocate(locmob(0:nssobin))
+         locmob = 0.0E+00
+      end if
+      if(.not. allocated(locmobe)) then 
+         allocate(locmobe(0:nssobin))
+         locmobe = 0.0E+00
+      end if
+      if(.not. allocated(locmobs)) then 
+         allocate(locmobs(0:nssobin))
+         locmobs = 0.0E+00
+      end if
 
-      if(.not. allocated(nssostep)) allocate(nssostep(npt,nssobin))
-      if(.not. allocated(dssostep)) allocate(dssostep(npt,nssobin))
-      if(.not. allocated(dssostep2)) allocate(dssostep2(npt,nssobin))
+      if(.not. allocated(nssostep)) then 
+         allocate(nssostep(npt,nssobin))
+         nssostep = 0
+      end if
+      if(.not. allocated(dssostep)) then 
+         allocate(dssostep(npt,nssobin))
+         dssostep = 0.0E+00
+      end if
+      if(.not. allocated(dssostep2)) then 
+         allocate(dssostep2(npt,nssobin))
+         dssostep2 = 0.0E+00
+      end if
 
-      if(.not.allocated(dtranout)) allocate(dtranout(npt,nssopart,3))
+      if(.not.allocated(dtranout)) then 
+         allocate(dtranout(npt,nssopart,3))
+         dtranout = 0.0E+00
+      end if
 !     if(.not.allocated(dtranfac)) allocate(dtranfac(npt))
 
    case (iBeforeSimulation)
@@ -390,7 +432,7 @@ subroutine SSOMove(iStage)
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    imovetype = ispartsso
 
@@ -456,7 +498,7 @@ subroutine SSOMove(iStage)
 !    if (lradatbox) call CheckAtomBCTM(natm, rtm, lboxoverlap)
    if (itestmc == 2) call TestMCMove(uout)
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    if (lboxoverlap) goto 200
 
