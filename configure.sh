@@ -14,7 +14,7 @@
 #        AUTHOR: YOUR NAME (), 
 #  ORGANIZATION: 
 #       CREATED: 28/07/2016 09:09
-#      REVISION: 2016-08-15 17:12
+#      REVISION: 2016-08-16 10:51
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
@@ -109,4 +109,6 @@ esac
 for file in Src/molsim_*
 do
    sed -i "s|^bin=.*|bin=${PWD}/Bin|g" $file
+#ignore changes to file in git
+   git update-index --assume-unchanged $file
 done
