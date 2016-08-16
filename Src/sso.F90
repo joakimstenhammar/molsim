@@ -7,16 +7,38 @@
 ! ... Module for the SSO simulation
 
  module SSOModule
-   use MCModule
-   integer(8),    allocatable    :: steptot(:)
-   real(8), allocatable          :: d2tot(:)      ! long simulations
-   real(8),       allocatable    :: dssostep(:,:) ! has to be of kind 8 to handle
-   real(8),       allocatable    :: dssostep2(:,:)! has to be of kind 8 to handle
-   integer(8),    allocatable    :: nssostep(:,:) ! long simulations
-   real(8), allocatable          :: invrsso(:)
-   real(8), allocatable          :: curdtranpt(:)
+   implicit none
+   private
+   public SSOSetup, DoSSOMove
+
+   type :: step
+      integer(8)  :: n  !number of steps
+      real(8)     :: d  !displacement
+      real(8)     :: d2 !squared displacement
+   end type step
+
+   !define what happens if two variables of type step are added 
+   interface operator(+)
+      module procedure stepadd
+   end interface operator(+)
+
+   type(step), allocatable :: tots(:)     !total steps
+   type(step), allocatable :: ssos(:,:)     !sso steps
+
+   real(8),       allocatable    :: invrsso(:)
+   real(8),       allocatable    :: curdtranpt(:)
 
    contains
+
+      !define what happens if two variables of type step are added 
+      pure function stepadd(s1, s2) result(add)
+         type(step), intent(in) :: s1, s2
+         type(step)  :: add
+         add%n = s1%n + s2%n
+         add%d = s1%d + s2%d
+         add%d2 = s1%d + s2%d
+      end function stepadd
+
 
       !************************************************************************
       !*                                                                      *
@@ -28,6 +50,12 @@
 
       subroutine SSOSetup(iStage)
 
+         use MolModule, only: ltrace, txstart
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: uin, uout, ucnf
+         use MolModule, only: Zero, Half, One, Two, Three, Five
+         use MolModule, only: npt, nstep, istep
+         use MolModule, only: lbcbox, lbcrd, lbcto, lbcsph, lbcell, lbccyl, boxlen, cellside, sphrad, ellrad, cylrad, cyllen
          implicit none
 
          integer(4), intent(in) :: iStage
@@ -35,35 +63,52 @@
          character(40), parameter :: txroutine ='SSODriver'
 
          integer(4)  :: ipt
-         integer     :: mbin, dbin, tmpstep, ibin, nstepend, lbin
-         real(8)     :: InvInt, InvFlt
-         logical, save  :: ltestsso
+         integer(4)  :: maxbin, upperbin, lowerbin ! bin where the local mobility is found and upper and lower boundary
+         integer(4)  :: ibin, ipart
 
-         real(8), allocatable, save :: locmob(:)
-         real(8), allocatable, save :: locmobe(:)
-         real(8), allocatable, save :: locmobs(:)
          real(8), allocatable, save :: dtranout(:,:,:)  ! output of dtrans
+
+         !input variables--------------------------------------------------------------------------
          real(8), allocatable, save :: dtransso(:) ! initial displacement parameters
-         real(8), allocatable, save :: maxdtransso(:)! maximal allowed displacement parameters
-         real(8), allocatable, save :: dtranfac(:)   !increase in displacement parameter
          integer(4), save           :: nstepzero     ! length of first part of simulation where local mobility is measured
          integer(4), save           :: nssobin
-         real(8), save              :: partfac       ! increment in length of parts
+         integer(4), save           :: nstepend
+         logical, save              :: ltestsso
+         real(8), allocatable, save :: maxdtransso(:)! maximal allowed displacement parameters
+         real(8), allocatable, save :: dtranfac(:)   !increase in displacement parameter
+         !-----------------------------------------------------------------------------------------
 
-         integer(8), save           :: istepnext
-         integer(4), save           :: issopart
-         integer(4), save           :: nssopart
+         type  :: ssopart
+            real(8)     :: fac      !increment of part length
+            integer(4)  :: nextstep !step at which next part starts
+            integer(4)  :: i        !current part
+            integer(4)  :: n        !number of parts
+         end type ssopart
+         type(ssopart), save  :: part
+
+         type  :: ssoparam
+            real(8)     :: used     ! used dtran
+            real(8)     :: opt      ! dtran with the highest mobility
+            real(8)     :: err   ! accuracy of opt
+         end type ssoparam
+         type(ssoparam), save, allocatable  :: param(:,:)
+
+         type  :: mobility
+            real(8)     :: val         !value
+            real(8)     :: error       !error
+            real(8)     :: smooth      !smooth
+         end type mobility
+         type(mobility), allocatable, save :: mob(:)
+
 
          namelist /nmlSPartSSO/ dtransso, nstepzero, nssobin, nstepend, ltestsso, maxdtransso, dtranfac
 
          if (ltrace) call WriteTrace(2, txroutine, iStage)
 
          select case (iStage)
-      !  case (iReadInput)   is omited, as lpspartsso is set during iStage == iWriteInput
+         case (iReadInput)
 
-         case (iWriteInput) ! Question: can the reading be moved to iReadInput?
-      !  Reply: not yet: firt the content of SSODriver has to be moved to IOMC, but let's wait
-
+            ! read in nmlSpartSSO------------------------------------------------------------------
             if (.not. allocated(dtransso)) allocate(dtransso(npt))
             if (.not. allocated(maxdtransso)) allocate(maxdtransso(npt))
             if (.not. allocated(dtranfac)) allocate(dtranfac(npt))
@@ -90,62 +135,66 @@
 
             rewind(uin)
             read(uin,nmlSPartSSO)
+            !--------------------------------------------------------------------------------------
 
-            if (nstepzero + nstepend > nstep) call stop(txroutine, 'nstepzero + nstepend > nstep', uout)
-            if(nstepend < nstepzero) call stop(txroutine, 'nstepend < nstepzero', uout)
-            if(nstepzero == 0 .or. nstepend == 0) then
-               partfac = 1
-               nssopart = 1
+         case (iWriteInput) 
+
+            ! check conditions---------------------------------------------------------------------
+            if (nstepzero + nstepend > nstep) call Stop(txroutine, 'nstepzero + nstepend > nstep', uout)
+            if (nstepend < nstepzero) call Stop(txroutine, 'nstepend < nstepzero', uout)
+            dtransso = abs(dtransso) !dtransso must always be positive
+            !--------------------------------------------------------------------------------------
+
+            ! calculate part lengths---------------------------------------------------------------
+            if((nstepzero .le. 0) .or. (nstepend .le. 0) .or. (nstepzero + nstepend > nstep) ) then
+               call Warn(txroutine, "stepzero and nstepend are wrong. Doing only one SSO part", uout)
+               part%fac = One
+               part%n = 1
             else if (nstepzero == nstepend) then
-               partfac = One
-               nssopart = int(nstep * InvInt(nstepend))
+               part%fac = One
+               part%n = nstep/nstepend
             else
-               partfac = -real(nstepzero - nstep)*InvInt(nstep - nstepend)
-               nssopart = int(log(real(nstepend*InvInt(nstepzero)))/log(partfac))
-               if(nstepzero * (One - partfac**(nssopart + 1))/(One - partfac) < nstep) nssopart = nssopart + 1
+               part%fac = -real(nstepzero - nstep)/real(nstep - nstepend)
+               part%n = int(log(real(nstepend/real(nstepzero)))/log(part%fac))
+               if(nstepzero * (One - part%fac**(part%n + 1))/(One - part%fac) < nstep) part%n = part%n + 1
             end if
+            ! -------------------------------------------------------------------------------------
 
+            ! allcoate-----------------------------------------------------------------------------
             if(.not. allocated(curdtranpt)) allocate(curdtranpt(npt))
             if(.not. allocated(invrsso)) allocate(invrsso(npt))
 
-            if(.not. allocated(d2tot)) allocate(d2tot(npt))
-            if(.not. allocated(steptot)) allocate(steptot(npt))
+            if(.not. allocated(tots)) allocate(tots(npt))
+            if(.not. allocated(ssos)) allocate(ssos(npt,nssobin))
 
-            if(.not. allocated(locmob)) allocate(locmob(0:nssobin))
-            if(.not. allocated(locmobe)) allocate(locmobe(0:nssobin))
-            if(.not. allocated(locmobs)) allocate(locmobs(0:nssobin))
+            if(.not. allocated(mob)) allocate(mob(0:nssobin))
+            if(.not.allocated(param)) allocate(param(npt,part%n))
+            ! -------------------------------------------------------------------------------------
 
-            if(.not. allocated(nssostep)) allocate(nssostep(npt,nssobin))
-            if(.not. allocated(dssostep)) allocate(dssostep(npt,nssobin))
-            if(.not. allocated(dssostep2)) allocate(dssostep2(npt,nssobin))
 
-            if(.not.allocated(dtranout)) allocate(dtranout(npt,nssopart,3))
-      !     if(.not.allocated(dtranfac)) allocate(dtranfac(npt))
 
          case (iBeforeSimulation)
 
+            ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               read(ucnf) curdtranpt, dssostep, dssostep2, nssostep, istepnext, issopart, d2tot, steptot, dtranout
+               read(ucnf) curdtranpt, part%i, ssos, tots, param
             else
                curdtranpt(1:npt) = dtransso(1:npt)
-               dssostep = Zero
-               dssostep2 = Zero
-               nssostep = 0
-      !        naccsso = 0
-      !        ntotsso = 0
-               istepnext = nstepzero
-               issopart = 1
-               dtranout = Zero
-               d2tot = Zero
-               steptot = 0
+               ssos=step(0, Zero, Zero)
+               tots=step(0, Zero, Zero)
+               part%i = 1
+               part%nextstep = nstepzero
+               param = ssoparam(Zero, Zero, Zero)
             end if
-
-            if(nssopart == 1) istepnext = nstep
-
+            if(part%i == part%n) part%nextstep = nstep
             do ipt = 1, npt
-               invrsso(ipt) = InvFlt(curdtranpt(ipt)) * real(nssobin) * Two
+               if (curdtranpt(ipt) > 0) then
+                  invrsso(ipt) = real(nssobin) * Two / curdtranpt(ipt)
+               else
+                  invrsso(ipt) = Zero
+               end if
             end do
-      !     dtranfac(1:npt) = max((nssobin + 3)*InvInt(nssobin),1.5)
+            !--------------------------------------------------------------------------------------
 
 
          case (iBeforeMacrostep)                       ! ignore macrosteps
@@ -154,102 +203,99 @@
 
          case (iSimulationStep)
 
-            if(istep == istepnext) then
+            if(istep == part%nextstep) then
 
                if(ltestsso) then
+                  call WriteHead(2, 'SSO - Results of current part', uout)
                end if
 
                do ipt = 1, npt
 
-                  dtranout(ipt,issopart,1) = curdtranpt(ipt)
+                  param(ipt,part%i)%used = curdtranpt(ipt)
 
                   call CalcLocMob(ipt)
 
-                  mbin = 0
-                  dbin = 0
-                  do ibin = 1, nssobin - 1
-                     if(locmobs(ibin) > locmobs(ibin + 1) .and. locmobs(ibin) > locmobs(mbin) ) mbin = ibin
-                  end do
 
-                  if(mbin == 0) then  ! no local maximum found, maximum at border
-                     mbin = nssobin
-                     dbin = ceiling((dtranfac(ipt) - One)*nssobin)
+                  ! get bin with maximum mobility--------------------------------------------------
+                  maxbin = 0
+                  do ibin = 1, nssobin - 1
+                     if(mob(ibin)%smooth > mob(ibin + 1)%smooth .and. mob(ibin)%smooth > mob(maxbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
+                        maxbin = ibin
+                     end if
+                  end do
+                  if(maxbin == 0) then  ! no local maximum found, maximum at border
+                     maxbin = nssobin
+                  end if
+                  !--------------------------------------------------------------------------------
+
+                  ! get upper boundary (relative to maxbin)----------------------------------------
+                  upperbin = 0
+                  if(maxbin == nssobin) then
+                     upperbin = ceiling((dtranfac(ipt) - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
                   else
-                     do ibin = mbin + 1 , nssobin !find position where locmob is significantly different from maximum
-                        if (locmobs(mbin) - locmobe(mbin) .ge. locmobs(ibin) + locmobe(ibin)) then
-                           dbin = (ibin - mbin) + 1
-      !                      dtranfac(ipt) = Half*(One + sqrt(Four*dtranfac(ipt) - Three)) !change dtranfac? - NO
+                     do ibin = maxbin + 1 , nssobin !find position where locmob is significantly different from maximum
+                        if ( (mob(maxbin)%smooth - mob(maxbin)%error) .ge. (mob(ibin)%smooth + mob(ibin)%error) ) then
+                           upperbin = (ibin - maxbin) + 1
                            exit
                         end if
                      end do
-                     if (dbin == 0) then        ! no significantly different position found
-                        dbin = ceiling(0.2*nssobin)
+                     if (upperbin == 0) then        ! no significantly different position found
+                        upperbin = 1 + ceiling(Two*mob(maxbin)%error*(nssobin - maxbin)/real((mob(maxbin)%smooth + mob(maxbin)%error) - (mob(nssobin)%smooth + mob(nssobin)%error)) ) ! extrapolate position
                      end if
                   end if
+                  ! -------------------------------------------------------------------------------
 
-                  do ibin = mbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
-                     if (locmobs(mbin) - locmobe(mbin) .ge. locmobs(ibin) + locmobe(ibin)) then
-                        lbin = mbin - ibin
+                  ! get lower boundary (relative to maxbin)----------------------------------------
+                  lowerbin = 0
+                  do ibin = maxbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
+                     if (mob(maxbin)%smooth - mob(maxbin)%error .ge. mob(ibin)%smooth + mob(ibin)%error) then
+                        lowerbin = maxbin - ibin
                         exit
                      end if
                   end do
+                  !--------------------------------------------------------------------------------
 
-                  dtranout(ipt,issopart,2) = Two*ssorad(mbin,ipt)
-                  dtranout(ipt,issopart,3) = ssorad(max((dbin + lbin),2),ipt)
+                  !store results in param----------------------------------------------------------
+                  param(ipt,part%i)%opt = Two*ssorad(maxbin,ipt)
+                  param(ipt,part%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
+                  !--------------------------------------------------------------------------------
 
+                  !print tests---------------------------------------------------------------------
                   if(ltestsso) then
-                     write(ulist,'(a,a,I5,I5, I5)') '#','locmob of',ipt, issopart, istepnext
-                     write(ulist,'(a,I5)')  '#', nssobin
-                     write(ulist,'(g15.5,3(a9,g15.5))')
-                     write(ulist,'(g15.5,a,g15.5,a,g15.5,a,g15.5)') &
-                     (ssorad(ibin,ipt), char(9), locmob(ibin), char(9), locmobe(ibin), char(9), locmobs(ibin), ibin = 1,nssobin)
-                     write(ulist,'(a)')  ''
-                     write(ulist,'(a)')  ''
-                     write(ulist,'(a,a,I4)')  '#', 'dtranout of',ipt
-                     write(ulist,'(a,i5)')  '#', 1
-                     write(ulist,'(g15.5,a,g15.5,a,g15.5)') dtranout(ipt,issopart,1), char(9), dtranout(ipt,issopart,2), char(9), dtranout(ipt,issopart,3)
-      !              write(ulist,'(a)')  ''
-      !              write(ulist,'(a)')  ''
-      !              write(ulist,'(a,a,I4)') '#',  'naccrej of',ipt
-      !              write(ulist,'(a,i5)')  '#', nssobin
-      !              write(ulist,'(g15.5,a,I15,a,I15)') (ssorad(ibin,ipt), char(9), naccsso(ipt,ibin), char(9), ntotsso(ipt,ibin), ibin = 1,nssobin)
-                     write(ulist,'(a)')  ''
-                     write(ulist,'(a)')  ''
-                     write(ulist,'(a,a,I4)') '#',  'd2 of',ipt
-                     write(ulist,'(a,i5)')  '#', nssobin
-                     write(ulist,'(g15.5)') d2tot(ipt)*InvInt(steptot(ipt))
-                     write(ulist,'(a)')  ''
-                     write(ulist,'(a)')  ''
+                     write(uout,'(a,I0,a,I0,a,I0)') 'mob of ip ',ipt, " part ", part%i, ", current step: ", part%nextstep
+                     write(uout,'(a,I5)')  'number of bins: ', nssobin
+                     write(uout,'(a, a, a, a, a, a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
+                     write(uout,'(g15.5,a,g15.5,a,g15.5,a,g15.5)') &
+                     (ssorad(ibin,ipt), char(9), mob(ibin)%val, char(9), ssos(part%i,ibin)%d, char(9), mob(ibin)%smooth, char(9), ssos(ipt,ibin)%n, ibin = 1,nssobin)
+                     write(uout,'(a,a,I4)')  'average msd of ',ipt
+                     write(uout,'(g15.5)') tots(ipt)%d2/real(tots(ipt)%n)
+                     write(uout,'(a)')  ''
+                     write(uout,'(a)')  ''
                   end if
+                  !--------------------------------------------------------------------------------
 
-                  curdtranpt(ipt) = min(Two*ssorad((mbin + max(dbin,1)),ipt),maxdtransso(ipt))
+                  !set next displacement parameter-------------------------------------------------
+                  curdtranpt(ipt) = min(Two*ssorad((maxbin + max(upperbin,1)),ipt),maxdtransso(ipt))
+                  invrsso(ipt) = real(nssobin) * Two / real(curdtranpt(ipt))
+                  !--------------------------------------------------------------------------------
 
                end do
 
-               do ipt = 1, npt
-                  invrsso(ipt) = InvFlt(curdtranpt(ipt)) * real(nssobin) * Two
-               end do
-
-      !        naccsso = 0
-      !        ntotsso = 0
-
-               nssostep = 0
-               dssostep = Zero
-               dssostep2 = Zero
-               d2tot = Zero
-               steptot = 0
-
-               issopart = issopart + 1
-
-               istepnext = istepnext + int(nstepzero*partfac**(issopart - 1))
-
-               if(issopart == nssopart) istepnext = nstep     ! let last part end at end of simulation
+               !prepare variables for next part----------------------------------------------------
+               ssos = step(0, Zero, Zero)
+               tots  = step(0, Zero, Zero)
+               part%i = part%i + 1
+               part%nextstep = part%nextstep + int(nstepzero*part%fac**(part%i - 1))
+               if(part%i == part%n) then
+                  part%nextstep = nstep     ! let last part end at end of simulation
+               end if
+               !-----------------------------------------------------------------------------------
 
             end if
 
          case (iAfterMacrostep)
 
-               write(ucnf) curdtranpt, dssostep, dssostep2, nssostep, istepnext, issopart, d2tot, steptot, dtranout
+               write(ucnf) curdtranpt, part%i, ssos, tots, param
 
          case (iAfterSimulation)
 
@@ -259,11 +305,11 @@
             write(uout,'(a)') '------------------------------------'
             write(uout,'(a15,a15)') 'particle type' , 'optimal dtran'
             write(uout,'(a15,a15)') '---------------' , '---------------'
-            write(uout,'(i15,g15.5)') (ipt, dtranout(ipt,nssopart,2), ipt = 1, npt)
+            write(uout,'(i15,g15.5)') (ipt, dtranout(ipt,part%n,2), ipt = 1, npt)
             write(uout,'(a)') ''
             write(uout,'(a)') ''
             write(uout,'(a)')'Number of SSO parts'
-            write(uout,'(i5)') nssopart
+            write(uout,'(i5)') part%n
             write(uout,'(a)') ''
             write(uout,'(a)') ''
 
@@ -272,7 +318,7 @@
                write(uout,'(a15,a,a15,a,a15,a,a20)')  'sso-part' , char(9), 'used dran' , char(9), 'optimal dtran' , char(9) , 'error on opt. dtran'
                write(uout,'(a15,a,a15,a,a15,a,a20)')  '---------------' , char(9), '---------------' , char(9), '---------------' , char(9) , '--------------------'
                write(uout,'(i15,a,g15.5,a,g15.5,a,g20.5)') &
-               (issopart, char(9), dtranout(ipt,issopart,1), char(9),dtranout(ipt,issopart,2), char(9), dtranout(ipt,issopart,3), issopart = 1,nssopart)
+               (ipart, char(9), param(ipt,ipart)%used, char(9),param(ipt,ipart)%opt, char(9), param(ipt,ipart)%err, ipart = 1 ,part%n)
                write(uout,'(a)') ''
                write(uout,'(a)') ''
             end do
@@ -302,40 +348,39 @@
          subroutine CalcLocMob(issopt)
 
             implicit none
-
+            
+            ! particle type to be calculated
             integer(4), intent(in)  :: issopt
 
-            real(8)              :: fac
-            real(16)             :: tmpsum
-            real(16)             :: tmpsume
-            real(8)              :: InvInt, InvFlt
+            ! store the inverted number of steps
             real(8)              :: invntot
+            ! required for Smooth subroutine:
             real(8)              :: btmp(0:nssobin)
             real(8)              :: ctmp(0:nssobin)
             real(8)              :: dtmp(0:nssobin)
 
-            integer(8)           :: ibin, ntot
+            integer(8)           :: ibin
+            type(step)  :: stepbin ! steps done
 
-            tmpsum = Zero
-            tmpsume = Zero
-            ntot = 0
-            locmob(0) = Zero
-            locmobe(0) = Zero
+            stepbin = step(0, Zero, Zero) 
+            mob(0) = mobility(Zero, Zero, Zero)
 
             do ibin = 1, nssobin
-               ntot = ntot + nssostep(issopt,ibin)
-               tmpsum = tmpsum + dssostep(issopt,ibin)
-               tmpsume = tmpsume + dssostep2(issopt,ibin)
-               if(ntot < 1) then
-                  locmob(ibin) = Three/Five * (ibin * InvInt(nssobin) * Half * curdtranpt(ipt))**2
-                  locmobe(ibin) = Zero
+               stepbin = stepbin + ssos(issopt, ibin)
+               if(stepbin%n < 1) then
+                  !assume 100% acceptance rate if no move was done
+                  mob(ibin)%val = 0.15d0 * (real(ibin) / real(nssobin)  * curdtranpt(ipt))**2 ! 0.15 comes from 3/5 (from mean squared displacement in a sphere) and 1/4 (from squared diameter to squared radius
+                  mob(ibin)%error = Zero
                else
-                  invntot = InvInt(ntot)
-                  locmob(ibin) = tmpsum * invntot
-                  locmobe(ibin) = sqrt((tmpsume * invntot - (locmob(ibin))**2)*invntot)
+                  !else: average displacement is displacement divided by number of steps; error calculated from variance
+                  invntot = One/real(stepbin%n)
+                  mob(ibin)%val = stepbin%d * invntot
+                  mob(ibin)%error = sqrt((stepbin%d2 * invntot - (mob(ibin)%val)**2)*invntot)
                end if
             end do
-            call Smooth(nssobin + 1,real( (/ (ibin, ibin = 0, nssobin) /) , KIND=8  ) , locmob , locmobe , real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), locmobs, btmp, ctmp, dtmp)
+
+            !smooth using spline
+            call Smooth(nssobin + 1,real( (/ (ibin, ibin = 0, nssobin) /) , KIND=8  ) , mob(:)%val , mob(:)%error , real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), mob(:)%smooth, btmp, ctmp, dtmp)
 
          end subroutine CalcLocMob
 
@@ -346,7 +391,7 @@
             integer, intent(in)  :: bin
             integer, intent(in)  :: ipt
             real(8)  InfInt
-            ssorad = (bin * InvInt(nssobin) * Half * curdtranpt(ipt))
+            ssorad = (bin * Half * real(nssobin) * curdtranpt(ipt))
       end function ssorad
 
       !........................................................................
