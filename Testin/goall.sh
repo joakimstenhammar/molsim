@@ -271,7 +271,7 @@ $molsim  w.mc.mix                 $core
 $molsim  b.md.mix                 $core
 $molsim  hs.b2.mix                $core
 
-#bigfixes
+#bugfixes
 $molsim  ltime                    $core
 
 echo
