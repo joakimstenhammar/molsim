@@ -274,6 +274,9 @@ $molsim  hs.b2.mix                $core
 #bugfixes
 $molsim  ltime                    $core
 
+#sso
+$molsim  lmcsep                   $core
+
 echo
 echo "Remove group and dump files"
 echo
