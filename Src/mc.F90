@@ -1312,11 +1312,11 @@ subroutine SPartMove(iStage, loptsso)
 
    if (.not. lboxoverlap) then
 
-   ! ............. evaluate energy difference ...............
+! ............. evaluate energy difference ...............
       call DUTotal(lhsoverlap, lhepoverlap)
 
       if (.not. (lhsoverlap .or. lhepoverlap)) then
-      ! ............. calculate nonenergetic weights .............
+! ............. calculate nonenergetic weights .............
          weight = One
          dnpcl = Zero
          if (lcl1spart(iptmove)) then
