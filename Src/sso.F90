@@ -9,12 +9,12 @@
  module SSOModule
    implicit none
    private
-   public SSOSetup, DoSSOMove
+   public SSOSetup, DoSSOUpdate
 
    type :: step
       integer(8)  :: n  !number of steps
-      real(8)     :: d  !displacement
-      real(8)     :: d2 !squared displacement
+      real(8)     :: d  !squared displacement
+      real(8)     :: d2 !displacement**4
    end type step
 
    !define what happens if two variables of type step are added 
@@ -26,7 +26,6 @@
    type(step), allocatable :: ssos(:,:)     !sso steps
 
    real(8),       allocatable    :: invrsso(:)
-   real(8),       allocatable    :: curdtranpt(:)
 
    contains
 
@@ -56,6 +55,7 @@
          use MolModule, only: Zero, Half, One, Two, Three, Five
          use MolModule, only: npt, nstep, istep
          use MolModule, only: lbcbox, lbcrd, lbcto, lbcsph, lbcell, lbccyl, boxlen, cellside, sphrad, ellrad, cylrad, cyllen
+         use MCModule, only: curdtranpt, lssopt
          implicit none
 
          integer(4), intent(in) :: iStage
@@ -386,171 +386,56 @@
 
       !........................................................................
 
-      real(8) function ssorad(bin,ipt)
-            implicit none
-            integer, intent(in)  :: bin
-            integer, intent(in)  :: ipt
-            real(8)  InfInt
-            ssorad = (bin * Half * real(nssobin) * curdtranpt(ipt))
-      end function ssorad
+         real(8) function ssorad(bin,ipt)
+               implicit none
+               integer, intent(in)  :: bin
+               integer, intent(in)  :: ipt
+               real(8)  InfInt
+               ssorad = (bin * Half * real(nssobin) * curdtranpt(ipt))
+         end function ssorad
 
       !........................................................................
 
       end subroutine SSOSetup
 
-      !************************************************************************
-      !*                                                                      *
-      !*     SSOMove                                                          *
-      !*                                                                      *
-      !************************************************************************
+      subroutine DoSSOUpdate(ievent, nptm, drotm)
+         use MCModule, only: iptmove, imcaccept
+         integer(4), intent(in)  :: ievent      ! event of SSO-Move
+         integer(4), intent(in)  :: nptm        ! number of moving particles
+         real(8),    intent(in) :: drotm(3,1:nptm)  ! suggested particle move
 
-      ! ... perform one single-particle SSO trial move
+         integer(4)  :: iploc, ibin
+         real(8)  :: d2, d, ipt
 
-      subroutine DoSSOMove(iStage)
-
-         implicit none
-
-         integer(4), intent(in) :: iStage
-
-         character(40), parameter :: txroutine ='SSOMove'
-         logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-         integer(4) :: iploc, dnpcl
-         real(8)    :: weight, MCWeight, UmbrellaWeight, MCPmfWeight
-
-         integer(4), save :: jptsph = 1  ! type of particle at which the grafted chains are attached
-         integer(4) :: jpsph, ipsurf
-         integer(4) :: ihost
-         integer(4) :: ibin, ipt
-         real(8) :: dx, dy, dz, norm, d2, dtr
-         real(8) :: Random
-
-         if (ltrace) call WriteTrace(3, txroutine, iStage)
-
-         call CpuAdd('start', txroutine, 1, uout)
-
-         imovetype = ispartsso
-
-#if defined (_PAR_)
-      ! ... the following is not (yet) allowed since iseed will not be syncronized
-         ipnptm(1:np) = 0                                 ! necessary for later allreduce
-#endif
-
-      ! .............. define particle(s) to be moved ..............
-
-      ! ... consider particle ipmove
-
-         nptm          = 1
-         ipnptm(1) = ipmove
-         lptm(ipmove)  =.true.
-         ipt = iptpn(ipmove)
-
-
-      ! .............. calculate a trial configuration ...............
-
-      ! ... get translational displacement
-
-         dtr = abs(curdtranpt(ipt))
-
-         do
-            dx = Random(iseed)-Half
-            dy = Random(iseed)-Half
-            dz = Random(iseed)-Half
-            d2 = dx**2 + dy**2 + dz**2
-            if ( d2 < Fourth) exit
+         do iploc = 1, nptm
+            d2=sum(drotm(1:3,iploc)**2)
+            ibin = ceiling(sqrt(d2)*invrsso(iptmove))
+            tots%n = tots%n + 1
+            ssos%n = ssos%n + 1
+            if ( ievent == imcaccept) then
+               ssos%d = ssos%d + d2
+               tots%d = tots%d + d2
+               ssos%d2 = ssos%d2 + d2**2
+               tots%d2 = tots%d2 + d2**2
+            end if
          end do
 
-         dx = dx*dtr
-         dy = dy*dtr
-         dz = dz*dtr
-         d2 = d2 * dtr**2
-
-      ! ... get trial coordinates and store translational displacemnt
-
-         rotm(1:3,1) = (/ ro(1,ipmove)+dx , ro(2,ipmove)+dy , ro(3,ipmove)+dz /)
-         drotm(1:3,1) = (/ dx , dy, dz /)
-
-      !    if (lweakcharge) call TrialCharge(nptm, ipnptm, iptpn, .false., latweakcharge, laz, laztm)
-      !    if (lfixzcoord(iptmove)) call FixedZCoord
-      !    if (lfixxycoord(iptmove)) call FixedXYCoord
-      !    if (lfixchainstartspart) call FixedChainStart
-      !
-      !    if(lfixzcoord(iptmove) .or. lfixxycoord(iptmove) .or. lfixchainstartspart) d2 = sum(drotm(1:3,1)**2)
-
-      !-------------------------------------------------------------------------------------
-
-         call CheckPartBCTM(nptm, rotm, lboxoverlap)
-
-      !    if (lpolyatom .or. lellipsoid .or. lsuperball) &
-      !       call GetRandomTrialOri(drot(iptmove), iseed, ori(1,1,ipmove), oritm(1,1,iploc))
-      !
-      !    if (lfixedori) then           ! lfixedori atains its value in coordinate.F90
-      !        call AddNeighbours
-      !        call UpdateOri
-      !    end if
-
-         call SetTrialAtomProp
-      !    if (lradatbox) call CheckAtomBCTM(natm, rtm, lboxoverlap)
-         if (itestmc == 2) call TestMCMove(uout)
-
-         call CpuAdd('stop', txroutine, 1, uout)
-
-         if (lboxoverlap) goto 200
-
-      ! ............. evaluate energy difference ...............
-
-         call DUTotal(lhsoverlap, lhepoverlap)
-         if (lhsoverlap .or. lhepoverlap) goto 200
-
-      ! ............. calculate nonenergetic weights .............
-
-         weight = One
-         dnpcl = Zero
-         if (lcl1spart(iptmove)) then
-            if (lvlist) call ClusterMember('new', .false., .false., radcl1, pselectcl1)       ! calculate npclnew
-            if (lllist) call ClusterMemberLList('new', .false., .false., radcl1, pselectcl1)  ! calculate npclnew
-            dnpcl = npclnew-npclold
-            if (dnpcl /= 0) weight = weight*(One-pselectcl1(iptmove))**dnpcl
-         end if
-
-         if (lmcweight) weight = weight*MCWeight()
-         if (lautumb) weight = weight*UmbrellaWeight(1)
-         if (lmcpmf) weight = weight*MCPmfWeight(1)
-
-      ! ............. decide new configuration .............
-
-      200 continue
-         call Metropolis(lboxoverlap, lhsoverlap, lhepoverlap, weight, du%tot*beta)
-
-      ! .............. update .............
-
-         ibin = ceiling(sqrt(d2)*invrsso(ipt))
-         steptot(ipt) = steptot(ipt) + 1
-         nssostep(ipt,ibin) = nssostep(ipt,ibin) + 1
-         if (ievent == imcaccept) then
-            dssostep(ipt,ibin) = dssostep(ipt,ibin) + d2
-            dssostep2(ipt,ibin) = dssostep2(ipt,ibin) + d2**2
-            d2tot(ipt) = d2tot(ipt) + d2
-            call MCUpdate       ! update energies and coordinates
-         end if
-
-      !    if (lautumb) call UmbrellaUpdate              ! update weight function for umbrella potential
-      !    if (lmcpmf) call MCPmfUpdate                  ! update weight function for mc pmf
-      !    if (lshiftzcom(iptmove)) call ShiftZDirection
-
-      end subroutine DoSSOMove
+      end subroutine DoSSOUpdate
 
 end module SSOModule
 
-subroutine SSOMove(iStage)
-   use SSOModule
-   implicit none
-   integer(4), intent(in)  :: iStage
+subroutine SSOUpdate(ievent, nptm, drotm)
+   use SSOModule, only DoSSOUpdate
+   integer(4), intent(in)  :: ievent      ! event of SSO-Move
+   integer(4), intent(in)  :: nptm        ! number of moving particles
+   real(8),    intent(in) :: drotm(3,*)  ! suggested particle move
 
-   call DoSSOMove(iStage)
+   call DoSSOUpdate(ievent, nptm, drotm(3,1:nptm))
+
 end subroutine
 
 subroutine SSODriver(iStage)
-   use SSOModule
+   use SSOModule, only: SSOSetup
    implicit none
    integer(4), intent(in)  :: iStage
 
