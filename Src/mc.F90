@@ -150,9 +150,14 @@ module MCModule
    real(8), allocatable       :: pcharge(:)          ! probability of charge-change move
 
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
+   logical, allocatable       :: lssopt(:)           ! flag for single particle move sso of particle types  ! Pascal Hebbeker
    logical                    :: lmcsep              ! flag for sparating local from global moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
+   logical, parameter   :: dosso = .true.
+   real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
+   
+   
 
 ! ... mcall trial move variables
 
@@ -275,7 +280,7 @@ module MCModule
          if (prandom < pspart(iptmove)) then
             call SPartMove(iStage)                             ! single-particle trial move
          else if (prandom < pspartsso(iptmove)) then
-            call SSOMove(iStage)
+            call SPartMove(iStage, dosso)
 
          !then global moves
          else if (prandom < pspartcl2(iptmove)) then
@@ -359,11 +364,7 @@ subroutine MCDriver(iStage)
 
    case (iSimulationStep)
 
-      if(.not. lmcsep) then
-         call MCPass(iStage)                         ! MCAver(iSimulationStep) is called in MCPass
-      else
-         call MCPassSep(iStage)
-      end if
+      call MCPass(iStage)                         ! MCAver(iSimulationStep) is called in MCPass
 
       if (lpspartsso) call SSODriver(iStage)   ! Pascal Hebbeker
 
@@ -644,6 +645,16 @@ subroutine IOMC(iStage)
       call CheckMCProb('pnpart',        pnpart,       .false.,    .false., lpnpart)
       call CheckMCProb('pcharge',       pcharge,      .false.,    .false., lpcharge)
       call CheckMCProb('pspartsso',     pspartsso,    .false.,    .false., lpspartsso)   ! Pascal Hebbeker
+
+      if(lpspartsso) then
+         if(.not. allocated(lssopt)) then
+            allocate(lssopt(npt))
+         end if
+         lssopt = .false.
+         where ( pspartsso > Zero) lssopt = .true.
+      end if
+
+            
 
    case (iWriteInput)
 
@@ -1065,74 +1076,13 @@ end subroutine IOMC
 subroutine MCPass(iStage)
 
    use MCModule
-   implicit none
-
-   integer(4), intent(in) :: iStage
-
-   character(40), parameter :: txroutine ='MCPass'
-   integer(4) :: ip
-   real(8)    :: Random, prandom
-
-   if (ltrace) call WriteTrace(2, txroutine, iStage)
-
-   if (ltime) call CpuAdd('start', txroutine, 0, uout)
-
-   drostep= Zero
-
-   do ipass = 1, np
-
-      if (ltrace) call WriteTrace(3, txroutine//' (start of new ipass)', iStage)
-
-! ... select a particle
-
-      if (isamp == 0) ipmove = ipass
-      if (isamp == 1) ipmove = 1+int(np*Random(iseed))
-      ipmove = max(1,int(min(ipmove,np)))
-      iptmove = iptpn(ipmove)
-
-
-! ... check if particle should be moved
-
-      if (.not.lptmove(iptmove)) cycle
-
-! ... select a trial move method
-
-      if (pspart(iptmove) > One - 1d-15) then
-         call SPartMove(iStage)
-      else
-         prandom = Random(iseed)
-         call CallMove(prandom, iptmove, iStage)
-      end if
-
-      call Restorelptm(nptm, ipnptm, lptm)                     ! restore lptm
-
-      if (itest == 1) call TestSimulation
-      if (lcont) call MCAver(iSimulationStep)
-
-   end do
-
-   if (ltime) call CpuAdd('stop', txroutine, 0, uout)
-
-end subroutine MCPass
-
-!************************************************************************
-!*                                                                      *
-!*     MCPassSep                                                        *
-!*                                                                      *
-!************************************************************************
-
-! ... perform one mc pass (np trial moves) by only local or global moves (not mixed)
-
-subroutine MCPassSep(iStage)
-
-   use MCModule
    use NListModule, only : drnlist, drosum
    implicit none
 
    integer(4), intent(in) :: iStage
 
-   character(40), parameter :: txroutine ='MCPassSep'
-   integer(4) :: ict, ipt
+   character(40), parameter :: txroutine ='MCPass'
+   integer(4) :: ip, ipt, ict
    real(8)    :: Random, prandom, drnold, rchain
    logical :: lnonloc
 
@@ -1142,38 +1092,39 @@ subroutine MCPassSep(iStage)
 
    drostep= Zero
 
-   prandom = Random(iseed)
-   lnonloc = .false.
-   if (any( prandom > plocal(1:npt) )) then !only also non-local moves are present
-      lnonloc = .true.
-   end if
+   if(lmcsep) then ! call only local or global movex, not both
+      prandom = Random(iseed)
+      lnonloc = .false.
+      if (any( prandom > plocal(1:npt) )) then !only also non-local moves are present
+         lnonloc = .true.
+      end if
 
-   if(lnonloc) then
-      drosum = Zero
-      drnold = drnlist
-      rchain = Zero
-      do ipt = 1, npt
-         ict = ictpt(ipt)
-         if ((prandom > plocal(ipt)) .and. (ict > 0)) then !non-local moves of this particle type and particle is in chain
-            rchain=max(rchain, sum(npptct(1:npt,ict))*bond(ict)%eq)
+      if(lnonloc) then
+         drosum = Zero
+         drnold = drnlist
+         rchain = Zero
+         do ipt = 1, npt
+            ict = ictpt(ipt)
+            if ((prandom > plocal(ipt)) .and. (ict > 0)) then !non-local moves of this particle type and particle is in chain
+               rchain=max(rchain, sum(npptct(1:npt,ict))*bond(ict)%eq)
+            end if
+         end do
+
+         drnlist = 4*rchain + drnold !set drnlist to four times contour length + drnlist (old)
+         ! four times as 1 particle can move at max 2 times contour length using pivot move, and therefore two particles can approach each at max 4 times the contour length
+         ! added drnold to reflect any possible local moves
+
+         !get neighbor list
+         if (lvlist) then
+            call SetVList
+            call VListAver(iStage)
          end if
-      end do
-
-      drnlist = 4*rchain + drnold !set drnlist to four times contour length + drnlist (old)
-      ! four times as 1 particle can move at max 2 times contour length using pivot move, and therefore two particles can approach each at max 4 times the contour length
-      ! added drnold to reflect any possible local moves
-
-      !get neighbor list
-      if (lvlist) then
-         call SetVList
-         call VListAver(iStage)
-      end if
-      if (lllist) then
-         call SetLList(rcut+drnlist)
-         call LListAver(iStage)
+         if (lllist) then
+            call SetLList(rcut+drnlist)
+            call LListAver(iStage)
+         end if
       end if
    end if
-
 
    do ipass = 1, np
 
@@ -1196,6 +1147,7 @@ subroutine MCPassSep(iStage)
       if (pspart(iptmove) > One - 1d-15) then
          call SPartMove(iStage)
       else
+         if(.not. lmcsep) prandom = Random(iseed)
          call CallMove(prandom, iptmove, iStage)
       end if
 
@@ -1206,24 +1158,26 @@ subroutine MCPassSep(iStage)
 
    end do
 
-   ! restore neighbour list
-   if(lnonloc) then
-      drnlist = drnold
-      drosum = Zero
+   if(lmcsep) then
+      ! restore neighbour list
+      if(lnonloc) then
+         drnlist = drnold
+         drosum = Zero
 
-      if (lvlist) then
-         call SetVList
-         call VListAver(iStage)
-      end if
-      if (lllist) then
-         call SetLList(rcut+drnlist)
-         call LListAver(iStage)
+         if (lvlist) then
+            call SetVList
+            call VListAver(iStage)
+         end if
+         if (lllist) then
+            call SetLList(rcut+drnlist)
+            call LListAver(iStage)
+         end if
       end if
    end if
 
    if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
-end subroutine MCPassSep
+end subroutine MCPass
 
 !************************************************************************
 !*                                                                      *
@@ -1233,14 +1187,16 @@ end subroutine MCPassSep
 
 ! ... perform one single-particle  trial move
 
-subroutine SPartMove(iStage)
+subroutine SPartMove(iStage, loptsso)
 
    use MCModule
    implicit none
 
    integer(4), intent(in) :: iStage
+   logical, optional, intent(in) :: loptsso
 
    character(40), parameter :: txroutine ='SPartMove'
+   character(40), parameter :: txroutinesso ='SSO'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
    integer(4) :: iploc, dnpcl
    real(8)    :: weight, MCWeight, UmbrellaWeight, MCPmfWeight
@@ -1249,9 +1205,25 @@ subroutine SPartMove(iStage)
    integer(4) :: jpsph, ipsurf
    integer(4) :: ihost
 
-   if (ltrace) call WriteTrace(3, txroutine, iStage)
+   logical  :: lsso
 
+   real(8)  :: dtr
+
+   if (ltrace) call WriteTrace(3, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+   !sneak in sso---------------------------------------------------------------
+   lsso = .false.
+   if( present(loptsso)) then
+      if(loptsso) then
+         lsso = .true.
+      end if
+   end if
+   if(lsso) then
+      if (ltrace) call WriteTrace(4, txroutinesso, iStage)
+   end if
+   !---------------------------------------------------------------------------
+
 
    imovetype = ispartmove
 
@@ -1278,9 +1250,16 @@ subroutine SPartMove(iStage)
       if (lllist) call ClusterMemberLList('old', .false., .false., radcl1, pselectcl1)
    end if
 
+! .. get displacement parameter
+   dtr=dtran(iptmove)
+   if(lsso) then
+      dtr=-curdtranpt(iptmove)
+   end if
+
+
 ! .............. calculate a trial configuration ...............
 
-   call GetRandomTrialPos(dtran(iptmove), iseed, nptm, ipnptm, ro, rotm, drotm)
+   call GetRandomTrialPos(dtr, iseed, nptm, ipnptm, ro, rotm, drotm)
    if (lfixzcoord(iptmove)) call FixedZCoord
    if (lfixxycoord(iptmove)) call FixedXYCoord
    if (lfixchainstartspart) call FixedChainStart
@@ -1324,35 +1303,35 @@ subroutine SPartMove(iStage)
 
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
-   if (lboxoverlap) goto 200
+   if (.not. lboxoverlap) then
 
-! ............. evaluate energy difference ...............
+   ! ............. evaluate energy difference ...............
+      call DUTotal(lhsoverlap, lhepoverlap)
 
-   call DUTotal(lhsoverlap, lhepoverlap)
-   if (lhsoverlap .or. lhepoverlap) goto 200
+      if (.not. (lhsoverlap .or. lhepoverlap)) then
+      ! ............. calculate nonenergetic weights .............
+         weight = One
+         dnpcl = Zero
+         if (lcl1spart(iptmove)) then
+            if (lvlist) call ClusterMember('new', .false., .false., radcl1, pselectcl1)       ! calculate npclnew
+            if (lllist) call ClusterMemberLList('new', .false., .false., radcl1, pselectcl1)  ! calculate npclnew
+            dnpcl = npclnew-npclold
+            if (dnpcl /= 0) weight = weight*(One-pselectcl1(iptmove))**dnpcl
+         end if
 
-! ............. calculate nonenergetic weights .............
+         if (lmcweight) weight = weight*MCWeight()
+         if (lautumb) weight = weight*UmbrellaWeight(1)
+         if (lmcpmf) weight = weight*MCPmfWeight(1)
+      end if
 
-   weight = One
-   dnpcl = Zero
-   if (lcl1spart(iptmove)) then
-      if (lvlist) call ClusterMember('new', .false., .false., radcl1, pselectcl1)       ! calculate npclnew
-      if (lllist) call ClusterMemberLList('new', .false., .false., radcl1, pselectcl1)  ! calculate npclnew
-      dnpcl = npclnew-npclold
-      if (dnpcl /= 0) weight = weight*(One-pselectcl1(iptmove))**dnpcl
    end if
-
-   if (lmcweight) weight = weight*MCWeight()
-   if (lautumb) weight = weight*UmbrellaWeight(1)
-   if (lmcpmf) weight = weight*MCPmfWeight(1)
 
 ! ............. decide new configuration .............
 
-200 continue
    call Metropolis(lboxoverlap, lhsoverlap, lhepoverlap, weight, du%tot*beta)
 
 ! .............. update .............
-
+   if (lsso) call SSOUpdate(ievent, nptm, ipnptm, drotm)
    if (ievent == imcaccept) call MCUpdate       ! update energies and coordinates
 
    if (lautumb) call UmbrellaUpdate              ! update weight function for umbrella potential
