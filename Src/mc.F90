@@ -268,6 +268,14 @@ module MCModule
                                              ! = 3, call of TestChargeChange1 from ChargeChange
                                              ! = 3, call of TestChargeChange2 from ChargeChange
 
+   interface
+      subroutine SPartMove(iStage, loptsso)
+         integer(4), intent(in) :: iStage
+         logical, optional, intent(in) :: loptsso
+      end subroutine SPartMove
+   end interface
+
+
    contains
       subroutine CallMove(prandom, iptmove, iStage)
 
@@ -1082,7 +1090,7 @@ subroutine MCPass(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='MCPass'
-   integer(4) :: ip, ipt, ict
+   integer(4) :: ipt, ict
    real(8)    :: Random, prandom, drnold, rchain
    logical :: lnonloc
 
@@ -1201,8 +1209,7 @@ subroutine SPartMove(iStage, loptsso)
    integer(4) :: iploc, dnpcl
    real(8)    :: weight, MCWeight, UmbrellaWeight, MCPmfWeight
 
-   integer(4), save :: jptsph = 1  ! type of particle at which the grafted chains are attached
-   integer(4) :: jpsph, ipsurf
+   integer(4) :: ipsurf
    integer(4) :: ihost
 
    logical  :: lsso
