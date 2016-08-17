@@ -636,24 +636,11 @@ subroutine IOMC(iStage)
       end do
       call LowerCase(txdualpivot)
 
-! ... set logical flags and check some conditions
-! ... moved from iWriteInput to make logical flags available earlier
 
-      call CheckMCProb('pspart',        pspart,       .false.,    .false., lpspart)
-!     call CheckMCProb('pspartcl2',     pspartcl2,     lpolyatom,  lchain, lpspartcl2)
-      call CheckMCProb('pspartcl2',     pspartcl2,    .false.,     lchain, lpspartcl2)
-      call CheckMCProb('ppivot',        ppivot,       .false.,    .false., lppivot)
-      call CheckMCProb('pchain',        pchain,       .false.,    .false., lpchain)
-      call CheckMCProb('pslither',      pslither,     .false.,    .false., lpslither)
-      call CheckMCProb('pbrush',        pbrush,       .false.,    .false., lpbrush)
-      call CheckMCProb('pbrushcl2',     pbrushcl2,    .false.,    .false., lpbrushcl2)
-      call CheckMCProb('phierarchical', phierarchical,.false.,    .false., lphierarchical)
-      call CheckMCProb('pnetwork',      pnetwork,     .false.,    .false., lpnetwork)
-      call CheckMCProb('pvol',          pvol,         .false.,    .false., lpvol)
-      call CheckMCProb('pnpart',        pnpart,       .false.,    .false., lpnpart)
-      call CheckMCProb('pcharge',       pcharge,      .false.,    .false., lpcharge)
-      call CheckMCProb('pspartsso',     pspartsso,    .false.,    .false., lpspartsso)   ! Pascal Hebbeker
-
+      ! already set lpspartsso: it is neede for the SSO-Driver----------
+      if (count(pspartsso(1:npt) > Zero) > 0) then                      ! any prob > 0 ?
+         lpspartsso =.true.                                                                             ! set lprob = .true.
+      end if
       if(lpspartsso) then
          if(.not. allocated(lssopt)) then
             allocate(lssopt(npt))
@@ -661,7 +648,6 @@ subroutine IOMC(iStage)
          lssopt = .false.
          where ( pspartsso > Zero) lssopt = .true.
       end if
-
             
 
    case (iWriteInput)
@@ -720,6 +706,7 @@ subroutine IOMC(iStage)
             if (lzero) pcharge(ipt) = Zero
          end do
       end if
+
 
 ! ... change representation from ict to ipt       (simplify, provide one entry per particle type in input)
 
@@ -781,7 +768,23 @@ subroutine IOMC(iStage)
       drotchain(1:npt)       = drotchain(1:npt)*sclang
       drotbrush(1:npt)       = drotbrush(1:npt)*sclang
 
+! ... set logical flags and check some conditions
+! ... moved from iWriteInput to make logical flags available earlier
 
+      call CheckMCProb('pspart',        pspart,       .false.,    .false., lpspart)
+!     call CheckMCProb('pspartcl2',     pspartcl2,     lpolyatom,  lchain, lpspartcl2)
+      call CheckMCProb('pspartcl2',     pspartcl2,    .false.,     lchain, lpspartcl2)
+      call CheckMCProb('ppivot',        ppivot,       .false.,    .false., lppivot)
+      call CheckMCProb('pchain',        pchain,       .false.,    .false., lpchain)
+      call CheckMCProb('pslither',      pslither,     .false.,    .false., lpslither)
+      call CheckMCProb('pbrush',        pbrush,       .false.,    .false., lpbrush)
+      call CheckMCProb('pbrushcl2',     pbrushcl2,    .false.,    .false., lpbrushcl2)
+      call CheckMCProb('phierarchical', phierarchical,.false.,    .false., lphierarchical)
+      call CheckMCProb('pnetwork',      pnetwork,     .false.,    .false., lpnetwork)
+      call CheckMCProb('pvol',          pvol,         .false.,    .false., lpvol)
+      call CheckMCProb('pnpart',        pnpart,       .false.,    .false., lpnpart)
+      call CheckMCProb('pcharge',       pcharge,      .false.,    .false., lpcharge)
+      call CheckMCProb('pspartsso',     pspartsso,    .false.,    .false., lpspartsso)   ! Pascal Hebbeker
 ! ???
 !     if (lpspart .and. lchain .and. count(lcl1spart(1:npt))>0) call Stop(txroutine, 'lpspart .and. lchain .and. lcl1part', uout)
       if (ldieldis .and. count(lcl1spart(1:npt))>0) call Stop(txroutine, 'ldieldis .and. lcl1part', uout)
