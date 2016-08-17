@@ -380,8 +380,8 @@ moluser_par.o : moluser.F90  mol.o     potential_par.o    statistics_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o moluser_par.o -c moluser.F90
 mesh_par.o    : mesh.F90
 	$(COMP_PAR) $(FLAG_PAR) -o mesh_par.o -c mesh.F90
-sso_par.o      : sso.F90  mc.o	mol.o
-	$(COMP_SER) $(FLAG_SER) -c sso.F90
+sso_par.o      : sso.F90  mc_par.o	mol.o
+	$(COMP_PAR) $(FLAG_PAR) -o sso_par.o -c sso.F90
  
 #*****************************************************************
 #*                         Tidy                                  *
