@@ -373,7 +373,6 @@ subroutine MCDriver(iStage)
    case (iSimulationStep)
 
       call MCPass(iStage)                         ! MCAver(iSimulationStep) is called in MCPass
-
       if (lpspartsso) call SSODriver(iStage)   ! Pascal Hebbeker
 
    case (iAfterMacrostep)
@@ -570,7 +569,6 @@ subroutine IOMC(iStage)
          allocate(plocal(npt))
       end if
 
-
       isamp           = 1
 
       pspart          = One
@@ -707,7 +705,6 @@ subroutine IOMC(iStage)
          end do
       end if
 
-
 ! ... change representation from ict to ipt       (simplify, provide one entry per particle type in input)
 
   !   call MCChangeRep(npt,nct,ictpt,ppivot)
@@ -769,7 +766,6 @@ subroutine IOMC(iStage)
       drotbrush(1:npt)       = drotbrush(1:npt)*sclang
 
 ! ... set logical flags and check some conditions
-! ... moved from iWriteInput to make logical flags available earlier
 
       call CheckMCProb('pspart',        pspart,       .false.,    .false., lpspart)
 !     call CheckMCProb('pspartcl2',     pspartcl2,     lpolyatom,  lchain, lpspartcl2)
@@ -785,6 +781,7 @@ subroutine IOMC(iStage)
       call CheckMCProb('pnpart',        pnpart,       .false.,    .false., lpnpart)
       call CheckMCProb('pcharge',       pcharge,      .false.,    .false., lpcharge)
       call CheckMCProb('pspartsso',     pspartsso,    .false.,    .false., lpspartsso)   ! Pascal Hebbeker
+
 ! ???
 !     if (lpspart .and. lchain .and. count(lcl1spart(1:npt))>0) call Stop(txroutine, 'lpspart .and. lchain .and. lcl1part', uout)
       if (ldieldis .and. count(lcl1spart(1:npt))>0) call Stop(txroutine, 'ldieldis .and. lcl1part', uout)
