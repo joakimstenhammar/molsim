@@ -188,10 +188,12 @@
             end if
             if(part%i == part%n) part%nextstep = nstep
             do ipt = 1, npt
-               if (curdtranpt(ipt) > 0) then
-                  invrsso(ipt) = real(nssobin) * Two / curdtranpt(ipt)
-               else
-                  invrsso(ipt) = Zero
+               if (lssopt(ipt)) then
+                  if (curdtranpt(ipt) > 0) then
+                     invrsso(ipt) = real(nssobin) * Two / curdtranpt(ipt)
+                  else
+                     invrsso(ipt) = Zero
+                  end if
                end if
             end do
             !--------------------------------------------------------------------------------------
@@ -210,75 +212,74 @@
                end if
 
                do ipt = 1, npt
+                  if (lssopt(ipt)) then
 
-                  param(ipt,part%i)%used = curdtranpt(ipt)
+                     param(ipt,part%i)%used = curdtranpt(ipt) !store used dtran
+                     call CalcLocMob(ipt)                      !calculate local mobility
 
-                  call CalcLocMob(ipt)
-
-
-                  ! get bin with maximum mobility--------------------------------------------------
-                  maxbin = 0
-                  do ibin = 1, nssobin - 1
-                     if(mob(ibin)%smooth > mob(ibin + 1)%smooth .and. mob(ibin)%smooth > mob(maxbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
-                        maxbin = ibin
+                     ! get bin with maximum mobility--------------------------------------------------
+                     maxbin = 0
+                     do ibin = 1, nssobin - 1
+                        if(mob(ibin)%smooth > mob(ibin + 1)%smooth .and. mob(ibin)%smooth > mob(maxbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
+                           maxbin = ibin
+                        end if
+                     end do
+                     if(maxbin == 0) then  ! no local maximum found, maximum at border
+                        maxbin = nssobin
                      end if
-                  end do
-                  if(maxbin == 0) then  ! no local maximum found, maximum at border
-                     maxbin = nssobin
-                  end if
-                  !--------------------------------------------------------------------------------
+                     !--------------------------------------------------------------------------------
 
-                  ! get upper boundary (relative to maxbin)----------------------------------------
-                  upperbin = 0
-                  if(maxbin == nssobin) then
-                     upperbin = ceiling((dtranfac(ipt) - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
-                  else
-                     do ibin = maxbin + 1 , nssobin !find position where locmob is significantly different from maximum
-                        if ( (mob(maxbin)%smooth - mob(maxbin)%error) .ge. (mob(ibin)%smooth + mob(ibin)%error) ) then
-                           upperbin = (ibin - maxbin) + 1
+                     ! get upper boundary (relative to maxbin)----------------------------------------
+                     upperbin = 0
+                     if(maxbin == nssobin) then
+                        upperbin = ceiling((dtranfac(ipt) - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
+                     else
+                        do ibin = maxbin + 1 , nssobin !find position where locmob is significantly different from maximum
+                           if ( (mob(maxbin)%smooth - mob(maxbin)%error) .ge. (mob(ibin)%smooth + mob(ibin)%error) ) then
+                              upperbin = (ibin - maxbin) + 1
+                              exit
+                           end if
+                        end do
+                        if (upperbin == 0) then        ! no significantly different position found
+                           upperbin = 1 + ceiling(Two*mob(maxbin)%error*(nssobin - maxbin)/real((mob(maxbin)%smooth + mob(maxbin)%error) - (mob(nssobin)%smooth + mob(nssobin)%error)) ) ! extrapolate position
+                        end if
+                     end if
+                     ! -------------------------------------------------------------------------------
+
+                     ! get lower boundary (relative to maxbin)----------------------------------------
+                     lowerbin = 0
+                     do ibin = maxbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
+                        if (mob(maxbin)%smooth - mob(maxbin)%error .ge. mob(ibin)%smooth + mob(ibin)%error) then
+                           lowerbin = maxbin - ibin
                            exit
                         end if
                      end do
-                     if (upperbin == 0) then        ! no significantly different position found
-                        upperbin = 1 + ceiling(Two*mob(maxbin)%error*(nssobin - maxbin)/real((mob(maxbin)%smooth + mob(maxbin)%error) - (mob(nssobin)%smooth + mob(nssobin)%error)) ) ! extrapolate position
+                     !--------------------------------------------------------------------------------
+
+                     !store results in param----------------------------------------------------------
+                     param(ipt,part%i)%opt = Two*ssorad(maxbin,ipt)
+                     param(ipt,part%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
+                     !--------------------------------------------------------------------------------
+
+                     !print tests---------------------------------------------------------------------
+                     if(ltestsso) then
+                        write(uout,'(a,I0,a,I0,a,I0)') 'mob of ip ',ipt, " part ", part%i, ", current step: ", part%nextstep
+                        write(uout,'(a,I5)')  'number of bins: ', nssobin
+                        write(uout,'(a, a, a, a, a, a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
+                        write(uout,'(g15.5,a,g15.5,a,g15.5,a,g15.5)') &
+                        (ssorad(ibin,ipt), char(9), mob(ibin)%val, char(9), ssos(part%i,ibin)%d, char(9), mob(ibin)%smooth, char(9), ssos(ipt,ibin)%n, ibin = 1,nssobin)
+                        write(uout,'(a,a,I4)')  'average msd of ',ipt
+                        write(uout,'(g15.5)') tots(ipt)%d2/real(tots(ipt)%n)
+                        write(uout,'(a)')  ''
+                        write(uout,'(a)')  ''
                      end if
+                     !--------------------------------------------------------------------------------
+
+                     !set next displacement parameter-------------------------------------------------
+                     curdtranpt(ipt) = min(Two*ssorad((maxbin + max(upperbin,1)),ipt),maxdtransso(ipt))
+                     invrsso(ipt) = real(nssobin) * Two / real(curdtranpt(ipt))
+                     !--------------------------------------------------------------------------------
                   end if
-                  ! -------------------------------------------------------------------------------
-
-                  ! get lower boundary (relative to maxbin)----------------------------------------
-                  lowerbin = 0
-                  do ibin = maxbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
-                     if (mob(maxbin)%smooth - mob(maxbin)%error .ge. mob(ibin)%smooth + mob(ibin)%error) then
-                        lowerbin = maxbin - ibin
-                        exit
-                     end if
-                  end do
-                  !--------------------------------------------------------------------------------
-
-                  !store results in param----------------------------------------------------------
-                  param(ipt,part%i)%opt = Two*ssorad(maxbin,ipt)
-                  param(ipt,part%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
-                  !--------------------------------------------------------------------------------
-
-                  !print tests---------------------------------------------------------------------
-                  if(ltestsso) then
-                     write(uout,'(a,I0,a,I0,a,I0)') 'mob of ip ',ipt, " part ", part%i, ", current step: ", part%nextstep
-                     write(uout,'(a,I5)')  'number of bins: ', nssobin
-                     write(uout,'(a, a, a, a, a, a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
-                     write(uout,'(g15.5,a,g15.5,a,g15.5,a,g15.5)') &
-                     (ssorad(ibin,ipt), char(9), mob(ibin)%val, char(9), ssos(part%i,ibin)%d, char(9), mob(ibin)%smooth, char(9), ssos(ipt,ibin)%n, ibin = 1,nssobin)
-                     write(uout,'(a,a,I4)')  'average msd of ',ipt
-                     write(uout,'(g15.5)') tots(ipt)%d2/real(tots(ipt)%n)
-                     write(uout,'(a)')  ''
-                     write(uout,'(a)')  ''
-                  end if
-                  !--------------------------------------------------------------------------------
-
-                  !set next displacement parameter-------------------------------------------------
-                  curdtranpt(ipt) = min(Two*ssorad((maxbin + max(upperbin,1)),ipt),maxdtransso(ipt))
-                  invrsso(ipt) = real(nssobin) * Two / real(curdtranpt(ipt))
-                  !--------------------------------------------------------------------------------
-
                end do
 
                !prepare variables for next part----------------------------------------------------
@@ -405,7 +406,7 @@
          real(8),    intent(in) :: drotm(3,1:nptm)  ! suggested particle move
 
          integer(4)  :: iploc, ibin
-         real(8)  :: d2, d, ipt
+         real(8)  :: d2
 
          do iploc = 1, nptm
             d2=sum(drotm(1:3,iploc)**2)
@@ -425,7 +426,7 @@
 end module SSOModule
 
 subroutine SSOUpdate(ievent, nptm, drotm)
-   use SSOModule, only DoSSOUpdate
+   use SSOModule, only: DoSSOUpdate
    integer(4), intent(in)  :: ievent      ! event of SSO-Move
    integer(4), intent(in)  :: nptm        ! number of moving particles
    real(8),    intent(in) :: drotm(3,*)  ! suggested particle move
