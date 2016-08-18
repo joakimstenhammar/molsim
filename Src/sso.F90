@@ -112,8 +112,8 @@
             if (.not. allocated(dtranfac)) allocate(dtranfac(npt))
 
             dtransso  = One
-            nstepzero   = ceiling(sqrt(real(nstep)))
-            nstepend    = int(0.1*nstep)
+            nstepzero   = min(ceiling(sqrt(real(nstep))), int(0.1*nstep)
+            nstepend    = max(ceiling(sqrt(real(nstep))), int(0.1*nstep)
             nssobin     = 20
             ltestsso    = .false.
             if (lbcbox) then
