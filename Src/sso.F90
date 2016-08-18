@@ -113,7 +113,7 @@
 
             dtransso  = One
             nstepzero   = ceiling(sqrt(real(nstep)))
-            nstepend    = max(nstepzero, int(0.1*nstep)
+            nstepend    = max(nstepzero, int(0.1*nstep))
             nssobin     = 20
             ltestsso    = .false.
             if (lbcbox) then
