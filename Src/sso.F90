@@ -324,22 +324,6 @@
                write(uout,'(a)') ''
             end do
 
-      !       if(allocated(curdtranpt)) deallocate(curdtranpt)
-      !       if(allocated(invrsso)) deallocate(invrsso)
-
-      !       if(allocated(d2tot)) deallocate(d2tot)
-      !       if(allocated(steptot)) deallocate(steptot)
-
-      !       if(allocated(locmob)) deallocate(locmob)
-      !       if(allocated(locmobe)) deallocate(locmobe)
-      !       if(allocated(locmobs)) deallocate(locmobs)
-
-      !       if(allocated(nssostep)) deallocate(nssostep)
-      !       if(allocated(dssostep)) deallocate(dssostep)
-      !       if(allocated(dssostep2)) deallocate(dssostep2)
-
-      !       if(allocated(dtranout)) deallocate(dtranout)
-
          end select
 
       !........................................................................
