@@ -138,8 +138,14 @@
          case (iWriteInput) 
 
             ! check conditions---------------------------------------------------------------------
-            if (nstepzero + nstepend > nstep) call Stop(txroutine, 'nstepzero + nstepend > nstep', uout)
-            if (nstepend < nstepzero) call Stop(txroutine, 'nstepend < nstepzero', uout)
+            if (nstepzero + nstepend > nstep) then
+               write(uout, *) "nstepzero: ", nstepzero, "; nstepend: ", nstepend, "; nstep: ", nstep
+               call Stop(txroutine, 'nstepzero + nstepend > nstep', uout)
+            end if
+            if (nstepend < nstepzero) then
+               write(uout, *) "nstepzero: ", nstepzero, "; nstepend: ", nstepend, "; nstep: ", nstep
+               call Stop(txroutine, 'nstepend < nstepzero', uout)
+            end if
             dtransso = abs(dtransso) !dtransso must always be positive
             !--------------------------------------------------------------------------------------
 
