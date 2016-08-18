@@ -6519,7 +6519,7 @@ subroutine DUWidomx(nptset, iptset, iseedWidom, duwidom, lhsoverlap)
 
    integer(4), intent(in) :: nptset
    integer(4), intent(in) :: iptset(*)
-   integer(4), intent(in) :: iseedWidom
+   integer(4), intent(inout) :: iseedWidom
    real(8), intent(out)   :: duwidom(0:npt)
    logical, intent(out)   :: lhsoverlap
 

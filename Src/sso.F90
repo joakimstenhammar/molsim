@@ -13,8 +13,8 @@
 
    type :: step
       integer(8)  :: n  !number of steps
-      real(8)     :: d  !squared displacement
-      real(8)     :: d2 !displacement**4
+      real(8)     :: d2  !squared displacement
+      real(8)     :: d4 !displacement**4
    end type step
 
    !define what happens if two variables of type step are added 
@@ -34,8 +34,8 @@
          type(step), intent(in) :: s1, s2
          type(step)  :: add
          add%n = s1%n + s2%n
-         add%d = s1%d + s2%d
-         add%d2 = s1%d + s2%d
+         add%d2 = s1%d2 + s2%d2
+         add%d4 = s1%d4 + s2%d4
       end function stepadd
 
 
@@ -65,8 +65,6 @@
          integer(4)  :: ipt
          integer(4)  :: maxbin, upperbin, lowerbin ! bin where the local mobility is found and upper and lower boundary
          integer(4)  :: ibin, ipart
-
-         real(8), allocatable, save :: dtranout(:,:,:)  ! output of dtrans
 
          !input variables--------------------------------------------------------------------------
          real(8), allocatable, save :: dtransso(:) ! initial displacement parameters
@@ -165,7 +163,7 @@
             if(.not. allocated(invrsso)) allocate(invrsso(npt))
 
             if(.not. allocated(tots)) allocate(tots(npt))
-            if(.not. allocated(ssos)) allocate(ssos(npt,nssobin))
+            if(.not. allocated(ssos)) allocate(ssos(nssobin, npt))
 
             if(.not. allocated(mob)) allocate(mob(0:nssobin))
             if(.not.allocated(param)) allocate(param(npt,part%n))
@@ -215,6 +213,7 @@
                   if (lssopt(ipt)) then
 
                      param(ipt,part%i)%used = curdtranpt(ipt) !store used dtran
+
                      call CalcLocMob(ipt)                      !calculate local mobility
 
                      ! get bin with maximum mobility--------------------------------------------------
@@ -263,12 +262,13 @@
 
                      !print tests---------------------------------------------------------------------
                      if(ltestsso) then
-                        write(uout,'(a,I0,a,I0,a,I0)') 'mob of ip ',ipt, " part ", part%i, ", current step: ", part%nextstep
+                        write(uout,'(a,I0,a,I0,a,I0)') 'mobility of pt ',ipt, " part ", part%i, "; current step: ", istep
+                        write(uout,'(a,g15.5)') 'current dtran ', curdtranpt(ipt)
                         write(uout,'(a,I5)')  'number of bins: ', nssobin
                         write(uout,'(a, a, a, a, a, a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
-                        write(uout,'(g15.5,a,g15.5,a,g15.5,a,g15.5)') &
-                        (ssorad(ibin,ipt), char(9), mob(ibin)%val, char(9), ssos(part%i,ibin)%d, char(9), mob(ibin)%smooth, char(9), ssos(ipt,ibin)%n, ibin = 1,nssobin)
-                        write(uout,'(a,a,I4)')  'average msd of ',ipt
+                        write(uout,'(i0, g15.5,a,g15.5,a,g15.5,a,g15.5,a,g15.5)') &
+                        (ibin, ssorad(ibin,ipt), char(9), mob(ibin)%val, char(9), ssos(ibin, ipt)%d2, char(9), mob(ibin)%smooth, char(9), ssos(ibin, ipt)%n, ibin = 1,nssobin)
+                        write(uout,'(a,I4)')  'average msd of pt ',ipt
                         write(uout,'(g15.5)') tots(ipt)%d2/real(tots(ipt)%n)
                         write(uout,'(a)')  ''
                         write(uout,'(a)')  ''
@@ -306,7 +306,7 @@
             write(uout,'(a)') '------------------------------------'
             write(uout,'(a15,a15)') 'particle type' , 'optimal dtran'
             write(uout,'(a15,a15)') '---------------' , '---------------'
-            write(uout,'(i15,g15.5)') (ipt, dtranout(ipt,part%n,2), ipt = 1, npt)
+            write(uout,'(i15,g15.5)') (ipt, param(ipt,part%n)%opt, ipt = 1, npt)
             write(uout,'(a)') ''
             write(uout,'(a)') ''
             write(uout,'(a)')'Number of SSO parts'
@@ -330,12 +330,12 @@
 
          contains
 
-         subroutine CalcLocMob(issopt)
+         subroutine CalcLocMob(ipt)
 
             implicit none
             
             ! particle type to be calculated
-            integer(4), intent(in)  :: issopt
+            integer(4), intent(in)  :: ipt
 
             ! store the inverted number of steps
             real(8)              :: invntot
@@ -343,15 +343,20 @@
             real(8)              :: btmp(0:nssobin)
             real(8)              :: ctmp(0:nssobin)
             real(8)              :: dtmp(0:nssobin)
+            real(8)              :: x(0:nssobin)
+            real(8)              :: y(0:nssobin)
+            real(8)              :: dy(0:nssobin)
+            real(8)              :: a(0:nssobin)
 
             integer(8)           :: ibin
             type(step)  :: stepbin ! steps done
+
 
             stepbin = step(0, Zero, Zero) 
             mob(0) = mobility(Zero, Zero, Zero)
 
             do ibin = 1, nssobin
-               stepbin = stepbin + ssos(issopt, ibin)
+               stepbin = stepbin + ssos(ibin,ipt)
                if(stepbin%n < 1) then
                   !assume 100% acceptance rate if no move was done
                   mob(ibin)%val = 0.15d0 * (real(ibin) / real(nssobin)  * curdtranpt(ipt))**2 ! 0.15 comes from 3/5 (from mean squared displacement in a sphere) and 1/4 (from squared diameter to squared radius
@@ -359,13 +364,19 @@
                else
                   !else: average displacement is displacement divided by number of steps; error calculated from variance
                   invntot = One/real(stepbin%n)
-                  mob(ibin)%val = stepbin%d * invntot
-                  mob(ibin)%error = sqrt((stepbin%d2 * invntot - (mob(ibin)%val)**2)*invntot)
+                  mob(ibin)%val = stepbin%d2 * invntot
+                  mob(ibin)%error = sqrt((stepbin%d4 * invntot - (mob(ibin)%val)**2)*invntot)
                end if
             end do
 
+            x = real( (/ (ibin, ibin = 0, nssobin) /) , KIND=8  )
+            y = mob(0:nssobin)%val
+            dy = mob(0:nssobin)%error
             !smooth using spline
-            call Smooth(nssobin + 1,real( (/ (ibin, ibin = 0, nssobin) /) , KIND=8  ) , mob(:)%val , mob(:)%error , real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), mob(:)%smooth, btmp, ctmp, dtmp)
+            call Smooth(nssobin + 1, x, y, dy, real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), a, btmp, ctmp, dtmp)
+
+            mob(0:nssobin)%smooth = a
+
 
          end subroutine CalcLocMob
 
@@ -375,47 +386,45 @@
                implicit none
                integer, intent(in)  :: bin
                integer, intent(in)  :: ipt
-               real(8)  InfInt
-               ssorad = (bin * Half * real(nssobin) * curdtranpt(ipt))
+               ssorad = (Half * real(bin)/real(nssobin) * curdtranpt(ipt))
          end function ssorad
 
       !........................................................................
 
       end subroutine SSOSetup
 
-      subroutine DoSSOUpdate(ievent, nptm, drotm)
-         use MCModule, only: iptmove, imcaccept
-         integer(4), intent(in)  :: ievent      ! event of SSO-Move
-         integer(4), intent(in)  :: nptm        ! number of moving particles
-         real(8),    intent(in) :: drotm(3,1:nptm)  ! suggested particle move
+      subroutine DoSSOUpdate(lacc, ipt, dr)
+         implicit none
+         logical, intent(in)  :: lacc      ! event of SSO-Move
+         integer, intent(in)  :: ipt        ! number of moving particles
+         real(8),    intent(in) :: dr(3)  ! suggested particle move
 
-         integer(4)  :: iploc, ibin
+         integer(4)  :: ibin
          real(8)  :: d2
+         d2=sum(dr(1:3)**2)
+         ibin = ceiling(sqrt(d2)*invrsso(ipt))
 
-         do iploc = 1, nptm
-            d2=sum(drotm(1:3,iploc)**2)
-            ibin = ceiling(sqrt(d2)*invrsso(iptmove))
-            tots%n = tots%n + 1
-            ssos%n = ssos%n + 1
-            if ( ievent == imcaccept) then
-               ssos%d = ssos%d + d2
-               tots%d = tots%d + d2
-               ssos%d2 = ssos%d2 + d2**2
-               tots%d2 = tots%d2 + d2**2
-            end if
-         end do
+         tots(ipt)%n = tots(ipt)%n + 1
+         ssos(ibin, ipt)%n = ssos(ibin, ipt)%n + 1
+         if ( lacc ) then
+            ssos(ibin, ipt)%d2 = ssos(ibin, ipt)%d2 + d2
+            tots(ipt)%d2 = tots(ipt)%d2 + d2
+            ssos(ibin, ipt)%d4 = ssos(ibin, ipt)%d4 + d2**2
+            tots(ipt)%d4 = tots(ipt)%d4 + d2**2
+         end if
 
       end subroutine DoSSOUpdate
 
 end module SSOModule
 
-subroutine SSOUpdate(ievent, nptm, drotm)
+subroutine SSOUpdate(lacc, ipt, dr)
    use SSOModule, only: DoSSOUpdate
-   integer(4), intent(in)  :: ievent      ! event of SSO-Move
-   integer(4), intent(in)  :: nptm        ! number of moving particles
-   real(8),    intent(in) :: drotm(3,*)  ! suggested particle move
+   implicit none
+   logical, intent(in)  :: lacc      ! event of SSO-Move
+   integer, intent(in)  :: ipt        ! number of moving particles
+   real(8),    intent(in) :: dr(3)  ! suggested particle move
 
-   call DoSSOUpdate(ievent, nptm, drotm(3,1:nptm))
+   call DoSSOUpdate(lacc, ipt, dr(1:3))
 
 end subroutine
 
@@ -425,4 +434,5 @@ subroutine SSODriver(iStage)
    integer(4), intent(in)  :: iStage
 
    call SSOSetup(iStage)
+
 end subroutine
