@@ -73,7 +73,7 @@
          integer(4), save           :: nstepend
          logical, save              :: ltestsso
          real(8), allocatable, save :: maxdtransso(:)! maximal allowed displacement parameters
-         real(8), allocatable, save :: dtranfac(:)   !increase in displacement parameter
+         real(8), save :: dtranfac   !increase in displacement parameter
          !-----------------------------------------------------------------------------------------
 
          type  :: ssopart
@@ -109,7 +109,6 @@
             ! read in nmlSpartSSO------------------------------------------------------------------
             if (.not. allocated(dtransso)) allocate(dtransso(npt))
             if (.not. allocated(maxdtransso)) allocate(maxdtransso(npt))
-            if (.not. allocated(dtranfac)) allocate(dtranfac(npt))
 
             dtransso  = One
             nstepzero   = ceiling(sqrt(real(nstep)))
@@ -145,6 +144,10 @@
             if (nstepend < nstepzero) then
                write(uout, *) "nstepzero: ", nstepzero, "; nstepend: ", nstepend, "; nstep: ", nstep
                call Stop(txroutine, 'nstepend < nstepzero', uout)
+            end if
+            if (dtranfac .le. One) then
+               write(uout, *) "dtranfac: ", dtranfac
+               call Stop(txroutine, 'dtranfac .le. 1', uout)
             end if
             dtransso = abs(dtransso) !dtransso must always be positive
             !--------------------------------------------------------------------------------------
@@ -237,7 +240,7 @@
                      ! get upper boundary (relative to maxbin)----------------------------------------
                      upperbin = 0
                      if(maxbin == nssobin) then
-                        upperbin = ceiling((dtranfac(ipt) - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
+                        upperbin = ceiling((dtranfac - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
                      else
                         do ibin = maxbin + 1 , nssobin !find position where locmob is significantly different from maximum
                            if ( (mob(maxbin)%smooth - mob(maxbin)%error) .ge. (mob(ibin)%smooth + mob(ibin)%error) ) then
