@@ -365,6 +365,7 @@ module MolModule
    logical                :: lradatbox     ! use atom and atom radius when checking if particle inside box
 
    integer(4)             :: nnwt          !number of network types
+   integer(4)             :: nnwnwt        !number of networks of network types
 
                                            ! equivalences:
                                            ! nc         = sum(ncct(1:nct))
