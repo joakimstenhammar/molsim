@@ -154,7 +154,6 @@ module MCModule
    logical                    :: lmcsep              ! flag for sparating local from global moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
-   logical, parameter   :: dosso = .true.
    real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
    
    
@@ -288,7 +287,7 @@ module MCModule
          if (prandom < pspart(iptmove)) then
             call SPartMove(iStage)                             ! single-particle trial move
          else if (prandom < pspartsso(iptmove)) then
-            call SPartMove(iStage, dosso)
+            call SPartMove(iStage, loptsso=.true.)
 
          !then global moves
          else if (prandom < pspartcl2(iptmove)) then
@@ -1220,12 +1219,12 @@ subroutine SPartMove(iStage, loptsso)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    !sneak in sso---------------------------------------------------------------
-   lsso = .false.
    if( present(loptsso)) then
-      if(loptsso) then
-         lsso = .true.
-      end if
+      lsso = loptsso
+   else
+      lsso = .false.
    end if
+
    if(lsso) then
       if (ltrace) call WriteTrace(4, txroutinesso, iStage)
    end if
