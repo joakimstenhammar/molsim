@@ -3585,3 +3585,33 @@ real(8) function BrentMod(ax,bx,cx,f,tol,xthr,xmin)
 
 end function BrentMod
 
+!************************************************************************
+!*                                                                      *
+!*     KnuthShuffle                                                     *
+!*                                                                      *
+!************************************************************************
+
+! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker 
+!     "The Art of Computer Programming" Second Edition Donald E. Knuth 1981
+!     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
+
+
+subroutine KnuthShuffle(a,asize)
+
+   use MolModule
+   implicit none
+
+   integer, intent(in) :: asize !size needed to cope with allocatable arrays
+   integer, intent(inout) :: a(asize)
+   integer :: i, randpos, itmp
+   real(8) :: Random
+
+   do i = size(a), 2, -1
+      randpos = int(Random(iseed) * i) + 1
+      itmp = a(randpos)
+      a(randpos) = a(i)
+      a(i) = itmp
+   end do
+
+end subroutine KnuthShuffle
+
