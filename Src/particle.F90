@@ -38,6 +38,17 @@ module ParticleModule
    real(8)       :: raintin(3,mnapt,mnpt)  !*interaction site coordinates in input frame, cf rain
    integer(4)    :: itestpart              !*=10, call of TestChainPointer
 
+   type :: block
+      integer(4)  :: pt  !number of steps
+      integer(4)  :: np  !squared displacement
+   end type repblock
+   type :: rep
+      type(block), allocatable block(:)
+   end type rep
+
+   type(rep), allocatable repct(:,:)
+   integer(4)  :: nblockict(mnct)
+
 end module ParticleModule
 
 !************************************************************************
@@ -57,16 +68,19 @@ subroutine Particle(iStage)
 
    character(40), parameter :: txroutine ='Particle'
    character(80), parameter :: txheading ='particle data'
-   integer(4) :: igen, ialoc, ict, ipt, iat, iatloc, m
+   integer(4) :: igen, ialoc, ict, ipt, iat, iatloc, m, icloc
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
                           ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,              &
                           nct, txct, ncct, npptct, txcopolymer, lspma,                  &
+                          nblockict,                                                    &
                           npt, txpt, nppt, natpt,                                       &
                           txat, massat, radat, zat, zatalpha, sigat, epsat, latweakcharge, pK, pH, jatweakcharge, &
                           naatpt, txaat, rain, dipain, polain, lintsite, raintin,       &
                           lradatbox, itestpart
+
+   namelist /nmlRepeating/  repct
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -88,6 +102,7 @@ subroutine Particle(iStage)
       npptct          = 0
       txcopolymer     = 'block'
       lspma           = .false.
+      nblockict       = 0
       zat             = Zero
       zatalpha        = Zero
       sigat           = Zero
@@ -113,6 +128,21 @@ subroutine Particle(iStage)
       do ict = 1, nct
          call LowerCase(txcopolymer(ict))
       end do
+
+      if(any(txcopolymer(1:nct) == 'repeating')) then
+         if(.not. allocated(repct)) then
+            allocate(repct(nct))
+            do ict = 1, nct
+               if(.not. allocated(repct(ict)%block)) then
+                  allocate(repct(ict)%block(nblockict))
+               end if
+            end do
+         end if
+         repct(:)%block(:)%np = 0
+         repct(:)%block(:)%pt = 0
+         rewind(uin)
+         read(uin,nmlRepeating)
+      end if
 
 ! ... determine types of atoms
 
@@ -333,7 +363,30 @@ subroutine Particle(iStage)
          end do
          if (lspma) write(uout,'(a)')
          if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
+
+         if(any(txcopolymer(1:nct) == 'random')) then
+            call WriteHead(2, 'Random Copolypers', uout)
+            write(uout,'(a)') 'chain sequence:'
+            do ict = 1, nct
+               if (txcopolymer(ict) == 'random') then
+                  write(uout,'(a, i0)') 'chaintype: ', ict
+                  do icloc = 1, ncct(ict)
+                     write(uout,'(a, i0)') 'chainnumber: ', ncct(ict) + icloc
+                     write(uout,'(a)') 'particle number:'
+                     write(uout,'(i0)',advance='NO') ipnsegcn(1,icloc)
+                     write(uout,'(("-", i0))') ipnsegcn(2:npct(ict),icloc)
+                     write(uout,'(a)') 'particle type:'
+                     write(uout,'(i0)',advance='NO') iptpn(ipnsegcn(1,icloc))
+                     write(uout,'(("-", i0))') iptpn(ipnsegcn(2:npct(ict),icloc))
+                     write(uout,'')
+                  end do
+                  write(uout,'')
+               else
+               end if
+            end do
+         end if
       end if
+
 
       write(uout,'()')
       write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
@@ -732,6 +785,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
    character(40), parameter :: txroutine ='Set_ipnsegcn'
    integer(4) :: nrep, irep, nreplen
+   integer(4) :: nprep, iblock
 
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
@@ -773,6 +827,87 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
                end do
             end do
          end do
+      else if (txcopolymer(ict) == 'repeating') then
+
+         if(any( repct(ict)%block(:)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
+         if(any( repct(ict)%block(:)%ip .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
+
+
+         nprep = sum(repct(ict)%block(:)%np)     ! number particles in an repetition
+         nrep = sum(npptct(1:npt,ict))/nprep     ! maximum number of repetitions is number of particles / particles in a repetition
+
+         do ipt = 1, npt
+            if((npptrepct(ipt,ict) > 0) .and. (npptct(ipt,ict) > 0)) then  !if ipt is part of repetition structure
+               if(npptrepct(ipt,ict) > npptct(ipt,ict) ) call stop(txroutine,'npptrepct(ipt,ict) > npptct(ipt,ict)', uout) !more particles on repetition than in chain
+               nrep = min(nrep, npptct(ipt,ict)/npptrepct(ipt,ict))        !maximum number of repetitions are the number or particles of a type / particles of a type in a repetition
+            end if
+         end do
+         if(nrep == 0 ) call stop(txroutine,'error in nrep for making repeating copolymer', uout)
+
+         do icloc = 1, ncct(ict)                               ! loop over chains of type ict
+            ic = ic+1                                          ! global chain number
+            iseg = 0
+            !repeating structure
+            do irep = 1, nrep
+               do iblock = 1, count(iptrepct(:,ict)>0)
+                  ipt = iptrepct(iblock, ict)
+                  iplow = (irep-1)*npptrepct(ipt,ict) + sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+                  do iploc = 1, npptrepct(ipt,ict)
+                     iseg = iseg + 1
+                     ipnsegcn(iseg,ic) = iplow + iploc
+                  end do
+               end do
+            end do
+
+            !tail of remaining particles
+            if(.not. (iseg == nrep*nprep) ) call stop(txroutine,'error in iseg', uout)
+
+            iseg = nprep * nrep
+            do iptrep = 1, npt
+               ipt = iptrepct(iptrep, ict)
+               iplow = (nrep)*npptrepct(ipt,ict) + sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+               do iploc = 1, (npptct(ipt,ict) - nrep * npptrepct(ipt,ict))
+                  iseg = iseg + 1
+                  ipnsegcn(iseg,ic) = iplow + iploc
+               end do
+            end do
+
+            if(.not. (iseg == sum(npptct(1:npt,ict))) ) call stop(txroutine,'error in iseg - 2', uout)
+
+         end do
+
+      else if (txcopolymer(ict) == 'random') then
+
+
+         !prepare allocatable variables
+         if(.not. allocated(iplowipt)) allocate(iplowipt(npt))
+         allocate(iptiseg(npct(ict)))
+
+         !loob over chains
+         do icloc = 1, ncct(ict)
+            ic = ic+1                                          ! global chain number
+
+            !create fresh list of iptiseg and iplowipt
+            iseg = 0
+            do ipt = 1, npt
+               iptiseg((iseg+1):(iseg+npptct(ipt,ict))) = ipt
+               iplowipt(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+               iseg = iseg+npptct(ipt,ict)
+            end do
+
+            !shuffle iptiseg
+            call KnuthShuffle(iptiseg,size(iptiseg))
+
+            !assign particles
+            do iseg = 1, npct(ict)
+               ipt = iptiseg(iseg)
+               iplowipt(ipt) = iplowipt(ipt) + 1
+               ipnsegcn(iseg,ic) = iplowipt(ipt)
+            end do
+
+         end do
+
+         deallocate(iptiseg)
       end if
     end do
 
