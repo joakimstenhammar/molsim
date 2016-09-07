@@ -278,6 +278,9 @@ $molsim  bugfixes.ltime               $core
 $molsim  sso.lmcsep                   $core
 $molsim  sso.sso                      $core
 
+#complexation-analysis
+$molsim  hierarchical.mc          $core
+
 echo
 echo "Remove group and dump files"
 echo

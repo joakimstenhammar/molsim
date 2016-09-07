@@ -1900,7 +1900,7 @@ subroutine SetHierarchical(txfirstseg)
 
    character(40), parameter :: txroutine ='SetHierarchical'
    real(8)    :: bondloc
-   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, isegmc, icmc, icmcloc, igen, icscloc, isidechain
+   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, igen
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
    integer(4) :: iattempt
@@ -1910,7 +1910,6 @@ subroutine SetHierarchical(txfirstseg)
    ntry = ntrydef
 
    attempt: do iattempt = 1, ntry                                      ! attempt multiple times to set the structure
-
       !initialize all relevant lpset to .false.
       do igen = 0, ngen                                                ! loop over generations
          ict = ictgen(igen)                                            ! chain type
