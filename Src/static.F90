@@ -119,6 +119,7 @@ subroutine StaticDriver(iStage)
          if (lnnhb    ) call Stop(txroutine, 'nnhb is selected, but no group division', uout)
          if (lnndf    ) call Stop(txroutine, 'nndf is selected, but no group division', uout)
          if (lenergydf) call Stop(txroutine, 'energydf is selected, but no group division', uout)
+         if (lsubstructuredf) call Stop(txroutine, 'substructuredf is selected, but no group division', uout)
       end if
 
       call StaticDriverSub
