@@ -1,0 +1,40 @@
+ &nmlSystem
+  txtitle ='testchain:  dimer',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*20.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic =.f.,limage =.f.,
+  itest = 1,   ipart = 1,   iatom = 1,   iaver = 1,   ishow = 1,   iplot = 0,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='dimer',
+  ncct  = 1,
+  npptct(1,1) = 2,
+  npt   = 1,
+  txpt  = 'ion',
+  nppt  =  2,
+  natpt =  1,
+  txat  = 'site',
+  massat= 10.0,
+  radat = 2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'site',
+ /
+ &nmlPotential
+ /
+ &nmlPotentialChain bond = 1.0, 2 , 5.0, angle = 0.0 /
+ &nmlSetConfiguration
+  txsetconf(1) ='bcclattice',
+  nucell(1,1) =    1,    1,    1,
+  rclow(1,1)  = -5.0, -5.0, -5.0,
+  rcupp(1,1)  =  5.0,  5.0,  5.0,
+ /
+ &nmlMC
+  dtran = 2.0,   drot  = 20.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

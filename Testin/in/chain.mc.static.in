@@ -1,0 +1,52 @@
+ &nmlSystem
+  txtitle ='testchain: 2+2 20-mer''s',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',
+  nstep1= 1,        nstep2= 100,
+  boxlen= 3*100.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic=.true., limage=.f.,
+  itest = 0,   ipart = 1,   iatom = 1,   iaver = 100, ishow = 1,   iplot = 0,   ilist = 1
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 2,
+  txct  ='20-mer1','20-mer2',
+  ncct  = 2,         2,
+  npptct(1,1) = 20,  0,
+  npptct(1,2) = 0,  20,
+  npt   = 2,
+  txpt  = 'bead1', 'bead2',
+  nppt  =  40,       40,
+  natpt =  1,        1,
+  txat  = 'site1', 'site2',
+  massat= 10.0,      10.0,
+  radat = 2.0,        2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'site1',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'site2',
+ /
+ &nmlPotential
+  r2uminin  = 0.0001,
+ /
+ &nmlPotentialChain bond(1) = 2.5, 2, 5.0, angle(1) = 0.001, 2, bond(2) = 2.5, 4, 5.0, angle(2) = 0.001, 4 /
+ &nmlSetConfiguration
+  txsetconf(1) =2*'random',
+  anglemin = 2*120.0,
+ /
+ &nmlMC
+  pspart = 2*1.0, dtran      = 2*5.0,      drot  = 2*20.0,
+  ppivot = 2*0.5, drotpivot  = 2*360.0,
+  pchain = 2*0.0, dtranchain = 2*5.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 180.0 /
+ &nmlStatic
+  lchaindf =.true.,
+  lchaintypedf =.true.,
+  lchaintypeextdf =.true.,
+ /
+ &nmlChainDF vtype(1:8)%l = .true., .true., .true., .true., .true., .true., .true., .true. /
+ &nmlChainTypeDF vtype(1:8)%l = .true., .true., .true., .true., .true., .true., .true., .true. /
+ &nmlChainTypeExtDF vtype(1:5)%l = .true., .true., .true., .true., .true. /

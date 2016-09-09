@@ -1,0 +1,56 @@
+&nmlSystem
+  txtitle ='planar pe_brush',
+  txmethod='mc',    txensemb='nvt',     txbc='xy',       txstart='setconf',
+  nstep1= 1,        nstep2= 10,
+  boxlen= 50.0,   50.0,   100,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,   lstatic =.t., limage =.f.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 0,    ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  = 'diblock',
+  ncct  = 2,
+  npptct(1,1) = 10, 10, 0, 0,
+  txcopolymer='block',
+  npt   = 4,
+  txpt  =  'p+',        'p-',      'i+',         'i-',
+  nppt  =   20,         20,         22,          2,
+  natpt =   1,         1,           1,            1,
+  txat  =  'p+',        'p-',      'i+',         'i-',
+  radat =  2.0,        2.0,        2.0,           2.0,
+  zat   =  0.0,       -1.0,        1.0,          1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'p+',
+  naatpt(1,2) =  1,
+  txaat(1,2) =   'p-',
+  naatpt(1,3) =  1,
+  txaat(1,3) = 'i+',
+  naatpt(1,4) =  1,
+  txaat(1,4) =   'i-',
+ /
+ &nmlPotential
+  relpermitt = 78.4,
+ /
+ &nmlPotentialChain bond = 2.4088, 2, 5.0, angle = 0.0 /
+ &nmlSetConfiguration
+  txsetconf(1) = 2*'planbrushrandom',2*'random',
+  anglemin = 60.0,
+ /
+ &nmlMC
+  dtran =  2.0, 2.0, 2.0, 2.0,
+  lfixchainstartspart = .true.,
+ /
+ &nmlGroup ref = 'type=all', field = 'type=all', lwref =	.false. /
+ &nmlIntList inlist = 0, drnlist = 5.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlStatic
+  istatic = 1,
+  lspdf   =.true.,
+ /
+ &nmlSPDF vtype(3)%l =.true. /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 2.0, 2.0, 2.0, 2.0, blmax = 6.0, bondr = 0.5 /

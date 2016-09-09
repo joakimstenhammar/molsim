@@ -1,0 +1,58 @@
+ &nmlSystem
+  txtitle ='1 pe and their counterions confined to a sphere of radius 100',
+  txmethod='mc',    txensemb='nvt',     txbc='ell',       txstart='setconf',
+  nstep1= 1,        nstep2= 100,
+  ellrad= 100.0, 100.0, 50.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,  lstatic =.t.,  limage=.f.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,   ishow = 1,     iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='100-mer',
+  ncct  = 1,
+  npptct(1,1) = 100,   0,
+  npt   = 2,
+  txpt  = 'pe',     'cionpe',
+  nppt  = 100,       50,
+  natpt =  1,         1,
+  txat  = 'bead',   'cionpe',
+  massat= 10.0,      10.0,
+  radat =  2.0,       2.0,
+  zat =   -1.0,       2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'pebead',
+  naatpt(1,2) =  1,
+  txaat(1,2) =  'cionpe',
+ /
+ &nmlPotential
+  rcut = 0,
+  relpermitt = 78.4,
+ /
+ &nmlPotentialChain bond = 2.4088, 2, 5.0, angle = 0.00207 /
+ &nmlSetConfiguration
+  txsetconf(1) =    'random',
+  txsetconf(2) =    'random',
+  anglemin = 120.0,
+ /
+ &nmlMC
+  pspart   = 1.0,    dtran      = 5.0, 25.0,
+  ppivot   = 0.01,   drotpivot  = 90.0,
+  pchain   = 0.01,   dtranchain = 1.0,
+  pslither = 0.01
+ /
+ &nmlGroup ref =		'type=pe', field=	'type=all', lwref =	.false. /
+ &nmlIntList inlist = 0, drnlist = 2600.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlStatic
+  istatic = 1,
+  lspdf =.true.,
+  lsf =.true.,
+  /
+ &nmlSPDF vtype(1) =.true., 0.0, 100.0 /
+ &nmlSF klow = 0.01, nbin = 100 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 2.0,    2.0,   2.0, blmax  =      5.0, bondr =       0.3 /

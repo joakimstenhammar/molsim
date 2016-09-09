@@ -1,0 +1,79 @@
+ &nmlSystem
+  txtitle ='1 pe and their counterions + 1 capsid and their counterions ',
+  txmethod='mc',    txensemb='nvt',     txbc='sph',       txstart='setconf',
+  nstep1= 1,        nstep2 = 10,
+  sphrad= 500.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed  = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump=.f.,  lgroup=.t.,  lstatic =.t.,  limage =.f.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 0,   ishow = 1,     iplot = 0,      ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='100-mer',
+  ncct  = 1,
+  npptct(1,1) = 0,   0,  100,  0,
+  npt   = 4,
+  txpt  = 'capside',  'cioncap',  'pe',     'cionpe',
+  nppt  =  100,          100,      100,       100,
+  natpt =  1,         1,         1,         1 ,
+  txat  = 'capside', 'cioncap',   'bead',   'cionpe',
+  massat= 10.0,      10.0,        10.0,      10.0,
+  radat =  2.0,       2.0,      2.0,       2.0,
+  zat =   1.0,       -1.0,      -1.0,       1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'capside',
+  naatpt(1,2) =  1,
+  txaat(1,2) =  'cioncap',
+  naatpt(1,3) =  1,
+  txaat(1,3) =  'pebead',
+  naatpt(1,4) =  1,
+  txaat(1,4) =  'cionpe',
+ /
+ &nmlPotential
+  rcut = 0,
+  relpermitt = 78.4,
+  luext =  .true.,
+ /
+ &nmlPotentialExternal txuext = '      ',3*'capsid_shell', rcap = 50.0,   dcap =  12.0 /
+ &nmlPotentialChain bond = 2.4088, 2, 5.0, angle = 0.0739 /
+ &nmlSetConfiguration
+  txsetconf(1) = 'capsid',
+  txsetconf(2) = 'randomcapsid',
+  txsetconf(3) = 'random_chain_inside',
+  txsetconf(4) = 'randomcapsid',
+  anglemin = 120.0,
+ /
+ &nmlMC
+  pspart       = 1.0,  1.0,  1.0,   1.0,    dtran  = 0.0, 25.0,   0.5,   25.0,
+!  pchain       = 0.0,  0.0,  0.1,  0.0,     drotchain = 0.0,  0.0,  10.0,  0.0,
+  ppivot       = 0.0,  0.0,  0.01,  0.0,    drotpivot    = 0.0, 0.0, 90.0, 0.0,
+!  pchaincl1    = 0.0,  0.0,  0.01,  0.0,    dtranchaincl1   = 0.0, 0.0, 1.0, 0.0,
+  pslither     = 0.0,  0.0,  0.01,  0.0,
+  radcl1       = 0.0,  0.0,  8.0,   0.0,    pselectcl1= 0.0,  0.0, 1.0,  0.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 2600.0 /
+ &nmlGroup ref = 'type=all', field ='type=all', lwref = .f. /
+ &nmlDist idist=10, vtype(5) =.true., 0.0, 500.0, 100 /
+ &nmlDump idump   =  100, txptdump = 'all', ldpos    = .true. /
+ &nmlStatic
+  istatic = 1,
+  lspdf =     .true.,
+  lsf   =       .true.,
+  lchaintypedf  = .true.,
+  lstaticuser   = .true.,
+  /
+ &nmlSPDF vtype(1) =.true., 0.0, 100.0, 200 /
+ &nmlSf nbin    =  200, txkscale= 'log', logklow = -3, logkupp =  1 /
+ &nmlChainTypeDF
+  vtype(1:6)%l = .true., .true., .true., .true., .true., .true.,
+  vtype(1:6)%min = 5.20, 0,  40, 100,  0.0,  0.0,
+  vtype(1:6)%max = 6.20, 100, 50, 180,  1.0,  5.0,
+  vtype(1:6)%nbin = 200, 200, 200, 200, 200, 200,
+ /
+ &nmlImage lvrml =.true. /
+ &nmlVRML txwhen =  'after_run', atsize = 0.90,    0.0,   2.0,             0.0, rgbcolor =    1.0, 0.0, 0.0,    0.0, 0.0, 0.0,  0.0,0.0,1.0,  0.0,0.0,0.0, blmax  =      5.0, bondr =       0.3 /
+ 
+ 

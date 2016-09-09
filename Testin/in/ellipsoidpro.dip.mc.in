@@ -1,0 +1,57 @@
+&nmlSystem
+  txtitle ='hard ellipsoids with dipole moment in en external field',
+  txmethod= 'mc',     txensemb='nvt',     txbc  ='xyz',    txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*84.582694661,
+  temp  = 298.0,    prsr  = 0.1013,
+  iseed = 865,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,  lstatic=.t., limage=.t.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0, ishow = 1,   iplot = 0,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'ellipsoid',
+  nppt  =  2048,
+  natpt =  1,   
+  txat  = 'site1'
+  massat= 10.0,    
+  radat = 0.0,
+  dipain(1,1,1) = 0.277552801463072968205, ! unit e0*A
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'site1',
+ /
+ &nmlPotential
+  rcut = 15.0,
+  lellipsoid =.t.
+  radellipsoid = 3.0,
+  aellipsoid = 2.3,
+  luext=.t.,
+ /
+ &nmlPotentialExternal
+  txuext(1) = 'estat_field',
+  efield_ext = 0.0d0, 0.0d0, 178.5245896953858820980,
+ /
+ &nmlSetConfiguration
+  txsetconf(1)='sm2lattice',
+  nucell = 3*8,
+ /
+ &nmlMC
+  pspart = 1.0, dtran = 0.03,   drot = 6.0,
+ /
+ &nmlIntList
+  inlist= 0,        drnlist  = 10.0,
+ /
+ &nmlDist
+  idist = 1,
+  vtype(5)%l =.true.,
+  vtype(5)%min = 0.0,	
+  vtype(5)%max = 45.0,	
+  vtype(5)%nbin = 180,
+  rcutdist = 45.0d0,
+ /
+ &nmlStatic /
+ &nmlGroup /
+ &nmlImage lvrml= .t., /
+ &nmlVRML atsize = 1.0, /

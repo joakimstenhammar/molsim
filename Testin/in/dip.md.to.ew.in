@@ -1,0 +1,105 @@
+ &nmlSystem
+  txtitle ='LJ-particles with embedded dipole moment',
+  txmethod='md',    txensemb='nve',     txbc ='to',  txstart ='setconf',    txuser='md_dipole',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*137.52,
+  boxlen= 3*92.063,
+  boxlen= 3*63.833,
+  boxlen= 3*42.732,
+  boxlen= 3*29.629,
+  cellside  = 13.19822,
+  temp  = 315.777,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump = .f., lgroup = .true., lstatic = .true., limage = .f.,
+  itest = 5,   ipart = 100,  iatom = 0,   iaver = 100,  ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec= 'dip',
+  npt   = 1,
+  txpt  = 'LJ',
+  nppt  =  1000,
+  natpt =  1,
+  txat  = 'LJ',
+  massat= 18.0,
+  radat = 0.5,
+  zat   = 0.0,
+  sigat = 2.88630,
+  epsat = 1.97023,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'LJ',
+  dipain(1,1,1) = 0.0000, 0.0000, 0.10584,
+  dipain(1,1,1) = 0.0000, 0.0000, 0.23813,
+  dipain(1,1,1) = 0.0000, 0.0000, 0.34397,
+ /
+ &nmlPotential
+  txpot = '(1,6,12)',
+   rcut = 27.0,
+   rcut = 20.0,
+   rcut = 19.0,
+   rcut = 14.0,
+   rcut = 14.0,
+  lewald  =.true., iewaldopt = 1, ualphared = 3.2, ncutregion = 'sphere', lsurf =.false.,
+ /
+ &nmlPolarizationIter tpolit = 1.0e-5, mpolit = 15, npolit = 100000 /
+ &nmlSetConfiguration
+  txsetconf(1) = 'pclattice',
+   nucell(1,1) =  47,   47,    47,
+   nucell(1,1) =  32,   32,    32,
+   nucell(1,1) =  22,   22,    22,
+   nucell(1,1) =  15,   15,    15,
+   nucell(1,1) =  10,   10,    10,
+   nucell(1,1) =  13,   13,    13,
+  roshift(1,1) = 3*0.1,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.001,    nvvite= 2,
+  tvscl = 0.1,      tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlMC
+  dtran = 4.0,
+  drot = 10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /
+ &nmlDist idist = 1, vtype(6) =.true., 0.0, 10.0, 200, rcutdist = 10.0 /
+ &nmlDump idump = 1, ldpos =.true., ldori =.true., ldliv =.f., ldanv =.f., ldumpuser =.true. /
+ &nmlGroup /
+ &nmlMolstat /
+ &nmlStatic
+  istatic = 100,
+  istatic = 1,
+  lrdf = .true.,
+  langdf = .true.,
+  lkirkwoodgk = .true.,
+  loripoldf = .true.,
+  lmultipoledf = .true.,
+ /
+ &nmlRDF vtype(1) =.true., 0.0, 15.0, 300, rmax = 15.0, func='rdf' /
+ &nmlRDFCond vtype%l = .true., .true., .true., .true., .true., vtype%min = 0.0, 0.0, 0.0, 0.0, 0.0, vtype%max = 15.0, 15.0, 15.0, 15.0, 15.0, vtype%nbin = 300, 300, 300, 300, 300, rmax = 15.0 /
+ &nmlAngDF vtype(1:3)%l = .true., .true., .true., rmax = 4.2 /
+ &nmlOriDipDF vtype(1:4)%l =.true. /
+ &nmlKirkwoodgk
+   vtype=.true., , 150.0, 300, rmax =150.0, ! 100k
+   vtype=.true., ,  90.0, 450, rmax = 90.0, ! 030k
+   vtype=.true., ,  60.0, 300, rmax = 60.0, ! 010k
+   vtype=.true., ,  40.0, 200, rmax = 40.0, ! 003k
+   vtype=.true., ,  30.0, 150, rmax = 30.0, ! 001k
+ /
+ &nmlOriPolDF
+   vtype%l = .true., .true., .true., .true., vtype%min = 0.0,-2.0,0.0,0.0, vtype%max = 2.0, 2.0, 2.0, 2.0, vtype%nbin = 100,
+   nrad = 4, radius = 5.0, 10.0, 15.0, 20.0, lnorm=.true.,
+ /
+ &nmlMultipoleDF lmax = 3, vmin =-10.0,-10.0,-100.0, vmax = 10.0, 10.0, 100.0, nrad = 2, radius = 7.5, 15.0 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 1.5 /
+ 
+ &nmlMoldyn
+  txtitle ='LJ-particles with embedded dipole moment',
+  np    = 1000, nplow  = 1,  npupp = 1000, lgroup = .f.,
+  nts   = 1000, tstep = 0.1, ishow = 1, iplot = 1, ilist = 1,
+  lmsd       =.true.,
+  loriztcf   =.true.,
+ /
+ &nmlMSD     nti=100, ntspti=1, ishift=1,        lform=.f. /
+ &nmlOriZTCF nti=100, ntspti=1, ishift=1, il=1,  lform=.f. /

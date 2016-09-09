@@ -1,0 +1,139 @@
+&nmlSystem
+ txtitle   = 'titratable microgel pH = 7.0',
+ txmode    = 'simulation',
+ txmethod  =         'mc',
+ txensemb  =        'nvt',
+ txbc      =        'xyz',
+ txstart   =    'setconf',
+ boxlen(1) =        1000 ,
+ boxlen(2) =        1000 ,
+ boxlen(3) =        1000 ,
+ temp      =      298.15 ,
+ prsr      =       1.013 ,
+ iseed     =           1 ,
+ maxcpu    =      430000 ,
+ nstep1    =           1 ,
+ nstep2    =          10 ,
+ lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .t.,  ldynamic = .f.,  limage = .t., 
+ itest     =  0 ,  ipart =  0 ,  iatom =  0 ,  iaver =  0 ,  ishow  =  1 ,  iplot   =  0 ,  ilist    =  1 ,  ltrace = .f. ,
+/
+&nmlScale 
+/
+&nmlParticle
+ txelec  = 'weakcharge',
+ lclink  =       .true.,
+ nnwt    =           1 ,
+ nnwnwt(1) =         1 ,
+ iptclnwt(1) =       3 , 
+ ncctnwt(1,1) =    184 ,
+ txnwt(1) =  'microgel',
+ txtoponwt(1) = 'default',
+ nct     =           1 ,
+ txct(1) =     'strand',  
+ ncct(1) =        184 ,
+ npt     =           3 ,
+ txpt(1)       = 'mon' ,     txpt(2)       = 'cIon',     txpt(3)        = 'node',
+ nppt(1)       =   920 ,     nppt(2)       =   920 ,     nppt(3)        =    71 ,
+ natpt(1)      =     1 ,     natpt(2)      =     1 ,     natpt(3)       =     1 ,
+ txat(1)       =  'mon',     txat(2)       = 'cIon',     txat(3)        = 'node',
+ radat(1)      =   2.0 ,     radat(2)      =   2.0 ,     radat(3)       =   2.0 ,
+ zat(1)        =  -1.0 ,     zat(2)        =   1.0 ,     zat(3)         =   0.0 ,
+ npptct(1,1)   =     5 ,     npptct(2,1)   =     0 ,     npptct(3,1)    =     0 ,
+ maxnbondcl(1) =     1 ,     maxnbondcl(2) =     0 ,     maxnbondcl(3)  =     4 ,
+ naatpt(1,1)   =     1 ,     naatpt(1,2)   =     1 ,     naatpt(1,3)    =     1 ,
+ txaat(1,1)    =  'mon',     txaat(1,2)    = 'cIon',     txaat(1,3)     = 'node', 
+ rain(1,1,1)   =   0.0 ,     rain(1,1,2)   =   0.0 ,     rain(1,1,3)    =   0.0 ,     
+ rain(2,1,1)   =   0.0 ,     rain(2,1,2)   =   0.0 ,     rain(2,1,3)    =   0.0 ,     
+ rain(3,1,1)   =   0.0 ,     rain(3,1,2)   =   0.0 ,     rain(3,1,3)    =   0.0 ,     
+ pH               = 7.0 ,
+ latweakcharge(1) =  .t.,
+ pK(1)            = 7.0 ,
+ jatweakcharge    = 2,
+/
+! relative permittivity of water at 25°C from Malmberg1956
+&nmlPotential
+ relpermitt =  78.3 ,
+ lewald     =    .t.,
+ txewaldrec =  'std',
+ iewaldopt  =     1 ,
+ rcut       = 500.0 ,
+ ncut       =    -1 , 
+/
+&nmlPotentialChain
+ bond(1) = 2.4, 2.0, 5.0,
+ clink   = 2.4, 2.0, 5.0,
+/
+&nmlSetConfiguration
+ rnwt(1)     =      88 ,
+ txorigin(1)     = 'origin',
+ shiftnwt(1:3,1) = 0.0,
+ txsetconf(1) = 'network',     txsetconf(2) = 'random',     txsetconf(3) = 'network',
+/
+&nmlMC
+ isamp = 1,
+ pspart(1)  = 0.99 ,     pspart(2)  = 1.00 ,     pspart(3)  = 1.00 ,
+ dtran(1)   = 4.00 ,     dtran(2)   = 25.0 ,     dtran(3)   = 4.00 ,
+ pcharge(1) = 0.01 ,     pcharge(2) = 0.00 ,     pcharge(3) = 0.00 ,
+/
+&nmlIntList
+ inlist  =  0 ,
+ drnlist = 25 ,
+/
+&nmlDist
+/
+&nmlDump
+ ldpos = .t.,
+ ldlaz = .t.,
+ idump = 10 ,
+/
+&nmlGroup
+ ref   = 'type=all',
+ field = 'type=all',
+ lwref =        .f.,
+/
+&nmlStatic
+ lsubstructuredf  =  .t.,
+ lnetworkdf       =  .t.,
+ lnetworkradialdf =  .t.,
+ istatic          =   1 ,
+/
+&nmlNetworkDF
+ vtype(1) = .t., 0.0, 100.0, 100,
+ vtype(2) = .t., 0.0, 1.000, 100,
+ vtype(3) = .t., 0.0, 1.000, 100, 
+/
+&nmlNetworkRadialDF
+ vtype(1) = .t., 0.0, 500, 500, 
+ vtype(2) = .t., 0.0, 500, 500, 
+ vtype(3) = .t., 0.0, 500, 500, 
+ vtype(4) = .t., 0.0, 500, 500,
+ vtype(5) = .t., 0.0, 500, 500,
+ vtype(6) = .t., 0.0, 500, 500,
+/
+&nmlSubstructureDF
+ lptinsub(1) = .t.,     lptinsub(2) = .f.,     lptinsub(3) = .t.,
+ vtype(1) = .t., 0.0, 200.0, 400, 
+ vtype(2) = .t., 0.0, 500, 500, 
+ vtype(3) = .t., 0.0, 500, 500, 
+ vtype(4) = .t., 0.0, 500, 500, 
+ vtype(5) = .t., 0.0, 500, 500, 
+ vtype(6) = .t., 0.0, 500, 500,
+ vtype(7) = .t., 0.0, 500, 500,
+ vtype(8) = .t., 0.0, 1.0, 100,
+ vtype(9) = .t., 0.0, 500, 500,
+/
+&nmlImage
+ iimage = 10 , 
+ lvtf   = .t., 
+/
+&nmlVTF
+ txwhen  = 'after_iimage',
+ bondr   =          0.3 ,
+ bondres =           50 ,
+ sphres  =           50 ,
+ tximage = 'frame','','undopbc','centernw',
+ rgbcolor(1,1) = 1.00 ,     rgbcolor(1,2) = 0.00 ,     rgbcolor(1,3) = 1.00 ,     rgbweakcharge(1) = 0.00 , 
+ rgbcolor(2,1) = 0.00 ,     rgbcolor(2,2) = 0.00 ,     rgbcolor(2,3) = 0.00 ,     rgbweakcharge(2) = 0.00 ,
+ rgbcolor(3,1) = 0.00 ,     rgbcolor(3,2) = 1.00 ,     rgbcolor(3,3) = 1.00 ,     rgbweakcharge(3) = 0.00 ,
+ lrendwc = .t.,
+/
