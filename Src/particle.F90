@@ -801,7 +801,8 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    integer(4) :: nrep, irep, nreplen
    integer(4) :: nprep, iblock
    integer(4), allocatable :: npptrep(:)
-   integer(4), allocatable :: ipset(:)
+   integer(4), allocatable :: npset(:)
+   integer(4), allocatable :: ipstart(:)
 
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
@@ -844,37 +845,46 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
             end do
          end do
       else if (txcopolymer(ict) == 'repeating') then
+         print*, "repeating", ict
 
          if(.not. allocated(npptrep)) allocate(npptrep(npt))
-         if(.not. allocated(ipset)) allocate(ipset(ipt))
+         if(.not. allocated(npset)) allocate(npset(npt))
+         if(.not. allocated(ipstart)) allocate(ipstart(npt))
          npptrep = 0
-         ipset = 0
+         npset = 0
+         ipstart = 0
+         print*, "psot alloc"
 
          if(any( rep_iblock_ict(1:nblockict(ict),ict)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
          if(any( rep_iblock_ict(1:nblockict(ict),ict)%pt .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
 
+         print*, "get npptrep"
          do iblock = 1, nblockict(ict)
             ipt = rep_iblock_ict(iblock,ict)%pt
             npptrep(ipt) = sum(rep_iblock_ict(1:nblockict(ict),ict)%np, MASK=(rep_iblock_ict(1:nblockict(ict),ict)%pt == ipt))
          end do
 
-         if(nrep == 0 ) call stop(txroutine,'error in making repeating copolymer', uout)
-
-         do ic = icnct(ict), icnct(ict) + ncct(ict)                               ! loop over chains of type ict
+         do icloc = 1, ncct(ict)                               ! loop over chains of type ict
+            ic = ic + 1
+            print*, "repeating", ic
             !repeating structure
             do ipt = 1, npt
-               ipset(1:npt) = sum(nppt(1:ipt-1)) + sum(ncct(1:nct-1)*npptct(ipt,1:ict-1)) + (ic - icnct(ict))*npptct(ipt,ict)
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:nct-1)*npptct(ipt,1:ict-1)) + (icloc - 1)*npptct(ipt,ict)
             end do
+            print *, "npset"
+            print *, npset
 
             iseg = 0
             irep = 0
-            do while (iseg .le. sum(npptct(1:npt,ict)))
+            npset = 0
+            do while (iseg < sum(npptct(1:npt,ict)))
                do iblock = 1, nblockict(ict)
                   ipt = rep_iblock_ict(iblock,ict)%pt
-                  do iploc = 1, min(rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npptrep(ipt)*irep)
+                  do iploc = 1, min(rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npset(ipt))
                      iseg = iseg + 1
-                     ipset(ipt) = ipset(ipt) + 1
-                     ipnsegcn(iseg,ic) = ipset(ipt)
+                     npset(ipt) = npset(ipt) + 1
+                     print *, iseg, npset(ipt), ipt, rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npptrep(ipt)*irep
+                     ipnsegcn(iseg,ic) = npset(ipt) + ipstart(ipt)
                   end do
                end do
             end do
