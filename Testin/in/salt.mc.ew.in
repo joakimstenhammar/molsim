@@ -1,0 +1,49 @@
+ &nmlSystem
+  txtitle ='0.001 m 1:1 salt solution',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 2,        nstep2= 10,
+  boxlen= 3*56.39,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lstatic =.t.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 50,   ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'jon1   ','jon2   ',
+  nppt  =  108,       108,
+  natpt =  1,        1,
+  txat  = 'site1','site2',
+  massat= 23.0,    35.4,
+  radat = 2.0,      2.0,
+  zat   = 1.0,     -1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'site1',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'site2',
+ /
+ &nmlPotential
+  relpermitt = 80.0,
+  rcut = 28.0,
+  lewald = .true., iewaldopt = 1,  ualphared = 3.0,  lsurf =.false.,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) = 'random', 'random',
+ /
+ &nmlMC
+  dtran = 10.0,             10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 60.0 /
+ &nmlGroup ref = 'type=1', field = 'type=1', lwref = .false. /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 20.0, 100 /
+ &nmlStatic
+  istatic = 10,
+  lcluster=.true.,
+  lwidom1 =.true.,
+  lwidom2 =.true.,
+ /
+ &nmlCluster txobj = 'particle', l2d = .true., nobjt = 2, iobjt = 1, 2, rcluster = 5.0, txweight = 'mass' /
+ &nmlWidom1 ntimes = 10000, nset = 2, nptset = 1, 2, iptset(1,1) = 1, iptset(1,2) = 1, 2 /
+ &nmlWidom2 ntimes = 10000, nset = 1, iptset = 1 /

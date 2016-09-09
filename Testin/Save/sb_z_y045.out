@@ -1,0 +1,354 @@
+**************************************************************************************************************
+**************************************************************************************************************
+**                                                                                                          **
+**                                                                                                          **
+**                                                  Molsim                                                  **
+**                                                                                                          **
+**                  integrated md/mc/bd simulation program belonging to the molsim package                  **
+**                                                                                                          **
+**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                                                                                          **
+**                                                                                                          **
+**                                                Per Linse                                                 **
+**                                            Physical Chemistry                                            **
+**                                         Department of Chemistry                                          **
+**                                             Lund University                                              **
+**                                               P.O. Box 124                                               **
+**                                          S-221 00 Lund, SWEDEN                                           **
+**                                                                                                          **
+**                                                                                                          **
+**                                         with contributions from                                          **
+**                                                                                                          **
+**                  Anna Akinchina, Fredrik Carlsson, Samuel Edgecombe, Yoshikatsu Hayashi                  **
+**          Pascal Hebbeker, Cornelius Hofzumahaus, Niklas Källrot, Björn Linse, Vladimir Lobaskin          **
+**               Thomas M. Nymand, Alberto Pais, Jurij Rescic, Stefanie Schneider, Marie Skepö              **
+**          Joakim Stenhammar, Anders Wallqvist, Jos van Rijssel, Erik Wernersson, Per-Olof Åstrand         **
+**                                                                                                          **
+**                                                                                                          **
+**************************************************************************************************************
+**************************************************************************************************************
+ 
+2016-08-16     11:32:25
+
+**************************************************************************************************************
+*                                                                                                            *
+*                                            i n p u t   d a t a                                             *
+*                                                                                                            *
+**************************************************************************************************************
+
+
+**************************************************************************************************************
+*                                            general information                                             *
+**************************************************************************************************************
+
+
+title   : suberball: varying density and q parameter                                                
+
+key data: mode           : simulation
+          method         : mc   
+          ensemble       : nvt
+          boundary cond. : xyz
+          start          : readfin 
+
+
+number of time steps/passes           1  *         1  =          1
+
+temperature                    =     100.000
+pressure                       =       0.101
+box lengths (x,y,z)            =       2.100       2.100       6.000
+volume                         =   0.265E+02
+
+seed of random generator       =           1
+
+optional subroutine used
+------------------------
+   ControlAver
+   MainAver
+   DistFunc
+   Group
+
+parameters controlling the output interval (0 = no)
+-------------------------------------------------
+   itest              5
+   ipart              1
+   iatom              0
+   iaver            100
+   ishow              1
+   iplot              1
+   ilist              1
+
+external units
+--------------
+number        generic name        file name
+------        ------------        ---------
+   1               fin            FIN       
+   2               fout           FOUT      
+   3               fcnf           FCNF      
+   8               flist          FLIST     
+
+**************************************************************************************************************
+*                                                   units                                                    *
+**************************************************************************************************************
+
+quantity                unit
+--------                ----
+length              1.000E-10 m
+mass                1.000E-03 kg/mol
+temperature         1.000E+00 k
+time                1.000E-12 s
+energy              1.000E+03 j/mol
+heat capacity       1.000E+00 j/mol*k
+diff. coeff.        1.000E-09 m**2/s
+pressure            1.000E+06 pa
+volume              1.000E-30 m**3
+linear vel.         1.000E+02 m/s
+linear acc.         1.000E+14 m/s**2
+force               1.000E+11 n/mol
+moment of inertia   1.000E-23 kg*m**2/mol
+angle               1.745E-02 rad
+
+**************************************************************************************************************
+*                                               particle data                                                *
+**************************************************************************************************************
+
+charged atoms enabled
+
+number of particles            =       2
+number of atoms                =       2
+number of particle types       =       1     (     10 )
+number of atom types           =       1     (     10 )
+
+particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
+                                                 radius       charges      charge                              
+--------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
+hs              2
+                         hs       1      1.000    0.010        0.0000        F      0.0000     0.0000    0.0000    0.0000
+
+molecular input frame: hs        
+---------------------- --
+
+atom               coordinate (x,y,z)
+----               ------------------
+hs           0.00000   0.00000   0.00000
+
+principal axis frame: hs        
+--------------------- --
+
+atom               coordinate (x,y,z)
+----               ------------------
+hs           0.00000   0.00000   0.00000
+
+particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
+--------             ----           -------------------------        -------------------------
+hs                  1.000          0.000     0.000     0.000             0.000
+
+**************************************************************************************************************
+*                                          two-body potential data                                           *
+**************************************************************************************************************
+
+rcut                           =       2.000
+utoltab                        =   0.100E-04
+ftoltab                        =   0.100E-04
+umaxtab                        =   0.200E+05
+fmaxtab                        =   0.200E+05
+
+monoatomic energy and force routines
+
+particles are superballs
+------------------------
+radsuperball                   =         1.00    
+qsuperball                     =         1.50    
+txmethodsuperball              =             test
+meshdepthsuperball             =                4
+nitersuperball                 =               10
+tolsuperball                   =        0.100E-03
+lstatsuperball                 =                F
+rcutsuperball                  =     2.00000   2.40187
+
+
+particle pair              potential
+-------------              ---------
+hs-hs                        default             
+
+atom pair         energy coefficients (ipot and ucoff)
+---------         ------------------------------------
+hs-hs               
+
+specification of two-body potential tables
+------------------------------------------
+atom pair          no of grids         iubuflow       rumin     rumax
+---------          -----------         --------       -----     -----
+hs-hs                  3                   1          0.316     2.200
+
+nbuf (needed, allocated)        =         37      1000
+
+**************************************************************************************************************
+*                                         initial configuration data                                         *
+**************************************************************************************************************
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                                                            %
+%                                 w a r n i n g   f r o m   O r t h o O r i                                  %
+%                                                                                                            %
+%                                             bad normalization                                              %
+%                                                                                                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+particle   2     xn' =  0.100E+01
+coordinates: read from fin
+
+first macrostep                =      1
+
+**************************************************************************************************************
+*                                                coordinates                                                 *
+**************************************************************************************************************
+
+
+particle coordinates
+--------------------
+particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
+-----------   -------------       -----------              ---------------        ---------------        ---------------
+     1        hs              0.000    0.000   -1.100   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
+     2        hs              0.000    0.000    1.100   0.707  0.000 -0.707    0.000  1.000  0.000    0.707  0.000  0.707
+
+**************************************************************************************************************
+*                                                  mc data                                                   *
+**************************************************************************************************************
+
+uniform sampling, random
+
+single-particle move                   hs        
+-------------------                    ----------
+probability                    =       1.000
+tran. displacement parameter   =            0.000
+rot. displacement parameter    =            0.000
+
+
+**************************************************************************************************************
+*                                               neighbour list                                               *
+**************************************************************************************************************
+
+verlet list
+automatic control of update frequency
+layer thickness                =         1.000
+factor used to calculate nneigh=         2.000
+maximal number of neighbours   =          2000
+
+**************************************************************************************************************
+*                                          thermodynamic quantities                                          *
+**************************************************************************************************************
+
+quantity                            initial value
+&-------                            -------------
+total potential energy         =          0.00000
+ total two-body energy         =          0.00000
+  hs-hs                        =          0.00000
+enthalpy                       =          0.83145
+temperature                    =        100.00000
+pressure (excl. cont. contr.)  =        104.35755
+number of particles            =          2.00000
+volume                         =      2.64600E+01
+
+total potential energy (NkT)   =          0.00000
+pressure (NkT/V)(excl. contact)=          1.00000
+pressure (kT) (excl. contact)  =      7.55858E-02
+
+..............................................................................................................
+.                                            SuperballOverlap_NR                                             .
+..............................................................................................................
+
+ 
+vector: r21     (   1,   3,   1)
+
+   0.0000000       0.0000000      -2.2000000    
+ 
+matrix:   ori1     rows(  1,  3,  1), columns(  1,  3,  1)
+ 
+              1              2              3
+ 
+  1     1.000000       0.000000       0.000000    
+  2     0.000000       1.000000       0.000000    
+  3     0.000000       0.000000       1.000000    
+ 
+matrix:   ori2     rows(  1,  3,  1), columns(  1,  3,  1)
+ 
+              1              2              3
+ 
+  1    0.7071068       0.000000      0.7071068    
+  2     0.000000       1.000000       0.000000    
+  3   -0.7071068       0.000000      0.7071068    
+ 
+matrix:   ori1i     rows(  1,  3,  1), columns(  1,  3,  1)
+ 
+              1              2              3
+ 
+  1     1.000000       0.000000       0.000000    
+  2     0.000000       1.000000       0.000000    
+  3     0.000000       0.000000       1.000000    
+ 
+matrix:   ori2i     rows(  1,  3,  1), columns(  1,  3,  1)
+ 
+              1              2              3
+ 
+  1    0.7071068       0.000000     -0.7071068    
+  2     0.000000       1.000000       0.000000    
+  3    0.7071068       0.000000      0.7071068    
+ 
+iteration                    =         1
+lambda, rc                   =   0.40000       0.00000   0.00000   0.88000
+shape & overlap func, value  =   0.774   1.383        1.140
+shape & overlap func, grad   =   0.000   0.000   1.760       0.000   0.000  -2.095          0.000     0.000    -0.553
+shape func, hessian 1        =   0.000   0.000   0.000       0.000   0.000   0.000       0.000   0.000   2.000
+shape func, hessian 2        =   3.175   0.000   0.000       0.000   0.000   0.000       0.000   0.000   1.587
+overlap func, hessian        =   1.905   0.000   0.000       0.000   0.000   0.000       0.000   0.000   1.752
+istep                        =       0
+overlap func                 =   1.140
+minv                         =   0.525   0.000   0.000       0.000********   0.000       0.000   0.000   0.571
+dg                           =   0.000   0.000   3.855
+vtemp                        =   0.000   0.000   2.200
+dll                          =   8.482
+dl, dr                       =   0.07175       0.00000   0.00000   0.15784
+lambda, rc                   =   0.47175       0.00000   0.00000   1.03784
+max(abs(dl),abs(dr))         =  0.15784E+00
+ 
+iteration                    =         2
+lambda, rc                   =   0.47175       0.00000   0.00000   1.03784
+shape & overlap func, value  =   1.077   1.072        1.074
+shape & overlap func, grad   =   0.000   0.000   2.076       0.000   0.000  -1.845          0.000     0.000     0.005
+shape func, hessian 1        =   0.000   0.000   0.000       0.000   0.000   0.000       0.000   0.000   2.000
+shape func, hessian 2        =   3.175   0.000   0.000       0.000   0.000   0.000       0.000   0.000   1.587
+overlap func, hessian        =   1.677   0.000   0.000       0.000   0.000   0.000       0.000   0.000   1.782
+istep                        =       0
+overlap func                 =   1.074
+minv                         =   0.596   0.000   0.000       0.000********   0.000       0.000   0.000   0.561
+dg                           =   0.000   0.000   3.920
+vtemp                        =   0.000   0.000   2.200
+dll                          =   8.625
+dl, dr                       =  -0.00060       0.00000   0.00000  -0.00131
+lambda, rc                   =   0.47115       0.00000   0.00000   1.03653
+max(abs(dl),abs(dr))         =  0.13110E-02
+ 
+iteration                    =         3
+lambda, rc                   =   0.47115       0.00000   0.00000   1.03653
+shape & overlap func, value  =   1.074   1.074        1.074
+shape & overlap func, grad   =   0.000   0.000   2.073       0.000   0.000  -1.847          0.000     0.000     0.000
+shape func, hessian 1        =   0.000   0.000   0.000       0.000   0.000   0.000       0.000   0.000   2.000
+shape func, hessian 2        =   3.175   0.000   0.000       0.000   0.000   0.000       0.000   0.000   1.587
+overlap func, hessian        =   1.679   0.000   0.000       0.000   0.000   0.000       0.000   0.000   1.782
+istep                        =       0
+overlap func                 =   1.074
+minv                         =   0.596   0.000   0.000       0.000********   0.000       0.000   0.000   0.561
+dg                           =   0.000   0.000   3.920
+vtemp                        =   0.000   0.000   2.200
+dll                          =   8.624
+dl, dr                       =  -0.00000       0.00000   0.00000  -0.00000
+lambda, rc                   =   0.47115       0.00000   0.00000   1.03653
+max(abs(dl),abs(dr))         =  0.90455E-07
+ 
+dl, dr (total)               =   0.07115       0.00000   0.00000   0.15653
+-> convergence in nr-iteration: loverlap, overlap function    F   1.07440
+
+..............................................................................................................
+.                                              SuperballOverlap                                              .
+..............................................................................................................
+
+overlap (NR, Mesh): (  F  F)

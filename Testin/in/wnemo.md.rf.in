@@ -1,0 +1,54 @@
+ &nmlSystem
+  txtitle ='nemo water, reaction field',
+  txmethod='md',    txensemb='nve',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*18.697836,
+  temp  = 303.15,    prsr = 0.1013,
+  iseed = 987653,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.f.,  lstatic =.f., limage = .f.,
+  itest = 3,   ipart = 10,  iatom = 10,  iaver = 100, ishow = 1,   iplot = 1,   ilist = 1,
+  lenscl= 1.0000000,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec= 'pol',
+  npt   = 1,
+  txpt  = 'water',
+  nppt  =  216,
+  natpt =  2,
+  txat  = 'o      ','h       ',
+  massat= 16.0,      1.0,
+  radat =  0.0,      0.0,
+  zat   = -0.80100,  0.400500,
+  naatpt(1,1)   =  1,       2,
+  txaat(1,1)    = 'o     ','h     ','h     ',
+ 
+  rain(1,1,1) =  0.0,      0.0, -0.0656,
+  rain(1,2,1) =  0.7572,   0.0,  0.5205,
+  rain(1,3,1) = -0.7572,   0.0,  0.5205,
+ 
+  dipain(1,1,1) =  0.0000,  0.0000, -0.1299,
+  dipain(1,2,1) =  0.0784,  0.0000,  0.0422,
+  dipain(1,3,1) = -0.0784,  0.0000,  0.0422,
+ 
+  polain(1,1,1) =  0.6715,  0.6133,  0.7002,  0.0000,  0.0000,  0.0000,
+  polain(1,2,1) =  0.2199,  0.0756,  0.1441,  0.0000,  0.1005,  0.0000,
+  polain(1,3,1) =  0.2199,  0.0756,  0.1441,  0.0000, -0.1005,  0.0000,
+ /
+ &nmlPotential
+  rcut = 8.5,
+  txpot ='nemo:w3',
+  lrf =.true.,
+ /
+ &nmlPolarizationIter tpolit = 1.0e-5, mpolit = 15, npolit = 5 /
+ &nmlSetConfiguration
+  txsetconf(1) ='h2olattice',
+  nucell(1,1) =  5,  5,  5,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.002,    nvvite= 2,       lsetvel =.true.,
+  tvscl = 0.002,    tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlIntList inlist = 0, drnlist = 0.1 /
+ &nmlDist idist = 10, vtype(6) =.true., 0.0, 10.0, 100, rcutdist = 10 /

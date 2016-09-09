@@ -1,0 +1,44 @@
+0.000     0.000 1002.000  1.0 0.0 0.0  0.0 1.0 0.0  0.0 0.0 1.0
+0.000     0.000  998.000  1.0 0.0 0.0  0.0 1.0 0.0  0.0 0.0 1.0
+ &nmlSystem
+  txtitle ='one charge near a spherical dielectric boundary, check of energy evaulation',
+  txmethod= 'mc',     txensemb='nvt',     txbc  ='sph',  txstart ='readfin', txuser ='diel'
+  nstep1= 1,        nstep2= 1,
+  sphrad = 2000
+  temp  = 298.0,    prsr  = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup = .f.,  lstatic =.f., limage = .f.,
+  itest = 0,   ipart = 0,   iatom = 1,   iaver = 0,   ishow = 1,   iplot = 0,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec = 'dieldis',
+  npt   = 1,
+  txpt  = 'jon1   ','jon2   ',
+  nppt  = 1,         1,
+  natpt =  1,        1,
+  txat  = 'site1','site2',
+  radat = 1.0,      1.0,
+  zat   = 1.0,     -1.0,
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'site1',
+  naatpt(1,2)=  1,
+  txaat(1,2) = 'site2',
+ /
+ &nmlPotential
+  boundaryrad = 1000,
+  epsi1 = 1.0,
+  epsi2 = 80.0,
+  lmaxdiel = 6,
+  lbg = .false.,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) = 2*'random',
+ /
+ &nmlMC
+  dtran = 10.0,
+ /
+ &nmlIntList
+  inlist= 0,        drnlist  = 60.0,
+ /

@@ -1,0 +1,78 @@
+ &nmlSystem
+  txtitle ='hs 60:1 system rho(m) = 0.5*10e-6',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='zero',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  nstep1   = 10,    nstep2   = 5000,
+  nstep1   = 1,     nstep2   = 1,
+ 
+  boxlen= 3*861.77,
+  boxlen= 3*683.99,
+  boxlen= 3*542.88,
+  boxlen= 3*430.89,
+  boxlen= 3*342.00,
+  boxlen= 3*271.44,
+  boxlen= 3*215.44,
+ 
+  boxlen= 3*342.00,
+ 
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 9876543,
+  lcont =.t.,  laver =.t.,    ldist =.t.,  ldump =.f.,  lgroup=.f.,  lstatic =.t.,limage =.f.,
+  itest = 0,   ipart = 100,   iatom = 0,   iaver = 50,  ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'micelle','ion',
+ 
+  nppt  =1280,     76800,
+  nppt  = 640,     38400,
+  nppt  = 320,     19200,
+  nppt  = 160,      9600,
+  nppt  =  80,      4800,
+  nppt  =  40,      2400,
+  nppt  =  20,      1200,
+ 
+  nppt  =  20,      1200,
+ 
+  natpt =  1,        1,
+  txat  = 'mic',     'ion',
+  massat= 460.0,     23.0,
+  zat   = -60,       1,
+  radat = 20.0,      2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'mic',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'ion',
+ /
+ &nmlPotential
+  rcut = 170.0,
+  relpermitt = 78.4026,
+  lewald = .true., iewaldopt = 1,  ualphared = 3.0,  lsurf =.false.,
+ /
+ &nmlSetConfiguration txsetconf='random', 'random',
+ /
+ &nmlMC
+  pspart     = 1.0,   1.0,    dtran     = 2.0,  15.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 30.0 /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 170.0, 425 /
+ &nmlDump idump = 1, txptdump='micelle',  ldpos =.true. /
+ &nmlGroup ref ='type=1', field='type=1' , lwref =.false. /
+ &nmlStatic
+    istatic = 1,
+    lg3     =.true.,
+    lsf     =.true.,
+    lcluster=.true.,
+ /
+ &nmlG3Dist
+  ipt1   = 1,  ipt2   = 1,    ipt3   = 2,
+  snbin  = 2,  slow   = 50.0, supp   = 60.0,
+  tnbin  =20,  tlow   = 22.0, tupp   = 42.0,
+  anbin  =20,  alow   =-1.0,  aupp   = 1.0,
+ /
+ &nmlSF nbin = 51 /
+ &nmlCluster txobj = 'particle', iobjt = 1, rcluster = 50  /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 20,  2, blmax  = 1.5, bondr =  0.1 /

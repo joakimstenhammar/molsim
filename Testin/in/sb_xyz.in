@@ -1,0 +1,43 @@
+      -0.600   -0.600   -0.600   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000 
+       0.600    0.600    0.600   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000 
+ &nmlSystem
+  txtitle ='suberball: varying density and q parameter',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',   txstart ='readfin',
+  nstep1= 1 ,        nstep2= 1,
+  boxlen= 6.0, 4.0, 4.0
+  temp  = 100.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.f., limage =.f.,
+  itest = 5,   ipart = 1,  iatom = 0,   iaver = 100,  ishow = 1,   iplot = 1,   ilist = 1,
+/
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'hs',
+  nppt  =  2,
+  natpt =  1,
+  txat  = 'hs',
+  massat= 1.0,
+  radat = 0.01,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'hs',
+ /
+ &nmlPotential
+  rcut = 2.0,
+  lsuperball = .true., radsuperball = 1.0, qsuperball = 1.5, txmethodsuperball = 'test', lstatsuperball =.false.,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) ='pclattice',
+  nucell(1,1) =  2,  1,  1,
+ /
+ &nmlMC dtran = 0.0, drot = 0.0, /
+ &nmlIntList inlist = 0, drnlist = 1.0 /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 2.0, 200, rcutdist = 5.0 /
+ &nmlGroup /
+ &nmlStatic
+  langdf=.true.,
+ /
+ &nmlAngDF vtype(1:7)%l =3*.true., rmax=1.1 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML /

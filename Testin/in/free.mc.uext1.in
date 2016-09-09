@@ -1,0 +1,44 @@
+ 0.0 0.0 0.0  1.0 0.0 0.0  0.0 0.0 -1.  0.0 1.0 0.0,
+ 12.247   0.0 0.0      0.0 5.0   0.0,
+ 0.012247 0.0 0.0      0.0 0.005 0.0,
+ &nmlSystem
+  txtitle ='free translation and rotation',
+  txmethod='mc',    txensemb='nvt',     txbc ='sph',   txstart ='readfin',
+  nstep1= 1,        nstep2= 1000,
+  sphrad= 20.0,
+  temp  = 120.3,    prsr = 0.1013,
+  iseed = 999,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic =.f.,limage =.f.,
+  itest = 3,   ipart = 1,   iatom = 1,   iaver = 100, ishow = 0,   iplot = 0,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'mol1',
+  nppt  =  1,
+  natpt =  1,
+  txat  = 'k1   ',
+  massat= 1.0,
+  radat = 1.0,
+  naatpt(1,1) =  2,
+  txaat(1,1) = 'k1   ','k1 ',
+  rain(1,1,1) =-1.0, 0.0, 0.0,
+  rain(1,2,1) = 1.0, 0.0, 0.0,
+ /
+ &nmlPotential
+  npot(1)   = 1,
+  ipot(1,1) = 1,
+  ucoff(1,1) = 0.0,
+  luext=.true.
+ /
+ &nmlPotentialExternal txuext='i_soft_sphere', ruext=2.0, auext=1.0, nuext= 6 /
+ &nmlMD
+  integ ='velver',  tstep = 0.001,    nvvite= 2,    lsetvel =.false.,
+  integ ='gear4 ',  tstep = 0.001,    nvvite= 2,    lsetvel =.false.,
+ /
+ &nmlMC
+  dtran = 0.5,
+  drot  = 10,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

@@ -1,0 +1,1168 @@
+**************************************************************************************************************
+**************************************************************************************************************
+**                                                                                                          **
+**                                                                                                          **
+**                                                  Molsim                                                  **
+**                                                                                                          **
+**                  integrated md/mc/bd simulation program belonging to the molsim package                  **
+**                                                                                                          **
+**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                                                                                          **
+**                                                                                                          **
+**                                                Per Linse                                                 **
+**                                            Physical Chemistry                                            **
+**                                         Department of Chemistry                                          **
+**                                             Lund University                                              **
+**                                               P.O. Box 124                                               **
+**                                          S-221 00 Lund, SWEDEN                                           **
+**                                                                                                          **
+**                                                                                                          **
+**                                         with contributions from                                          **
+**                                                                                                          **
+**                  Anna Akinchina, Fredrik Carlsson, Samuel Edgecombe, Yoshikatsu Hayashi                  **
+**          Pascal Hebbeker, Cornelius Hofzumahaus, Niklas Källrot, Björn Linse, Vladimir Lobaskin          **
+**               Thomas M. Nymand, Alberto Pais, Jurij Rescic, Stefanie Schneider, Marie Skepö              **
+**          Joakim Stenhammar, Anders Wallqvist, Jos van Rijssel, Erik Wernersson, Per-Olof Åstrand         **
+**                                                                                                          **
+**                                                                                                          **
+**************************************************************************************************************
+**************************************************************************************************************
+ 
+2016-08-16     11:32:08
+
+**************************************************************************************************************
+*                                                                                                            *
+*                                            i n p u t   d a t a                                             *
+*                                                                                                            *
+**************************************************************************************************************
+
+
+**************************************************************************************************************
+*                                            general information                                             *
+**************************************************************************************************************
+
+
+title   : charged periodic network + counterions                                                    
+
+key data: mode           : simulation
+          method         : mc   
+          ensemble       : nvt
+          boundary cond. : xyz
+          start          : setconf 
+
+
+number of time steps/passes           1  *        10  =         10
+
+temperature                    =     298.000
+pressure                       =      -0.010
+box lengths (x,y,z)            =     120.000     120.000     120.000
+volume                         =   0.173E+07
+
+seed of random generator       =           1
+
+optional subroutine used
+------------------------
+   ControlAver
+   MainAver
+   DistFunc
+
+parameters controlling the output interval (0 = no)
+-------------------------------------------------
+   itest              0
+   ipart              0
+   iatom              0
+   iaver              0
+   ishow              1
+   iplot              1
+   ilist              1
+
+external units
+--------------
+number        generic name        file name
+------        ------------        ---------
+   1               fin            FIN       
+   2               fout           FOUT      
+   3               fcnf           FCNF      
+   8               flist          FLIST     
+
+**************************************************************************************************************
+*                                                   units                                                    *
+**************************************************************************************************************
+
+quantity                unit
+--------                ----
+length              1.000E-10 m
+mass                1.000E-03 kg/mol
+temperature         1.000E+00 k
+time                1.000E-12 s
+energy              1.000E+03 j/mol
+heat capacity       1.000E+00 j/mol*k
+diff. coeff.        1.000E-09 m**2/s
+pressure            1.000E+06 pa
+volume              1.000E-30 m**3
+linear vel.         1.000E+02 m/s
+linear acc.         1.000E+14 m/s**2
+force               1.000E+11 n/mol
+moment of inertia   1.000E-23 kg*m**2/mol
+angle               1.745E-02 rad
+
+**************************************************************************************************************
+*                                               particle data                                                *
+**************************************************************************************************************
+
+charged atoms enabled
+
+number of chains               =      16
+number of particles            =     336
+number of atoms                =     336
+number of chains types         =       1     (     10 )
+number of particle types       =       3     (     10 )
+number of atom types           =       3     (     10 )
+
+chain type         no of chains             topology  no of particles of the different types
+----------         ------------             --------  --------------------------------------
+strand                16                    block         0   10    0     
+
+particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
+                                                 radius       charges      charge                              
+--------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
+node            8
+                         bead1    1      0.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
+strand        160
+                         bead2    1      0.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
+countion      168
+                         counti   1      0.000    2.000       -1.0000        F      0.0000     0.0000    0.0000    0.0000
+
+molecular input frame: node      
+---------------------- ----
+
+atom               coordinate (x,y,z)
+----               ------------------
+bead1        0.00000   0.00000   0.00000
+
+principal axis frame: node      
+--------------------- ----
+
+atom               coordinate (x,y,z)
+----               ------------------
+bead1        0.00000   0.00000   0.00000
+
+molecular input frame: strand    
+---------------------- ------
+
+atom               coordinate (x,y,z)
+----               ------------------
+bead2        0.00000   0.00000   0.00000
+
+principal axis frame: strand    
+--------------------- ------
+
+atom               coordinate (x,y,z)
+----               ------------------
+bead2        0.00000   0.00000   0.00000
+
+molecular input frame: countion  
+---------------------- --------
+
+atom               coordinate (x,y,z)
+----               ------------------
+countion     0.00000   0.00000   0.00000
+
+principal axis frame: countion  
+--------------------- --------
+
+atom               coordinate (x,y,z)
+----               ------------------
+countion     0.00000   0.00000   0.00000
+
+particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
+--------             ----           -------------------------        -------------------------
+node                0.000          0.000     0.000     0.000             0.000
+strand              0.000          0.000     0.000     0.000             0.000
+countion            0.000          0.000     0.000     0.000             0.000
+
+**************************************************************************************************************
+*                                          two-body potential data                                           *
+**************************************************************************************************************
+
+rcut                           =      60.000
+utoltab                        =   0.100E-04
+ftoltab                        =   0.100E-04
+umaxtab                        =   0.300E+06
+fmaxtab                        =   0.300E+06
+
+monoatomic energy and force routines
+
+relative permittivity          =   80.000000
+
+system net charge based on zat =    0.00    
+
+parameters controlling the ewald summation
+------------------------------------------
+txewaldrec                     =              std
+iewaldopt                      =                1
+uewaldtol                      =      0.99225E-06
+error estimate in real space   =      0.99225E-06
+error estimate in rec. space   =      0.11744E-06
+ualpha                         =      0.50000E-01
+ualphared                      =       3.0000    
+ncut                           =                7
+ncut2                          =               49
+ncutregion                     =           sphere
+nkvec (one octant)             =              238
+surface term                   =                F
+
+particle pair              potential
+-------------              ---------
+node-node                    default             
+node-strand                  default             
+node-countion                default             
+strand-strand                default             
+strand-countion              default             
+countion-countion            default             
+
+atom pair         energy coefficients (ipot and ucoff)
+---------         ------------------------------------
+bead1-bead1            1  0.173669E+02
+bead1-bead2            1  0.173669E+02
+bead1-countion         1 -0.173669E+02
+bead2-bead2            1  0.173669E+02
+bead2-countion         1 -0.173669E+02
+countion-countion      1  0.173669E+02
+
+number of 1/r coefficients than has been changed/added based on zat =  6
+
+specification of two-body potential tables
+------------------------------------------
+atom pair          no of grids         iubuflow       rumin     rumax
+---------          -----------         --------       -----     -----
+bead1-bead1           63                   1          0.316    66.000
+bead1-bead2           63                 757          0.316    66.000
+bead1-countion        63                1513          0.316    66.000
+bead2-bead2           63                2269          0.316    66.000
+bead2-countion        63                3025          0.316    66.000
+countion-count        63                3781          0.316    66.000
+
+nbuf (needed, allocated)        =       4537      9000
+
+**************************************************************************************************************
+*                                               ipotchain data                                               *
+**************************************************************************************************************
+
+bond: force constant           =         2.40000
+bond: power                    =               2
+bond: eqilibrium separation    =         5.00000
+angle: force constant          =         0.00000
+angle: power                   =               2
+angle: eqilibrium separation   =       180.00000
+crosslink: force constant      =         2.40000
+crosslink: power               =               2
+crosslink: eqilibrium separ    =         5.00000
+itestpotchain                  =               0
+
+**************************************************************************************************************
+*                                         initial configuration data                                         *
+**************************************************************************************************************
+
+start configuration from SetConfiguration
+-----------------------------------------
+part. type    routine          no of unit cells (x,y,z)     lower (x,y,z)      upper (x,y,z)      shift (x,y,z)
+----------    -------          ------------------------     -------------      -------------      -------------
+ 1  node      periodicnetwork         1    1    1        -60.00-60.00-60.00  60.00 60.00 60.00   0.00  0.00  0.00
+ 2  strand    periodicnetwork         1    1    1        -60.00-60.00-60.00  60.00 60.00 60.00   0.00  0.00  0.00
+ 3  countion  random                  0    0    0        -60.00-60.00-60.00  60.00 60.00 60.00   0.00  0.00  0.00
+
+bond length scaling factor              =      1.000
+minimum angle between consecutive beads =      0.000
+
+chain type of strands                    =         1
+particle type of nodes                   =         1
+number of nodes                          =         8
+maximum number of crosslinks of the nodes=         4
+number of crosslinks                     =        32
+
+first macrostep                =      1
+
+**************************************************************************************************************
+*                                                  mc data                                                   *
+**************************************************************************************************************
+
+uniform sampling, random
+cubic displacement volume
+
+single-particle move                   node           strand         countion  
+-------------------                    ----------     ----------     ----------
+probability                    =       1.000          1.000          1.000
+tran. displacement parameter   =            2.500          2.500         10.000
+rot. displacement parameter    =            0.000          0.000          0.000
+
+
+**************************************************************************************************************
+*                                               neighbour list                                               *
+**************************************************************************************************************
+
+verlet list
+automatic control of update frequency
+layer thickness                =        20.000
+factor used to calculate nneigh=         2.000
+maximal number of neighbours   =          2000
+
+**************************************************************************************************************
+*                                          thermodynamic quantities                                          *
+**************************************************************************************************************
+
+quantity                            initial value
+&-------                            -------------
+total potential energy         =          2.90180
+ total two-body energy         =          2.30943
+  node-node                    =          0.00000
+  node-strand                  =          0.41033
+  node-countion                =         -0.05398
+  strand-strand                =          2.35559
+  strand-countion              =         -0.94836
+  countion-countion            =          0.54584
+ pot. energy from rec. space   =          0.54441
+ bond energy                   =          0.03924
+ angle energy                  =          0.00000
+ crosslink energy              =          0.00872
+enthalpy                       =          6.87758
+temperature                    =        298.00000
+pressure (excl. cont. contr.)  =          1.28371
+number of particles            =        336.00000
+volume                         =      1.72800E+06
+
+total potential energy (NkT)   =          1.17116
+pressure (NkT/V)(excl. contact)=          1.60462
+pressure (kT) (excl. contact)  =      3.12010E-04
+ 
+total cpu time since start (s)        0.02
+
+**************************************************************************************************************
+*                                                                                                            *
+*                              r e s u l t   o f   m a c r o s t e p         1                               *
+*                                                                                                            *
+**************************************************************************************************************
+
+
+**************************************************************************************************************
+*                                               mc statistics                                                *
+**************************************************************************************************************
+
+single-particle move                             total          node                strand              countion  
+-------------------                              -----          ----------          ----------          ----------
+total number of conf.          =             3360 1.00             71 1.00           1649 1.00           1640 1.00
+accepted number of conf.       =             2354 0.70             26 0.37           1033 0.63           1295 0.79
+energy rejected conf.          =              647 0.19             20 0.28            361 0.22            266 0.16
+hard-core rejected conf.       =              359 0.11             25 0.35            255 0.15             79 0.05
+
+average no of displaced part.  =                                      1.00                1.00                1.00
+average no of net joining part.=                                      0.00                0.00                0.00
+
+**************************************************************************************************************
+*                                             control statistics                                             *
+**************************************************************************************************************
+
+quantity                                    node                strand              countion  
+--------                                    ----------          ----------          ----------
+
+<dr**2>/step (macrostep)       =            0.2380E+00          0.7342E+00          0.2062E+02
+precision                      =            0.6252E-01          0.4731E-01          0.1554E+01
+<dr**2>/step (from start)      =            0.2380E+00          0.7342E+00          0.2062E+02
+precision                      =            0.6252E-01          0.4731E-01          0.1554E+01
+
+orientation order, x'-axis     =                1.0000              1.0000              1.0000
+orientation order, y'-axis     =                1.0000              1.0000              1.0000
+orientation order, z'-axis     =                1.0000              1.0000              1.0000
+
+<ro> (x,y,z)                   =     10.35-13.50-10.29    0.03  0.04 -0.09   -1.84 -1.25  0.28
+<x'> (x,y,z)                   =      1.00  0.00  0.00   -0.06  0.01  0.09   -0.08  0.02 -0.03
+<y'> (x,y,z)                   =      0.00  1.00  0.00   -0.01  0.01 -0.05   -0.01 -0.03 -0.02
+<z'> (x,y,z)                   =      0.00  0.00  1.00    0.00 -0.01  0.02   -0.03  0.02  0.01
+
+**************************************************************************************************************
+*                                          thermodynamic quantities                                          *
+**************************************************************************************************************
+
+quantity                                  average    fluctuation          check
+&&------                                  -------    -----------          -----
+total potential energy         =          2.49908        0.14651      0.250E-07
+ total two-body energy         =          1.65415        0.24811      0.448E-07
+  node-node                    =          0.00000        0.00000      0.164E-15
+  node-strand                  =          0.37164        0.01524     -0.391E-14
+  node-countion                =         -0.07530        0.00656      0.255E-14
+  strand-strand                =          2.14058        0.08448      0.683E-14
+  strand-countion              =         -1.24714        0.12701      0.312E-14
+  countion-countion            =          0.46438        0.02031      0.133E-06
+ pot. energy from rec. space   =          0.37487        0.08636      0.222E-13
+ bond energy                   =          0.39197        0.16759     -0.655E-15
+ angle energy                  =          0.00000        0.00000      0.000E+00
+ crosslink energy              =          0.07809        0.03511     -0.456E-15
+enthalpy                       =          6.47487        0.14651
+cv                             =          9.76851
+temperature                    =        298.00000        0.00000
+pressure (excl. cont. contr.)  =          1.28371        0.00000
+number of particles            =        336.00000        0.00000
+volume                         =      1.72800E+06    0.00000E+00
+
+total potential energy (NkT)   =          1.00863
+pressure (NkT/V)(excl. contact)=          1.60462
+pressure (kT) (excl. contact)  =      3.12010E-04
+number density                 =      1.94444E-04
+
+**************************************************************************************************************
+*                                              chain quantities                                              *
+**************************************************************************************************************
+
+quantity                                  average     fluctuation
+--------                                  -------     -----------
+<r(bb)**2>**0.5                =          5.48098        1.75280
+<r(ee)**2>**0.5                =         42.34340        2.86890
+<r(g)**2>**0.5                 =         13.64586        1.08192
+smallest rms mom. p.a.         =          0.92663        0.59945
+intermediate rms mom. p.a.     =          1.43518        0.92011
+largest rms mom. p.a.          =         13.53850        0.67780
+<persist. l.>  (r(ee))         =         21.01885        0.89231
+<persist. l.>  (r(g))          =        254.72430      242.92129
+<angle>                        =        134.44868        9.94479
+<cos(180-angle)>               =          0.64766        0.11659
+<r(ee)**2/r(g)**2>             =          9.63341        0.09469
+<asphericity>                  =          0.95382        0.01860
+<toroid param>                 =          0.17868        0.03300
+
+persist. l. (<r(ee)**2>)       =         20.91407
+persist. l. (<r(g)**2>)        =        101.56761
+persist. l. (<cos(180-angle)>) =         15.55603
+<r(ee)**2>/<r(g)**2>           =          9.62874
+asphericity (<2:nd moments>)   =          0.95357
+
+
+**************************************************************************************************************
+*                                                                                                            *
+*                                          f i n a l   r e s u l t                                           *
+*                                                                                                            *
+**************************************************************************************************************
+
+2016-08-16     11:32:09
+
+title   : charged periodic network + counterions                                                    
+
+key data: mode           : simulation
+          method         : mc   
+          ensemble       : nvt
+          boundary cond. : xyz
+          start          : setconf 
+
+
+number of time steps/passes           1  *        10  =         10
+
+temperature                    =     298.000
+pressure                       =       0.276
+box lengths (x,y,z)            =     120.000     120.000     120.000
+volume                         =   0.173E+07
+
+seed of random generator       =  1940644199
+
+
+**************************************************************************************************************
+*                                               mc statistics                                                *
+**************************************************************************************************************
+
+single-particle move                             total          node                strand              countion  
+-------------------                              -----          ----------          ----------          ----------
+total number of conf.          =             3360 1.00             71 1.00           1649 1.00           1640 1.00
+accepted number of conf.       =             2354 0.70             26 0.37           1033 0.63           1295 0.79
+energy rejected conf.          =              647 0.19             20 0.28            361 0.22            266 0.16
+hard-core rejected conf.       =              359 0.11             25 0.35            255 0.15             79 0.05
+
+average no of displaced part.  =                                      1.00                1.00                1.00
+average no of net joining part.=                                      0.00                0.00                0.00
+
+**************************************************************************************************************
+*                                               neighbour list                                               *
+**************************************************************************************************************
+
+verlet list
+automatic control of update frequency
+layer thickness                =        20.000
+factor used to calculate nneigh=         2.000
+maximal number of neighbours   =          2000
+
+**************************************************************************************************************
+*                                           verlet list statistics                                           *
+**************************************************************************************************************
+
+no of neighbour list calls     =          11
+no of steps/passes per call    =         0.9
+
+           no of part per proc   no of neighbours per part and proc  load of proc   load(max)-load(aver)
+           -------------------   ----------------------------------  ------------   --------------------
+average            336.0                    311.9                      104814.0            0.0
+one sd               0.0                      5.9                           0.0            0.0
+minimum            336.0                    296.0                      104814.0            0.0
+maximum            336.0                    323.0                      104814.0            0.0
+    104814 site-site interactions / step
+ 
+
+**************************************************************************************************************
+*                                             control statistics                                             *
+**************************************************************************************************************
+
+quantity                                    node                strand              countion  
+--------                                    ----------          ----------          ----------
+
+<dr**2>/step (from start)      =            0.2380E+00          0.7342E+00          0.2062E+02
+precision                      =            0.6252E-01          0.4731E-01          0.1554E+01
+sqrt(<dr**2>)(from start)      =                1.5426              2.7096             14.3589
+precision                      =                0.1908              0.0859              0.5313
+
+orientation order, x'-axis     =                1.0000              1.0000              1.0000
+orientation order, y'-axis     =                1.0000              1.0000              1.0000
+orientation order, z'-axis     =                1.0000              1.0000              1.0000
+
+<ro> (x,y,z)                   =     10.35-13.50-10.29    0.03  0.04 -0.09   -1.84 -1.25  0.28
+<x'> (x,y,z)                   =      1.00  0.00  0.00   -0.06  0.01  0.09   -0.08  0.02 -0.03
+<y'> (x,y,z)                   =      0.00  1.00  0.00   -0.01  0.01 -0.05   -0.01 -0.03 -0.02
+<z'> (x,y,z)                   =      0.00  0.00  1.00    0.00 -0.01  0.02   -0.03  0.02  0.01
+
+**************************************************************************************************************
+*                                          thermodynamic quantities                                          *
+**************************************************************************************************************
+
+quantity                                  average      precision    fluctuation      precision       stat eff
+&&&-----                                  -------      ---------    -----------      ---------       --------
+total potential energy         =          2.49908        0.06988        0.15648        5.03678             2.
+ total two-body energy         =          1.65415        0.10347        0.22699        2.88831             2.
+  node-node                    =          0.00000        0.00000        0.00000        0.00000             1.
+  node-strand                  =          0.37164        0.00589        0.01255        0.24787             1.
+  node-countion                =         -0.07530        0.00260        0.00678        0.14770             2.
+  strand-strand                =          2.14058        0.03564        0.07632        1.93525             2.
+  strand-countion              =         -1.24714        0.05081        0.11549        1.87657             2.
+  countion-countion            =          0.46438        0.00833        0.02152        1.21823             2.
+ pot. energy from rec. space   =          0.37487        0.03804        0.08039        0.62955             2.
+ bond energy                   =          0.39197        0.05890        0.12761        1.18160             1.
+ angle energy                  =          0.00000        0.00000        0.00000        0.00000             0.
+ crosslink energy              =          0.07809        0.01254        0.02773        0.52050             1.
+enthalpy                       =          6.47487        0.06988        0.15648        5.03678             2.
+cv                             =          9.76851
+temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
+pressure (excl. cont. contr.)  =          1.28371        0.00000        0.00000        0.00000             0.
+number of particles            =        336.00000        0.00000        0.00000        0.00000             0.
+volume                         =      1.72800E+06    0.00000E+00    0.00000E+00    0.00000E+00             0.
+
+total potential energy (NkT)   =          1.00863        0.00000
+pressure (NkT/V)(excl. contact)=          1.60462        0.00000
+pressure (kT) (excl. contact)  =      3.12010E-04    0.00000E+00
+number density                 =      1.94444E-04    0.00000E+00
+
+**************************************************************************************************************
+*                                              chain quantities                                              *
+**************************************************************************************************************
+
+quantity                                  average       precision   fluctuation      precision       stat eff
+--------                                  -------       ---------   -----------      ---------       --------
+<r(bb)**2>**0.5                =          5.48098       20.15000        1.64615        3.28078             2.
+<r(ee)**2>**0.5                =         42.34340       49.49162        2.62682       11.63466             1.
+<r(g)**2>**0.5                 =         13.64586        7.82292        1.07794        0.85667             2.
+smallest rms mom. p.a.         =          0.92663        2.53127        0.57348        0.49814             2.
+intermediate rms mom. p.a.     =          1.43518        5.32488        0.85020        0.25326             2.
+largest rms mom. p.a.          =         13.53850        0.00000        0.60110        1.20230             0.
+<persist. l.>  (r(ee))         =         21.01885        0.37542        0.81426        1.58853             2.
+<persist. l.>  (r(g))          =        254.72430       99.86898      247.71892      958.30743             2.
+<angle>                        =        134.44868        4.14011        9.51682       27.12493             2.
+<cos(180-angle)>               =          0.64766        0.04878        0.10805        0.25521             2.
+<r(ee)**2/r(g)**2>             =          9.63341        0.04121        0.09073        0.08578             2.
+<asphericity>                  =          0.95382        0.00765        0.01632        0.01316             2.
+<toroid param>                 =          0.17868        0.01597        0.03418        0.03642             2.
+
+persist. l. (<r(ee)**2>)       =         20.91407
+persist. l. (<r(g)**2>)        =        101.56761
+persist. l. (<cos(180-angle)>) =         15.55603
+<r(ee)**2>/<r(g)**2>           =          9.62874
+asphericity (<2:nd moments>)   =          0.95357
+
+
+**************************************************************************************************************
+*                                           distribution functions                                           *
+**************************************************************************************************************
+
+sampling interval              =               10
+number of steps/passes used    =                1
+cutoff distance                =            60.00
+mass limit                     =          0.00010
+polarization limit             =          0.00010
+
+average volume                 =      1.72800E+06    0.00000E+00
+
+contact values                 =             0.00           0.00           0.00           1.90          14.14           0.00
+
+pressure (NkT/V)(contact cont.)=          0.18676        0.00000
+pressure (NkT/V)(total)        =          1.79138        0.00000
+pressure (kT) (total)          =      3.48324E-04    0.00000E+00
+
+no    function                         min            max            nbin           step
+--    --------                         ---            ---            ----           ----
+ 1    rdf node-node                    0.000         60.000           120           0.500
+ 2    rdf node-strand                  0.000         60.000           120           0.500
+ 3    rdf node-countion                0.000         60.000           120           0.500
+ 4    rdf strand-strand                0.000         60.000           120           0.500
+ 5    rdf strand-countion              0.000         60.000           120           0.500
+ 6    rdf countion-countion            0.000         60.000           120           0.500
+
+distribution functions                                                          
+----------------------
+
+         rdf node-node               rdf node-strand             rdf node-countion           rdf strand-strand          
+ bin     x       y       dy          x       y       dy          x       y       dy          x       y       dy
+  -1   below    0.0000  0.0000     below    0.0000  0.0000     below    0.0000  0.0000     below    0.0000  0.0000
+   0    0.25    0.0000  0.0000      0.25    0.0000  0.0000      0.25    0.0000  0.0000      0.25    0.0000  0.0000
+   1    0.75    0.0000  0.0000      0.75    0.0000  0.0000      0.75    0.0000  0.0000      0.75    0.0000  0.0000
+   2    1.25    0.0000  0.0000      1.25    0.0000  0.0000      1.25    0.0000  0.0000      1.25    0.0000  0.0000
+   3    1.75    0.0000  0.0000      1.75    0.0000  0.0000      1.75    0.0000  0.0000      1.75    0.0000  0.0000
+   4    2.25    0.0000  0.0000      2.25    0.0000  0.0000      2.25    0.0000  0.0000      2.25    0.0000  0.0000
+   5    2.75    0.0000  0.0000      2.75    0.0000  0.0000      2.75    0.0000  0.0000      2.75    0.0000  0.0000
+   6    3.25    0.0000  0.0000      3.25    0.0000  0.0000      3.25    0.0000  0.0000      3.25    0.0000  0.0000
+   7    3.75    0.0000  0.0000      3.75    0.0000  0.0000      3.75    0.0000  0.0000      3.75    0.0000  0.0000
+   8    4.25    0.0000  0.0000      4.25    0.0000  0.0000      4.25    0.0000  0.0000      4.25    4.7526  0.0000
+   9    4.75    0.0000  0.0000      4.75   76.1125  0.0000      4.75    0.0000  0.0000      4.75   17.1253  0.0000
+  10    5.25    0.0000  0.0000      5.25   31.1578  0.0000      5.25    7.4185  0.0000      5.25   29.5999  0.0000
+  11    5.75    0.0000  0.0000      5.75   45.4614  0.0000      5.75    0.0000  0.0000      5.75   23.3801  0.0000
+  12    6.25    0.0000  0.0000      6.25   38.4822  0.0000      6.25    5.2357  0.0000      6.25   13.7437  0.0000
+  13    6.75    0.0000  0.0000      6.75   28.2813  0.0000      6.75    0.0000  0.0000      6.75    9.8984  0.0000
+  14    7.25    0.0000  0.0000      7.25    4.0861  0.0000      7.25    3.8915  0.0000      7.25    5.7205  0.0000
+  15    7.75    0.0000  0.0000      7.75    3.5760  0.0000      7.75    3.4057  0.0000      7.75    5.7216  0.0000
+  16    8.25    0.0000  0.0000      8.25   18.9350  0.0000      8.25    6.0111  0.0000      8.25    3.7870  0.0000
+  17    8.75    0.0000  0.0000      8.75    5.6111  0.0000      8.75    2.6720  0.0000      8.75    3.6472  0.0000
+  18    9.25    0.0000  0.0000      9.25   10.0421  0.0000      9.25    0.0000  0.0000      9.25    5.7742  0.0000
+  19    9.75    0.0000  0.0000      9.75    0.0000  0.0000      9.75    2.1521  0.0000      9.75    6.7791  0.0000
+  20   10.25    0.0000  0.0000     10.25    8.1786  0.0000     10.25    0.0000  0.0000     10.25    6.3384  0.0000
+  21   10.75    0.0000  0.0000     10.75    7.4356  0.0000     10.75    0.0000  0.0000     10.75    5.3908  0.0000
+  22   11.25    0.0000  0.0000     11.25    8.4869  0.0000     11.25    1.6165  0.0000     11.25    3.2250  0.0000
+  23   11.75    0.0000  0.0000     11.75    9.3361  0.0000     11.75    2.9638  0.0000     11.75    4.0456  0.0000
+  24   12.25    0.0000  0.0000     12.25    2.8632  0.0000     12.25    1.3634  0.0000     12.25    3.0064  0.0000
+  25   12.75    0.0000  0.0000     12.75    1.3215  0.0000     12.75    1.2586  0.0000     12.75    2.5109  0.0000
+  26   13.25    0.0000  0.0000     13.25    2.4474  0.0000     13.25    1.1654  0.0000     13.25    3.0592  0.0000
+  27   13.75    0.0000  0.0000     13.75    3.4090  0.0000     13.75    2.1644  0.0000     13.75    2.4999  0.0000
+  28   14.25    0.0000  0.0000     14.25    6.3479  0.0000     14.25    5.0380  0.0000     14.25    3.9145  0.0000
+  29   14.75    0.0000  0.0000     14.75    3.9499  0.0000     14.75    1.8809  0.0000     14.75    3.6537  0.0000
+  30   15.25    0.0000  0.0000     15.25    2.7714  0.0000     15.25    0.8798  0.0000     15.25    2.4019  0.0000
+  31   15.75    0.0000  0.0000     15.75    1.7322  0.0000     15.75    0.0000  0.0000     15.75    1.9920  0.0000
+  32   16.25    0.0000  0.0000     16.25    5.6952  0.0000     16.25    3.0994  0.0000     16.25    2.3595  0.0000
+  33   16.75    0.0000  0.0000     16.75    3.0630  0.0000     16.75    2.9172  0.0000     16.75    1.9910  0.0000
+  34   17.25    0.0000  0.0000     17.25    1.4440  0.0000     17.25    0.0000  0.0000     17.25    1.7328  0.0000
+  35   17.75    0.0000  0.0000     17.75    0.6819  0.0000     17.75    1.9483  0.0000     17.75    2.3867  0.0000
+  36   18.25    0.0000  0.0000     18.25    2.5802  0.0000     18.25    0.6143  0.0000     18.25    2.1932  0.0000
+  37   18.75    0.0000  0.0000     18.75    3.6667  0.0000     18.75    3.4921  0.0000     18.75    1.7722  0.0000
+  38   19.25    0.0000  0.0000     19.25    2.3191  0.0000     19.25    1.1044  0.0000     19.25    2.0872  0.0000
+  39   19.75    0.0000  0.0000     19.75    2.2032  0.0000     19.75    1.5737  0.0000     19.75    1.8177  0.0000
+  40   20.25    0.0000  0.0000     20.25    2.0958  0.0000     20.25    0.0000  0.0000     20.25    1.8338  0.0000
+  41   20.75    0.0000  0.0000     20.75    0.9980  0.0000     20.75    0.9505  0.0000     20.75    1.5469  0.0000
+  42   21.25    0.0000  0.0000     21.25    1.4274  0.0000     21.25    0.4531  0.0000     21.25    1.4274  0.0000
+  43   21.75    0.0000  0.0000     21.75    0.9083  0.0000     21.75    0.4325  0.0000     21.75    1.5896  0.0000
+  44   22.25    0.0000  0.0000     22.25    2.1699  0.0000     22.25    1.2400  0.0000     22.25    1.6057  0.0000
+  45   22.75    0.0000  0.0000     22.75    1.6605  0.0000     22.75    0.7907  0.0000     22.75    1.2454  0.0000
+  46   23.25    0.0000  0.0000     23.25    1.1924  0.0000     23.25    0.3785  0.0000     23.25    1.7091  0.0000
+  47   23.75    0.0000  0.0000     23.75    1.1427  0.0000     23.75    1.4510  0.0000     23.75    1.6379  0.0000
+  48   24.25    0.0000  0.0000     24.25    1.0961  0.0000     24.25    0.6959  0.0000     24.25    1.5345  0.0000
+  49   24.75    0.0000  0.0000     24.75    1.0522  0.0000     24.75    1.0021  0.0000     24.75    1.1224  0.0000
+  50   25.25    0.0000  0.0000     25.25    2.0219  0.0000     25.25    0.0000  0.0000     25.25    1.3817  0.0000
+  51   25.75    0.0000  0.0000     25.75    0.6481  0.0000     25.75    0.9258  0.0000     25.75    1.0045  0.0000
+  52   26.25    0.0000  0.0000     26.25    0.3118  0.0000     26.25    0.5939  0.0000     26.25    1.1849  0.0000
+  53   26.75    0.0000  0.0000     26.75    0.6005  0.0000     26.75    0.5719  0.0000     26.75    0.9608  0.0000
+  54   27.25    0.0000  0.0000     27.25    1.4467  0.0000     27.25    0.8267  0.0000     27.25    1.2152  0.0000
+  55   27.75    0.0000  0.0000     27.75    0.8370  0.0000     27.75    1.3286  0.0000     27.75    1.3392  0.0000
+  56   28.25    0.0000  0.0000     28.25    1.0769  0.0000     28.25    1.0256  0.0000     28.25    1.4269  0.0000
+  57   28.75    0.0000  0.0000     28.75    1.0397  0.0000     28.75    0.4951  0.0000     28.75    1.1957  0.0000
+  58   29.25    0.0000  0.0000     29.25    1.5068  0.0000     29.25    0.4783  0.0000     29.25    0.9794  0.0000
+  59   29.75    0.0000  0.0000     29.75    0.4855  0.0000     29.75    1.1560  0.0000     29.75    1.0924  0.0000
+  60   30.25    0.0000  0.0000     30.25    0.9392  0.0000     30.25    0.8945  0.0000     30.25    0.8218  0.0000
+  61   30.75    0.0000  0.0000     30.75    0.6817  0.0000     30.75    0.4328  0.0000     30.75    0.8635  0.0000
+  62   31.25    0.0000  0.0000     31.25    0.2200  0.0000     31.25    0.6286  0.0000     31.25    0.8140  0.0000
+  63   31.75    0.0000  0.0000     31.75    0.4263  0.0000     31.75    1.2179  0.0000     31.75    1.0444  0.0000
+  64   32.25    0.0000  0.0000     32.25    0.8263  0.0000     32.25    1.3772  0.0000     32.25    1.0949  0.0000
+  65   32.75    0.0000  0.0000     32.75    0.6010  0.0000     32.75    1.3355  0.0000     32.75    1.0216  0.0000
+  66   33.25    0.0000  0.0000     33.25    0.9717  0.0000     33.25    1.4807  0.0000     33.25    0.9717  0.0000
+  67   33.75    0.0000  0.0000     33.75    0.9431  0.0000     33.75    1.0779  0.0000     33.75    0.8865  0.0000
+  68   34.25    0.0000  0.0000     34.25    0.5495  0.0000     34.25    0.6977  0.0000     34.25    0.9891  0.0000
+  69   34.75    0.0000  0.0000     34.75    0.8896  0.0000     34.75    0.6778  0.0000     34.75    0.6761  0.0000
+  70   35.25    0.0000  0.0000     35.25    0.6917  0.0000     35.25    1.8115  0.0000     35.25    0.8300  0.0000
+  71   35.75    0.0000  0.0000     35.75    0.3362  0.0000     35.75    0.9606  0.0000     35.75    0.7565  0.0000
+  72   36.25    0.0000  0.0000     36.25    0.3270  0.0000     36.25    1.2458  0.0000     36.25    0.6704  0.0000
+  73   36.75    0.0000  0.0000     36.75    0.6363  0.0000     36.75    1.0606  0.0000     36.75    0.7318  0.0000
+  74   37.25    0.0000  0.0000     37.25    0.6194  0.0000     37.25    1.1798  0.0000     37.25    0.9910  0.0000
+  75   37.75    0.0000  0.0000     37.75    0.6031  0.0000     37.75    0.5744  0.0000     37.75    1.0705  0.0000
+  76   38.25    0.0000  0.0000     38.25    0.8811  0.0000     38.25    1.3986  0.0000     38.25    0.6608  0.0000
+  77   38.75    0.0000  0.0000     38.75    0.2862  0.0000     38.75    0.8176  0.0000     38.75    0.7584  0.0000
+  78   39.25    0.0000  0.0000     39.25    0.2789  0.0000     39.25    0.6641  0.0000     39.25    0.5997  0.0000
+  79   39.75    0.0000  0.0000     39.75    0.4079  0.0000     39.75    1.2950  0.0000     39.75    0.6255  0.0000
+  80   40.25    0.0000  0.0000     40.25    0.7957  0.0000     40.25    1.5157  0.0000     40.25    0.7427  0.0000
+  81   40.75    0.0000  0.0000     40.75    0.2588  0.0000     40.75    0.7394  0.0000     40.75    0.8928  0.0000
+  82   41.25    0.0000  0.0000     41.25    0.1263  0.0000     41.25    0.8418  0.0000     41.25    0.5556  0.0000
+  83   41.75    0.0000  0.0000     41.75    0.3698  0.0000     41.75    0.8218  0.0000     41.75    0.7519  0.0000
+  84   42.25    0.0000  0.0000     42.25    0.3611  0.0000     42.25    0.5732  0.0000     42.25    0.7463  0.0000
+  85   42.75    0.0000  0.0000     42.75    0.7054  0.0000     42.75    0.8957  0.0000     42.75    0.7524  0.0000
+  86   43.25    0.0000  0.0000     43.25    0.4594  0.0000     43.25    1.0939  0.0000     43.25    0.6432  0.0000
+  87   43.75    0.0000  0.0000     43.75    0.3368  0.0000     43.75    0.9622  0.0000     43.75    0.6062  0.0000
+  88   44.25    0.0000  0.0000     44.25    0.1097  0.0000     44.25    1.1495  0.0000     44.25    0.5925  0.0000
+  89   44.75    0.0000  0.0000     44.75    0.3219  0.0000     44.75    0.8175  0.0000     44.75    0.5901  0.0000
+  90   45.25    0.0000  0.0000     45.25    0.2099  0.0000     45.25    0.6996  0.0000     45.25    0.6296  0.0000
+  91   45.75    0.0000  0.0000     45.75    0.5133  0.0000     45.75    0.3911  0.0000     45.75    0.6364  0.0000
+  92   46.25    0.0000  0.0000     46.25    0.1004  0.0000     46.25    0.6696  0.0000     46.25    0.5826  0.0000
+  93   46.75    0.0000  0.0000     46.75    0.7865  0.0000     46.75    0.7490  0.0000     46.75    0.5898  0.0000
+  94   47.25    0.0000  0.0000     47.25    0.5774  0.0000     47.25    0.8249  0.0000     47.25    0.6544  0.0000
+  95   47.75    0.0000  0.0000     47.75    0.4712  0.0000     47.75    0.7180  0.0000     47.75    0.5654  0.0000
+  96   48.25    0.0000  0.0000     48.25    0.3692  0.0000     48.25    0.8790  0.0000     48.25    0.5076  0.0000
+  97   48.75    0.0000  0.0000     48.75    0.1808  0.0000     48.75    0.6888  0.0000     48.75    0.5515  0.0000
+  98   49.25    0.0000  0.0000     49.25    0.0886  0.0000     49.25    1.1811  0.0000     49.25    0.6732  0.0000
+  99   49.75    0.0000  0.0000     49.75    0.0000  0.0000     49.75    0.9094  0.0000     49.75    0.5035  0.0000
+ 100   50.25    0.0000  0.0000     50.25    0.0851  0.0000     50.25    1.3776  0.0000     50.25    0.5616  0.0000
+ 101   50.75    6.6737  0.0000     50.75    0.1668  0.0000     50.75    0.7150  0.0000     50.75    0.5673  0.0000
+ 102   51.25   19.6324  0.0000     51.25    0.2454  0.0000     51.25    0.9349  0.0000     51.25    0.5890  0.0000
+ 103   51.75    3.2091  0.0000     51.75    0.9627  0.0000     51.75    0.9169  0.0000     51.75    0.4974  0.0000
+ 104   52.25    3.1480  0.0000     52.25    0.6296  0.0000     52.25    1.1992  0.0000     52.25    0.5352  0.0000
+ 105   52.75    9.2659  0.0000     52.75    1.0810  0.0000     52.75    0.8825  0.0000     52.75    0.5791  0.0000
+ 106   53.25    6.0618  0.0000     53.25    1.1366  0.0000     53.25    1.2990  0.0000     53.25    0.4167  0.0000
+ 107   53.75    2.9748  0.0000     53.75    0.6693  0.0000     53.75    1.2749  0.0000     53.75    0.4834  0.0000
+ 108   54.25    0.0000  0.0000     54.25    1.0221  0.0000     54.25    1.1820  0.0000     54.25    0.6351  0.0000
+ 109   54.75    0.0000  0.0000     54.75    1.5052  0.0000     54.75    1.0922  0.0000     54.75    0.5089  0.0000
+ 110   55.25    0.0000  0.0000     55.25    1.5485  0.0000     55.25    1.2066  0.0000     55.25    0.5349  0.0000
+ 111   55.75    0.0000  0.0000     55.75    1.0369  0.0000     55.75    1.0534  0.0000     55.75    0.5392  0.0000
+ 112   56.25    0.0000  0.0000     56.25    1.9693  0.0000     56.25    0.9701  0.0000     56.25    0.6994  0.0000
+ 113   56.75    0.0000  0.0000     56.75    1.3343  0.0000     56.75    1.2072  0.0000     56.75    0.6405  0.0000
+ 114   57.25    0.0000  0.0000     57.25    1.7044  0.0000     57.25    0.8741  0.0000     57.25    0.6424  0.0000
+ 115   57.75    0.0000  0.0000     57.75    0.9019  0.0000     57.75    0.9817  0.0000     57.75    0.7151  0.0000
+ 116   58.25    0.0000  0.0000     58.25    1.0765  0.0000     58.25    1.1458  0.0000     58.25    0.7155  0.0000
+ 117   58.75    0.0000  0.0000     58.75    1.1205  0.0000     58.75    0.8300  0.0000     58.75    0.7657  0.0000
+ 118   59.25    0.0000  0.0000     59.25    1.3465  0.0000     59.25    1.1075  0.0000     59.25    0.7283  0.0000
+ 119   59.75    0.0000  0.0000     59.75    0.8426  0.0000     59.75    0.8598  0.0000     59.75    0.8546  0.0000
+ 120   above    0.0000  0.0000     above    0.0000  0.0000     above    0.0000  0.0000     above    0.0000  0.0000
+
+         rdf strand-countion         rdf countion-countion      
+ bin     x       y       dy          x       y       dy
+  -1   below    0.0000  0.0000     below    0.0000  0.0000
+   0    0.25    0.0000  0.0000      0.25    0.0000  0.0000
+   1    0.75    0.0000  0.0000      0.75    0.0000  0.0000
+   2    1.25    0.0000  0.0000      1.25    0.0000  0.0000
+   3    1.75    0.0000  0.0000      1.75    0.0000  0.0000
+   4    2.25    0.0000  0.0000      2.25    0.0000  0.0000
+   5    2.75    0.0000  0.0000      2.75    0.0000  0.0000
+   6    3.25    0.0000  0.0000      3.25    0.0000  0.0000
+   7    3.75    0.0000  0.0000      3.75    0.0000  0.0000
+   8    4.25    3.9605  0.0000      4.25    0.0000  0.0000
+   9    4.75    1.3592  0.0000      4.75    1.7259  0.0000
+  10    5.25    3.3383  0.0000      5.25    0.7065  0.0000
+  11    5.75    4.3297  0.0000      5.75    0.0000  0.0000
+  12    6.25    1.8325  0.0000      6.25    0.0000  0.0000
+  13    6.75    2.0201  0.0000      6.75    0.4275  0.0000
+  14    7.25    1.3620  0.0000      7.25    0.7412  0.0000
+  15    7.75    1.8732  0.0000      7.75    0.3244  0.0000
+  16    8.25    2.1039  0.0000      8.25    0.2862  0.0000
+  17    8.75    1.4696  0.0000      8.75    1.5268  0.0000
+  18    9.25    1.5541  0.0000      9.25    1.5940  0.0000
+  19    9.75    1.9369  0.0000      9.75    1.4347  0.0000
+  20   10.25    1.7526  0.0000     10.25    0.7418  0.0000
+  21   10.75    1.9474  0.0000     10.75    1.1803  0.0000
+  22   11.25    1.6165  0.0000     11.25    1.0777  0.0000
+  23   11.75    1.3337  0.0000     11.75    0.7057  0.0000
+  24   12.25    1.7043  0.0000     12.25    1.9478  0.0000
+  25   12.75    1.8250  0.0000     12.75    0.8391  0.0000
+  26   13.25    1.5733  0.0000     13.25    0.6660  0.0000
+  27   13.75    0.7575  0.0000     13.75    1.3399  0.0000
+  28   14.25    1.2091  0.0000     14.25    0.6717  0.0000
+  29   14.75    1.2226  0.0000     14.75    0.7165  0.0000
+  30   15.25    1.6716  0.0000     15.25    1.0893  0.0000
+  31   15.75    0.9486  0.0000     15.75    1.0212  0.0000
+  32   16.25    0.9298  0.0000     16.25    1.0331  0.0000
+  33   16.75    1.2398  0.0000     16.75    0.8335  0.0000
+  34   17.25    1.4784  0.0000     17.25    0.7204  0.0000
+  35   17.75    1.1365  0.0000     17.75    1.6081  0.0000
+  36   18.25    0.7986  0.0000     18.25    0.9361  0.0000
+  37   18.75    1.3677  0.0000     18.75    0.6097  0.0000
+  38   19.25    1.2424  0.0000     19.25    1.2095  0.0000
+  39   19.75    0.9180  0.0000     19.75    0.8493  0.0000
+  40   20.25    1.1477  0.0000     20.25    0.8554  0.0000
+  41   20.75    1.1406  0.0000     20.75    0.7242  0.0000
+  42   21.25    0.9969  0.0000     21.25    1.0357  0.0000
+  43   21.75    1.0381  0.0000     21.75    0.9475  0.0000
+  44   22.25    0.9920  0.0000     22.25    0.9447  0.0000
+  45   22.75    0.9291  0.0000     22.75    1.0919  0.0000
+  46   23.25    1.3059  0.0000     23.25    1.0455  0.0000
+  47   23.75    1.1427  0.0000     23.75    1.0019  0.0000
+  48   24.25    1.0613  0.0000     24.25    1.0936  0.0000
+  49   24.75    1.1858  0.0000     24.75    0.8908  0.0000
+  50   25.25    0.9468  0.0000     25.25    0.9781  0.0000
+  51   25.75    0.9258  0.0000     25.75    0.8229  0.0000
+  52   26.25    0.9354  0.0000     26.25    1.0464  0.0000
+  53   26.75    0.9580  0.0000     26.75    0.7626  0.0000
+  54   27.25    1.0196  0.0000     27.25    0.9973  0.0000
+  55   27.75    1.0496  0.0000     27.75    1.1641  0.0000
+  56   28.25    0.9871  0.0000     28.25    1.1233  0.0000
+  57   28.75    0.9902  0.0000     28.75    0.9195  0.0000
+  58   29.25    1.1241  0.0000     29.25    0.9339  0.0000
+  59   29.75    1.0173  0.0000     29.75    0.8587  0.0000
+  60   30.25    1.1069  0.0000     30.25    0.8093  0.0000
+  61   30.75    0.9414  0.0000     30.75    0.8862  0.0000
+  62   31.25    0.7858  0.0000     31.25    0.7583  0.0000
+  63   31.75    0.8525  0.0000     31.75    0.8506  0.0000
+  64   32.25    0.9837  0.0000     32.25    0.9931  0.0000
+  65   32.75    1.0684  0.0000     32.75    1.1810  0.0000
+  66   33.25    1.0087  0.0000     33.25    0.9695  0.0000
+  67   33.75    0.9341  0.0000     33.75    0.9752  0.0000
+  68   34.25    0.9943  0.0000     34.25    1.1131  0.0000
+  69   34.75    0.9405  0.0000     34.75    1.0651  0.0000
+  70   35.25    0.8728  0.0000     35.25    1.0194  0.0000
+  71   35.75    0.8325  0.0000     35.75    0.9759  0.0000
+  72   36.25    0.9421  0.0000     36.25    0.8305  0.0000
+  73   36.75    0.9545  0.0000     36.75    1.0678  0.0000
+  74   37.25    1.0544  0.0000     37.25    0.9410  0.0000
+  75   37.75    1.1990  0.0000     37.75    0.9983  0.0000
+  76   38.25    1.1958  0.0000     38.25    1.1322  0.0000
+  77   38.75    0.9335  0.0000     38.75    0.9993  0.0000
+  78   39.25    0.9099  0.0000     39.25    0.9740  0.0000
+  79   39.75    0.9972  0.0000     39.75    1.0977  0.0000
+  80   40.25    1.0041  0.0000     40.25    0.9142  0.0000
+  81   40.75    1.0351  0.0000     40.75    1.0680  0.0000
+  82   41.25    1.0102  0.0000     41.25    1.0766  0.0000
+  83   41.75    0.9626  0.0000     41.75    1.0398  0.0000
+  84   42.25    0.9171  0.0000     42.25    0.9607  0.0000
+  85   42.75    0.8230  0.0000     42.75    0.8637  0.0000
+  86   43.25    0.9845  0.0000     43.25    0.9897  0.0000
+  87   43.75    0.8285  0.0000     43.75    1.0691  0.0000
+  88   44.25    0.8569  0.0000     44.25    1.1545  0.0000
+  89   44.75    0.9145  0.0000     44.75    1.0413  0.0000
+  90   45.25    0.9394  0.0000     45.25    1.0184  0.0000
+  91   45.75    0.9288  0.0000     45.75    1.0428  0.0000
+  92   46.25    1.0188  0.0000     46.25    1.0659  0.0000
+  93   46.75    0.8707  0.0000     46.75    0.9987  0.0000
+  94   47.25    0.9486  0.0000     47.25    0.9777  0.0000
+  95   47.75    0.8122  0.0000     47.75    0.9487  0.0000
+  96   48.25    1.0196  0.0000     48.25    1.0464  0.0000
+  97   48.75    0.9859  0.0000     48.75    1.0168  0.0000
+  98   49.25    1.0545  0.0000     49.25    1.0043  0.0000
+  99   49.75    0.9673  0.0000     49.75    0.8897  0.0000
+ 100   50.25    0.9644  0.0000     50.25    1.1268  0.0000
+ 101   50.75    0.9057  0.0000     50.75    0.9307  0.0000
+ 102   51.25    0.9582  0.0000     51.25    0.8755  0.0000
+ 103   51.75    0.9971  0.0000     51.75    0.8587  0.0000
+ 104   52.25    1.0194  0.0000     52.25    1.0493  0.0000
+ 105   52.75    1.0075  0.0000     52.75    0.9595  0.0000
+ 106   53.25    1.0103  0.0000     53.25    0.9759  0.0000
+ 107   53.75    0.9703  0.0000     53.75    0.8634  0.0000
+ 108   54.25    0.9386  0.0000     54.25    0.8939  0.0000
+ 109   54.75    0.9147  0.0000     54.75    1.0012  0.0000
+ 110   55.25    0.9318  0.0000     55.25    0.9640  0.0000
+ 111   55.75    1.0040  0.0000     55.75    0.9593  0.0000
+ 112   56.25    1.0380  0.0000     56.25    1.0840  0.0000
+ 113   56.75    0.9054  0.0000     56.75    0.8653  0.0000
+ 114   57.25    0.9896  0.0000     57.25    1.0227  0.0000
+ 115   57.75    0.9541  0.0000     57.75    1.0635  0.0000
+ 116   58.25    0.9830  0.0000     58.25    1.0568  0.0000
+ 117   58.75    1.0316  0.0000     58.75    1.1405  0.0000
+ 118   59.25    0.9472  0.0000     59.25    1.0825  0.0000
+ 119   59.75    1.0575  0.0000     59.75    1.0808  0.0000
+ 120   above    0.0000  0.0000     above    0.0000  0.0000
+ 
+ 
+      rdf node-node                   y-min =  0.000E+00     y-max =  0.169E+02
+ 
+   !                                                                                     *
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !                                                                                        *
+   !
+   !                                                                                       *
+   !                                                                                    *
+   !
+   !
+   !
+   !
+   !                                                                                         *
+   !                                                                                      *
+   !
+   !
+   !
+   !
+   !
+   !
+   !************************************************************************************      **********
+   !----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+   !         !         !         !         !         !         !         !         !         !         !
+     0.000                                                                                        60.000
+ 
+ 
+      rdf node-strand                 y-min =  0.000E+00     y-max =  0.461E+02
+ 
+   !        *
+   !
+   !         *
+   !
+   !
+   !
+   !
+   !       *
+   !          *
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !           *
+   !
+   !
+   !
+   !
+   !
+   !             *
+   !
+   !
+   !
+   !               *  **
+   !              *  *
+   !
+   !                       *
+   !            *           *  *
+   !                *   * *  **   **
+   !                     *      *   *******  **  *  *                                          *****  *
+   !*******                      *         **  ** ** ******************************************     ** *
+   !----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+   !         !         !         !         !         !         !         !         !         !         !
+     0.000                                                                                        60.000
+ 
+ 
+      rdf node-countion               y-min =  0.000E+00     y-max =  0.514E+01
+ 
+   !             *
+   !        *
+   !
+   !
+   !
+   !
+   !          *
+   !
+   !                       *
+   !
+   !
+   !            *
+   !
+   !
+   !              *
+   !
+   !                           *
+   !
+   !                   *
+   !                               *
+   !
+   !                        *
+   !
+   !
+   !
+   !
+   !
+   !                      *      *
+   !                *                                         *
+   !           *        *           *                    ***          *
+   !         *           *                 *      *             *                      *    ***   *
+   !                  *       *   *                  *         * * *   *     *        *    *   **   *
+   !                            *        *       *      *   *       *      **            **      *   ***
+   !                                  *               *           *     **    *   * **  *          *
+   !                         *          *   ** *   *         *       *         * * *
+   !                                 *    *     *                         *
+   !                                   *      *     *  *                        *
+   !               *
+   !
+   !********         *
+   !----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+   !         !         !         !         !         !         !         !         !         !         !
+     0.000                                                                                        60.000
+ 
+ 
+      rdf strand-strand               y-min =  0.000E+00     y-max =  0.254E+02
+ 
+   !        *
+   !         *
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !          *
+   !
+   !
+   !       *
+   !
+   !
+   !
+   !           *
+   !
+   !
+   !                *
+   !               * *
+   !            *
+   !
+   !             *    **
+   !              *        **
+   !                    ***
+   !                         *** ** *
+   !      *                     *  * ********     **
+   !                                         *****  ***************** ******                     *******
+   !******                                                           *      *********************
+   !----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+   !         !         !         !         !         !         !         !         !         !         !
+     0.000                                                                                        60.000
+ 
+ 
+      rdf strand-countion             y-min =  0.000E+00     y-max =  0.416E+01
+ 
+   !         *
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !
+   !       **
+   !
+   !
+   !
+   !
+   !
+   !             *
+   !                *
+   !          **     *
+   !                  * **
+   !            * **
+   !                         *
+   !                   *        *
+   !      *                        *
+   !                      * *    *        **                       *
+   !                       *   *    ***     **      * *   *       *
+   !                          *        ***      **** *   * ***  **  * ****     ***  **** *****  ** *****
+   !                              *           **       *      **     *    *****   **    *     **  *
+   !                                                    *
+   !
+   !
+   !
+   !
+   !
+   !
+   !******
+   !----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+   !         !         !         !         !         !         !         !         !         !         !
+     0.000                                                                                        60.000
+ 
+ 
+      rdf countion-countion           y-min =  0.000E+00     y-max =  0.176E+01
+ 
+   !                    *
+   !
+   !
+   !
+   !               *
+   !
+   !                             *
+   !
+   !
+   !
+   !              *
+   !
+   !                *
+   !                                              *       *
+   !                  *                                                      *
+   !                         *            * *                *     *    *     *                     ****
+   !        *                 *     *  * *       * *        * *  *  * *  *  *  ***  *  *         * *
+   !                      *                *   *           *   *  *  * *          *  *     **  *
+   !                 *         *        *           *    *                *        *  * *       *
+   !                       *      *          **                            *              *  **   *
+   !       *                         *               * *        *                        *
+   !                               *            *     * *
+   !                   * *      *
+   !                        *         *
+   !
+   !
+   !
+   !           **
+   !
+   !
+   !
+   !
+   !
+   !             *
+   !
+   !
+   !
+   !         *
+   !          *
+   !*******
+   !----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+   !         !         !         !         !         !         !         !         !         !         !
+     0.000                                                                                        60.000
+
+**************************************************************************************************************
+*                                             timing statistics                                              *
+**************************************************************************************************************
+
+ 
+         section            cpu time (s)     fraction
+         -------            ------------     --------
+         Coordinate               0.00         0.01
+         ControlAver              0.00         0.00
+         MainAver                 0.00         0.01
+         DistFunc                 0.01         0.03
+         IOMolsim                 0.01         0.02
+         SetVList                 0.03         0.09
+         MCPass                   0.24         0.81
+          SPartMove               0.01         0.02
+          DUTotal                 0.22         0.74
+           DUTwoBody              0.10         0.34
+           DUTwoBodyEwald         0.07         0.24
+            UEwaldRecStd          0.06         0.21 
+           DUBond                 0.00         0.02
+         DUCrossLink              0.01         0.03
+ 
+total cpu time since start (s)        0.31

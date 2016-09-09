@@ -1,0 +1,48 @@
+ &nmlSystem
+  txtitle ='ions and counterions spherically confined',
+  txmethod='mc',    txensemb='nvt',     txbc='sph',      txstart='setconf',
+  nstep1= 1,        nstep2= 10,
+  sphrad= 1000.0,
+  temp  = 298.0,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.t.,limage =.true.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,    ishow = 1,   iplot = 1,  ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'ion','counterion',
+  nppt  =  500,    500,
+  natpt =  1,       1,
+  txat  = 'ion','counterion',
+  radat = 2.0,    2.0,
+  zat   = 1.0,   -1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'ion',
+  naatpt(1,2) =	1,
+  txaat(1,2) = 'counterion',
+ /
+ &nmlPotential
+  relpermitt = 80.0,
+  luext=.true.,
+ /
+ &nmlPotentialExternal txuext = 'core_shell', rChargeIn = 150.0, rChargeOut = 250.0,
+ /
+ &nmlSetConfiguration
+  txsetconf = 'coreshell','random',
+  radlimit = 150.0, 250.0,
+ /
+ &nmlMC
+  dtran =  2.5, 10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 20.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100, rcutdist = 100.0 /
+ &nmlGroup /
+ &nmlStatic
+  istatic = 10,
+  lspdf =.true.,
+ /
+ &nmlSPDF vtype(1) =.true., 0.0, 1000.0, 500 /
+ &nmlImage iimage = 1, lvrml =.true. /
+ &nmlVrml atsize = 2.0, 2.0, blmax = 15.0, bondr = 0.3 /

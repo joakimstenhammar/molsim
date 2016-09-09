@@ -1,0 +1,40 @@
+ &nmlSystem
+  txtitle ='hs: ro(red) =0.80',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',   txstart ='setconf',
+  nstep1= 2,        nstep2= 10,
+  boxlen= 3*2.8,
+  temp  = 100.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lstatic =.t.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 100,  ishow = 1,   iplot = 1,   ilist = 0,
+/
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'hs',
+  nppt  =  16,
+  natpt =  1,
+  txat  = 'hs',
+  massat= 1.0,
+  radat = 0.5,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'hs',
+ /
+ &nmlPotential
+  rcut = 3.0,
+  npot(1) = 0,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) ='bcclattice',
+  nucell(1,1) =  2,  2,  2,
+ /
+ &nmlMC
+  dtran = 0.2,
+ /
+ &nmlIntList inlist = 0, drnlist = 1.0 /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 2.0, 100, rcutdist = 2.0 /
+ &nmlStatic
+  lcluster =.true.
+ /
+ &nmlCluster txobj = 'particle', lpercolation =.true., iobjt = 1, rcluster = 1.1, itestcluster = 0 /
