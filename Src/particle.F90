@@ -38,15 +38,12 @@ module ParticleModule
    real(8)       :: raintin(3,mnapt,mnpt)  !*interaction site coordinates in input frame, cf rain
    integer(4)    :: itestpart              !*=10, call of TestChainPointer
 
-   type :: block
+   type :: block_type
       integer(4)  :: pt  !number of steps
       integer(4)  :: np  !squared displacement
-   end type repblock
-   type :: rep
-      type(block), allocatable block(:)
-   end type rep
+   end type block_type
 
-   type(rep), allocatable repct(:,:)
+   type(block_type), allocatable :: rep_iblock_ict(:,:)
    integer(4)  :: nblockict(mnct)
 
 end module ParticleModule
@@ -80,7 +77,7 @@ subroutine Particle(iStage)
                           naatpt, txaat, rain, dipain, polain, lintsite, raintin,       &
                           lradatbox, itestpart
 
-   namelist /nmlRepeating/  repct
+   namelist /nmlRepeating/  rep_iblock_ict
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -130,16 +127,11 @@ subroutine Particle(iStage)
       end do
 
       if(any(txcopolymer(1:nct) == 'repeating')) then
-         if(.not. allocated(repct)) then
-            allocate(repct(nct))
-            do ict = 1, nct
-               if(.not. allocated(repct(ict)%block)) then
-                  allocate(repct(ict)%block(nblockict))
-               end if
-            end do
+         if(.not. allocated(rep_iblock_ict)) then
+            allocate(rep_iblock_ict(maxval(nblockict(1:nct)),nct))
          end if
-         repct(:)%block(:)%np = 0
-         repct(:)%block(:)%pt = 0
+
+         rep_iblock_ict = block_type(0,0)
          rewind(uin)
          read(uin,nmlRepeating)
       end if
@@ -809,7 +801,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    integer(4) :: nrep, irep, nreplen
    integer(4) :: nprep, iblock
    integer(4), allocatable :: npptrep(:)
-   integer(4), allocatable :: iplow(:)
+   integer(4), allocatable :: ipset(:)
 
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
@@ -853,17 +845,17 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
          end do
       else if (txcopolymer(ict) == 'repeating') then
 
-         if(.not. allocated) allocate npptrep(npt)
-         if(.not. allocated) allocate iplow(ipt)
+         if(.not. allocated(npptrep)) allocate(npptrep(npt))
+         if(.not. allocated(ipset)) allocate(ipset(ipt))
          npptrep = 0
-         iplow = 0
+         ipset = 0
 
-         if(any( repct(ict)%block(:)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
-         if(any( repct(ict)%block(:)%pt .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
+         if(any( rep_iblock_ict(1:nblockict(ict),ict)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
+         if(any( rep_iblock_ict(1:nblockict(ict),ict)%pt .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
 
          do iblock = 1, nblockict(ict)
-            ipt = repct(ict)%block(iblock)%pt
-            npptrep(ipt) = sum(repct(ict)%block(:)%np, MASK=(repct(ict)%block(:)%pt == ipt))
+            ipt = rep_iblock_ict(iblock,ict)%pt
+            npptrep(ipt) = sum(rep_iblock_ict(1:nblockict(ict),ict)%np, MASK=(rep_iblock_ict(1:nblockict(ict),ict)%pt == ipt))
          end do
 
          if(nrep == 0 ) call stop(txroutine,'error in making repeating copolymer', uout)
@@ -871,56 +863,56 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
          do ic = icnct(ict), icnct(ict) + ncct(ict)                               ! loop over chains of type ict
             !repeating structure
             do ipt = 1, npt
-               iplow(1:npt) = sum(nppt(1:ipt-1)) + sum(ncct(1:nct-1)*npptct(ipt,1:ict-1)) + (ic - icnct(ict))*npptct(ipt,ict)
+               ipset(1:npt) = sum(nppt(1:ipt-1)) + sum(ncct(1:nct-1)*npptct(ipt,1:ict-1)) + (ic - icnct(ict))*npptct(ipt,ict)
             end do
 
             iseg = 0
             irep = 0
-            do while (iseg .le. sim(npptct(1:npt,ict))
+            do while (iseg .le. sum(npptct(1:npt,ict)))
                do iblock = 1, nblockict(ict)
-                  ipt = iptrepct(iblock, ict)
-                  do iploc = 1, min(rep(ict)%block(iblock)%np , npptct(ipt,ict) - npptrep(ipt)*irep)
+                  ipt = rep_iblock_ict(iblock,ict)%pt
+                  do iploc = 1, min(rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npptrep(ipt)*irep)
                      iseg = iseg + 1
-                     iplow(ipt) = iplow(ipt) + 1
-                     ipnsegcn(iseg,ic) = iplow(ipt)
+                     ipset(ipt) = ipset(ipt) + 1
+                     ipnsegcn(iseg,ic) = ipset(ipt)
                   end do
                end do
             end do
 
          end do
 
-      else if (txcopolymer(ict) == 'random') then
+      !else if (txcopolymer(ict) == 'random') then
 
 
-         !prepare allocatable variables
-         if(.not. allocated(iplowipt)) allocate(iplowipt(npt))
-         allocate(iptiseg(npct(ict)))
+         !!prepare allocatable variables
+         !if(.not. allocated(iplowipt)) allocate(iplowipt(npt))
+         !allocate(iptiseg(npct(ict)))
 
-         !loob over chains
-         do icloc = 1, ncct(ict)
-            ic = ic+1                                          ! global chain number
+         !!loob over chains
+         !do icloc = 1, ncct(ict)
+            !ic = ic+1                                          ! global chain number
 
-            !create fresh list of iptiseg and iplowipt
-            iseg = 0
-            do ipt = 1, npt
-               iptiseg((iseg+1):(iseg+npptct(ipt,ict))) = ipt
-               iplowipt(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
-               iseg = iseg+npptct(ipt,ict)
-            end do
+            !!create fresh list of iptiseg and iplowipt
+            !iseg = 0
+            !do ipt = 1, npt
+               !iptiseg((iseg+1):(iseg+npptct(ipt,ict))) = ipt
+               !iplowipt(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+               !iseg = iseg+npptct(ipt,ict)
+            !end do
 
-            !shuffle iptiseg
-            call KnuthShuffle(iptiseg,size(iptiseg))
+            !!shuffle iptiseg
+            !call KnuthShuffle(iptiseg,size(iptiseg))
 
-            !assign particles
-            do iseg = 1, npct(ict)
-               ipt = iptiseg(iseg)
-               iplowipt(ipt) = iplowipt(ipt) + 1
-               ipnsegcn(iseg,ic) = iplowipt(ipt)
-            end do
+            !!assign particles
+            !do iseg = 1, npct(ict)
+               !ipt = iptiseg(iseg)
+               !iplowipt(ipt) = iplowipt(ipt) + 1
+               !ipnsegcn(iseg,ic) = iplowipt(ipt)
+            !end do
 
-         end do
+         !end do
 
-         deallocate(iptiseg)
+         !deallocate(iptiseg)
       end if
     end do
 
