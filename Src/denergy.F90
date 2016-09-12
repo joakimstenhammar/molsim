@@ -2362,14 +2362,16 @@ subroutine DUDielDisPlane(lhsoverlap)
             call PBCr2(dx,dy,dz,r2)
             if (r2 < r2atat(iptjpt)) goto 400     ! hs overlap
             ri = one/sqrt(r2)
-            dx = rotemp(1)-ro(1,jp)
-            dy = rotemp(2)-ro(2,jp)
-            dz = rotemp(3)+ro(3,jp)               ! image location
-            call PBCr2(dx,dy,dz,r2)
-            rip = one/sqrt(r2)
+            !##FLAG moved calculation of rip to avoid dividing by zero (rip is only calculated when needed)
             if ((rotemp(3) < Zero) .and. (ro(3,jp) < Zero)) then  ! ion--ion and ion--image interaction
+               dz = rotemp(3)+ro(3,jp)               ! image location
+               call PBCr2(dx,dy,dz,r2)
+               rip = one/sqrt(r2)
                du%twob(iptjpt) = du%twob(iptjpt) + signEpsi1FourPi*az(ip)*az(jp)*(ri - delta*rip)
             elseif ((rotemp(3) > Zero) .and. (ro(3,jp) > Zero)) then
+               dz = rotemp(3)+ro(3,jp)               ! image location
+               call PBCr2(dx,dy,dz,r2)
+               rip = one/sqrt(r2)
                du%twob(iptjpt) = du%twob(iptjpt) + signEpsi2FourPi*az(ip)*az(jp)*(ri + delta*rip)
             else
                du%twob(iptjpt) = du%twob(iptjpt) + signEpsi1FourPi*az(ip)*az(jp)*(ri - delta*ri)
@@ -3303,6 +3305,7 @@ subroutine DUExternalSphDielBoundary_p(str)
 ! ... calculate external energy
 
    sum = zero
+   ialoc = 0
    do ia = ianpn(ip), ianpn(ip)+napt(ipt)-1
       ialoc = ialoc+1
       r1new = sqrt(rtm(1,ialoc)**2+rtm(2,ialoc)**2+rtm(3,ialoc)**2)
