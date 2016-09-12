@@ -280,7 +280,7 @@ complex(8) function CCLM(l,m,theta,phi,norm)
    implicit none
    real(8), parameter :: zero = 0.0d0 , one = 1.0d0
    real(8), parameter :: pi = 3.1415926535897932d0 , facpi = 4.0d0*pi
-   integer(4), parameter :: lmax = 200, l2max = 2*lmax
+   integer(4), parameter :: lmax = 150, l2max = 2*lmax      !if lmax is larger there is a floating overflow ##FLAG: CHANGES
    integer(4), intent(in) :: l, m, norm
    real(8),    intent(in) :: theta, phi
    logical, save :: first=.true.
