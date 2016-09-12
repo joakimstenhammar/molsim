@@ -355,50 +355,6 @@ subroutine Particle(iStage)
          end do
          if (lspma) write(uout,'(a)')
          if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
-
-         if(any(txcopolymer(1:nct) == 'random')) then
-            call WriteHead(2, 'Random Copolypers', uout)
-            write(uout,'(a)') 'chain sequence:'
-            do ict = 1, nct
-               if (txcopolymer(ict) == 'random') then
-                  write(uout,'(a, i0)') 'chaintype: ', ict
-                  do icloc = 1, ncct(ict)
-                     write(uout,'(a, i0)') 'chainnumber: ', ncct(ict) + icloc
-                     write(uout,'(a)') 'particle number:'
-                     write(uout,'(i0)',advance='NO') ipnsegcn(1,icloc)
-                     write(uout,'(("-", i0))') ipnsegcn(2:npct(ict),icloc)
-                     write(uout,'(a)') 'particle type:'
-                     write(uout,'(i0)',advance='NO') iptpn(ipnsegcn(1,icloc))
-                     write(uout,'(("-", i0))') iptpn(ipnsegcn(2:npct(ict),icloc))
-                     write(uout,'')
-                  end do
-                  write(uout,'')
-               else
-               end if
-            end do
-         end if
-
-         if(any(txcopolymer(1:nct) == 'repeating')) then
-            call WriteHead(2, 'Repeating Copolypers', uout)
-            write(uout,'(a)') 'chain sequence:'
-            do ict = 1, nct
-               if (txcopolymer(ict) == 'repeating') then
-                  write(uout,'(a, i0)') 'chaintype: ', ict
-                  do icloc = 1, ncct(ict)
-                     write(uout,'(a, i0)') 'chainnumber: ', ncct(ict) + icloc
-                     write(uout,'(a)') 'particle number:'
-                     write(uout,'(i0)',advance='NO') ipnsegcn(1,icloc)
-                     write(uout,'(("-", i0))') ipnsegcn(2:npct(ict),icloc)
-                     write(uout,'(a)') 'particle type:'
-                     write(uout,'(i0)',advance='NO') iptpn(ipnsegcn(1,icloc))
-                     write(uout,'(("-", i0))') iptpn(ipnsegcn(2:npct(ict),icloc))
-                     write(uout,'')
-                  end do
-                  write(uout,'')
-               else
-               end if
-            end do
-         end if
       end if
 
 
@@ -845,20 +801,15 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
             end do
          end do
       else if (txcopolymer(ict) == 'repeating') then
-         print*, "repeating", ict
-
          if(.not. allocated(npptrep)) allocate(npptrep(npt))
          if(.not. allocated(npset)) allocate(npset(npt))
          if(.not. allocated(ipstart)) allocate(ipstart(npt))
          npptrep = 0
          npset = 0
          ipstart = 0
-         print*, "psot alloc"
-
          if(any( rep_iblock_ict(1:nblockict(ict),ict)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
          if(any( rep_iblock_ict(1:nblockict(ict),ict)%pt .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
 
-         print*, "get npptrep"
          do iblock = 1, nblockict(ict)
             ipt = rep_iblock_ict(iblock,ict)%pt
             npptrep(ipt) = sum(rep_iblock_ict(1:nblockict(ict),ict)%np, MASK=(rep_iblock_ict(1:nblockict(ict),ict)%pt == ipt))
@@ -866,14 +817,10 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
          do icloc = 1, ncct(ict)                               ! loop over chains of type ict
             ic = ic + 1
-            print*, "repeating", ic
             !repeating structure
             do ipt = 1, npt
                ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:nct-1)*npptct(ipt,1:ict-1)) + (icloc - 1)*npptct(ipt,ict)
             end do
-            print *, "npset"
-            print *, npset
-
             iseg = 0
             irep = 0
             npset = 0
@@ -883,7 +830,6 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
                   do iploc = 1, min(rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npset(ipt))
                      iseg = iseg + 1
                      npset(ipt) = npset(ipt) + 1
-                     print *, iseg, npset(ipt), ipt, rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npptrep(ipt)*irep
                      ipnsegcn(iseg,ic) = npset(ipt) + ipstart(ipt)
                   end do
                end do
