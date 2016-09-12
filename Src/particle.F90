@@ -759,6 +759,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    integer(4), allocatable :: npptrep(:)
    integer(4), allocatable :: npset(:)
    integer(4), allocatable :: ipstart(:)
+   integer(4), allocatable :: iptiseg(:)
 
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
@@ -819,7 +820,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
             ic = ic + 1
             !repeating structure
             do ipt = 1, npt
-               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:nct-1)*npptct(ipt,1:ict-1)) + (icloc - 1)*npptct(ipt,ict)
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc - 1)*npptct(ipt,ict)
             end do
             iseg = 0
             irep = 0
@@ -837,38 +838,40 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
          end do
 
-      !else if (txcopolymer(ict) == 'random') then
+         deallocate(npptrep, npset, ipstart)
+
+      else if (txcopolymer(ict) == 'random') then
 
 
-         !!prepare allocatable variables
-         !if(.not. allocated(iplowipt)) allocate(iplowipt(npt))
-         !allocate(iptiseg(npct(ict)))
+         !prepare allocatable variables
+         if(.not. allocated(ipstart)) allocate(ipstart(npt))
+         allocate(iptiseg(npct(ict)))
 
-         !!loob over chains
-         !do icloc = 1, ncct(ict)
-            !ic = ic+1                                          ! global chain number
+         !loob over chains
+         do icloc = 1, ncct(ict)
+            ic = ic+1                                          ! global chain number
 
-            !!create fresh list of iptiseg and iplowipt
-            !iseg = 0
-            !do ipt = 1, npt
-               !iptiseg((iseg+1):(iseg+npptct(ipt,ict))) = ipt
-               !iplowipt(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
-               !iseg = iseg+npptct(ipt,ict)
-            !end do
+            !create fresh list of iptiseg and iplowipt
+            iseg = 0
+            do ipt = 1, npt
+               iptiseg((iseg+1):(iseg+npptct(ipt,ict))) = ipt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+               iseg = iseg+npptct(ipt,ict)
+            end do
 
-            !!shuffle iptiseg
-            !call KnuthShuffle(iptiseg,size(iptiseg))
+            !shuffle iptiseg
+            call KnuthShuffle(iptiseg, size(iptiseg))
 
-            !!assign particles
-            !do iseg = 1, npct(ict)
-               !ipt = iptiseg(iseg)
-               !iplowipt(ipt) = iplowipt(ipt) + 1
-               !ipnsegcn(iseg,ic) = iplowipt(ipt)
-            !end do
+            !assign particles
+            do iseg = 1, npct(ict)
+               ipt = iptiseg(iseg)
+               ipstart(ipt) = ipstart(ipt) + 1
+               ipnsegcn(iseg,ic) = ipstart(ipt)
+            end do
 
-         !end do
+         end do
 
-         !deallocate(iptiseg)
+         deallocate(iptiseg, ipstart)
       end if
     end do
 
