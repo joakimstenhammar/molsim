@@ -4683,7 +4683,7 @@ subroutine UDielDisPlane
 
    u%tot  = u%tot  + u%twob(0) +  u%oneb(0)
 
-!  call TestDielDisPlane(uout)
+!  call TestUDielDisPlane(uout)
 
    if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 

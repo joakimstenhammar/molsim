@@ -328,7 +328,6 @@ subroutine IOPotTwoBody(iStage)
 
 ! ... set rffac and rffac2
 
-      rffac = 0.0
       if (lrf) then
          if (epsrf == Zero) then
             rffac = One/(rcut**3)
@@ -433,7 +432,7 @@ subroutine IOPotTwoBody(iStage)
                end if
 
                if (ipot(1,iatjat) == 1) then                ! modify coefficient of the 1/r term
-                  if (abs(ucoff(1,iatjat)-ucoffaim)/max(abs(ucoff(1,iatjat)),abs(ucoffaim), epsilon(ucoffaim)) > 1d-6) then !avoid division by zero
+                  if (abs(ucoff(1,iatjat)-ucoffaim)/max(abs(ucoff(1,iatjat)),abs(ucoffaim)) > 1d-6) then !##FLAG
                      ucoff(1,iatjat) = ucoffaim
                      lucoffmod(iatjat) =.true.
                   end if
