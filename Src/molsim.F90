@@ -334,6 +334,7 @@ subroutine IOSystem(iStage)
       ilist    = 0
       ltrace   = .false.
       lblockaver= .false.
+      cyllen   = 0.0
       ltime    = .true.
 
       rewind(uin)
@@ -1563,7 +1564,7 @@ subroutine ThermoAver(iStage)
 
       rtemp = GasConstant*(var(itemp)%avs2*scltem)
       rtemp2 = GasConstant*(var(itemp)%avs2*scltem)**2
-      if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
+      if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*max(rtemp,epsilon(rtemp))**2))/sclhca  !added epsilon to avoid dividing by zero ##FLAG Changes
       if (lnvt) cv = (var(iutot)%fls2*sclene)**2/(rtemp2*sclhca*np)
       if (lntp) cp = (var(ihtot)%fls2*sclene)**2/(rtemp2*sclhca*np)
 
@@ -1630,7 +1631,7 @@ subroutine ThermoAver(iStage)
          call ScalarSample(iStage, 1, nvar, var)
          rtemp = GasConstant*(var(itemp)%avs1*scltem)
          rtemp2 = GasConstant*(var(itemp)%avs1*scltem)**2
-         if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls1*sclene)**2/(1.5*np*rtemp**2))/sclhca
+         if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls1*sclene)**2/(1.5*np*max(rtemp,epsilon(rtemp))**2))/sclhca
          if (lnvt) cv = (var(iutot)%fls1*sclene)**2/(rtemp2*sclhca*np)
          if (lntp) cp = (var(ihtot)%fls1*sclene)**2/(rtemp2*sclhca*np)
 
