@@ -2362,7 +2362,6 @@ subroutine DUDielDisPlane(lhsoverlap)
             call PBCr2(dx,dy,dz,r2)
             if (r2 < r2atat(iptjpt)) goto 400     ! hs overlap
             ri = one/sqrt(r2)
-            !##FLAG moved calculation of rip to avoid dividing by zero (rip is only calculated when needed)
             if ((rotemp(3) < Zero) .and. (ro(3,jp) < Zero)) then  ! ion--ion and ion--image interaction
                dz = rotemp(3)+ro(3,jp)               ! image location
                call PBCr2(dx,dy,dz,r2)
