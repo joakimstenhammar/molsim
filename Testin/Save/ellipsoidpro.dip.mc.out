@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:32:30
+2016-09-13     16:40:59
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -16700,7 +16700,7 @@ number density                 =      2.26816E-03
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:32:30
+2016-09-13     16:40:59
 
 title   : hard ellipsoids with dipole moment in en external field                                   
 
@@ -17072,19 +17072,19 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.08         0.21
+         Coordinate             0.09         0.25
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
-         DistFunc               0.10         0.27
+         DistFunc               0.10         0.28
          Group                  0.00         0.00
          StaticDriver           0.00         0.00
-         ImageDriver            0.03         0.07
-         IOMolsim               0.00         0.01
-         SetVList               0.10         0.28
-         MCPass                 0.06         0.16
+         ImageDriver            0.02         0.06
+         IOMolsim               0.00         0.00
+         SetVList               0.07         0.21
+         MCPass                 0.06         0.18
           SPartMove             0.00         0.01 
-          DUTotal               0.05         0.13 
-           DUTwoBody            0.03         0.09  
+          DUTotal               0.05         0.14 
+           DUTwoBody            0.03         0.10  
            DUExternal           0.00         0.01  
  
-total cpu time since start (s)        0.40
+total cpu time since start (s)        0.36

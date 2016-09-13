@@ -34,358 +34,358 @@ Shape {appearance Appearance {material Material {
  ]}}
 
 # ... object: atom
-Transform { translation      -98.450     -74.709      22.961
+Transform { translation      -97.083     -77.496      27.665
  children [ DEF site1 Shape{ appearance Appearance { material
  Material {diffuseColor        1.000       0.000       0.000}}
  geometry Sphere { radius  1.50} } ] }
-Transform { translation      -98.450     -74.709      22.961 children [ USE site1]}
-Transform { translation     -104.192     -73.173      26.130
+Transform { translation      -97.083     -77.496      27.665 children [ USE site1]}
+Transform { translation     -100.348     -74.794      30.788
  children [ DEF site2 Shape{ appearance Appearance { material
  Material {diffuseColor        0.000       1.000       0.000}}
  geometry Sphere { radius  1.50} } ] }
-Transform { translation     -104.192     -73.173      26.130 children [ USE site2]}
-Transform { translation     -103.923     -70.723      22.897 children [ USE site2]}
-Transform { translation     -103.568     -70.449      16.592 children [ USE site2]}
-Transform { translation     -106.604     -70.799      13.418 children [ USE site2]}
-Transform { translation      -98.133     -69.908      21.696 children [ USE site2]}
-Transform { translation      -90.893     -73.952      23.906 children [ USE site2]}
-Transform { translation      -86.858     -74.757      21.220 children [ USE site2]}
-Transform { translation      -90.039     -81.653      19.041 children [ USE site2]}
-Transform { translation     -104.118     -69.385       9.326
+Transform { translation     -100.348     -74.794      30.788 children [ USE site2]}
+Transform { translation     -101.022     -75.989      25.036 children [ USE site2]}
+Transform { translation     -103.289     -75.935      17.824 children [ USE site2]}
+Transform { translation      -99.387     -78.280      15.209 children [ USE site2]}
+Transform { translation      -96.510     -72.457      25.384 children [ USE site2]}
+Transform { translation      -88.744     -76.421      24.183 children [ USE site2]}
+Transform { translation      -87.093     -70.377      17.604 children [ USE site2]}
+Transform { translation      -93.029     -73.222      15.685 children [ USE site2]}
+Transform { translation      -97.986     -83.206      18.371
  children [ DEF site3 Shape{ appearance Appearance { material
  Material {diffuseColor        0.000       0.000       1.000}}
  geometry Sphere { radius  1.50} } ] }
-Transform { translation     -104.118     -69.385       9.326 children [ USE site3]}
-Transform { translation     -105.822     -73.941      10.482 children [ USE site3]}
-Transform { translation     -109.258     -77.385      11.636 children [ USE site3]}
-Transform { translation     -112.265     -79.553      14.991 children [ USE site3]}
-Transform { translation     -111.072     -67.254      11.178 children [ USE site3]}
-Transform { translation     -109.261     -62.600      10.935 children [ USE site3]}
-Transform { translation     -108.619     -57.768       9.822 children [ USE site3]}
-Transform { translation     -109.891     -54.008       6.781 children [ USE site3]}
-Transform { translation      -88.558     -83.118      23.595 children [ USE site3]}
-Transform { translation      -86.346     -80.550      27.271 children [ USE site3]}
-Transform { translation      -81.965     -78.415      28.386 children [ USE site3]}
-Transform { translation      -77.751     -75.926      29.413 children [ USE site3]}
-Transform { translation      -86.164     -82.626      18.171 children [ USE site3]}
-Transform { translation      -87.298     -87.478      18.581 children [ USE site3]}
-Transform { translation      -86.652     -91.523      21.449 children [ USE site3]}
-Transform { translation      -88.529     -94.222      25.216 children [ USE site3]}
-Transform { translation     -108.770     -82.873      13.662
+Transform { translation      -97.986     -83.206      18.371 children [ USE site3]}
+Transform { translation     -101.636     -83.412      21.783 children [ USE site3]}
+Transform { translation     -106.340     -83.226      23.469 children [ USE site3]}
+Transform { translation     -110.333     -80.574      24.891 children [ USE site3]}
+Transform { translation     -103.443     -80.564      13.948 children [ USE site3]}
+Transform { translation      -99.752     -79.463      10.759 children [ USE site3]}
+Transform { translation      -96.932     -79.098       6.647 children [ USE site3]}
+Transform { translation      -96.085     -80.826       2.032 children [ USE site3]}
+Transform { translation      -97.255     -70.631      14.584 children [ USE site3]}
+Transform { translation      -94.381     -70.836      10.497 children [ USE site3]}
+Transform { translation      -90.241     -68.782       8.590 children [ USE site3]}
+Transform { translation      -85.906     -67.064       6.784 children [ USE site3]}
+Transform { translation      -94.747     -68.438      19.513 children [ USE site3]}
+Transform { translation      -99.337     -66.455      19.480 children [ USE site3]}
+Transform { translation     -102.553     -63.824      16.699 children [ USE site3]}
+Transform { translation     -106.301     -64.096      13.401 children [ USE site3]}
+Transform { translation     -108.539     -82.956      28.905
  children [ DEF site4 Shape{ appearance Appearance { material
  Material {diffuseColor        0.000       1.000       1.000}}
  geometry Sphere { radius  1.50} } ] }
-Transform { translation     -108.770     -82.873      13.662 children [ USE site4]}
-Transform { translation     -113.155     -84.348      11.765 children [ USE site4]}
-Transform { translation     -115.750     -88.193       9.898 children [ USE site4]}
-Transform { translation     -118.237     -90.813       6.441 children [ USE site4]}
-Transform { translation     -114.364     -77.143      11.146 children [ USE site4]}
-Transform { translation     -110.944     -80.524       9.779 children [ USE site4]}
-Transform { translation     -107.234     -80.605       6.428 children [ USE site4]}
-Transform { translation     -104.364     -79.329       2.537 children [ USE site4]}
-Transform { translation     -108.051     -49.994       4.436 children [ USE site4]}
-Transform { translation     -110.421     -48.424       0.322 children [ USE site4]}
-Transform { translation     -112.772     -44.131      -0.698 children [ USE site4]}
-Transform { translation     -116.637     -41.132      -1.730 children [ USE site4]}
-Transform { translation     -112.436     -57.900       4.945 children [ USE site4]}
-Transform { translation     -116.666     -58.359       7.572 children [ USE site4]}
-Transform { translation     -121.081     -59.760       9.454 children [ USE site4]}
-Transform { translation     -122.832     -64.144      11.102 children [ USE site4]}
-Transform { translation      -79.462     -76.398      24.739 children [ USE site4]}
-Transform { translation      -75.954     -79.835      23.800 children [ USE site4]}
-Transform { translation      -73.954     -83.222      26.886 children [ USE site4]}
-Transform { translation      -70.012     -82.597      29.897 children [ USE site4]}
-Transform { translation      -76.911     -80.822      29.980 children [ USE site4]}
-Transform { translation      -77.826     -85.423      28.249 children [ USE site4]}
-Transform { translation      -75.485     -89.830      27.932 children [ USE site4]}
-Transform { translation      -74.457     -92.400      23.769 children [ USE site4]}
-Transform { translation      -93.367     -95.313      25.847 children [ USE site4]}
-Transform { translation      -96.624     -98.903      24.620 children [ USE site4]}
-Transform { translation     -100.897    -100.047      22.290 children [ USE site4]}
-Transform { translation     -105.816    -100.484      23.076 children [ USE site4]}
-Transform { translation      -86.785     -95.630      20.746 children [ USE site4]}
-Transform { translation      -88.190    -100.298      21.857 children [ USE site4]}
-Transform { translation      -89.577    -104.607      23.980 children [ USE site4]}
-Transform { translation      -89.273    -105.163      28.940 children [ USE site4]}
+Transform { translation     -108.539     -82.956      28.905 children [ USE site4]}
+Transform { translation     -112.896     -85.057      27.635 children [ USE site4]}
+Transform { translation     -116.704     -87.901      29.188 children [ USE site4]}
+Transform { translation     -119.706     -91.897      29.305 children [ USE site4]}
+Transform { translation     -110.732     -83.446      20.817 children [ USE site4]}
+Transform { translation     -109.027     -85.879      24.838 children [ USE site4]}
+Transform { translation     -105.400     -89.226      25.638 children [ USE site4]}
+Transform { translation     -101.865     -92.651      24.758 children [ USE site4]}
+Transform { translation      -92.426     -81.922      -1.195 children [ USE site4]}
+Transform { translation      -93.408     -85.292      -4.755 children [ USE site4]}
+Transform { translation      -93.503     -84.898      -9.739 children [ USE site4]}
+Transform { translation      -95.516     -84.851     -14.315 children [ USE site4]}
+Transform { translation      -99.873     -83.657       3.656 children [ USE site4]}
+Transform { translation     -104.125     -81.145       2.873 children [ USE site4]}
+Transform { translation     -108.878     -79.620       2.595 children [ USE site4]}
+Transform { translation     -112.547     -79.302       5.978 children [ USE site4]}
+Transform { translation      -86.683     -67.617      11.693 children [ USE site4]}
+Transform { translation      -87.233     -62.670      12.164 children [ USE site4]}
+Transform { translation      -89.155     -59.388       8.919 children [ USE site4]}
+Transform { translation      -86.724     -56.980       5.273 children [ USE site4]}
+Transform { translation      -89.388     -63.512       6.271 children [ USE site4]}
+Transform { translation      -93.370     -61.272       8.302 children [ USE site4]}
+Transform { translation      -95.461     -56.732       8.391 children [ USE site4]}
+Transform { translation      -96.364     -53.912      12.420 children [ USE site4]}
+Transform { translation     -110.105     -67.333      13.624 children [ USE site4]}
+Transform { translation     -114.728     -67.608      15.509 children [ USE site4]}
+Transform { translation     -117.856     -70.041      18.559 children [ USE site4]}
+Transform { translation     -121.207     -73.751      18.617 children [ USE site4]}
+Transform { translation     -105.814     -61.377      17.568 children [ USE site4]}
+Transform { translation     -110.508     -59.797      16.883 children [ USE site4]}
+Transform { translation     -115.037     -58.532      15.184 children [ USE site4]}
+Transform { translation     -115.945     -58.502      10.267 children [ USE site4]}
 
 # ... bond
-Transform  { rotation    -3.232     0.000    -0.269     0.924
-          translation  -104.058   -71.948    24.513
+Transform  { rotation    -5.752     0.000     0.674     1.774
+          translation  -100.685   -75.391    27.912
 children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     4.065
+geometry Cylinder { radius      0.300 height     5.913
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -6.305     0.000    -0.355     1.527
-          translation  -103.745   -70.586    19.745
+Transform  { rotation    -7.212     0.000     2.267     1.564
+          translation  -102.156   -75.962    21.430
 children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     6.321
+geometry Cylinder { radius      0.300 height     7.560
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -3.174     0.000     3.037     1.650
-          translation  -105.086   -70.624    15.005
+Transform  { rotation    -2.615     0.000    -3.902     2.034
+          translation  -101.338   -77.107    16.517
 children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     4.407
+geometry Cylinder { radius      0.300 height     5.250
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     2.210     0.000    -7.240     2.061
-          translation   -94.513   -71.930    22.801
+Transform  { rotation    -1.201     0.000    -7.766     2.038
+          translation   -92.627   -74.439    24.783
 children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     8.583
+geometry Cylinder { radius      0.300 height     8.802
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -2.686     0.000    -4.035     1.735
-          translation   -88.876   -74.355    22.563
+Transform  { rotation    -6.579     0.000    -1.650     0.843
+          translation   -87.918   -73.399    20.893
 children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     4.914
+geometry Cylinder { radius      0.300 height     9.085
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -2.179     0.000     3.181     2.632
-          translation   -88.449   -78.205    20.131
+Transform  { rotation    -1.919     0.000     5.935     1.999
+          translation   -90.061   -71.799    16.644
 children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     7.901
+geometry Cylinder { radius      0.300 height     6.856
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     1.156     0.000     1.704     2.717
-          translation  -104.970   -71.663     9.904
-children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     5.000
- side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     1.154     0.000     3.436     2.331
-          translation  -107.540   -75.663    11.059
+Transform  { rotation     3.411     0.000     3.650     1.612
+          translation   -99.811   -83.309    20.077
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     3.355     0.000     3.007     2.019
-          translation  -110.761   -78.469    13.313
+Transform  { rotation     1.686     0.000     4.703     1.534
+          translation  -103.988   -83.319    22.626
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -0.243     0.000    -1.811     0.374
-          translation  -110.166   -64.927    11.057
+Transform  { rotation     1.422     0.000     3.993     1.012
+          translation  -108.336   -81.900    24.180
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.113     0.000    -0.642     0.260
-          translation  -108.940   -60.184    10.379
+Transform  { rotation    -3.188     0.000    -3.691     1.349
+          translation  -101.598   -80.013    12.353
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -3.041     0.000     1.272     0.720
-          translation  -109.255   -55.888     8.301
+Transform  { rotation    -4.113     0.000    -2.820     1.498
+          translation   -98.342   -79.280     8.703
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     3.676     0.000    -2.212     1.031
-          translation   -87.452   -81.834    25.433
+Transform  { rotation    -4.614     0.000    -0.847     1.924
+          translation   -96.509   -79.962     4.339
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     1.115     0.000    -4.381     1.130
-          translation   -84.155   -79.482    27.829
+Transform  { rotation    -4.086     0.000    -2.874     1.612
+          translation   -95.818   -70.733    12.541
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     1.027     0.000    -4.214     1.050
-          translation   -79.858   -77.170    28.900
+Transform  { rotation    -1.907     0.000    -4.141     1.148
+          translation   -92.311   -69.809     9.544
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     0.411     0.000     1.134     2.898
-          translation   -86.731   -85.052    18.376
+Transform  { rotation    -1.806     0.000    -4.335     1.220
+          translation   -88.073   -67.923     7.687
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     2.867     0.000    -0.646     2.513
-          translation   -86.975   -89.501    20.015
+Transform  { rotation    -0.033     0.000     4.590     1.163
+          translation   -97.042   -67.447    19.496
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     3.767     0.000     1.877     2.141
-          translation   -87.590   -92.873    23.332
+Transform  { rotation    -2.780     0.000     3.216     1.016
+          translation  -100.945   -65.140    18.089
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.896     0.000     4.385     1.870
-          translation  -110.963   -83.611    12.713
+Transform  { rotation    -3.299     0.000     3.748     1.625
+          translation  -104.427   -63.960    15.050
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.867     0.000     2.595     2.448
-          translation  -114.453   -86.271    10.832
+Transform  { rotation    -1.269     0.000     4.356     2.004
+          translation  -110.717   -84.006    28.270
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -3.457     0.000     2.487     2.122
-          translation  -116.993   -89.503     8.169
+Transform  { rotation     1.553     0.000     3.808     2.176
+          translation  -114.800   -86.479    28.412
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.367     0.000    -3.420     2.313
-          translation  -112.654   -78.833    10.463
+Transform  { rotation     0.117     0.000     3.003     2.497
+          translation  -118.205   -89.899    29.247
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -3.352     0.000    -3.709     1.587
-          translation  -109.089   -80.564     8.103
+Transform  { rotation     4.021     0.000    -1.704     2.079
+          translation  -109.880   -84.662    22.828
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -3.890     0.000    -2.870     1.313
-          translation  -105.799   -79.967     4.482
+Transform  { rotation     0.800     0.000    -3.628     2.304
+          translation  -107.214   -87.553    25.238
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -4.114     0.000     2.369     1.252
-          translation  -109.236   -49.209     2.379
+Transform  { rotation    -0.880     0.000    -3.535     2.325
+          translation  -103.632   -90.938    25.198
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.020     0.000     2.351     0.538
-          translation  -111.596   -46.278    -0.188
+Transform  { rotation    -3.560     0.000     0.982     2.311
+          translation   -92.917   -83.607    -2.975
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.032     0.000     3.865     0.927
-          translation  -114.704   -42.631    -1.214
+Transform  { rotation    -4.984     0.000     0.094     1.492
+          translation   -93.456   -85.095    -7.247
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     2.627     0.000     4.230     1.663
-          translation  -114.551   -58.129     6.258
+Transform  { rotation    -4.577     0.000     2.013     1.561
+          translation   -94.509   -84.874   -12.027
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     1.882     0.000     4.415     1.855
-          translation  -118.873   -59.059     8.513
+Transform  { rotation    -0.783     0.000     4.252     1.044
+          translation  -101.999   -82.401     3.265
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     1.649     0.000     1.751     2.640
-          translation  -121.956   -61.952    10.278
+Transform  { rotation    -0.279     0.000     4.754     1.261
+          translation  -106.502   -80.382     2.734
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -0.939     0.000    -3.508     2.329
-          translation   -77.708   -78.116    24.269
+Transform  { rotation     3.383     0.000     3.668     1.507
+          translation  -110.713   -79.461     4.286
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     3.086     0.000    -2.000     2.315
-          translation   -74.954   -81.528    25.343
+Transform  { rotation     0.472     0.000     0.550     0.145
+          translation   -86.958   -65.143    11.928
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     3.012     0.000    -3.942     1.446
-          translation   -71.983   -82.910    28.391
+Transform  { rotation    -3.246     0.000     1.922     0.855
+          translation   -88.194   -61.029    10.542
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.731     0.000     0.915     2.739
-          translation   -77.368   -83.123    29.114
+Transform  { rotation    -3.646     0.000    -2.431     1.068
+          translation   -87.940   -58.184     7.096
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -0.316     0.000    -2.341     2.650
-          translation   -76.655   -87.626    28.091
+Transform  { rotation     2.031     0.000     3.982     1.106
+          translation   -91.379   -62.392     7.286
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -4.164     0.000    -1.028     2.111
-          translation   -74.971   -91.115    25.850
+Transform  { rotation     0.089     0.000     2.092     0.432
+          translation   -94.416   -59.002     8.346
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.227     0.000     3.257     2.372
-          translation   -94.996   -97.108    25.233
+Transform  { rotation     4.029     0.000     0.902     0.972
+          translation   -95.913   -55.322    10.405
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -2.331     0.000     4.273     1.801
-          translation   -98.761   -99.475    23.455
+Transform  { rotation     1.885     0.000     4.623     1.626
+          translation  -112.416   -67.471    14.566
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     0.786     0.000     4.918     1.658
-          translation  -103.357  -100.266    22.683
+Transform  { rotation     3.050     0.000     3.128     2.079
+          translation  -116.292   -68.824    17.034
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     1.111     0.000     1.405     2.775
-          translation   -87.488   -97.964    21.301
+Transform  { rotation     0.059     0.000     3.351     2.407
+          translation  -119.531   -71.896    18.588
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     2.123     0.000     1.387     2.610
-          translation   -88.884  -102.452    22.918
+Transform  { rotation    -0.685     0.000     4.694     1.249
+          translation  -108.161   -60.587    17.226
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     4.960     0.000    -0.304     1.682
-          translation   -89.425  -104.885    26.460
+Transform  { rotation    -1.699     0.000     4.529     1.315
+          translation  -112.772   -59.164    16.034
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     3.169     0.000     5.742     1.341
-          translation  -101.321   -73.941    24.545
-children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     6.736
- side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.265     0.000    -0.317     0.265
-          translation   -98.292   -72.308    22.329
-children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     4.975
- side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -4.091     0.000    -2.487     1.284
-          translation  -105.361   -70.092    11.372
-children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     4.992
- side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -2.239     0.000     4.467     0.954
-          translation  -108.838   -69.027    12.298
-children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     6.127
- side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     4.554     0.000    -1.481     1.868
-          translation   -89.299   -82.386    21.318
-children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     5.008
- side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -0.870     0.000    -3.875     1.811
-          translation   -88.102   -82.140    18.606
-children [ Shape{ appearance Appearance { material Material { } }
-geometry Cylinder { radius      0.300 height     4.088
- side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.329     0.000    -3.495     2.297
-          translation  -110.518   -81.213    14.326
+Transform  { rotation    -4.917     0.000     0.908     1.565
+          translation  -115.491   -58.517    12.726
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -3.845     0.000     2.099     1.068
-          translation  -113.315   -78.348    13.069
+Transform  { rotation     3.123     0.000     3.265     1.032
+          translation   -98.715   -76.145    29.227
+children [ Shape{ appearance Appearance { material Material { } }
+geometry Cylinder { radius      0.300 height     5.265
+ side TRUE   top FALSE  bottom FALSE } } ] }
+Transform  { rotation    -2.281     0.000    -0.573     0.437
+          translation   -96.797   -74.976    26.524
+children [ Shape{ appearance Appearance { material Material { } }
+geometry Cylinder { radius      0.300 height     5.561
+ side TRUE   top FALSE  bottom FALSE } } ] }
+Transform  { rotation     3.162     0.000    -1.401     2.530
+          translation   -98.687   -80.743    16.790
+children [ Shape{ appearance Appearance { material Material { } }
+geometry Cylinder { radius      0.300 height     6.019
+ side TRUE   top FALSE  bottom FALSE } } ] }
+Transform  { rotation    -1.262     0.000     4.056     2.064
+          translation  -101.415   -79.422    14.579
+children [ Shape{ appearance Appearance { material Material { } }
+geometry Cylinder { radius      0.300 height     4.823
+ side TRUE   top FALSE  bottom FALSE } } ] }
+Transform  { rotation    -1.101     0.000     4.226     1.035
+          translation   -95.142   -71.927    15.134
+children [ Shape{ appearance Appearance { material Material { } }
+geometry Cylinder { radius      0.300 height     5.078
+ side TRUE   top FALSE  bottom FALSE } } ] }
+Transform  { rotation     3.828     0.000     1.718     0.720
+          translation   -93.888   -70.830    17.599
+children [ Shape{ appearance Appearance { material Material { } }
+geometry Cylinder { radius      0.300 height     6.363
+ side TRUE   top FALSE  bottom FALSE } } ] }
+Transform  { rotation     4.014     0.000    -1.793     2.067
+          translation  -109.436   -81.765    26.898
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -2.345     0.000    -1.839     0.639
-          translation  -108.971   -52.001     5.608
+Transform  { rotation    -4.074     0.000     0.399     2.182
+          translation  -110.532   -82.010    22.854
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -1.836     0.000     2.546     2.463
-          translation  -111.164   -55.954     5.863
+Transform  { rotation    -3.227     0.000    -3.658     1.792
+          translation   -94.256   -81.374     0.419
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -4.674     0.000     1.711     1.665
-          translation   -78.607   -76.162    27.076
+Transform  { rotation     1.624     0.000     3.788     2.173
+          translation   -97.979   -82.242     2.844
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     0.567     0.000    -0.840     2.937
-          translation   -77.331   -78.374    29.697
+Transform  { rotation     4.908     0.000     0.777     1.682
+          translation   -86.295   -67.340     9.238
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation     0.631     0.000     4.839     1.791
-          translation   -90.948   -94.768    25.531
+Transform  { rotation    -0.514     0.000     3.481     0.781
+          translation   -87.647   -65.288     6.528
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }
-Transform  { rotation    -4.470     0.000    -1.744     1.856
-          translation   -87.657   -94.926    22.981
+Transform  { rotation     0.223     0.000     3.804     2.275
+          translation  -108.203   -65.714    13.512
+children [ Shape{ appearance Appearance { material Material { } }
+geometry Cylinder { radius      0.300 height     5.000
+ side TRUE   top FALSE  bottom FALSE } } ] }
+Transform  { rotation     4.168     0.000    -0.487     0.996
+          translation  -106.057   -62.736    15.484
 children [ Shape{ appearance Appearance { material Material { } }
 geometry Cylinder { radius      0.300 height     5.000
  side TRUE   top FALSE  bottom FALSE } } ] }

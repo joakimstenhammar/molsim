@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:30:22
+2016-09-13     16:38:48
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -259,7 +259,7 @@ total potential energy (NkT)   =          0.00000
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      2.98416E-05
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.00
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -351,7 +351,7 @@ number density                 =      2.98416E-05
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:30:22
+2016-09-13     16:38:48
 
 title   : free translation and rotation                                                             
 
@@ -463,7 +463,7 @@ cv                             =          2.36246
 temperature                    =        120.30000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.04956        0.00000        0.00000        0.00000             0.
 number of particles            =          1.00000        0.00000        0.00000        0.00000             0.
-volume                         =      3.35103E+04    0.00000E+00    0.00000E+00    7.51087E-12             0.
+volume                         =      3.35103E+04    0.00000E+00    0.00000E+00    2.09161E-12             0.
 
 total potential energy (NkT)   =          0.19578        0.00000
 pressure (NkT/V)(excl. contact)=          1.00000        0.00000
@@ -477,15 +477,15 @@ number density                 =      2.98416E-05    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.03 
-         ControlAver           0.00         0.04 
-         MainAver              0.00         0.18 
-         IOMolsim              0.00         0.16 
+         Coordinate            0.00         0.02 
+         ControlAver           0.00         0.06 
+         MainAver              0.01         0.41 
+         IOMolsim              0.00         0.07 
          SetVList              0.00         0.00 
-         MCPass                0.01         0.60 
-          SPartMove            0.00         0.09  
-          DUTotal              0.01         0.36  
+         MCPass                0.01         0.43 
+          SPartMove            0.00         0.06  
+          DUTotal              0.01         0.26  
            DUTwoBody           0.00         0.05   
-           DUExternal          0.00         0.10   
+           DUExternal          0.00         0.06   
  
 total cpu time since start (s)        0.04

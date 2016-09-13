@@ -41,7 +41,7 @@ ictct(1:nct,nct)    1
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -63,7 +63,7 @@ ictct(1:nct,nct)    1
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:21
+2016-09-13     16:39:51
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -375,7 +375,7 @@ total potential energy (NkT)   =       5864.70551
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      1.50000E-03
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.00
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -483,7 +483,7 @@ asphericity (<2:nd moments>)   =          0.55611
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:21
+2016-09-13     16:39:51
 
 title   : testchain: triblock                                                                       
 
@@ -666,16 +666,16 @@ asphericity (<2:nd moments>)   =          0.55611
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.33 
-         ControlAver           0.00         0.11 
-         MainAver              0.00         0.21 
-         IOMolsim              0.00         0.27 
+         Coordinate            0.00         0.44 
+         ControlAver           0.00         0.05 
+         MainAver              0.00         0.15 
+         IOMolsim              0.00         0.37 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.08 
-          SPartMove            0.00         0.02  
-          DUTotal              0.00         0.05  
-           DUTwoBody           0.00         0.01   
-           DUBond              0.00         0.01   
-           DUAngle             0.00         0.01   
+         MCPass                0.00         0.00 
+          SPartMove            0.00         0.00  
+          DUTotal              0.00         0.00  
+           DUTwoBody           0.00         0.00   
+           DUBond              0.00         0.00   
+           DUAngle             0.00         0.00   
  
 total cpu time since start (s)        0.01

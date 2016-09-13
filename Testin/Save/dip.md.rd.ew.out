@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     13:52:42
+2016-09-13     16:39:18
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -294,7 +294,7 @@ total potential energy (NkT)   =         -3.53688
 pressure (NkT/V)(excl. contact)=         16.51683
 pressure (kT) (excl. contact)  =      6.35003E-01
  
-total cpu time since start (s)        0.17
+total cpu time since start (s)        0.18
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -315,7 +315,7 @@ quantity                                    LJ
 <force**2>                     =            0.4722E+06
 <torque**2>x'                  =            0.1191E+05
 <torque**2>y'                  =            0.1441E+05
-<torque**2>z'                  =            0.2254E-30
+<torque**2>z'                  =            0.1726E-30
 <linear mom.>x                 =           -0.2284E+01
 <linear mom.>y                 =           -0.2521E+01
 <linear mom.>z                 =           -0.4657E+00
@@ -369,7 +369,7 @@ number density                 =      3.84458E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     13:52:43
+2016-09-13     16:39:19
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -462,7 +462,7 @@ quantity                                    LJ
 <force**2>                     =            0.4722E+06
 <torque**2>x'                  =            0.1191E+05
 <torque**2>y'                  =            0.1441E+05
-<torque**2>z'                  =            0.2254E-30
+<torque**2>z'                  =            0.1726E-30
 <linear mom.>x                 =           -0.2284E+01
 <linear mom.>y                 =           -0.2521E+01
 <linear mom.>z                 =           -0.4657E+00
@@ -5234,23 +5234,23 @@ rad = 15.0 l = 3                       1.6390E+06     1.7458E+05     7.3366E+05 
          Coordinate                   0.00         0.00
          ControlAver                  0.00         0.00
          MainAver                     0.00         0.00
-         DistFunc                     0.02         0.02
+         DistFunc                     0.03         0.02
          Group                        0.00         0.00
-         StaticDriver                 1.05         0.82
-          RDF                         0.06         0.05
+         StaticDriver                 1.21         0.84
+          RDF                         0.06         0.04
           AngDF                       0.05         0.04
-          Kirkwoodgk                  0.07         0.05
-          OriPolDF                    0.05         0.04
-          MultipolDF                  0.82         0.64
-         IOMolsim                     0.04         0.03
-         SetVList                     0.04         0.03
-         MDDriver                     0.12         0.10
+          Kirkwoodgk                  0.05         0.04
+          OriPolDF                    0.05         0.03
+          MultipolDF                  0.99         0.69
+         IOMolsim                     0.05         0.03
+         SetVList                     0.03         0.02
+         MDDriver                     0.13         0.09
           VelVer                      0.00         0.00
-          UTotal                      0.12         0.10
-           UTwoBodyP                  0.03         0.03
+          UTotal                      0.13         0.09
+           UTwoBodyP                  0.03         0.02
            UDipole                    0.09         0.07
-            UDipoleP                  0.07         0.06
+            UDipoleP                  0.07         0.05
             UDipoleEwald              0.02         0.01
              UDipoleEwaldRecStd       0.02         0.01
  
-total cpu time since start (s)        1.42
+total cpu time since start (s)        1.58

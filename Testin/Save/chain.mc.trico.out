@@ -73,7 +73,7 @@ ictct(1:nct,nct)    1
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -95,7 +95,7 @@ ictct(1:nct,nct)    1
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:21
+2016-09-13     16:39:51
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -547,7 +547,7 @@ asphericity (<2:nd moments>)   =          0.29618
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:21
+2016-09-13     16:39:51
 
 title   : testchain: tricopolymer (abbbbccabbbbcc)                                                  
 
@@ -762,16 +762,16 @@ asphericity (<2:nd moments>)   =          0.29618
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.23 
-         ControlAver           0.00         0.07 
-         MainAver              0.00         0.24 
-         IOMolsim              0.00         0.18 
-         SetVList              0.00         0.17 
-         MCPass                0.00         0.11 
-          SPartMove            0.00         0.02  
-          DUTotal              0.00         0.08  
-           DUTwoBody           0.00         0.04   
-           DUBond              0.00         0.01   
-           DUAngle             0.00         0.02   
+         Coordinate            0.00         0.42 
+         ControlAver           0.00         0.03 
+         MainAver              0.00         0.31 
+         IOMolsim              0.00         0.14 
+         SetVList              0.00         0.00 
+         MCPass                0.00         0.10 
+          SPartMove            0.00         0.00  
+          DUTotal              0.00         0.10  
+           DUTwoBody           0.00         0.00   
+           DUBond              0.00         0.00   
+           DUAngle             0.00         0.00   
  
 total cpu time since start (s)        0.01

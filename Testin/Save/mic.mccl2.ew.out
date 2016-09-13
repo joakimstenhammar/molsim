@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:30:59
+2016-09-13     16:39:28
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -386,12 +386,12 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -6.86247        0.00000     -0.652E-14
- total two-body energy         =         -0.83346        0.00000     -0.521E-13
-  micelle-micelle              =          0.97234        0.00000     -0.383E-15
-  micelle-ion                  =         -4.36903        0.00000     -0.273E-14
-  ion-ion                      =          2.56323        0.00000     -0.156E-13
- pot. energy from rec. space   =         -6.02901        0.00000     -0.371E-15
+total potential energy         =         -6.86247        0.00000     -0.369E-14
+ total two-body energy         =         -0.83346        0.00000     -0.510E-13
+  micelle-micelle              =          0.97234        0.00000      0.000E+00
+  micelle-ion                  =         -4.36903        0.00000     -0.290E-14
+  ion-ion                      =          2.56323        0.00000     -0.154E-13
+ pot. energy from rec. space   =         -6.02901        0.00000      0.321E-14
 enthalpy                       =         -6.53747        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -411,7 +411,7 @@ Average cluster size 1    1d: micelle                    1.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:30:59
+2016-09-13     16:39:29
 
 title   : hs 60:1 system rho(m) = 0.5*10e-6                                                         
 
@@ -2550,22 +2550,22 @@ no    function                         min            max            nbin       
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.04         0.07
+         Coordinate               0.04         0.08
          ControlAver              0.00         0.00
          MainAver                 0.00         0.00
-         DistFunc                 0.07         0.13
+         DistFunc                 0.07         0.15
          StaticDriver             0.01         0.03
           G3Dist                  0.00         0.01
           SFPBC                   0.01         0.02
           ClusterSD               0.00         0.00
-         IOMolsim                 0.07         0.15
-         SetVList                 0.10         0.20
-         MCPass                   0.21         0.42
-          SPartMove               0.00         0.00
-          DUTotal                 0.20         0.40
-           DUTwoBody              0.16         0.33
-           DUTwoBodyEwald         0.02         0.05
-            UEwaldRecStd          0.02         0.04 
+         IOMolsim                 0.07         0.16
+         SetVList                 0.08         0.18
+         MCPass                   0.19         0.41
+          SPartMove               0.00         0.01
+          DUTotal                 0.17         0.38
+           DUTwoBody              0.16         0.35
+           DUTwoBodyEwald         0.01         0.03
+            UEwaldRecStd          0.01         0.03 
           SPartCl2Move            0.00         0.00
  
-total cpu time since start (s)        0.60
+total cpu time since start (s)        0.57

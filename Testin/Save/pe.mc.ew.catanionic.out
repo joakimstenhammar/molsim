@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:51
+2016-09-13     16:40:20
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -757,19 +757,19 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          4.51172        0.00000      0.134E-14
- total two-body energy         =          2.22001        0.00000     -0.683E-15
+total potential energy         =          4.51172        0.00000      0.151E-14
+ total two-body energy         =          2.22001        0.00000     -0.341E-15
   bead-bead                    =          2.27283        0.00000      0.500E-15
-  bead-surf+                   =         -0.18096        0.00000     -0.262E-15
-  bead-surf-                   =          0.29360        0.00000     -0.807E-15
-  bead-pos                     =         -0.09461        0.00000      0.100E-14
-  surf+-surf+                  =          0.62996        0.00000     -0.241E-14
-  surf+-surf-                  =         -1.43961        0.00000      0.250E-14
-  surf+-pos                    =          0.01277        0.00000      0.812E-15
-  surf--surf-                  =          0.72688        0.00000     -0.652E-15
-  surf--pos                    =         -0.01527        0.00000      0.174E-14
-  pos-pos                      =          0.01442        0.00000     -0.410E-15
- pot. energy from rec. space   =          1.61570        0.00000      0.188E-14
+  bead-surf+                   =         -0.18096        0.00000     -0.131E-15
+  bead-surf-                   =          0.29360        0.00000     -0.177E-14
+  bead-pos                     =         -0.09461        0.00000      0.113E-14
+  surf+-surf+                  =          0.62996        0.00000     -0.256E-14
+  surf+-surf-                  =         -1.43961        0.00000      0.263E-14
+  surf+-pos                    =          0.01277        0.00000      0.174E-14
+  surf--surf-                  =          0.72688        0.00000      0.000E+00
+  surf--pos                    =         -0.01527        0.00000      0.194E-15
+  pos-pos                      =          0.01442        0.00000      0.000E+00
+ pot. energy from rec. space   =          1.61570        0.00000      0.117E-14
  bond energy                   =          0.04732        0.00000     -0.125E-15
  angle energy                  =          0.62869        0.00000      0.000E+00
  external potential            =          0.00000        0.00000      0.000E+00
@@ -818,7 +818,7 @@ asphericity (<2:nd moments>)   =          0.20943
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:51
+2016-09-13     16:40:20
 
 title   : pe at a cationic surface of mobile charges                                                
 
@@ -4286,26 +4286,26 @@ no    function                    average        rms
  
          section                   cpu time (s)     fraction
          -------                   ------------     --------
-         Coordinate                      0.01         0.10
+         Coordinate                      0.00         0.09
          ControlAver                     0.00         0.00
-         MainAver                        0.00         0.02
-         Group                           0.00         0.01
-         StaticDriver                    0.01         0.20
+         MainAver                        0.00         0.01
+         Group                           0.00         0.00
+         StaticDriver                    0.01         0.23
           SPDF                           0.00         0.03
-          SFPBC                          0.01         0.13
+          SFPBC                          0.01         0.15
           ChainTypeDF                    0.00         0.04
-         IOMolsim                        0.01         0.09
+         IOMolsim                        0.00         0.09
          SetVList                        0.00         0.06
          MCPass                          0.03         0.51
-          SPartMove                      0.00         0.03
-          DUTotal                        0.03         0.46
-           DUTwoBody                     0.01         0.18
-           DUTwoBodyEwald                0.01         0.21
-            UEwaldRecStd                 0.01         0.13
+          SPartMove                      0.00         0.01
+          DUTotal                        0.03         0.49
+           DUTwoBody                     0.01         0.24
+           DUTwoBodyEwald                0.01         0.14
+            UEwaldRecStd                 0.00         0.08
             DUTwoBodyEwaldRec2dlc        0.00         0.05
            DUBond                        0.00         0.01
-           DUAngle                       0.00         0.01
-           DUExternal                    0.00         0.01
+           DUAngle                       0.00         0.02
+           DUExternal                    0.00         0.02
           ChainMove                      0.00         0.00
  
-total cpu time since start (s)        0.08
+total cpu time since start (s)        0.07

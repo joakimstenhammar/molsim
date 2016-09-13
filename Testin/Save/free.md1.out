@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:30:22
+2016-09-13     16:38:48
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -344,7 +344,7 @@ particle data
 particle position
    1     mol1           1.2247E+00  0.0000E+00  0.0000E+00
 particle orientation
-   1     mol1           8.7512E-01 -4.8390E-01 -8.3267E-17    0.0000E+00  1.2143E-16 -1.0000E+00    4.8390E-01  8.7512E-01  1.0061E-16
+   1     mol1           8.7512E-01 -4.8390E-01 -8.3267E-17    0.0000E+00  1.6653E-16 -1.0000E+00    4.8390E-01  8.7512E-01  1.1102E-16
 forces and torques (lab frame)
    1     mol1           0.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  0.0000E+00
 linear acceleration, (old and new)
@@ -352,7 +352,7 @@ linear acceleration, (old and new)
 quaternion acceleration (old and new)
    1     mol1          -4.4194E+00  4.4194E+00  0.0000E+00  0.0000E+00   -4.2751E+00  4.2751E+00  1.1033E+00  1.1033E+00
 linear and angular velocities
-   1     mol1           1.2247E+01  0.0000E+00  0.0000E+00   -1.1102E-16  4.9976E+00 -6.3838E-16
+   1     mol1           1.2247E+01  0.0000E+00  0.0000E+00   -1.1102E-16  4.9976E+00 -2.7756E-16
 quaternions and quaternion velocities
    1     mol1           6.8468E-01 -6.8468E-01 -1.7669E-01 -1.7669E-01   -4.3473E-01  4.3473E-01 -1.7126E+00 -1.7126E+00
 particle distance matrix
@@ -401,7 +401,7 @@ linear acceleration, (old and new)
 quaternion acceleration (old and new)
    1     mol1          -4.2751E+00  4.2751E+00  1.1033E+00  1.1033E+00   -3.8536E+00  3.8536E+00  2.1290E+00  2.1290E+00
 linear and angular velocities
-   1     mol1           1.2247E+01  0.0000E+00  0.0000E+00    0.0000E+00  4.9903E+00  0.0000E+00
+   1     mol1           1.2247E+01  0.0000E+00  0.0000E+00   -2.2204E-16  4.9903E+00  3.3307E-16
 quaternions and quaternion velocities
    1     mol1           6.1893E-01 -6.1893E-01 -3.4194E-01 -3.4194E-01   -8.4116E-01  8.4116E-01 -1.5510E+00 -1.5510E+00
 particle distance matrix
@@ -423,8 +423,8 @@ quantity                                    mol1
 <linear mom.>x                 =            0.2449E+02
 <linear mom.>y                 =            0.0000E+00
 <linear mom.>z                 =            0.0000E+00
-<angular mom.>x                =           -0.1276E-15
-<angular mom.>y                =            0.3517E-14
+<angular mom.>x                =            0.1699E-14
+<angular mom.>y                =            0.6391E-14
 <angular mom.>z                =           -0.3995E+02
 <t(tran)>                      =              120.2634
 <t(rot)>                       =              119.9815
@@ -472,7 +472,7 @@ number density                 =      1.25000E-04
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:30:22
+2016-09-13     16:38:48
 
 title   : free translation and rotation                                                             
 
@@ -508,7 +508,7 @@ particle velocities
 -------------------
 particle no   particle type     linear vel. (x,y,z)        angular vel. (x',y',z')
 -----------   -------------     -------------------        -----------------------
-     1        mol1            12.247    0.000    0.000     0.000    4.990    0.000
+     1        mol1            12.247    0.000    0.000    -0.000    4.990    0.000
 
 atom coordinates
 ----------------
@@ -555,8 +555,8 @@ quantity                                    mol1
 <linear mom.>x                 =            0.2449E+02
 <linear mom.>y                 =            0.0000E+00
 <linear mom.>z                 =            0.0000E+00
-<angular mom.>x                =           -0.1276E-15
-<angular mom.>y                =            0.3517E-14
+<angular mom.>x                =            0.1699E-14
+<angular mom.>y                =            0.6391E-14
 <angular mom.>z                =           -0.3995E+02
 <t(tran)>                      =              120.2634
 <t(rot)>                       =              119.9815
@@ -605,12 +605,12 @@ number density                 =      1.25000E-04    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.80 
-         ControlAver           0.00         0.07 
-         MainAver              0.00         0.00 
-         IOMolsim              0.00         0.12 
+         Coordinate            0.00         0.14 
+         ControlAver           0.00         0.08 
+         MainAver              0.00         0.15 
+         IOMolsim              0.00         0.50 
          SetVList              0.00         0.00 
-         MDDriver              0.00         0.00 
+         MDDriver              0.00         0.12 
           VelVer               0.00         0.00  
           UTotal               0.00         0.00  
            UTwoBodyP           0.00         0.00   

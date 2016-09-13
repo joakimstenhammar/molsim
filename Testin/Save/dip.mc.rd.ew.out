@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     13:52:35
+2016-09-13     16:39:10
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -327,8 +327,8 @@ orientation order, z'-axis     =                0.9987
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =         -9.03570        0.00000     -0.216E-10
- total two-body energy         =         -3.20715        0.00000      0.218E-12
-  LJ-LJ                        =         -3.20715        0.00000      0.218E-12
+ total two-body energy         =         -3.20715        0.00000      0.220E-12
+  LJ-LJ                        =         -3.20715        0.00000      0.220E-12
  electrostatic energy          =         -5.82855        0.00000     -0.336E-10
 enthalpy                       =         35.75304        0.00000
 cv                             =          0.00000
@@ -348,7 +348,7 @@ number density                 =      3.84458E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     13:52:37
+2016-09-13     16:39:12
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -1096,7 +1096,7 @@ running coordinate number/radial distribution function
  297   14.88    0.3251  0.0000
  298   14.93    1.2460  0.0000
  299   14.98    1.1889  0.0000
- 300   above   33.6728  0.0000
+ 300   above   33.6875  0.0000
  
  
       gr:1,1 com-com                  y-min =  0.000E+00     y-max =  0.598E+01
@@ -5226,21 +5226,21 @@ number of images made          =    1
          MainAver                      0.00         0.00
          DistFunc                      0.03         0.02
          Group                         0.00         0.00
-         StaticDriver                  1.05         0.73
+         StaticDriver                  1.20         0.76
           RDF                          0.06         0.04
-          AngDF                        0.05         0.04
-          Kirkwoodgk                   0.05         0.04
-          OriPolDF                     0.06         0.04
-          MultipolDF                   0.83         0.58
+          AngDF                        0.05         0.03
+          Kirkwoodgk                   0.05         0.03
+          OriPolDF                     0.05         0.03
+          MultipolDF                   0.99         0.63
          ImageDriver                   0.00         0.00
          IOMolsim                      0.04         0.03
-         SetVList                      0.04         0.03
-         MCPass                        0.27         0.19
+         SetVList                      0.03         0.02
+         MCPass                        0.26         0.17
           SPartMove                    0.00         0.00
-          DUTotal                      0.26         0.18
-           DUTwoBody                   0.05         0.03
-           DUDipole                    0.21         0.14
-            DUDipoleEwald              0.10         0.07
-             DUDipoleEwaldRecStd       0.10         0.07
+          DUTotal                      0.26         0.16
+           DUTwoBody                   0.07         0.05
+           DUDipole                    0.18         0.11
+            DUDipoleEwald              0.08         0.05
+             DUDipoleEwaldRecStd       0.08         0.05
  
-total cpu time since start (s)        1.70
+total cpu time since start (s)        1.85

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:52
+2016-09-13     16:40:21
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -357,7 +357,7 @@ total potential energy (NkT)   =         12.44072
 pressure (NkT/V)(excl. contact)=         20.54346
 pressure (kT) (excl. contact)  =      3.28695E-04
  
-total cpu time since start (s)        0.33
+total cpu time since start (s)        0.32
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -461,7 +461,7 @@ asphericity (<2:nd moments>)   =          0.39304
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:52
+2016-09-13     16:40:21
 
 title   : polymer, 100 beads * 10 chains                                                            
 
@@ -932,18 +932,18 @@ distribution functions
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.08         0.18
+         Coordinate             0.08         0.19
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
-         DistFunc               0.00         0.00
-         IOMolsim               0.17         0.35
-         SetVList               0.14         0.29
-         MDDriver               0.08         0.16
+         DistFunc               0.00         0.01
+         IOMolsim               0.17         0.37
+         SetVList               0.11         0.25
+         MDDriver               0.08         0.19
           VelVer                0.00         0.00 
-          UTotal                0.08         0.16 
-           UTwoBodyA            0.07         0.14  
-           UEwald               0.01         0.02  
-            UEwaldRecStd        0.01         0.02   
+          UTotal                0.08         0.18 
+           UTwoBodyA            0.07         0.15  
+           UEwald               0.01         0.03  
+            UEwaldRecStd        0.01         0.03   
            UBond                0.00         0.00  
  
-total cpu time since start (s)        0.57
+total cpu time since start (s)        0.55

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:16
+2016-09-13     16:39:46
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1113,7 +1113,7 @@ ind. dip. mom.: h              =          0.00914        0.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:16
+2016-09-13     16:39:46
 
 title   : nemo water, ewald summation                                                               
 
@@ -1539,22 +1539,22 @@ distribution functions
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.00         0.03
-         ControlAver                    0.00         0.01
-         MainAver                       0.00         0.18
-         DistFunc                       0.00         0.30
-         IOMolsim                       0.00         0.09
+         Coordinate                     0.00         0.14
+         ControlAver                    0.00         0.00
+         MainAver                       0.00         0.02
+         DistFunc                       0.00         0.31
+         IOMolsim                       0.00         0.11
          SetVList                       0.00         0.00
-         MDDriver                       0.00         0.40
+         MDDriver                       0.00         0.41
           VelVer                        0.00         0.00
-          UTotal                        0.00         0.40
+          UTotal                        0.00         0.34
            UTwoBodyP                    0.00         0.00
-           UManyBodyP                   0.00         0.40
-            FieldStat                   0.00         0.02
-            FieldStatEwald              0.00         0.15
-             FieldStatEwaldRecStd       0.00         0.15
-            FieldTot                    0.00         0.00
-            FieldTotEwald               0.00         0.20
-             FieldTotEwaldRecStd        0.00         0.19
+           UManyBodyP                   0.00         0.34
+            FieldStat                   0.00         0.00
+            FieldStatEwald              0.00         0.08
+             FieldStatEwaldRecStd       0.00         0.06
+            FieldTot                    0.00         0.01
+            FieldTotEwald               0.00         0.23
+             FieldTotEwaldRecStd        0.00         0.21
  
 total cpu time since start (s)        0.03
