@@ -1670,7 +1670,7 @@ subroutine PivotDual    ! dual pivot rotation
 
    dtemp(1:np,2) = 0.0
    dtemp_min(1:2) = 10000
-   iseg_min = 0.0
+   iseg_min = 0
 ! ..............   linear .............
 
    if (txdualpivot == 'linear') then      ! dual pivot: reference: linear chain (ict=3)
@@ -1716,22 +1716,21 @@ subroutine PivotDual    ! dual pivot rotation
        if (dtemp_min(1) == dtemp(iseg_loc,1)) iseg_min = iseg_loc    ! store closest segment as iseg_min
     end do
 
-    do iseg_loc = max(1,iseg_min-1), iseg_min +1, 2  !  compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
+    print *, iseg_min 
+    do iseg_loc = iseg_min-1, iseg_min +1, 2  !  compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
        dx2 = vaux(1,ipnsegcn(iseg_loc,ic_temp)) - vaux(1,ip3)
        dy2 = vaux(2,ipnsegcn(iseg_loc,ic_temp)) - vaux(2,ip3)
        dz2 = vaux(3,ipnsegcn(iseg_loc,ic_temp)) - vaux(3,ip3)
        dtemp(iseg_loc,2) = sqrt(dx2**2+dy2**2+dz2**2)
        if (dtemp(iseg_loc,2) < dtemp_min(2))  dtemp_min(2) = dtemp(iseg_loc,2)
     end do
-    do iseg_loc = max(1,iseg_min-1), iseg_min +1, 2
+    do iseg_loc = iseg_min-1, iseg_min +1, 2
        if (dtemp_min(2) == dtemp(iseg_loc,2)) then
           jp1 =  ipnsegcn(iseg_min,ic_temp) ! store closest particle to ip1 as jp1
           jp3 = ipnsegcn(iseg_loc,ic_temp)  ! store closest particle to ip3 as jp3
        end if
     end do
 
-    jp_min = 0
-    jp_max = 0
     if (jp1 > jp3 ) then                    ! jp_min  and jp_max: first and last particle of the linear chain in pivot move
        jp_min = ipnsegcn(1,ic_temp)
        jp_max = jp1
