@@ -2545,8 +2545,11 @@ subroutine DUBond
          if (.not.lptm(jp_m)) then                 ! lower neighbour is not moved
             call DUBondSub(ro(1,jp_m),ro(1,jp_m))
          else                                      ! lower neighbour is moved
- !!         call DUBondSub(rotm(1,iptmpn(jp_m)),ro(1,jp_m))     ! Jos
-            call DUBondSub(rotm(1,iploc-1),ro(1,jp_m))          ! orig
+            if(iploc > 2) then
+               call DUBondSub(rotm(1,iploc-1),ro(1,jp_m))          ! orig
+            else
+               call DUBondSub(rotm(1,iptmpn(jp_m)),ro(1,jp_m))     ! Jos
+            end if
          end if
       end if
       if (jp_p/= 0) then                           ! bond between moving segment and its upper neighbour
@@ -2619,11 +2622,17 @@ subroutine DUAngle
       if ((jp_m /= 0) .and. (jp_p /= 0)) then    ! segment has two neighbours
          if (lptm(jp_m)) then
             if (lptm(jp_p)) then
-               call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
-       !!        call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p))  ! Jos
+               if(iploc > 2) then
+                  call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+               else
+                  call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p))  ! Jos
+               end if
             else
-               call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
-       !!        call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))    ! Jos
+               if(iploc > 2) then
+                  call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+               else
+                  call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))    ! Jos
+               end if
             end if
          else
             if (lptm(jp_p)) then
