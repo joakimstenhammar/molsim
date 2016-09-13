@@ -6537,6 +6537,7 @@ subroutine AdsEventDyn(iStage)
          if (ladschain) ladschainold(ic) = .true.
          end do
       end if
+      isum = 0
 
    case (iBeforeMacrostep)
 
@@ -9612,6 +9613,7 @@ subroutine JosUser(iMode)
    if (iMode == 1) then ! adjust nppt(1) and nppt(2) according to input variables (call from particle.F90)
 
       nppt(1) = nppt(1) - nppt(2)
+
       nppt(2) = rho_salt*cyllen*pi*(cylrad**2 - rcylinder**2)
       nppt(1) = nppt(1) + nppt(2)
       write(*,'(a,f10.5)') 'cylrad (in)    =', cylrad
