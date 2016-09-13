@@ -1564,12 +1564,13 @@ subroutine ThermoAver(iStage)
 
       rtemp = GasConstant*(var(itemp)%avs2*scltem)
       rtemp2 = GasConstant*(var(itemp)%avs2*scltem)**2
-      if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
-         !if(rtemp == 0.0d0) then !prevent division by zero
-            !cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
-         !else
-            !cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
-         !end if
+      if (lnve) then
+         if(rtemp == 0.0d0) then !prevent division by zero
+            cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+         else
+            cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
+         end if
+      end if
       if (lnvt) cv = (var(iutot)%fls2*sclene)**2/(rtemp2*sclhca*np)
       if (lntp) cp = (var(ihtot)%fls2*sclene)**2/(rtemp2*sclhca*np)
 
@@ -1636,12 +1637,13 @@ subroutine ThermoAver(iStage)
          call ScalarSample(iStage, 1, nvar, var)
          rtemp = GasConstant*(var(itemp)%avs1*scltem)
          rtemp2 = GasConstant*(var(itemp)%avs1*scltem)**2
-         if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
-            !if(rtemp == 0.0d0) then !prevent division by zero
-               !cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
-            !else
-               !cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
-            !end if
+         if (lnve) then
+            if(rtemp == 0.0d0) then !prevent division by zero
+               cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+            else
+               cv = 1.5*GasConstant/(one-(var(iekin)%fls1*sclene)**2/(1.5*np*rtemp**2))/sclhca
+            end if
+         end if
          if (lnvt) cv = (var(iutot)%fls1*sclene)**2/(rtemp2*sclhca*np)
          if (lntp) cp = (var(ihtot)%fls1*sclene)**2/(rtemp2*sclhca*np)
 
