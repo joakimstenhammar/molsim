@@ -1468,7 +1468,7 @@ real(8) function PerLengthRg(rg2, l)
    do i = 1, 500
       PerLengthRgOld = PerLengthRg
       fac = PerLengthRg/l
-      PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0*(1-2*fac*(1.0-fac*(1.0-exp(-1.0/fac)))))
+      PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0*(1-2*fac*(1.0-fac*(1.0-exp(-1.0/max(fac, epsilon(fac))))))) !added epsilon to prevent division by zero
       if (abs(PerLengthRg-PerLengthRgOld)/PerLengthRg < 1e-3) return
    end do
 end function PerLengthRg
