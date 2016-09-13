@@ -1716,7 +1716,6 @@ subroutine PivotDual    ! dual pivot rotation
        if (dtemp_min(1) == dtemp(iseg_loc,1)) iseg_min = iseg_loc    ! store closest segment as iseg_min
     end do
 
-    print *, iseg_min 
     do iseg_loc = iseg_min-1, iseg_min +1, 2  !  compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
        if( (iseg_loc < 1) .or. (iseg_loc > npct(ict_temp)) ) then !if neighbour does not exists
           cycle
