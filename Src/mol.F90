@@ -260,7 +260,7 @@ module MolModule
    real(8)       :: ellradi(3)             ! 1/ellrad
    real(8)       :: cylrad                 ! radius of cylindrical cell
    real(8)       :: cylrad2                ! cylrad**2
-   real(8)       :: cyllen                 ! length of cylindrical cell
+   real(8)       :: cyllen = 0.0d0         ! length of cylindrical cell
    real(8)       :: cyllen2                ! length of cylindrical cell/2
    real(8)       :: lenscl                 ! scaling factor of box length and particle positions
    logical       :: lPBC                   ! periodic boundary conditions
