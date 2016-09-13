@@ -2258,7 +2258,12 @@ subroutine SFNoPBC(iStage)
    case (iReadInput)
 
       txkscale = 'lin'                              ! linear k scale
-      klow    = TwoPi/(10.0d0*sphrad)               ! lower k-vector (linear scale)
+      if(sphrad .ne. 0.0d0) then          !prevent division by zero
+         klow    = TwoPi/(10.0d0*sphrad)               ! lower k-vector (linear scale)
+      else
+         klow = 0.01
+      end if
+
       logklow =-Four                                ! lower k-vector (logarithmic scale)
       logkupp =+One                                 ! upper k-vector (logarithmic scale)
       nbin = 100

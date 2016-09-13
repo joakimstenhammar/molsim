@@ -254,7 +254,7 @@ module MolModule
    real(8)       :: boxlenshort            ! minval(boxlen(1:3))
    real(8)       :: TwoPiBoxi(3)           ! 2*pi/boxlen
    real(8)       :: cellside               ! length of cell side (RD or TO cell)
-   real(8)       :: sphrad                 ! radius of spherical cell
+   real(8)       :: sphrad = 0.0d0         ! radius of spherical cell
    real(8)       :: sphrad2                ! sphrad**2
    real(8)       :: ellrad(3)              ! radius of ellipsoidal cell
    real(8)       :: ellradi(3)             ! 1/ellrad
