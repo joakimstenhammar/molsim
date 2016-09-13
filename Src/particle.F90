@@ -65,7 +65,7 @@ subroutine Particle(iStage)
 
    character(40), parameter :: txroutine ='Particle'
    character(80), parameter :: txheading ='particle data'
-   integer(4) :: igen, ialoc, ict, ipt, iat, iatloc, m, icloc
+   integer(4) :: igen, ialoc, ict, ipt, iat, iatloc, m
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
@@ -755,7 +755,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
    character(40), parameter :: txroutine ='Set_ipnsegcn'
    integer(4) :: nrep, irep, nreplen
-   integer(4) :: nprep, iblock
+   integer(4) :: iblock
    integer(4), allocatable :: npptrep(:)
    integer(4), allocatable :: npset(:)
    integer(4), allocatable :: ipstart(:)
@@ -1412,8 +1412,8 @@ subroutine SetObjectParam2
    implicit none
 
    character(40), parameter :: txroutine ='SetObjectParam2'
-   integer(4) :: ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ialoc, ja, jalow
-   real(8)    :: term, r2
+   integer(4) :: ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ja
+   real(8)    :: r2
 
 ! ... set txctct, txptpt, and txatat
 
