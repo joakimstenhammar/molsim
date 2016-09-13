@@ -1834,6 +1834,9 @@ subroutine PivotDual    ! dual pivot rotation
 
     print *, iseg_min 
     do iseg_loc = iseg_min-1, iseg_min +1, 2  !  compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
+       if( (iseg_loc < 1) .or. (iseg_loc > npct(ict_temp)) ) then !if neighbour does not exists
+          cycle
+       end if
        dx2 = vaux(1,ipnsegcn(iseg_loc,ic_temp)) - vaux(1,ip3)
        dy2 = vaux(2,ipnsegcn(iseg_loc,ic_temp)) - vaux(2,ip3)
        dz2 = vaux(3,ipnsegcn(iseg_loc,ic_temp)) - vaux(3,ip3)
@@ -1841,6 +1844,9 @@ subroutine PivotDual    ! dual pivot rotation
        if (dtemp(iseg_loc,2) < dtemp_min(2))  dtemp_min(2) = dtemp(iseg_loc,2)
     end do
     do iseg_loc = iseg_min-1, iseg_min +1, 2
+       if( (iseg_loc < 1) .or. (iseg_loc > npct(ict_temp)) ) then !if neighbour does not exists
+          cycle
+       end if
        if (dtemp_min(2) == dtemp(iseg_loc,2)) then
           jp1 =  ipnsegcn(iseg_min,ic_temp) ! store closest particle to ip1 as jp1
           jp3 = ipnsegcn(iseg_loc,ic_temp)  ! store closest particle to ip3 as jp3
