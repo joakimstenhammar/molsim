@@ -5885,7 +5885,7 @@ subroutine MultipoleDF(iStage)
          call WriteHead(2, txheading3, uout)
          call ScalarSample(iStage, 1, nlvar, lvar)
          call ScalarNorm(iStage, 1, nlvar, lvar, 0)
-         call ScalarWrite(iStage, 1, nlvar, lvar, 1, '(a,t35,4es15.4,f15.0)', uout)  ! ##FLAG fixed typo
+         call ScalarWrite(iStage, 1, nlvar, lvar, 1, '(a,t35,4es15.4,f15.0)', uout)
 
          deallocate(var, svar, lvar, index, lindex, mpm)
       end if
