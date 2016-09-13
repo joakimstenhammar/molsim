@@ -334,8 +334,8 @@ subroutine IOPotTwoBody(iStage)
          else
             rffac = Two*(epsrf-One)/((Two*epsrf+One)*rcut**3)
          end if
+         rffac2 = Half*rffac
       end if
-      rffac2 = Half*rffac
 
 ! ... prepare for superball
 
