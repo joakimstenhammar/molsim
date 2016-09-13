@@ -2112,7 +2112,9 @@ end subroutine SFPBC
 subroutine ScatIntens(nbin, q, sfpar)
 
    use MolModule
+   use, intrinsic :: IEEE_ARITHMETIC
    implicit none
+
    character(40), parameter :: txroutine ='ScatIntens'
    integer(4)   , parameter :: mnshell = 4
 
@@ -2177,7 +2179,13 @@ subroutine ScatIntens(nbin, q, sfpar)
          end do
          fazero(ipt) = fnorm(0,ipt)
       end do
-      fac = One/fazero(ipt)
+      if(fazero(ipt) .ne. 0.0d0) then
+         fac = One/fazero(ipt)
+      else
+         fac = IEEE_VALUE(fac,IEEE_QUIET_NAN)
+      end if
+
+
       fnorm(0:nbin,ipt) = fnorm(0:nbin,ipt)*fac
    end do
 
