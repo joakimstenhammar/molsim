@@ -705,7 +705,7 @@ module MolModule
 
 ! ... energy
 
-   real(8)       :: ekin                   ! kinetic energy
+   real(8)       :: ekin = 0.0d0           ! kinetic energy
    type(potenergy_var) :: u                ! potential energy
    type(potenergy_var) :: du               ! difference in potential energy between two configurations
    real(8)       :: htot                   ! total enthalpy
