@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:47
+2016-09-13     16:40:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -382,12 +382,12 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          3.63697        3.03828      0.283E-12
- total two-body energy         =          1.33209        3.19246      0.141E-12
-  pe-pe                        =         17.06365        0.25777      0.855E-14
-  pe-cionpe                    =        -25.45416        4.61845      0.118E-14
+total potential energy         =          3.63697        3.03828      0.268E-12
+ total two-body energy         =          1.33209        3.19246      0.139E-12
+  pe-pe                        =         17.06365        0.25777      0.764E-14
+  pe-cionpe                    =        -25.45416        4.61845      0.197E-14
   cionpe-cionpe                =          9.72260        1.73716      0.308E-14
- bond energy                   =          0.82251        0.20248     -0.139E-14
+ bond energy                   =          0.82251        0.20248     -0.122E-14
  angle energy                  =          1.48237        0.11139     -0.211E-14
 enthalpy                       =          4.92362        4.99098
 cv                             =       1875.34399
@@ -434,7 +434,7 @@ asphericity (<2:nd moments>)   =          0.31567
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:48
+2016-09-13     16:40:16
 
 title   : 1 pe and their counterions confined to a sphere of radius 100                             
 
@@ -567,7 +567,7 @@ cv                             =       1875.34399
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.07651        0.05326        0.12039        0.01984            20.
 number of particles            =        150.00000        0.00000        0.00000        0.00000             0.
-volume                         =      4.18879E+06    3.63107E-03    0.00000E+00    3.25649E-10             0.
+volume                         =      4.18879E+06    3.63107E-03    0.00000E+00    4.60537E-10             0.
 
 total potential energy (NkT)   =          1.46787        0.00000
 pressure (NkT/V)(excl. contact)=          0.51929        0.00000
@@ -1342,15 +1342,15 @@ structure factor
          Group                  0.00         0.00
          StaticDriver           0.03         0.05
           SPDF                  0.00         0.00 
-          SFNoPBC               0.03         0.04 
+          SFNoPBC               0.03         0.05 
          IOMolsim               0.00         0.00
          SetVList               0.00         0.00
-         MCPass                 0.55         0.92
+         MCPass                 0.55         0.91
           SPartMove             0.03         0.04 
-          DUTotal               0.46         0.77 
-           DUTwoBody            0.30         0.50  
-           DUBond               0.03         0.05  
-           DUAngle              0.03         0.05  
+          DUTotal               0.47         0.77 
+           DUTwoBody            0.31         0.52  
+           DUBond               0.02         0.04  
+           DUAngle              0.03         0.04  
           ChainMove             0.00         0.00 
           PivotMove             0.00         0.00 
           SlitherMove           0.00         0.00 

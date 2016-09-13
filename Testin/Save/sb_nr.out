@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:32:25
+2016-09-13     16:40:54
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -277,7 +277,7 @@ total potential energy (NkT)   =          0.00000
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      8.23975E-01
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -350,7 +350,7 @@ number density                 =      8.23975E-01
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:32:25
+2016-09-13     16:40:54
 
 title   : suberball: varying density and q parameter                                                
 
@@ -477,7 +477,7 @@ quantity                                  average      precision    fluctuation 
 total potential energy         =          0.00000        0.00000        0.00000        0.00000             0.
  total two-body energy         =          0.00000        0.00000        0.00000        0.00000             0.
   hs-hs                        =          0.00000        0.00000        0.00000        0.00000             0.
-enthalpy                       =          0.83145        0.00000        0.00000        0.00000             2.
+enthalpy                       =          0.83145        0.00000        0.00000        0.00000             0.
 cv                             =          0.00000
 temperature                    =        100.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =       1137.62087        0.00000        0.00000        0.00000             0.
@@ -823,14 +823,14 @@ number of images made          =    1
          Coordinate            0.00         0.00 
          ControlAver           0.00         0.00 
          MainAver              0.00         0.00 
-         DistFunc              0.00         0.01 
+         DistFunc              0.01         0.01 
          Group                 0.00         0.00 
-         ImageDriver           0.68         0.94 
+         ImageDriver           0.66         0.93 
          IOMolsim              0.00         0.00 
          SetVList              0.00         0.00 
          MCPass                0.04         0.05 
-          SPartMove            0.01         0.01  
+          SPartMove            0.00         0.00  
           DUTotal              0.02         0.03  
            DUTwoBody           0.01         0.02   
  
-total cpu time since start (s)        0.76
+total cpu time since start (s)        0.74

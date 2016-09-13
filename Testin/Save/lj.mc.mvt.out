@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:09
+2016-09-13     16:39:39
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -803,9 +803,9 @@ orientation order, z'-axis     =                0.9814
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -3.20315        0.02055      0.101E-12
- total two-body energy         =         -3.20315        0.02055      0.101E-12
-  lj-lj                        =         -3.20315        0.02055      0.101E-12
+total potential energy         =         -3.20315        0.02055      0.100E-12
+ total two-body energy         =         -3.20315        0.02055      0.100E-12
+  lj-lj                        =         -3.20315        0.02055      0.100E-12
 enthalpy                       =         -6.71442        0.02055
 temperature                    =        240.56000        0.00000
 pressure (excl. cont. contr.)  =      -2915.30178        0.00000
@@ -837,7 +837,7 @@ chemical pot., total (kT)      =       0.352
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:10
+2016-09-13     16:39:39
 
 title   : lj mvt ensemble                                                                           
 
@@ -1699,15 +1699,15 @@ number of images made          =    1
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
          DistFunc               0.01         0.02
-         StaticDriver           0.01         0.04
-          Widom1                0.01         0.04 
+         StaticDriver           0.01         0.05
+          Widom1                0.01         0.05 
          ImageDriver            0.00         0.01
-         IOMolsim               0.01         0.03
-         SetVList               0.07         0.22
-         MCPass                 0.22         0.66
+         IOMolsim               0.01         0.04
+         SetVList               0.06         0.20
+         MCPass                 0.20         0.66
           SPartMove             0.01         0.02 
-          DUTotal               0.11         0.34 
-           DUTwoBody            0.10         0.29  
-          NPartChange           0.08         0.23 
+          DUTotal               0.11         0.36 
+           DUTwoBody            0.09         0.29  
+          NPartChange           0.07         0.23 
  
-total cpu time since start (s)        0.29
+total cpu time since start (s)        0.27

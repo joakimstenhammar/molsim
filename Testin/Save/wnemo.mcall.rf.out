@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:14
+2016-09-13     16:39:44
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -524,7 +524,7 @@ ind. dip. mom.: h              =          0.01087        0.00042
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:14
+2016-09-13     16:39:44
 
 title   : nemo water, mcall, reaction field                                                         
 
@@ -1165,20 +1165,20 @@ distribution functions
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.00         0.01
+         Coordinate               0.00         0.00
          ControlAver              0.00         0.00
-         MainAver                 0.00         0.00
+         MainAver                 0.00         0.01
          DistFunc                 0.01         0.05
-         IOMolsim                 0.00         0.00
+         IOMolsim                 0.00         0.01
          SetVList                 0.00         0.01
-         MCallPass                0.20         0.92
-          MCallPass_move          0.00         0.00
-          UTotal                  0.19         0.92
-           UTwoBodyP              0.04         0.17
-           UManyBodyP             0.16         0.74
-            FieldStat             0.05         0.23 
-            FieldTot              0.08         0.38 
-            IterIdm               0.03         0.13 
-             FieldIdm             0.03         0.13  
+         MCallPass                0.21         0.93
+          MCallPass_move          0.00         0.01
+          UTotal                  0.21         0.92
+           UTwoBodyP              0.04         0.18
+           UManyBodyP             0.17         0.75
+            FieldStat             0.05         0.22 
+            FieldTot              0.09         0.41 
+            IterIdm               0.03         0.12 
+             FieldIdm             0.03         0.12  
  
-total cpu time since start (s)        0.26
+total cpu time since start (s)        0.27

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:32:08
+2016-09-13     16:40:38
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -387,13 +387,13 @@ quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =          2.49908        0.14651      0.250E-07
  total two-body energy         =          1.65415        0.24811      0.448E-07
-  node-node                    =          0.00000        0.00000      0.164E-15
-  node-strand                  =          0.37164        0.01524     -0.391E-14
-  node-countion                =         -0.07530        0.00656      0.255E-14
+  node-node                    =          0.00000        0.00000     -0.164E-15
+  node-strand                  =          0.37164        0.01524     -0.367E-14
+  node-countion                =         -0.07530        0.00656      0.282E-14
   strand-strand                =          2.14058        0.08448      0.683E-14
-  strand-countion              =         -1.24714        0.12701      0.312E-14
+  strand-countion              =         -1.24714        0.12701      0.276E-14
   countion-countion            =          0.46438        0.02031      0.133E-06
- pot. energy from rec. space   =          0.37487        0.08636      0.222E-13
+ pot. energy from rec. space   =          0.37487        0.08636      0.401E-14
  bond energy                   =          0.39197        0.16759     -0.655E-15
  angle energy                  =          0.00000        0.00000      0.000E+00
  crosslink energy              =          0.07809        0.03511     -0.456E-15
@@ -442,7 +442,7 @@ asphericity (<2:nd moments>)   =          0.95357
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:32:09
+2016-09-13     16:40:38
 
 title   : charged periodic network + counterions                                                    
 
@@ -1154,15 +1154,15 @@ distribution functions
          ControlAver              0.00         0.00
          MainAver                 0.00         0.01
          DistFunc                 0.01         0.03
-         IOMolsim                 0.01         0.02
-         SetVList                 0.03         0.09
-         MCPass                   0.24         0.81
-          SPartMove               0.01         0.02
-          DUTotal                 0.22         0.74
-           DUTwoBody              0.10         0.34
-           DUTwoBodyEwald         0.07         0.24
-            UEwaldRecStd          0.06         0.21 
+         IOMolsim                 0.00         0.02
+         SetVList                 0.02         0.08
+         MCPass                   0.22         0.81
+          SPartMove               0.01         0.03
+          DUTotal                 0.20         0.73
+           DUTwoBody              0.10         0.37
+           DUTwoBodyEwald         0.06         0.21
+            UEwaldRecStd          0.05         0.18 
            DUBond                 0.00         0.02
          DUCrossLink              0.01         0.03
  
-total cpu time since start (s)        0.31
+total cpu time since start (s)        0.29

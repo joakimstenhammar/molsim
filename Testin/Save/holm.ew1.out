@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:30:32
+2016-09-13     16:38:59
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -460,7 +460,7 @@ number density                 =      1.00000E+00
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:30:32
+2016-09-13     16:38:59
 
 title   : two charges, test of ewald summation, elongated box                                       
 
@@ -590,16 +590,16 @@ number density                 =      1.00000E+00    0.00000E+00
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.00         0.13
-         ControlAver              0.00         0.14
-         MainAver                 0.00         0.24
-         IOMolsim                 0.00         0.25
+         Coordinate               0.00         0.14
+         ControlAver              0.00         0.03
+         MainAver                 0.00         0.11
+         IOMolsim                 0.00         0.57
          SetVList                 0.00         0.00
-         MCPass                   0.00         0.24
+         MCPass                   0.00         0.14
           SPartMove               0.00         0.00
-          DUTotal                 0.00         0.24
+          DUTotal                 0.00         0.14
            DUTwoBody              0.00         0.00
-           DUTwoBodyEwald         0.00         0.23
-            UEwaldRecStd          0.00         0.23 
+           DUTwoBodyEwald         0.00         0.14
+            UEwaldRecStd          0.00         0.14 
  
 total cpu time since start (s)        0.02

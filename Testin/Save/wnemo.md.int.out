@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:17
+2016-09-13     16:39:47
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -556,7 +556,7 @@ ind. dip. mom.: h              =          0.02313        0.09027
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:20
+2016-09-13     16:39:50
 
 title   : test of md with nemo potentials, separate geom and interaction sites                      
 
@@ -1378,20 +1378,20 @@ time (middle, lower, upper)    n samp          value precision          value pr
          Coordinate              0.00         0.00
          ControlAver             0.00         0.00
          MainAver                0.00         0.00
-         DistFunc                0.08         0.03
+         DistFunc                0.09         0.03
          Group                   0.00         0.00
-         DynamicDriver           0.54         0.18
-          IDMTCF                 0.54         0.18
+         DynamicDriver           0.34         0.12
+          IDMTCF                 0.34         0.12
          IOMolsim                0.00         0.00
-         SetVList                0.05         0.02
-         MDDriver                2.27         0.77
+         SetVList                0.04         0.01
+         MDDriver                2.28         0.83
           VelVer                 0.01         0.00
-          UTotal                 2.26         0.76
-           UTwoBodyP             0.41         0.14 
-           UManyBodyP            1.84         0.62 
-            FieldStat            0.53         0.18  
-            FieldTot             0.87         0.30  
-            IterIdm              0.44         0.15  
-             FieldIdm            0.43         0.15   
+          UTotal                 2.27         0.82
+           UTwoBodyP             0.40         0.15 
+           UManyBodyP            1.86         0.68 
+            FieldStat            0.52         0.19  
+            FieldTot             0.94         0.34  
+            IterIdm              0.40         0.15  
+             FieldIdm            0.40         0.14   
  
-total cpu time since start (s)        3.00
+total cpu time since start (s)        2.80

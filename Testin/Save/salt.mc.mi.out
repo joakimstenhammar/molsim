@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:30:33
+2016-09-13     16:38:59
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -534,8 +534,8 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -1.20715        0.18106     -0.131E-12
- total two-body energy         =         -1.20715        0.18106     -0.131E-12
+total potential energy         =         -1.20715        0.18106     -0.132E-12
+ total two-body energy         =         -1.20715        0.18106     -0.132E-12
   jon1-jon1                    =         19.15362        0.05421     -0.658E-15
   jon1-jon2                    =        -39.59758        0.14909     -0.253E-14
   jon2-jon2                    =         19.23681        0.02088     -0.877E-15
@@ -682,7 +682,7 @@ chemical pot., total (kT)      =      -7.644
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:30:34
+2016-09-13     16:39:00
 
 title   : 0.001 m 1:1 salt solution                                                                 
 
@@ -1951,15 +1951,15 @@ chemical pot., total (kT)      =      -7.617     0.027
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
          DistFunc               0.01         0.01
-         StaticDriver           0.85         0.84
+         StaticDriver           0.88         0.84
           ClusterSD             0.00         0.00 
-          Widom1                0.61         0.60 
-          Widom2                0.23         0.23 
+          Widom1                0.63         0.60 
+          Widom2                0.25         0.23 
          IOMolsim               0.00         0.00
          SetVList               0.00         0.00
          MCPass                 0.15         0.14
           SPartMove             0.01         0.01 
           DUTotal               0.13         0.13 
-           DUTwoBody            0.11         0.11  
+           DUTwoBody            0.12         0.11  
  
-total cpu time since start (s)        1.02
+total cpu time since start (s)        1.07

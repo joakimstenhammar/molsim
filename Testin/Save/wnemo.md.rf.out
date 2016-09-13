@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:31:17
+2016-09-13     16:39:47
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -889,7 +889,7 @@ total potential energy (NkT)   =        -13.97420
 pressure (NkT/V)(excl. contact)=          3.81953
 pressure (kT) (excl. contact)  =      1.26209E-01
  
-total cpu time since start (s)        0.09
+total cpu time since start (s)        0.08
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1071,7 +1071,7 @@ ind. dip. mom.: h              =          0.02506        0.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:31:17
+2016-09-13     16:39:47
 
 title   : nemo water, reaction field                                                                
 
@@ -1733,16 +1733,16 @@ distribution functions
          -------         ------------     --------
          Coordinate            0.00         0.07 
          ControlAver           0.00         0.01 
-         MainAver              0.00         0.02 
-         DistFunc              0.00         0.09 
+         MainAver              0.00         0.01 
+         DistFunc              0.00         0.10 
          IOMolsim              0.00         0.03 
-         SetVList              0.00         0.06 
-         MDDriver              0.02         0.70 
+         SetVList              0.00         0.05 
+         MDDriver              0.02         0.73 
           VelVer               0.00         0.00  
-          UTotal               0.02         0.70  
-           UTwoBodyP           0.00         0.14   
-           UManyBodyP          0.02         0.55   
+          UTotal               0.02         0.73  
+           UTwoBodyP           0.00         0.15   
+           UManyBodyP          0.02         0.57   
             FieldStat          0.01         0.20    
-            FieldTot           0.01         0.34    
+            FieldTot           0.01         0.37    
  
-total cpu time since start (s)        0.12
+total cpu time since start (s)        0.11

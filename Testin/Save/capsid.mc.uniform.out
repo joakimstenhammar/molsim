@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:32:28
+2016-09-13     16:40:57
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -856,18 +856,18 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         15.12883        1.47535      0.660E-14
- total two-body energy         =          2.82163        0.05465      0.208E-13
+total potential energy         =         15.12883        1.47535      0.642E-14
+ total two-body energy         =          2.82163        0.05465      0.206E-13
   capside-capside              =          4.05743        0.00000      0.000E+00
-  capside-cioncap              =         -1.29240        0.00277     -0.660E-15
+  capside-cioncap              =         -1.29240        0.00277     -0.880E-15
   capside-pe                   =         -8.59605        0.00258     -0.397E-15
   capside-cionpe               =          1.38535        0.00526     -0.411E-15
   cioncap-cioncap              =          0.53008        0.00177      0.216E-14
   cioncap-pe                   =          1.30405        0.00320      0.457E-14
-  cioncap-cionpe               =         -1.08303        0.00183      0.538E-14
+  cioncap-cionpe               =         -1.08303        0.00183      0.498E-14
   pe-pe                        =          7.38805        0.05282      0.556E-14
-  pe-cionpe                    =         -1.40195        0.00712     -0.427E-14
-  cionpe-cionpe                =          0.53010        0.00202     -0.390E-14
+  pe-cionpe                    =         -1.40195        0.00712     -0.467E-14
+  cionpe-cionpe                =          0.53010        0.00202     -0.336E-14
  bond energy                   =          0.03864        0.02236     -0.126E-15
  angle energy                  =         12.35282        1.45194     -0.881E-15
  external potential            =         -0.08427        0.00007     -0.105E-14
@@ -916,7 +916,7 @@ asphericity (<2:nd moments>)   =          0.22528
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:32:29
+2016-09-13     16:40:57
 
 title   : 1 pe and their counterions + 1 capsid and their counterions                               
 
@@ -1456,7 +1456,7 @@ cv                             =       1179.19416
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.00437        0.00000        0.00000        0.00000             0.
 number of particles            =        400.00000        0.00000        0.00000        0.00000             0.
-volume                         =      5.23599E+08    6.41969E-01    0.00000E+00    0.00000E+00             0.
+volume                         =      5.23599E+08    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
 total potential energy (NkT)   =          6.10596        0.00000
 pressure (NkT/V)(excl. contact)=          1.38933        0.00000
@@ -1873,19 +1873,19 @@ no    group label            no of particles     precision
          -------         ------------     --------
          Coordinate            0.01         0.03 
          ControlAver           0.00         0.00 
-         MainAver              0.00         0.01 
+         MainAver              0.00         0.00 
          DistFunc              0.01         0.05 
          Group                 0.00         0.00 
          IOMolsim              0.01         0.02 
-         SetVList              0.00         0.02 
-         MCPass                0.24         0.88 
-          SPartMove            0.01         0.02  
-          DUTotal              0.22         0.79  
-           DUTwoBody           0.16         0.59   
+         SetVList              0.00         0.01 
+         MCPass                0.24         0.89 
+          SPartMove            0.01         0.03  
+          DUTotal              0.21         0.80  
+           DUTwoBody           0.15         0.56   
            DUBond              0.01         0.02   
            DUAngle             0.01         0.03   
-           DUExternal          0.01         0.02   
+           DUExternal          0.01         0.03   
           PivotMove            0.00         0.00  
           SlitherMove          0.00         0.00  
  
-total cpu time since start (s)        0.29
+total cpu time since start (s)        0.28

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:30:53
+2016-09-13     16:39:22
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -384,11 +384,11 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =        -21.79317        1.23380      0.116E-14
- total two-body energy         =        -21.79317        1.23380      0.116E-14
+total potential energy         =        -21.79317        1.23380      0.830E-15
+ total two-body energy         =        -21.79317        1.23380      0.830E-15
   micelle-micelle              =          0.00000        0.00000      0.000E+00
   micelle-ion                  =        -36.82896        2.22447     -0.317E-14
-  ion-ion                      =         15.03580        1.01949      0.159E-14
+  ion-ion                      =         15.03580        1.01949      0.135E-14
 enthalpy                       =        -26.56095        1.67392
 cv                             =        125.76222
 temperature                    =        298.00000        0.00000
@@ -458,7 +458,7 @@ total potential energy         =        -22.54656        0.22100     -0.250E-14
  total two-body energy         =        -22.54656        0.22100     -0.250E-14
   micelle-micelle              =          0.00000        0.00000      0.000E+00
   micelle-ion                  =        -38.22330        0.61285     -0.514E-14
-  ion-ion                      =         15.67674        0.44353      0.485E-15
+  ion-ion                      =         15.67674        0.44353      0.969E-15
 enthalpy                       =        -27.58482        0.28102
 cv                             =          4.03491
 temperature                    =        298.00000        0.00000
@@ -477,7 +477,7 @@ number density                 =      1.16501E-04
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:30:54
+2016-09-13     16:39:22
 
 title   : hs 60:1 system, spherical cell                                                            
 
@@ -2576,15 +2576,15 @@ various df for system of one macroion + ions, sph geometry
          MainAver                 0.00         0.01
          DistFunc                 0.05         0.13
          Group                    0.00         0.00
-         StaticDriver             0.12         0.32
-          SPDF                    0.07         0.17
+         StaticDriver             0.12         0.31
+          SPDF                    0.06         0.16
           RDFSph                  0.06         0.14
           MacroionOneSph          0.00         0.01
          IOMolsim                 0.00         0.00
-         SetVList                 0.01         0.01
-         MCPass                   0.20         0.52
-          SPartMove               0.02         0.05
-          DUTotal                 0.13         0.34
-           DUTwoBody              0.08         0.22
+         SetVList                 0.00         0.01
+         MCPass                   0.21         0.53
+          SPartMove               0.02         0.06
+          DUTotal                 0.13         0.33
+           DUTwoBody              0.08         0.21
  
 total cpu time since start (s)        0.40

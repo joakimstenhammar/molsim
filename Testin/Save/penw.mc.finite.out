@@ -13,7 +13,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                       version 6.4.7, Sep 18, 2015                                        **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -35,7 +35,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-08-16     11:32:09
+2016-09-13     16:40:38
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -350,7 +350,7 @@ total potential energy (NkT)   =          7.08956
 pressure (NkT/V)(excl. contact)=         -6.03445
 pressure (kT) (excl. contact)  =     -3.00771E-06
  
-total cpu time since start (s)        0.14
+total cpu time since start (s)        0.13
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -401,7 +401,7 @@ orientation order, z'-axis     =                1.0000              1.0000      
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =         18.42745        0.35871     -0.151E-13
- total two-body energy         =          0.04248        0.00015      0.104E-12
+ total two-body energy         =          0.04248        0.00015      0.103E-12
   node-node                    =          0.03051        0.00001     -0.153E-14
   node-chain                   =          0.00000        0.00000      0.000E+00
   node-anion                   =         -0.12874        0.00003      0.363E-14
@@ -409,7 +409,7 @@ total potential energy         =         18.42745        0.35871     -0.151E-13
   chain-chain                  =          0.00000        0.00000      0.000E+00
   chain-anion                  =          0.00000        0.00000      0.000E+00
   chain-cation                 =          0.00000        0.00000      0.000E+00
-  anion-anion                  =          0.22583        0.00015     -0.909E-14
+  anion-anion                  =          0.22583        0.00015     -0.876E-14
   anion-cation                 =         -0.25927        0.00026      0.217E-13
   cation-cation                =          0.10405        0.00012      0.429E-14
  bond energy                   =         15.60731        0.32499     -0.201E-13
@@ -460,7 +460,7 @@ asphericity (<2:nd moments>)   =          0.99286
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-08-16     11:32:11
+2016-09-13     16:40:40
 
 title   : charged networks + counterions                                                            
 
@@ -2213,12 +2213,12 @@ number of images made          =    1
           SPDF                  0.01         0.00 
          ImageDriver            0.02         0.01
          IOMolsim               0.05         0.02
-         SetVList               0.36         0.15
-         MCPass                 1.82         0.77
+         SetVList               0.22         0.10
+         MCPass                 1.74         0.81
           SPartMove             0.02         0.01 
-          DUTotal               1.75         0.74 
-           DUTwoBody            1.64         0.69  
-           DUBond               0.02         0.01  
-         DUCrossLink            0.02         0.01
+          DUTotal               1.68         0.78 
+           DUTwoBody            1.60         0.74  
+           DUBond               0.01         0.01  
+         DUCrossLink            0.01         0.01
  
-total cpu time since start (s)        2.48
+total cpu time since start (s)        2.26
