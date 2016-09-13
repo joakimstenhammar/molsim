@@ -79,12 +79,12 @@ ifeq ($(ARCH), LOCAL_INTEL)
   OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # repot on vecorization
   OPT_SER  = -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
   OPT_SER  = -O3 -traceback -check all     	       # provide useful info at exceptions (gives many #406 warnings)
+  OPT_SER  = -O0                                       # quick compilation (useful for debug)
   OPT_SER  = -warn     				       # provides many warnings
   OPT_SER  = -prof-gen                                 # generate profile for profiled-optimization
   OPT_SER  = -prof-use -O3 -ipo                        # profiled-optimization
   OPT_SER  = -O3                                       # normal
   OPT_SER  = -O3 -ipo                                  # inter processoptimization
-  OPT_SER  = -O0                                       # quick compilation (useful for debug)
   
   COMP_PAR = $(MPIFC)
   LINK_PAR = $(COMP_PAR)
