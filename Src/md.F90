@@ -32,7 +32,7 @@ module MDModule
    use MolModule
 
    character(6)  :: integ                  ! selection of integration method
-   real(8)       :: tstep = 0.0            ! md time step
+   real(8)       :: tstep                  ! md time step
    real(8)       :: tvvite                 ! factor in iteration (velocity verlet)
    integer(4)    :: nvvite                 ! number of iterations (velocity verlet)
    logical       :: lsetvel                ! flag for setting initial velocities
@@ -161,7 +161,7 @@ subroutine IOMD(iStage)
       lzeromom =.false.
       tvscl    = Zero
       tlscl    = Zero
-      tstep    = 0.0
+      !tstep    = 0.0
 
       rewind(uin)
       read(uin,nmlMD)
@@ -1122,7 +1122,6 @@ end function GetTime
 ! ... return the value of lsetvel
 
 function GetlSetVel()
-
    use MDModule
    implicit none
    logical(4) :: GetlSetVel

@@ -254,7 +254,7 @@ module MolModule
    real(8)       :: boxlenshort            ! minval(boxlen(1:3))
    real(8)       :: TwoPiBoxi(3)           ! 2*pi/boxlen
    real(8)       :: cellside               ! length of cell side (RD or TO cell)
-   real(8)       :: sphrad = 0.0d0         ! radius of spherical cell
+   real(8)       :: sphrad                 ! radius of spherical cell
    real(8)       :: sphrad2                ! sphrad**2
    real(8)       :: ellrad(3)              ! radius of ellipsoidal cell
    real(8)       :: ellradi(3)             ! 1/ellrad
@@ -500,8 +500,8 @@ module MolModule
    real(8)       :: temprot                ! temperature, rotational
    real(8)       :: prsrst                 ! pressure, start
    real(8)       :: prsr                   ! pressure
-   real(8)       :: prsrreds3 = 0.0d0      ! pressure, final reduced pressure
-   real(8)       :: prsrredsd = 0.0d0      ! pressure, sd of final reduced pressure
+   real(8)       :: prsrreds3              ! pressure, final reduced pressure
+   real(8)       :: prsrredsd              ! pressure, sd of final reduced pressure
    real(8)       :: virial                 ! virial
    real(8)       :: volst                  ! volume, start
    real(8)       :: vol                    ! volume
@@ -693,7 +693,7 @@ module MolModule
    real(8)       :: rChargeOut             !*outer radius of the shell/core wall
    real(8)       :: rInSphere              !*inner radius of the shell
    real(8)       :: rOutSphere             !*outer radius of the shell
-   real(8)       :: rCylinder = 0.0d0      !*radius of the hard cylinder
+   real(8)       :: rCylinder              !*radius of the hard cylinder
    real(8)       :: zCylinder              !*charge density of the cylinder, elementary charges per unit length
 
    real(8), allocatable :: ruext(:,:)      !*parameter describing external potential
@@ -705,7 +705,7 @@ module MolModule
 
 ! ... energy
 
-   real(8)       :: ekin = 0.0             ! kinetic energy
+   real(8)       :: ekin                   ! kinetic energy
    type(potenergy_var) :: u                ! potential energy
    type(potenergy_var) :: du               ! difference in potential energy between two configurations
    real(8)       :: htot                   ! total enthalpy
