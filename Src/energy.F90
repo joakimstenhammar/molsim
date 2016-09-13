@@ -4652,7 +4652,6 @@ subroutine UDielDisPlane
          dz = ro(3,ip)-ro(3,jp)
          call PBCr2(dx,dy,dz,r2)
          ri = one/sqrt(r2)
-         !##FLAG moved calculation of rip to avoid dividing by zero (rip is only calculated when needed)
          if ((r(3,ip) < Zero) .and. (r(3,jp) < Zero)) then  ! ion--ion and ion--image interaction
             dz = ro(3,ip)+ro(3,jp)       ! image location
             call PBCr2(dx,dy,dz,r2)
@@ -4684,7 +4683,7 @@ subroutine UDielDisPlane
 
    u%tot  = u%tot  + u%twob(0) +  u%oneb(0)
 
-!  call TestUDielDisPlane(uout)
+!  call TestDielDisPlane(uout)
 
    if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
