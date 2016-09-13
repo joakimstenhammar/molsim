@@ -76,17 +76,44 @@ ifeq ($(ARCH), LOCAL_INTEL)
   
   COMP_SER = ifort
   LINK_SER = $(COMP_SER)
+
+
   OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # repot on vecorization
   OPT_SER  = -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
+  OPT_SER  = -O3 -ipo -fp-model strict                 # inter processoptimization
   OPT_SER  = -O3 -traceback -check all     	       # provide useful info at exceptions (gives many #406 warnings)
   OPT_SER  = -O0                                       # quick compilation (useful for debug)
   OPT_SER  = -warn     				       # provides many warnings
   OPT_SER  = -prof-gen                                 # generate profile for profiled-optimization
   OPT_SER  = -prof-use -O3 -ipo                        # profiled-optimization
   OPT_SER  = -O3                                       # normal
-  OPT_SER  = -O3 -ipo                                  # inter processoptimization
+  OPT_SER  = -O3 -ipo                                  # inter processoptimization #proviedes approx. 15% more speed
+
+  OPT_normal = -O3 -ipo
+  OPT_test := $(OPT_normal) -fp-model strict
+  OPT_debug := -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
+  OPT_quick := -O0	#quick compilation
+  OPT_warn := -warn     				       # provides many warnings
+
+  mode = normal 
+  ifeq ($(mode),normal)
+     	OPT_SER = $(OPT_normal)
+  endif
+  ifeq ($(mode),test)
+     	OPT_SER = $(OPT_test)
+  endif
+  ifeq ($(mode),debug)
+     	OPT_SER = $(OPT_debug)
+  endif
+  ifeq ($(mode),quick)
+     	OPT_SER = $(OPT_quick)
+  endif
+  ifeq ($(mode),warn)
+     	OPT_SER = $(OPT_warn)
+  endif
   
   COMP_PAR = $(MPIFC)
+
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
    
