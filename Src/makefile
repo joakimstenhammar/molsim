@@ -76,10 +76,15 @@ ifeq ($(ARCH), LOCAL_INTEL)
   
   COMP_SER = ifort
   LINK_SER = $(COMP_SER)
-  OPT_SER  = -O3 -ipo                                  # inter processoptimization
   OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # repot on vecorization
-  OPT_SER  = -O0 -traceback -check                     # provide useful info at exceptions
+  OPT_SER  = -O3 -traceback -check all     	       # provide useful info at exceptions (gives many #406 warnings)
+  OPT_SER  = -warn     				       # provides many warnings
+  OPT_SER  = -prof-gen                                 # generate profile for profiled-optimization
+  OPT_SER  = -prof-use -O3 -ipo                        # profiled-optimization
   OPT_SER  = -O3                                       # normal
+  OPT_SER  = -O3 -ipo                                  # inter processoptimization
+  OPT_SER  = -O0                                       # quick compilation (useful for debug)
+  OPT_SER  = -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
   
   COMP_PAR = $(MPIFC)
   LINK_PAR = $(COMP_PAR)
@@ -294,7 +299,7 @@ molsim.o        : molsim.F90      mol.o      statistics.o
 	$(COMP_SER) $(FLAG_SER) -c molsim.F90
 moldyn.o        : moldyn.F90	statistics.o
 	$(COMP_SER) $(FLAG_SER) -c moldyn.F90
-particle.o      : particle.F90    mol.o
+particle.o      : particle.F90    mol.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c particle.F90
 potential.o     : potential.F90   mol.o
 	$(COMP_SER) $(FLAG_SER) -c potential.F90
@@ -338,7 +343,7 @@ testmesh.o      : testmesh.F90  mesh.o
 	$(COMP_SER) $(FLAG_SER) -c testmesh.F90
 molsim_par.o    : molsim.F90      mol.o      statistics_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o molsim_par.o -c molsim.F90
-particle_par.o  : particle.F90    mol.o
+particle_par.o  : particle.F90    mol.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90
 potential_par.o : potential.F90   mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o potential_par.o -c potential.F90
