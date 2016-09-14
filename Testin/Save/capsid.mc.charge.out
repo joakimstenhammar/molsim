@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:40:56
+2016-09-14     08:31:40
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -856,20 +856,20 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         15.08059        1.44871      0.173E-14
- total two-body energy         =          2.81537        0.05838     -0.819E-15
+total potential energy         =         15.08059        1.44871      0.155E-14
+ total two-body energy         =          2.81537        0.05838     -0.164E-14
   capside-capside              =          4.05743        0.00000      0.000E+00
-  capside-cioncap              =         -1.28947        0.00338     -0.110E-14
+  capside-cioncap              =         -1.28947        0.00338     -0.663E-15
   capside-pe                   =         -8.59563        0.00237     -0.212E-14
   capside-cionpe               =          1.39187        0.00491      0.000E+00
-  cioncap-cioncap              =          0.52954        0.00211     -0.108E-14
-  cioncap-pe                   =          1.30129        0.00374     -0.437E-14
-  cioncap-cionpe               =         -1.08403        0.00173      0.379E-14
-  pe-pe                        =          7.38424        0.05446      0.309E-14
-  pe-cionpe                    =         -1.41118        0.00590     -0.547E-14
-  cionpe-cionpe                =          0.53129        0.00173     -0.161E-14
- bond energy                   =          0.04250        0.02431     -0.470E-15
- angle energy                  =         12.22272        1.42121      0.110E-14
+  cioncap-cioncap              =          0.52954        0.00211     -0.135E-14
+  cioncap-pe                   =          1.30129        0.00374     -0.394E-14
+  cioncap-cionpe               =         -1.08403        0.00173      0.366E-14
+  pe-pe                        =          7.38424        0.05446      0.325E-14
+  pe-cionpe                    =         -1.41118        0.00590     -0.466E-14
+  cionpe-cionpe                =          0.53129        0.00173     -0.134E-14
+ bond energy                   =          0.04250        0.02431     -0.588E-15
+ angle energy                  =         12.22272        1.42121      0.662E-15
  external potential            =          0.00000        0.00000      0.000E+00
 enthalpy                       =         18.52294        1.44871
 cv                             =       1136.98210
@@ -916,7 +916,7 @@ asphericity (<2:nd moments>)   =          0.22523
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:40:57
+2016-09-14     08:31:41
 
 title   : 1 pe and their counterions + 1 capsid and their counterions                               
 
@@ -1455,7 +1455,7 @@ cv                             =       1136.98210
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.00437        0.00000        0.00000        0.00000             0.
 number of particles            =        400.00000        0.00000        0.00000        0.00000             0.
-volume                         =      5.23599E+08    0.00000E+00    0.00000E+00    0.00000E+00             0.
+volume                         =      5.23599E+08    6.41969E-01    0.00000E+00    0.00000E+00             0.
 
 total potential energy (NkT)   =          6.08650        0.00000
 pressure (NkT/V)(excl. contact)=          1.38933        0.00000
@@ -3167,25 +3167,25 @@ no    function                    average        rms
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.01         0.02
+         Coordinate             0.01         0.01
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
-         DistFunc               0.01         0.03
+         DistFunc               0.01         0.04
          Group                  0.00         0.00
-         StaticDriver           0.17         0.37
+         StaticDriver           0.10         0.25
           SPDF                  0.00         0.01 
-          SFNoPBC               0.16         0.35 
+          SFNoPBC               0.09         0.22 
           ChainTypeDF           0.01         0.01 
          IOMolsim               0.01         0.01
          SetVList               0.00         0.01
-         MCPass                 0.26         0.57
+         MCPass                 0.27         0.67
           SPartMove             0.01         0.02 
-          DUTotal               0.23         0.51 
-           DUTwoBody            0.17         0.37  
-           DUBond               0.01         0.01  
+          DUTotal               0.25         0.61 
+           DUTwoBody            0.18         0.45  
+           DUBond               0.01         0.02  
            DUAngle              0.01         0.02  
-           DUExternal           0.01         0.02  
+           DUExternal           0.01         0.03  
           SlitherMove           0.00         0.00 
           PivotMove             0.00         0.00 
  
-total cpu time since start (s)        0.48
+total cpu time since start (s)        0.43

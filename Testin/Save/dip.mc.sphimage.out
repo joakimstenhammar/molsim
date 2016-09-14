@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:14
+2016-09-14     08:29:47
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1450,7 +1450,7 @@ total potential energy (NkT)   =         -5.66175
 pressure (NkT/V)(excl. contact)=          6.52543
 pressure (kT) (excl. contact)  =      2.64469E-01
  
-total cpu time since start (s)        0.25
+total cpu time since start (s)        0.19
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1505,7 +1505,7 @@ quantity                                  average    fluctuation          check
 total potential energy         =        -14.70847        0.00000      0.180E-12
  total two-body energy         =         -4.69628        0.00000      0.564E-12
   LJ-LJ                        =         -4.69628        0.00000      0.564E-12
- electrostatic energy          =        -10.01219        0.00000     -0.303E-15
+ electrostatic energy          =        -10.01219        0.00000     -0.151E-15
 enthalpy                       =          2.42416        0.00000
 cv                             =          0.00000
 temperature                    =        315.77700        0.00000
@@ -1524,7 +1524,7 @@ number density                 =      4.05290E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:15
+2016-09-14     08:29:47
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -4240,18 +4240,18 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.01         0.03
+         Coordinate             0.01         0.04
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
          Group                  0.00         0.00
          StaticDriver           0.02         0.05
           SPDF                  0.00         0.00 
           MultipolDF            0.02         0.04 
-         ImageDriver            0.01         0.01
-         IOMolsim               0.04         0.09
-         MCPass                 0.30         0.80
-          SPartMove             0.00         0.01 
-          DUTotal               0.30         0.79 
-           DUDipoleSph          0.29         0.78  
+         ImageDriver            0.01         0.02
+         IOMolsim               0.04         0.10
+         MCPass                 0.28         0.79
+          SPartMove             0.00         0.00 
+          DUTotal               0.28         0.78 
+           DUDipoleSph          0.28         0.77  
  
-total cpu time since start (s)        0.82
+total cpu time since start (s)        0.67

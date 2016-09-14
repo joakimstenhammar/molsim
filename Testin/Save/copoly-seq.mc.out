@@ -235,7 +235,7 @@ ictct(1:nct,nct)    1    2    2    3
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     17:35:14
+2016-09-14     08:31:45
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -515,7 +515,7 @@ total potential energy (NkT)   =          0.24075
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      1.87166E-07
  
-total cpu time since start (s)        0.02
+total cpu time since start (s)        0.01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -596,8 +596,8 @@ quantity                                  average     fluctuation
 <r(bb)**2>**0.5                =          5.00000        0.00000
 <r(ee)**2>**0.5                =         55.41240        0.01138
 <r(g)**2>**0.5                 =         19.43705        0.00000
-smallest rms mom. p.a.         =          2.53580        0.00052
-intermediate rms mom. p.a.     =          7.04212        0.00171
+smallest rms mom. p.a.         =          2.53580        0.00049
+intermediate rms mom. p.a.     =          7.04212        0.00189
 largest rms mom. p.a.          =         17.93815        0.00000
 <persist. l.>  (r(ee))         =         19.55852        0.00000
 <persist. l.>  (r(g))          =         24.88565        0.00000
@@ -619,7 +619,7 @@ quantity                                  average     fluctuation
 --------                                  -------     -----------
 <r(bb)**2>**0.5                =          5.00000        0.00058
 <r(ee)**2>**0.5                =         19.64737        0.00000
-<r(g)**2>**0.5                 =          8.78326        0.00159
+<r(g)**2>**0.5                 =          8.78326        0.00164
 smallest rms mom. p.a.         =          3.71961        0.00085
 intermediate rms mom. p.a.     =          4.66204        0.00000
 largest rms mom. p.a.          =          6.44791        0.00000
@@ -660,7 +660,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     17:35:14
+2016-09-14     08:31:45
 
 title   : 1 pe and their counterions confined to a sphere of radius 100                             
 
@@ -779,8 +779,8 @@ quantity                                  average       precision   fluctuation 
 <r(bb)**2>**0.5                =          5.00000        0.00000        0.00000        0.00000             0.
 <r(ee)**2>**0.5                =         55.41240        0.00001        0.00657        0.00000             0.
 <r(g)**2>**0.5                 =         19.43705        0.00000        0.00000        0.00000             0.
-smallest rms mom. p.a.         =          2.53580        0.00000        0.00050        0.00000             1.
-intermediate rms mom. p.a.     =          7.04212        0.00000        0.00142        0.00000             0.
+smallest rms mom. p.a.         =          2.53580        0.00000        0.00045        0.00000             0.
+intermediate rms mom. p.a.     =          7.04212        0.00000        0.00182        0.00000             0.
 largest rms mom. p.a.          =         17.93815        0.00000        0.00306        0.00000             0.
 <persist. l.>  (r(ee))         =         19.55852        0.00000        0.00000        0.00000             0.
 <persist. l.>  (r(g))          =         24.88565        0.00000        0.00000        0.00000             0.
@@ -802,7 +802,7 @@ quantity                                  average       precision   fluctuation 
 --------                                  -------       ---------   -----------      ---------       --------
 <r(bb)**2>**0.5                =          5.00000        0.00000        0.00058        0.00000            30.
 <r(ee)**2>**0.5                =         19.64737        0.00000        0.00000        0.00000             0.
-<r(g)**2>**0.5                 =          8.78326        0.00000        0.00182        0.00000             3.
+<r(g)**2>**0.5                 =          8.78326        0.00000        0.00185        0.00000             3.
 smallest rms mom. p.a.         =          3.71961        0.00000        0.00090        0.00000             0.
 intermediate rms mom. p.a.     =          4.66204        0.00000        0.00000        0.00000             0.
 largest rms mom. p.a.          =          6.44791        0.00000        0.00000        0.00000             0.
@@ -1432,18 +1432,18 @@ distribution functions of a substructure
          section            cpu time (s)     fraction
          -------            ------------     --------
          Coordinate               0.00         0.00
-         ControlAver              0.00         0.00
+         ControlAver              0.00         0.01
          MainAver                 0.01         0.02
          Group                    0.00         0.00
          StaticDriver             0.01         0.02
           SubStructureDF          0.01         0.02
          IOMolsim                 0.00         0.00
          SetVList                 0.00         0.00
-         MCPass                   0.38         0.95
-          SPartMove               0.02         0.06
-          DUTotal                 0.20         0.50
-           DUTwoBody              0.08         0.20
+         MCPass                   0.36         0.94
+          SPartMove               0.02         0.05
+          DUTotal                 0.19         0.50
+           DUTwoBody              0.07         0.18
            DUBond                 0.02         0.05
-           DUAngle                0.02         0.05
+           DUAngle                0.02         0.06
  
-total cpu time since start (s)        0.42
+total cpu time since start (s)        0.39

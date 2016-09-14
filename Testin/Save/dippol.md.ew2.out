@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:21
+2016-09-14     08:29:53
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -811,7 +811,7 @@ ind. dip. mom.: site2          =          0.14149        0.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:21
+2016-09-14     08:29:53
 
 title   : dipole test, with induction, development of ewald summation                               
 
@@ -978,21 +978,21 @@ ind. dip. mom.: site2          =          0.14149        0.00000        0.00000 
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.00         0.30
-         ControlAver                    0.00         0.02
-         MainAver                       0.00         0.15
-         IOMolsim                       0.00         0.17
+         Coordinate                     0.00         0.13
+         ControlAver                    0.00         0.15
+         MainAver                       0.00         0.25
+         IOMolsim                       0.00         0.22
          SetVList                       0.00         0.00
-         MDDriver                       0.00         0.35
+         MDDriver                       0.00         0.25
           VelVer                        0.00         0.00
-          UTotal                        0.00         0.35
+          UTotal                        0.00         0.25
            UTwoBodyP                    0.00         0.00
-           UManyBodyP                   0.00         0.35
-            FieldStat                   0.00         0.04
-            FieldStatEwald              0.00         0.09
+           UManyBodyP                   0.00         0.25
+            FieldStat                   0.00         0.00
+            FieldStatEwald              0.00         0.07
              FieldStatEwaldRecStd       0.00         0.06
-            FieldTot                    0.00         0.02
-            FieldTotEwald               0.00         0.20
-             FieldTotEwaldRecStd        0.00         0.17
+            FieldTot                    0.00         0.01
+            FieldTotEwald               0.00         0.14
+             FieldTotEwaldRecStd        0.00         0.14
  
 total cpu time since start (s)        0.01

@@ -90,9 +90,9 @@ ifeq ($(ARCH), LOCAL_INTEL)
   OPT_SER  = -O3 -ipo                                  # inter processoptimization #proviedes approx. 15% more speed
 
   OPT_normal = -O3 -ipo
-  OPT_test := $(OPT_normal) -fp-model strict
-  OPT_debug := -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
   OPT_quick := -O0	#quick compilation
+  OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
+  OPT_debug := -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
   OPT_warn := -warn     				       # provides many warnings
 
   mode = normal 
@@ -196,7 +196,11 @@ DEFINES_BASE = -D$(ARCH)
 
 ifeq ($(CBIND), TRUE)                      #F03 c-bindings
   DEFINES_BASE += -DF03_CBIND
+    ifeq ($(mode),test)
+      DEFINES_BASE += -D_TEST_
+    endif
 endif
+
 
 DEFINES_SER  = $(DEFINES_BASE)
 DEFINES_PAR  = $(DEFINES_BASE) -D_PAR_

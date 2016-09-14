@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:19
+2016-09-14     08:29:51
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -315,7 +315,7 @@ quantity                                    LJ
 <force**2>                     =            0.1823E+09
 <torque**2>x'                  =            0.7188E+06
 <torque**2>y'                  =            0.6871E+06
-<torque**2>z'                  =            0.9688E-29
+<torque**2>z'                  =            0.1145E-28
 <linear mom.>x                 =           -0.2284E+01
 <linear mom.>y                 =           -0.2521E+01
 <linear mom.>z                 =           -0.4657E+00
@@ -369,7 +369,7 @@ number density                 =      3.84458E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:21
+2016-09-14     08:29:52
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -462,7 +462,7 @@ quantity                                    LJ
 <force**2>                     =            0.1823E+09
 <torque**2>x'                  =            0.7188E+06
 <torque**2>y'                  =            0.6871E+06
-<torque**2>z'                  =            0.9688E-29
+<torque**2>z'                  =            0.1145E-28
 <linear mom.>x                 =           -0.2284E+01
 <linear mom.>y                 =           -0.2521E+01
 <linear mom.>z                 =           -0.4657E+00
@@ -5234,23 +5234,23 @@ rad = 15.0 l = 3                       2.6379E+07     3.8022E+06     1.2340E+07 
          Coordinate                   0.00         0.00
          ControlAver                  0.00         0.00
          MainAver                     0.00         0.00
-         DistFunc                     0.02         0.02
+         DistFunc                     0.03         0.02
          Group                        0.00         0.00
-         StaticDriver                 1.24         0.84
-          RDF                         0.06         0.04
-          AngDF                       0.05         0.04
+         StaticDriver                 1.10         0.82
+          RDF                         0.06         0.05
+          AngDF                       0.04         0.03
           Kirkwoodgk                  0.05         0.04
-          OriPolDF                    0.05         0.03
-          MultipolDF                  1.03         0.70
+          OriPolDF                    0.05         0.04
+          MultipolDF                  0.90         0.67
          IOMolsim                     0.04         0.03
          SetVList                     0.03         0.02
-         MDDriver                     0.13         0.09
+         MDDriver                     0.13         0.10
           VelVer                      0.00         0.00
-          UTotal                      0.13         0.09
+          UTotal                      0.13         0.10
            UTwoBodyP                  0.03         0.02
            UDipole                    0.10         0.07
             UDipoleP                  0.07         0.05
             UDipoleEwald              0.03         0.02
              UDipoleEwaldRecStd       0.03         0.02
  
-total cpu time since start (s)        1.62
+total cpu time since start (s)        1.48

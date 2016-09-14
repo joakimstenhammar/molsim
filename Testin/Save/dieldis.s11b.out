@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:30
+2016-09-14     08:30:04
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -250,7 +250,7 @@ total potential energy (NkT)   =        208.41664
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      2.98416E-11
  
-total cpu time since start (s)        0.00
+total cpu time since start (s)        0.01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -298,11 +298,11 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          2.40798        0.00000     -0.210E-13
+total potential energy         =          2.40798        0.00000      0.262E-13
  total two-body energy         =          0.00000        0.00000      0.000E+00
   jon1-jon1                    =          0.00000        0.00000      0.000E+00
- total one-body energy         =          2.40798        0.00000     -0.210E-13
-  jon1                         =          2.40798        0.00000     -0.210E-13
+ total one-body energy         =          2.40798        0.00000      0.262E-13
+  jon1                         =          2.40798        0.00000      0.262E-13
 enthalpy                       =          4.88569        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -321,7 +321,7 @@ number density                 =      2.98416E-11
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:30
+2016-09-14     08:30:04
 
 title   : one charge near a spherical dielectric boundary, check of energy evaulation               
 
@@ -441,11 +441,11 @@ number density                 =      2.98416E-11    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.28 
-         ControlAver           0.00         0.12 
-         MainAver              0.00         0.17 
-         IOMolsim              0.00         0.42 
-         SetVList              0.00         0.01 
+         Coordinate            0.00         0.23 
+         ControlAver           0.00         0.25 
+         MainAver              0.00         0.15 
+         IOMolsim              0.00         0.35 
+         SetVList              0.00         0.00 
          MCPass                0.00         0.00 
           SPartMove            0.00         0.00  
           DUTotal              0.00         0.00  

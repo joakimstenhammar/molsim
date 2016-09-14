@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:29
+2016-09-14     08:30:02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -339,18 +339,18 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -2.71649        0.07129     -0.103E-13
- total two-body energy         =          1.65115        0.01505     -0.118E-13
+total potential energy         =         -2.71649        0.07129     -0.975E-14
+ total two-body energy         =          1.65115        0.01505     -0.110E-13
   counterion-counterio         =          5.09515        0.01673     -0.170E-14
-  counterion-coion             =         -4.32897        0.01056      0.184E-14
+  counterion-coion             =         -4.32897        0.01056      0.154E-14
   coion-coion                  =          0.88497        0.00538      0.132E-14
- external potential            =         -4.36764        0.05773     -0.179E-14
+ external potential            =         -4.36764        0.05773     -0.134E-14
 enthalpy                       =          0.32282        0.07129
 cv                             =          2.35381
 temperature                    =        298.00000        0.00000
 pressure (excl. cont. contr.)  =          0.01019        0.00000
 number of particles            =        342.00000        0.00000
-volume                         =      1.69422E+08    4.47214E+00
+volume                         =      1.69422E+08    0.00000E+00
 
 total potential energy (NkT)   =         -1.09637
 pressure (NkT/V)(excl. contact)=          1.22666
@@ -407,18 +407,18 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -2.95876        0.06339     -0.158E-13
- total two-body energy         =          1.61991        0.01176     -0.341E-13
-  counterion-counterio         =          5.07009        0.00628     -0.118E-14
+total potential energy         =         -2.95876        0.06339     -0.145E-13
+ total two-body energy         =          1.61991        0.01176     -0.345E-13
+  counterion-counterio         =          5.07009        0.00628     -0.144E-14
   counterion-coion             =         -4.32781        0.00956     -0.968E-14
   coion-coion                  =          0.87762        0.00295      0.567E-15
- external potential            =         -4.57867        0.06297      0.185E-14
+ external potential            =         -4.57867        0.06297      0.312E-14
 enthalpy                       =          0.06355        0.06339
 cv                             =          1.86096
 temperature                    =        298.00000        0.00000
 pressure (excl. cont. contr.)  =          0.01013        0.00000
 number of particles            =        342.00000        0.00000
-volume                         =      1.69422E+08    4.47214E+00
+volume                         =      1.69422E+08    0.00000E+00
 
 total potential energy (NkT)   =         -1.19415
 pressure (NkT/V)(excl. contact)=          1.21980
@@ -431,7 +431,7 @@ number density                 =      2.01863E-06
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:29
+2016-09-14     08:30:02
 
 title   : charged cylinder, counterions, and coions (Jos)                                           
 
@@ -534,7 +534,7 @@ cv                             =          2.10015
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.01016        0.00001        0.00003        0.00001             4.
 number of particles            =        342.00000        0.00000        0.00000        0.00000             0.
-volume                         =      1.69422E+08    3.56884E-01    2.82843E+00    0.00000E+00             1.
+volume                         =      1.69422E+08    3.61476E-01    0.00000E+00    0.00000E+00             0.
 
 total potential energy (NkT)   =         -1.14526        0.04889
 pressure (NkT/V)(excl. contact)=          1.22323        0.00343
@@ -1097,18 +1097,18 @@ number of images made          =    1
          -------          ------------     --------
          Coordinate             0.00         0.01
          ControlAver            0.00         0.00
-         MainAver               0.00         0.00
-         DistFunc               0.01         0.04
+         MainAver               0.00         0.01
+         DistFunc               0.02         0.04
          Group                  0.00         0.00
-         StaticDriver           0.00         0.01
-          SPDF                  0.00         0.01 
+         StaticDriver           0.02         0.05
+          SPDF                  0.02         0.04 
          ImageDriver            0.00         0.01
          IOMolsim               0.01         0.02
-         SetVList               0.00         0.00
-         MCPass                 0.32         0.90
-          SPartMove             0.01         0.04 
-          DUTotal               0.27         0.79 
-           DUTwoBody            0.22         0.63  
-           DUExternal           0.02         0.05  
+         SetVList               0.00         0.01
+         MCPass                 0.33         0.86
+          SPartMove             0.02         0.05 
+          DUTotal               0.28         0.73 
+           DUTwoBody            0.21         0.55  
+           DUExternal           0.02         0.04  
  
-total cpu time since start (s)        0.37
+total cpu time since start (s)        0.41

@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:40:21
+2016-09-14     08:31:03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -317,7 +317,7 @@ total potential energy (NkT)   =          4.81464
 pressure (NkT/V)(excl. contact)=          2.60488
 pressure (kT) (excl. contact)  =      2.60488E-04
  
-total cpu time since start (s)        0.08
+total cpu time since start (s)        0.06
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -28245,12 +28245,12 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          9.39507        0.00000      0.520E-14
- total two-body energy         =          9.12875        0.00000      0.635E-14
+total potential energy         =          9.39507        0.00000      0.545E-14
+ total two-body energy         =          9.12875        0.00000      0.660E-14
   pe1-pe1                      =         15.17383        0.00000      0.824E-14
   pe1-pe2                      =        -20.07781        0.00000     -0.351E-14
   pe2-pe2                      =         14.03273        0.00000      0.113E-14
- bond energy                   =          0.26632        0.00000      0.133E-15
+ bond energy                   =          0.26632        0.00000     -0.133E-15
  angle energy                  =          0.00000        0.00000      0.000E+00
 enthalpy                       =         15.84922        0.00000
 cv                             =          0.00000
@@ -28324,7 +28324,7 @@ Average cluster size 1    1d: 20+mer 20-mer              1.45000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:40:22
+2016-09-14     08:31:03
 
 title   : oppositely charged polyions, 20 beads * 20v20 chains                                      
 
@@ -29314,23 +29314,23 @@ s.d. of 2d: 20+mer 20-mer
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.02         0.04
+         Coordinate             0.02         0.03
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
          DistFunc               0.00         0.00
-         StaticDriver           0.02         0.03
+         StaticDriver           0.01         0.03
           RDFChain              0.00         0.00 
           SFPBC                 0.01         0.01 
-          ClusterSD             0.01         0.01 
-         IOMolsim               0.03         0.04
+          ClusterSD             0.00         0.01 
+         IOMolsim               0.02         0.05
          SetVList               0.02         0.03
-         MCPass                 0.56         0.86
-          SlitherMove           0.08         0.12 
-          DUTotal               0.39         0.60 
-           DUTwoBody            0.38         0.58  
-          PivotMove             0.02         0.04 
+         MCPass                 0.44         0.86
+          SlitherMove           0.06         0.12 
+          DUTotal               0.30         0.59 
+           DUTwoBody            0.30         0.58  
+          PivotMove             0.02         0.03 
            DUBond               0.00         0.00  
-          SPartMove             0.03         0.05 
-          ChainMove             0.03         0.05 
+          SPartMove             0.03         0.06 
+          ChainMove             0.02         0.04 
  
-total cpu time since start (s)        0.70
+total cpu time since start (s)        0.55

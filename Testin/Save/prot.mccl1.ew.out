@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:40:23
+2016-09-14     08:31:04
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -308,7 +308,7 @@ total potential energy (NkT)   =         -2.60576
 pressure (NkT/V)(excl. contact)=          0.13115
 pressure (kT) (excl. contact)  =      3.99988E-06
  
-total cpu time since start (s)        0.17
+total cpu time since start (s)        0.22
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -364,8 +364,8 @@ total potential energy         =         -6.85601        0.00000      0.646E-08
  total two-body energy         =         -0.79759        0.00000      0.555E-07
   micelle-micelle              =          0.96537        0.00000     -0.193E-15
   micelle-ion                  =         -4.32018        0.00000      0.102E-07
-  ion-ion                      =          2.55722        0.00000      0.318E-13
- pot. energy from rec. space   =         -6.05843        0.00000     -0.258E-14
+  ion-ion                      =          2.55722        0.00000      0.316E-13
+ pot. energy from rec. space   =         -6.05843        0.00000     -0.246E-14
 enthalpy                       =         -6.53106        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -384,7 +384,7 @@ number density                 =      3.04987E-05
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:40:23
+2016-09-14     08:31:05
 
 title   : hs 60:1 system rho(m) = 0.5*10e-6 with a virtual site                                     
 
@@ -1689,14 +1689,14 @@ distribution functions
          Coordinate               0.04         0.07
          ControlAver              0.00         0.00
          MainAver                 0.00         0.00
-         DistFunc                 0.08         0.15
-         IOMolsim                 0.08         0.15
-         SetVList                 0.05         0.11
-         MCPass                   0.26         0.51
+         DistFunc                 0.08         0.14
+         IOMolsim                 0.08         0.14
+         SetVList                 0.08         0.13
+         MCPass                   0.29         0.52
           SPartMove               0.00         0.01
-          DUTotal                 0.24         0.49
-           DUTwoBody              0.22         0.44
-           DUTwoBodyEwald         0.02         0.03
-            UEwaldRecStd          0.02         0.03 
+          DUTotal                 0.28         0.50
+           DUTwoBody              0.24         0.42
+           DUTwoBodyEwald         0.04         0.07
+            UEwaldRecStd          0.03         0.05 
  
-total cpu time since start (s)        0.64
+total cpu time since start (s)        0.73

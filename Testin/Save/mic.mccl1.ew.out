@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:27
+2016-09-14     08:30:00
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -307,7 +307,7 @@ total potential energy (NkT)   =         -2.60576
 pressure (NkT/V)(excl. contact)=          0.13117
 pressure (kT) (excl. contact)  =      4.00050E-06
  
-total cpu time since start (s)        0.16
+total cpu time since start (s)        0.17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -361,10 +361,10 @@ quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =         -6.89988        0.00000      0.184E-08
  total two-body energy         =         -0.85230        0.00000      0.149E-07
-  micelle-micelle              =          0.94439        0.00000      0.395E-15
-  micelle-ion                  =         -4.36557        0.00000      0.256E-14
+  micelle-micelle              =          0.94439        0.00000      0.000E+00
+  micelle-ion                  =         -4.36557        0.00000      0.290E-14
   ion-ion                      =          2.56888        0.00000      0.495E-08
- pot. energy from rec. space   =         -6.04758        0.00000      0.616E-15
+ pot. energy from rec. space   =         -6.04758        0.00000     -0.986E-15
 enthalpy                       =         -6.57488        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -384,7 +384,7 @@ Average cluster size 1    1d: micelle                    1.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:28
+2016-09-14     08:30:00
 
 title   : hs 60:1 system rho(m) = 0.5*10e-6                                                         
 
@@ -2509,7 +2509,7 @@ no    function                         min            max            nbin       
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.04         0.07
+         Coordinate               0.04         0.08
          ControlAver              0.00         0.00
          MainAver                 0.00         0.00
          DistFunc                 0.07         0.14
@@ -2517,13 +2517,13 @@ no    function                         min            max            nbin       
           G3Dist                  0.00         0.01
           SFPBC                   0.01         0.02
           ClusterSD               0.00         0.00
-         IOMolsim                 0.08         0.16
-         SetVList                 0.10         0.20
-         MCPass                   0.19         0.39
+         IOMolsim                 0.07         0.16
+         SetVList                 0.08         0.18
+         MCPass                   0.19         0.40
           SPartMove               0.00         0.01
-          DUTotal                 0.18         0.36
-           DUTwoBody              0.15         0.30
-           DUTwoBodyEwald         0.03         0.05
-            UEwaldRecStd          0.02         0.04 
+          DUTotal                 0.18         0.38
+           DUTwoBody              0.14         0.31
+           DUTwoBodyEwald         0.03         0.06
+            UEwaldRecStd          0.02         0.05 
  
-total cpu time since start (s)        0.62
+total cpu time since start (s)        0.59

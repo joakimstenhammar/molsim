@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:47
+2016-09-14     08:30:26
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -468,7 +468,7 @@ total potential energy (NkT)   =          2.85109
 pressure (NkT/V)(excl. contact)=         14.88263
 pressure (kT) (excl. contact)  =      4.99568E-01
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.06
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -556,7 +556,7 @@ ind. dip. mom.: h              =          0.02313        0.09027
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:50
+2016-09-14     08:30:29
 
 title   : test of md with nemo potentials, separate geom and interaction sites                      
 
@@ -913,13 +913,13 @@ orientation order, z'-axis     =                0.0127
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
 total energy                   =         -2.98029        4.83568        7.77531       73.23326            23.
-kinetic energy                 =         15.06391        1.23772        3.91933      194.38691            11.
-total potential energy         =        -18.04420        4.41552        9.45030      279.92470            21.
- total two-body energy         =         17.63625        2.11958        4.05635       69.17990            23.
-  water-water                  =         17.63625        2.11958        4.05635       69.17990            23.
- electrostatic energy          =        -28.14289        4.96164       10.31544      277.11046            22.
+kinetic energy                 =         15.06391        1.23772        3.91933      194.38690            11.
+total potential energy         =        -18.04420        4.41552        9.45030      279.92469            21.
+ total two-body energy         =         17.63625        2.11958        4.05635       69.17989            23.
+  water-water                  =         17.63625        2.11958        4.05635       69.17989            23.
+ electrostatic energy          =        -28.14289        4.96164       10.31544      277.11045            22.
  polarization energy           =         -7.53757        1.55548        3.05099       59.18602            22.
-enthalpy                       =          2.79137        6.85919       14.45829      457.66199            20.
+enthalpy                       =          2.79137        6.85919       14.45829      457.66198            20.
 cv                             =         -0.16479
 temperature                    =        603.92331       49.62116      157.12870       36.07924            11.
 pressure (excl. cont. contr.)  =       1161.36680      137.61122      283.68289       46.03762            19.
@@ -1377,21 +1377,21 @@ time (middle, lower, upper)    n samp          value precision          value pr
          -------           ------------     --------
          Coordinate              0.00         0.00
          ControlAver             0.00         0.00
-         MainAver                0.00         0.00
+         MainAver                0.01         0.00
          DistFunc                0.09         0.03
          Group                   0.00         0.00
-         DynamicDriver           0.34         0.12
-          IDMTCF                 0.34         0.12
+         DynamicDriver           0.42         0.15
+          IDMTCF                 0.42         0.15
          IOMolsim                0.00         0.00
          SetVList                0.04         0.01
-         MDDriver                2.28         0.83
+         MDDriver                2.24         0.80
           VelVer                 0.01         0.00
-          UTotal                 2.27         0.82
-           UTwoBodyP             0.40         0.15 
-           UManyBodyP            1.86         0.68 
-            FieldStat            0.52         0.19  
-            FieldTot             0.94         0.34  
-            IterIdm              0.40         0.15  
-             FieldIdm            0.40         0.14   
+          UTotal                 2.23         0.79
+           UTwoBodyP             0.42         0.15 
+           UManyBodyP            1.80         0.64 
+            FieldStat            0.51         0.18  
+            FieldTot             0.86         0.31  
+            IterIdm              0.43         0.15  
+             FieldIdm            0.43         0.15   
  
-total cpu time since start (s)        2.80
+total cpu time since start (s)        2.86
