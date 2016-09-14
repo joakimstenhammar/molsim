@@ -199,3 +199,5 @@ hs.b2.mix.out
 bugfixes.ltime.out
 sso.lmcsep.out
 sso.sso.out
+hierarchical.mc.out
+copoly-seq.mc.out
