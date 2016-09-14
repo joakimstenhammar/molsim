@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:42
+2016-09-14     08:30:22
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -440,7 +440,7 @@ total potential energy (NkT)   =         -5.81700
 pressure (NkT/V)(excl. contact)=          5.55262
 pressure (kT) (excl. contact)  =      1.86386E-01
  
-total cpu time since start (s)        0.19
+total cpu time since start (s)        0.18
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -535,7 +535,7 @@ ind. dip. mom.: h              =          0.01188        0.00089
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:44
+2016-09-14     08:30:23
 
 title   : nemo water, mcall, ewald summation                                                        
 
@@ -1182,20 +1182,20 @@ distribution functions
          DistFunc                       0.01         0.01
          IOMolsim                       0.00         0.00
          SetVList                       0.00         0.00
-         MCallPass                      0.85         0.98
+         MCallPass                      0.82         0.97
           MCallPass_move                0.00         0.00
-          UTotal                        0.85         0.98
-           UTwoBodyP                    0.04         0.04
-           UManyBodyP                   0.81         0.93
-            FieldStat                   0.14         0.16
+          UTotal                        0.82         0.97
+           UTwoBodyP                    0.04         0.05
+           UManyBodyP                   0.78         0.92
+            FieldStat                   0.13         0.15
             FieldStatEwald              0.13         0.15
              FieldStatEwaldRecStd       0.13         0.15
-            FieldTot                    0.18         0.21
-            FieldTotEwald               0.19         0.22
-             FieldTotEwaldRecStd        0.19         0.22
-            IterIdm                     0.17         0.20
-             FieldIdm                   0.10         0.12
-            FieldIdmEwald               0.07         0.08
-             FieldIdmEwaldRecStd        0.07         0.08
+            FieldTot                    0.16         0.19
+            FieldTotEwald               0.17         0.21
+             FieldTotEwaldRecStd        0.17         0.20
+            IterIdm                     0.19         0.22
+             FieldIdm                   0.11         0.13
+            FieldIdmEwald               0.08         0.09
+             FieldIdmEwaldRecStd        0.08         0.09
  
-total cpu time since start (s)        1.06
+total cpu time since start (s)        1.03

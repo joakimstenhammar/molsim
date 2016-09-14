@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:38:45
+2016-09-14     08:29:17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -476,7 +476,7 @@ number density                 =      3.11282E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:38:46
+2016-09-14     08:29:18
 
 title   : test of molsim: aqueous solution of benzene                                               
 
@@ -635,7 +635,7 @@ total potential energy         =        -12.21285        0.18235        0.90448 
   water-water                  =        -13.55343        0.09533        0.19698        6.31630             5.
   water-benzene                =          1.34058        0.26233        1.02620       32.22956             1.
   benzene-benzene              =          0.00000        0.00000        0.00000        0.00000             0.
-enthalpy                       =        -13.98407        1.65383        9.78080      202.95120             1.
+enthalpy                       =        -13.98407        1.65383        9.78080      202.95121             1.
 cv                             =         12.47171
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =        -92.91955       76.24803      458.04664       37.33786             1.
@@ -6093,28 +6093,28 @@ time (middle, lower, upper)    n samp          value precision          value pr
          MainAver                0.00         0.00
          DistFunc                0.03         0.04
          Group                   0.00         0.00
-         StaticDriver            0.71         0.76
-          RDF                    0.17         0.18
-          AngDF                  0.10         0.10
+         StaticDriver            0.70         0.73
+          RDF                    0.15         0.16
+          AngDF                  0.09         0.09
           AngExtDF               0.00         0.00
-          NNHB                   0.06         0.06
+          NNHB                   0.06         0.07
           NNDF                   0.02         0.02
-          EnergyDF               0.34         0.36
+          EnergyDF               0.35         0.37
           crystalformat          0.00         0.00
-         DynamicDriver           0.04         0.04
+         DynamicDriver           0.05         0.05
           MSD                    0.01         0.01
-          OrixTCF                0.00         0.00
+          OrixTCF                0.01         0.01
           OriyTCF                0.01         0.01
           OrizTCF                0.00         0.00
           LinVelTCF              0.00         0.00
           AngVelTCF              0.01         0.01
-          ForTCF                 0.00         0.00
+          ForTCF                 0.01         0.01
           TorTCF                 0.00         0.00
          IOMolsim                0.00         0.00
          SetVList                0.02         0.02
-         MDDriver                0.14         0.15
+         MDDriver                0.15         0.15
           VelVer                 0.00         0.00
           UTotal                 0.14         0.15
-           UTwoBodyP             0.13         0.14 
+           UTwoBodyP             0.14         0.15 
  
-total cpu time since start (s)        0.97
+total cpu time since start (s)        0.98

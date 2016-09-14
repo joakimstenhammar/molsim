@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:46
+2016-09-14     08:30:25
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1113,7 +1113,7 @@ ind. dip. mom.: h              =          0.00880        0.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:46
+2016-09-14     08:30:25
 
 title   : nemo water, ewald summation                                                               
 
@@ -1539,22 +1539,22 @@ distribution functions
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.00         0.04
-         ControlAver                    0.00         0.04
+         Coordinate                     0.00         0.05
+         ControlAver                    0.00         0.12
          MainAver                       0.00         0.10
-         DistFunc                       0.00         0.32
-         IOMolsim                       0.00         0.11
+         DistFunc                       0.00         0.28
+         IOMolsim                       0.00         0.08
          SetVList                       0.00         0.00
-         MDDriver                       0.00         0.39
+         MDDriver                       0.00         0.37
           VelVer                        0.00         0.00
-          UTotal                        0.00         0.39
+          UTotal                        0.00         0.37
            UTwoBodyP                    0.00         0.00
-           UManyBodyP                   0.00         0.39
+           UManyBodyP                   0.00         0.37
             FieldStat                   0.00         0.01
             FieldStatEwald              0.00         0.15
-             FieldStatEwaldRecStd       0.00         0.12
-            FieldTot                    0.00         0.00
-            FieldTotEwald               0.00         0.22
-             FieldTotEwaldRecStd        0.00         0.20
+             FieldStatEwaldRecStd       0.00         0.14
+            FieldTot                    0.00         0.01
+            FieldTotEwald               0.00         0.19
+             FieldTotEwaldRecStd        0.00         0.17
  
 total cpu time since start (s)        0.03

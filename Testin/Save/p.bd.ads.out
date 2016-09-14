@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:40:05
+2016-09-14     08:30:45
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -263,7 +263,7 @@ total potential energy (NkT)   =         -0.02260
 pressure (NkT/V)(excl. contact)=          1.11529
 pressure (kT) (excl. contact)  =      2.45364E-03
  
-total cpu time since start (s)        1.49
+total cpu time since start (s)        1.57
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -387,7 +387,7 @@ asphericity (<2:nd moments>)   =          0.41059
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:40:09
+2016-09-14     08:30:50
 
 title   : hd 20-mer adsorption                                                                      
 
@@ -441,7 +441,7 @@ maximum           5280.0                    102.0                      283808.0 
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =          0.60127        0.11619        0.22791       89.68926            43.
+total potential energy         =          0.60127        0.11619        0.22791       89.68925            43.
  total two-body energy         =          0.08498        0.00553        0.01478        5.93232            35.
   polymer-polymer              =          0.08498        0.00553        0.01478        5.93232            35.
  bond energy                   =          0.60443        0.11247        0.21678       81.63103            43.
@@ -792,7 +792,7 @@ bulk density calculated between =    90.00 and  110.00
  
 object type      nBulk       nTot        nExe       nExe/2      rhoBulk     nExe/(2*Lx*Ly)
 -----------      -----       ----        ----       ------      -------     --------------
-gr:1             448.7       874.5      -23.00      -11.50      0.3740E-03 -0.1150E-02
+gr:1             448.8       874.5      -23.00      -11.50      0.3740E-03 -0.1150E-02
 
 **************************************************************************************************************
 *                                   loop, tail, and train characteristics                                    *
@@ -2088,7 +2088,7 @@ adsorption length dist. function; ads. start separated
  
          section           cpu time (s)     fraction
          -------           ------------     --------
-         Coordinate              0.72         0.15
+         Coordinate              0.74         0.15
          MainAver                0.03         0.01
          Group                   0.02         0.00
          StaticDriver            0.07         0.01
@@ -2096,12 +2096,12 @@ adsorption length dist. function; ads. start separated
           LoopTailTrain          0.00         0.00
           AdsPropDyn             0.05         0.01
           AdsEventDyn            0.00         0.00
-         IOMolsim                1.35         0.29
-         SetVList                0.58         0.12
-         BDDriver                1.89         0.41
-          UTotal                 1.74         0.37
-           UTwoBodyA             1.59         0.34 
+         IOMolsim                1.42         0.29
+         SetVList                0.61         0.13
+         BDDriver                1.97         0.41
+          UTotal                 1.82         0.38
+           UTwoBodyA             1.70         0.35 
            UBond                 0.05         0.01 
-           UExternal             0.06         0.01 
+           UExternal             0.02         0.00 
  
-total cpu time since start (s)        4.71
+total cpu time since start (s)        4.92

@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:40:26
+2016-09-14     08:31:08
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -531,9 +531,9 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =        -18.41352        2.07523     -0.347E-14
- total two-body energy         =        -18.41352        2.07523     -0.347E-14
-  protein-protein              =        -18.41352        2.07523     -0.347E-14
+total potential energy         =        -18.41352        2.07523      0.544E-14
+ total two-body energy         =        -18.41352        2.07523      0.544E-14
+  protein-protein              =        -18.41352        2.07523      0.544E-14
 enthalpy                       =        -15.93580        2.07523
 cv                             =          5.83264
 temperature                    =        298.00000        0.00000
@@ -569,7 +569,7 @@ fractional charge: com         =            0.000          0.000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:40:30
+2016-09-14     08:31:11
 
 title   : 1 lysozyme, Rudi                                                                          
 
@@ -743,7 +743,7 @@ total potential energy         =        -18.41352        0.07269        2.08125 
 enthalpy                       =        -15.93580        0.07269        2.08125        0.03576           123.
 cv                             =          5.83264
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
-pressure (excl. cont. contr.)  =          0.00411        0.00000        0.00000        0.00000             0.
+pressure (excl. cont. contr.)  =          0.00411        0.00000        0.00000        0.00000             3.
 number of particles            =          1.00000        0.00000        0.00000        0.00000             0.
 volume                         =      1.00000E+06    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
@@ -801,14 +801,14 @@ quadrupole moment (com, max)    =       454.73925        3.19383       91.20772 
          section          cpu time (s)     fraction
          -------          ------------     --------
          Coordinate             0.00         0.00
-         ControlAver            0.15         0.05
-         MainAver               1.18         0.37
-         StaticDriver           0.39         0.12
-         IOMolsim               0.15         0.05
+         ControlAver            0.15         0.06
+         MainAver               0.48         0.18
+         StaticDriver           0.42         0.16
+         IOMolsim               0.16         0.06
          SetVList               0.00         0.00
-         MCPass                 1.36         0.42
-          ChargeChange          0.18         0.06 
-          DUTotal               0.62         0.19 
-           DUTwoBody            0.29         0.09  
+         MCPass                 1.47         0.55
+          ChargeChange          0.18         0.07 
+          DUTotal               0.73         0.27 
+           DUTwoBody            0.36         0.13  
  
-total cpu time since start (s)        4.03
+total cpu time since start (s)        3.44

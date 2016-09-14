@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:23
+2016-09-14     08:29:56
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -461,10 +461,10 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -4.33535        1.68115      0.745E-14
- total two-body energy         =         -4.33535        1.68115      0.745E-14
+total potential energy         =         -4.33535        1.68115      0.693E-14
+ total two-body energy         =         -4.33535        1.68115      0.693E-14
   macroion-macroion            =         10.63218        0.70949      0.000E+00
-  macroion-ion1                =        -24.17867        1.13971      0.567E-15
+  macroion-ion1                =        -24.17867        1.13971      0.425E-15
   ion1-ion1                    =          9.21114        0.14747      0.451E-14
 enthalpy                       =         -2.45220        1.68115
 cv                             =        466.98961
@@ -529,10 +529,10 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -9.74301        0.98111      0.000E+00
- total two-body energy         =         -9.74301        0.98111      0.000E+00
+total potential energy         =         -9.74301        0.98111      0.346E-15
+ total two-body energy         =         -9.74301        0.98111      0.346E-15
   macroion-macroion            =          8.48560        0.39521      0.000E+00
-  macroion-ion1                =        -27.95606        0.72776      0.116E-14
+  macroion-ion1                =        -27.95606        0.72776      0.142E-14
   ion1-ion1                    =          9.72744        0.13330      0.561E-15
 enthalpy                       =         -9.64268        0.98111
 cv                             =        159.04643
@@ -552,7 +552,7 @@ number density                 =      1.52457E-05
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:23
+2016-09-14     08:29:56
 
 title   : 2*(60:1) hs system, pmf                                                                   
 
@@ -1324,14 +1324,14 @@ potential of mean force between two particles
          -------          ------------     --------
          Coordinate             0.00         0.04
          ControlAver            0.00         0.01
-         MainAver               0.00         0.02
-         StaticDriver           0.00         0.08
-          PotMeanForce          0.00         0.08 
-         IOMolsim               0.00         0.02
+         MainAver               0.00         0.01
+         StaticDriver           0.01         0.09
+          PotMeanForce          0.01         0.09 
+         IOMolsim               0.00         0.04
          SetVList               0.00         0.00
          MCPass                 0.05         0.82
-          SPartMove             0.00         0.06 
-          DUTotal               0.04         0.62 
-           DUTwoBody            0.03         0.50  
+          SPartMove             0.01         0.10 
+          DUTotal               0.04         0.60 
+           DUTwoBody            0.03         0.45  
  
-total cpu time since start (s)        0.07
+total cpu time since start (s)        0.08

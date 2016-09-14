@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:12
+2016-09-14     08:29:44
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -275,7 +275,7 @@ total potential energy (NkT)   =         -4.08214
 pressure (NkT/V)(excl. contact)=         25.75664
 pressure (kT) (excl. contact)  =      9.90235E-01
  
-total cpu time since start (s)        0.20
+total cpu time since start (s)        0.18
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -327,8 +327,8 @@ orientation order, z'-axis     =                0.9985
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =        -12.04516        0.00000      0.603E-09
- total two-body energy         =         -0.09080        0.00000      0.135E-10
-  LJ-LJ                        =         -0.09080        0.00000      0.135E-10
+ total two-body energy         =         -0.09080        0.00000      0.133E-10
+  LJ-LJ                        =         -0.09080        0.00000      0.133E-10
  electrostatic energy          =        -11.95436        0.00000      0.607E-09
 enthalpy                       =         55.57940        0.00000
 cv                             =          0.00000
@@ -348,7 +348,7 @@ number density                 =      3.84458E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:14
+2016-09-14     08:29:46
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -5226,21 +5226,21 @@ number of images made          =    1
          MainAver                      0.00         0.00
          DistFunc                      0.03         0.02
          Group                         0.00         0.00
-         StaticDriver                  1.23         0.72
-          RDF                          0.06         0.03
-          AngDF                        0.06         0.03
-          Kirkwoodgk                   0.05         0.03
+         StaticDriver                  1.07         0.70
+          RDF                          0.06         0.04
+          AngDF                        0.04         0.03
+          Kirkwoodgk                   0.04         0.02
           OriPolDF                     0.05         0.03
-          MultipolDF                   1.03         0.60
-         ImageDriver                   0.00         0.00
+          MultipolDF                   0.89         0.58
+         ImageDriver                   0.01         0.00
          IOMolsim                      0.05         0.03
          SetVList                      0.04         0.02
-         MCPass                        0.35         0.20
+         MCPass                        0.33         0.22
           SPartMove                    0.00         0.00
-          DUTotal                      0.34         0.20
-           DUTwoBody                   0.08         0.05
-           DUDipole                    0.26         0.15
-            DUDipoleEwald              0.16         0.09
-             DUDipoleEwaldRecStd       0.15         0.09
+          DUTotal                      0.32         0.21
+           DUTwoBody                   0.07         0.05
+           DUDipole                    0.25         0.16
+            DUDipoleEwald              0.15         0.10
+             DUDipoleEwaldRecStd       0.14         0.09
  
-total cpu time since start (s)        2.13
+total cpu time since start (s)        1.87

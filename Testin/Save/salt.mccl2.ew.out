@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:01
+2016-09-14     08:29:34
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -508,7 +508,7 @@ total potential energy (NkT)   =         -1.01853
 pressure (NkT/V)(excl. contact)=          0.66047
 pressure (kT) (excl. contact)  =      7.95616E-04
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -573,12 +573,12 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -6.54792        0.96485     -0.215E-14
- total two-body energy         =         -2.88363        0.63341     -0.170E-14
-  jon1-jon1                    =          1.78531        0.12537      0.404E-14
-  jon1-jon2                    =         -6.30942        0.48464     -0.172E-14
-  jon2-jon2                    =          1.64048        0.05573     -0.484E-15
- pot. energy from rec. space   =         -3.66428        0.33215     -0.148E-14
+total potential energy         =         -6.54792        0.96485     -0.244E-14
+ total two-body energy         =         -2.88363        0.63341     -0.186E-14
+  jon1-jon1                    =          1.78531        0.12537      0.451E-14
+  jon1-jon2                    =         -6.30942        0.48464     -0.203E-14
+  jon2-jon2                    =          1.64048        0.05573     -0.194E-14
+ pot. energy from rec. space   =         -3.66428        0.33215     -0.215E-14
 enthalpy                       =         -4.91145        0.96485
 cv                             =        272.33950
 temperature                    =        298.00000        0.00000
@@ -655,12 +655,12 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -7.62295        0.16963      0.281E-14
- total two-body energy         =         -3.64387        0.14340      0.136E-14
-  jon1-jon1                    =          1.66812        0.06252     -0.249E-14
-  jon1-jon2                    =         -6.87080        0.08757     -0.603E-15
-  jon2-jon2                    =          1.55880        0.03199     -0.222E-14
- pot. energy from rec. space   =         -3.97908        0.03090     -0.789E-15
+total potential energy         =         -7.62295        0.16963      0.187E-14
+ total two-body energy         =         -3.64387        0.14340      0.682E-15
+  jon1-jon1                    =          1.66812        0.06252     -0.200E-14
+  jon1-jon2                    =         -6.87080        0.08757     -0.452E-15
+  jon2-jon2                    =          1.55880        0.03199     -0.171E-14
+ pot. energy from rec. space   =         -3.97908        0.03090     -0.658E-15
 enthalpy                       =         -7.58770        0.16963
 cv                             =          8.41816
 temperature                    =        298.00000        0.00000
@@ -680,7 +680,7 @@ Average cluster size 1    1d: jon1 jon2                  1.90741
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:02
+2016-09-14     08:29:35
 
 title   : 0.001 m 2:2 salt solutioni, test of cluster 2 trial move, txmembcl2                       
 
@@ -1011,7 +1011,7 @@ quantity                                  average      precision    fluctuation 
 total potential energy         =         -7.08543        0.35338        0.90192       55.81729             3.
  total two-body energy         =         -3.26375        0.24115        0.60350       34.99026             3.
   jon1-jon1                    =          1.72671        0.03101        0.11615        5.66791             1.
-  jon1-jon2                    =         -6.59011        0.18882        0.45959       26.27955             4.
+  jon1-jon2                    =         -6.59011        0.18882        0.45959       26.27954             4.
   jon2-jon2                    =          1.59964        0.02044        0.05776        2.10700             2.
  pot. energy from rec. space   =         -3.82168        0.11240        0.30028       20.52205             3.
 enthalpy                       =         -6.24958        0.71200        1.46650       25.30748             4.
@@ -1416,20 +1416,20 @@ s.d. of 2d: jon1 jon2
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.00         0.01
+         Coordinate               0.00         0.00
          ControlAver              0.00         0.00
          MainAver                 0.00         0.00
          DistFunc                 0.01         0.01
          StaticDriver             0.00         0.00
           ClusterSD               0.00         0.00
-         IOMolsim                 0.00         0.01
+         IOMolsim                 0.00         0.00
          SetVList                 0.00         0.00
-         MCPass                   0.76         0.97
+         MCPass                   1.00         0.97
           SPartMove               0.01         0.01
-          DUTotal                 0.54         0.69
-           DUTwoBody              0.17         0.22
-           DUTwoBodyEwald         0.35         0.44
-            UEwaldRecStd          0.34         0.43 
-          SPartCl2Move            0.18         0.23
+          DUTotal                 0.77         0.76
+           DUTwoBody              0.18         0.17
+           DUTwoBodyEwald         0.58         0.56
+            UEwaldRecStd          0.57         0.55 
+          SPartCl2Move            0.19         0.18
  
-total cpu time since start (s)        0.80
+total cpu time since start (s)        1.05

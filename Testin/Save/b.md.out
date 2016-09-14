@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:33
+2016-09-14     08:30:12
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1080,7 +1080,7 @@ particle 108     x'y' = -0.503E-02
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 velocities: Maxwell distribution
 
-linear moments (x,y,z)         =    -0.185E-12   0.782E-13   0.142E-11
+linear moments (x,y,z)         =     0.629E-12   0.249E-12   0.654E-12
 angular moments (x,y,z)        =     0.167E+04    805.      -0.179E+04
 
 first macrostep                =      1
@@ -1386,9 +1386,9 @@ quantity                                    benzene
 <torque**2>x'                  =            0.6365E+06
 <torque**2>y'                  =            0.2402E+06
 <torque**2>z'                  =            0.7766E+06
-<linear mom.>x                 =           -0.3322E-14
-<linear mom.>y                 =            0.4901E-14
-<linear mom.>z                 =            0.4408E-14
+<linear mom.>x                 =            0.3068E-14
+<linear mom.>y                 =            0.5987E-14
+<linear mom.>z                 =           -0.1776E-14
 <angular mom.>x                =           -0.2156E+03
 <angular mom.>y                =            0.2204E+03
 <angular mom.>z                =            0.2349E+03
@@ -1438,7 +1438,7 @@ number density                 =      6.66112E-03
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:33
+2016-09-14     08:30:13
 
 title   : liquid benzene                                                                            
 
@@ -1728,9 +1728,9 @@ quantity                                    benzene
 <torque**2>x'                  =            0.6365E+06
 <torque**2>y'                  =            0.2402E+06
 <torque**2>z'                  =            0.7766E+06
-<linear mom.>x                 =           -0.3322E-14
-<linear mom.>y                 =            0.4901E-14
-<linear mom.>z                 =            0.4408E-14
+<linear mom.>x                 =            0.3068E-14
+<linear mom.>y                 =            0.5987E-14
+<linear mom.>z                 =           -0.1776E-14
 <angular mom.>x                =           -0.2156E+03
 <angular mom.>y                =            0.2204E+03
 <angular mom.>z                =            0.2349E+03
@@ -2255,15 +2255,15 @@ s.d. of in-plane
          -------          ------------     --------
          Coordinate             0.01         0.03
          ControlAver            0.00         0.00
-         MainAver               0.00         0.00
-         DistFunc               0.12         0.46
+         MainAver               0.00         0.01
+         DistFunc               0.12         0.45
          StaticDriver           0.00         0.01
           XYProjectDF           0.00         0.01 
          IOMolsim               0.05         0.20
          SetVList               0.00         0.00
-         MDDriver               0.08         0.30
+         MDDriver               0.08         0.31
           Gear                  0.00         0.00 
-          UTotal                0.08         0.30 
-           UTwoBodyP            0.08         0.30  
+          UTotal                0.08         0.31 
+           UTwoBodyP            0.08         0.31  
  
 total cpu time since start (s)        0.31

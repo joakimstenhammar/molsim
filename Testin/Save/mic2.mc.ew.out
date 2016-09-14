@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:39:29
+2016-09-14     08:30:02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -428,18 +428,18 @@ orientation order, z'-axis     =                1.0000              1.0000      
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =         -1.02972        0.00000     -0.878E-15
- total two-body energy         =         -0.08044        0.00000      0.401E-14
+ total two-body energy         =         -0.08044        0.00000      0.241E-14
   micelle1-micelle1            =          0.05001        0.00000      0.161E-15
-  micelle1-ion2                =         -0.11918        0.00000     -0.407E-15
-  micelle1-micelle3            =         -0.06696        0.00000     -0.121E-15
-  micelle1-ion4                =          0.10069        0.00000     -0.802E-15
-  ion2-ion2                    =          0.06019        0.00000     -0.134E-14
-  ion2-micelle3                =          0.10104        0.00000     -0.799E-15
-  ion2-ion4                    =         -0.14381        0.00000      0.124E-14
-  micelle3-micelle3            =          0.01154        0.00000     -0.175E-15
-  micelle3-ion4                =         -0.14198        0.00000      0.227E-15
-  ion4-ion4                    =          0.06803        0.00000      0.249E-14
- pot. energy from rec. space   =         -0.94928        0.00000     -0.122E-14
+  micelle1-ion2                =         -0.11918        0.00000     -0.949E-15
+  micelle1-micelle3            =         -0.06696        0.00000      0.121E-15
+  micelle1-ion4                =          0.10069        0.00000     -0.481E-15
+  ion2-ion2                    =          0.06019        0.00000     -0.174E-14
+  ion2-micelle3                =          0.10104        0.00000     -0.112E-14
+  ion2-ion4                    =         -0.14381        0.00000      0.112E-14
+  micelle3-micelle3            =          0.01154        0.00000      0.525E-15
+  micelle3-ion4                =         -0.14198        0.00000     -0.341E-15
+  ion4-ion4                    =          0.06803        0.00000      0.309E-14
+ pot. energy from rec. space   =         -0.94928        0.00000     -0.259E-14
 enthalpy                       =          1.11327        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -459,7 +459,7 @@ Average cluster size 1    1d: micelle1 micelle3          1.40000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:39:29
+2016-09-14     08:30:02
 
 title   : binary mixture of oppositly charged macroions                                             
 
@@ -2566,17 +2566,17 @@ s.d. of 2d: micelle1 micelle3
          -------            ------------     --------
          Coordinate               0.01         0.06
          ControlAver              0.00         0.01
-         MainAver                 0.00         0.01
-         DistFunc                 0.03         0.30
+         MainAver                 0.00         0.00
+         DistFunc                 0.02         0.27
          StaticDriver             0.00         0.02
           ClusterSD               0.00         0.02
-         IOMolsim                 0.01         0.10
-         SetVList                 0.01         0.07
-         MCPass                   0.04         0.43
-          SPartMove               0.00         0.01
-          DUTotal                 0.04         0.40
-           DUTwoBody              0.01         0.06
-           DUTwoBodyEwald         0.03         0.31
-            UEwaldRecStd          0.03         0.30 
+         IOMolsim                 0.01         0.12
+         SetVList                 0.01         0.06
+         MCPass                   0.04         0.46
+          SPartMove               0.00         0.00
+          DUTotal                 0.04         0.43
+           DUTwoBody              0.00         0.03
+           DUTwoBodyEwald         0.04         0.39
+            UEwaldRecStd          0.04         0.39 
  
 total cpu time since start (s)        0.13

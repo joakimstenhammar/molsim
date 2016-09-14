@@ -4249,7 +4249,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-13     16:40:52
+2016-09-14     08:31:35
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -6809,7 +6809,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-13     16:40:52
+2016-09-14     08:31:35
 
 title   : bottle-brush: large, adsorbed                                                             
 
@@ -9445,22 +9445,22 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.04         0.19
-         ControlAver            0.00         0.00
+         Coordinate             0.04         0.20
+         ControlAver            0.00         0.01
          MainAver               0.00         0.01
          Group                  0.00         0.00
-         StaticDriver           0.00         0.00
-          SPDF                  0.00         0.00 
+         StaticDriver           0.00         0.01
+          SPDF                  0.00         0.01 
          ImageDriver            0.02         0.08
          IOMolsim               0.03         0.16
          SetVList               0.02         0.11
-         MCPass                 0.09         0.43
+         MCPass                 0.09         0.42
           PivotMove             0.00         0.01 
-          DUTotal               0.08         0.39 
+          DUTotal               0.08         0.38 
            DUTwoBody            0.07         0.33  
           SPartMove             0.00         0.01 
-           DUBond               0.00         0.00  
-         DUCrossLink            0.00         0.01
+           DUBond               0.00         0.01  
+         DUCrossLink            0.00         0.00
            DUExternal           0.00         0.01  
  
 total cpu time since start (s)        0.25
