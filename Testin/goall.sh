@@ -276,6 +276,7 @@ $molsim  ltime                    $core
 
 #complexation-analysis
 $molsim  hierarchical.mc          $core
+$molsim  copoly-seq.mc            $core
 
 echo
 echo "Remove group and dump files"

@@ -197,3 +197,5 @@ w.mc.mix.out
 b.md.mix.out 
 hs.b2.mix.out 
 ltime.out
+hierarchical.mc.out
+copoly-seq.mc.out
