@@ -187,8 +187,11 @@ module EnergyModule
    type(C_PTR) :: qmesh_ptr, qmeshtm_ptr, fqmesh_ptr              ! c-pointers for the allocation of the above
    type(C_PTR) :: plan_fwd, plan_bwd                              ! pointers to store the plan for forward and backward
    logical, save :: plan_fwd_done=.false., plan_bwd_done=.false.
-!  integer(C_INT), parameter :: plan_methode = FFTW_ESTIMATE      ! select a planning strategy
+# ifdef _TEST_
+   integer(C_INT), parameter :: plan_methode = FFTW_ESTIMATE      ! select a planning strategy
+# else
    integer(C_INT), parameter :: plan_methode = FFTW_MEASURE       ! select a planning strategy
+# endif
 !  integer(C_INT), parameter :: plan_methode = FFTW_PATIENT       ! select a planning strategy
 
    real(8),   allocatable :: meshfac(:,:,:)  ! influence function in reciprocal space
