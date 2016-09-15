@@ -2532,6 +2532,8 @@ subroutine StaticUser(iStage)
       if (txuser(1:6) == 'jasper') call BondOrder(iStage)
       if (txuser == 'anna') call ChainBeadCylContact(iStage)
 
+      if (txuser(1:4) == 'comp') call DoComplexation(iStage)
+
       if(txuser == 'ellipsoid') then     ! ellipsoid Erik W
 !        call Min(iStage)
           call S1(iStage)
@@ -9628,4 +9630,42 @@ subroutine JosUser(iMode)
    end if
 
 end subroutine JosUser
+
+!************************************************************************
+!*                                                                      *
+!*     ComplexationModule                                               *
+!*                                                                      *
+!************************************************************************
+
+! ... Module for analysing the Complexation
+module ComplexationModule
+   implicit none
+   private
+   public  ComplexationDriver
+
+   contains
+
+      !************************************************************************
+      !*                                                                      *
+      !*     ComplexationDriver                                               *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Driver for the Complexation Analysis
+      
+      subroutine ComplexationDriver(iStage)
+         implicit none
+         integer(4), intent(in)  :: iStage      ! event of SSO-Move
+      end subroutine
+
+end module ComplexationModule
+
+
+
+subroutine DoComplexation(iStage)
+   use ComplexationModule, only: ComplexationDriver
+   implicit none
+   integer(4), intent(in)  :: iStage      ! event of SSO-Move
+   call ComplexationDriver(iStage)
+end subroutine
 
