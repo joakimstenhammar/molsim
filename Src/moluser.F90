@@ -2590,7 +2590,7 @@ subroutine StaticUser(iStage)
 
 ! ... place routines for parallel computation here
 
-   if (txuser(1:9) == 'md_dipole') then   ! Dipole project with Gunnar Karlström
+   if (txuser(1:9) == 'md_dipole') then   ! Dipole project with Gunnar KarlstrÃ¶m
        call DomainDriver(iStage)           ! domain analysis based on Kirkwoods gk-factor
    endif
 
@@ -4696,7 +4696,7 @@ subroutine MeanElFieldZCyl(iStage)
       call ScalarSample(iStage, 1, nvar, var)
       call ScalarSample(iStage, 1, nvar_2, var_2)
       call ScalarWrite(iStage, 1, nvar_2, var_2, 1, '(a,t35,4f15.5,f15.0)', uout)    ! write force
-      var_2(1:2)%label = var_2(1:2)%label//' (kT/Å)'
+      var_2(1:2)%label = var_2(1:2)%label//' (kT/Ã…)'
       var_2(1:2)%norm = EpsiFourPi*beta
       call ScalarNorm(iStage, 1, nvar_2, var_2, 0)                                   ! change normalization
       write(uout,*)
@@ -9607,7 +9607,7 @@ subroutine JosUser(iMode)
 
    character(40), parameter :: txroutine ='JosUser'
    real(8), parameter :: conc_salt = 0.001D0                 ! salt concentration in M
-   real(8), parameter :: rho_salt = conc_salt*AvNo*1d-27     ! salt concentration in Å**-3
+   real(8), parameter :: rho_salt = conc_salt*AvNo*1d-27     ! salt concentration in Ã…**-3
 
    write(*,'(2a,i4)') trim(txroutine), '  iMode = ', iMode
 
@@ -9643,6 +9643,9 @@ module ComplexationModule
    private
    public  ComplexationDriver
 
+
+   real(8)  :: rcut_complexation
+
    contains
 
       !************************************************************************
@@ -9654,8 +9657,52 @@ module ComplexationModule
       ! ... Driver for the Complexation Analysis
       
       subroutine ComplexationDriver(iStage)
+         use MolModule, only: ltrace, ltime, uout, master
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
          implicit none
          integer(4), intent(in)  :: iStage      ! event of SSO-Move
+         character(40), parameter :: txroutine ='ComplexationDriver'
+         character(80), parameter :: txheading ='complexation analysis'
+         logical,       save :: lInterChain, lClusterDF, lRg
+
+         namelist /nmlComplexation/ rcut_complexation, lInterChain, lClusterDF, lRg
+
+         if (ltrace) call WriteTrace(1, txroutine, iStage)
+
+         if (ltime) call CpuAdd('start', txroutine, 0, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            rcut_complexation = 6.25
+            call ComplexationDriverSub
+         case (iWriteInput)
+            continue
+         case (iBeforeSimulation)
+            continue
+         case (iBeforeMacrostep)
+            continue
+         case (iSimulationStep)
+            continue
+         case (iAfterMacrostep)
+            continue
+         case (iAfterSimulation)
+            if (master) then
+               call WriteHead(2, txheading, uout)
+               write(uout,'(a,t35,e13.6)')     'cutoff-distance                = ', rcut_complexation
+               write(uout,'(a)') 'static analysis routines used'
+               write(uout,'(a)') '-----------------------------'
+               if (lInterChain)   write(uout,'(a)') '   InterChain    '
+               if (lClusterDF)    write(uout,'(a)') '   ClusterDF     '
+               if (lRg)           write(uout,'(a)') '   Rg            '
+            end if
+         end select
+
+         contains
+            subroutine ComplexationDriverSub
+               if (lInterChain)       call InterChain(iStage)
+               if (lClusterDF)        call ClusterDF(iStage)
+               if (lRg)               call Rg(iStage)
+            end subroutine ComplexationDriverSub
       end subroutine
 
 end module ComplexationModule
