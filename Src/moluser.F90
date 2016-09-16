@@ -9666,7 +9666,7 @@ module ComplexationModule
          implicit none
          integer(4), intent(in)  :: iStage      ! event of SSO-Move
          character(40), parameter :: txroutine ='ComplexationDriver'
-         character(80), parameter :: txheading ='complexation analysis'
+         character(80), parameter :: txheading ='complexation Analysis'
          logical,       save :: lInterChain, lClusterDF, lRg, lComplexFraction
 
          namelist /nmlComplexation/ rcut_complexation, lInterChain, lClusterDF, lRg, lComplexFraction
@@ -9684,7 +9684,7 @@ module ComplexationModule
 
          case (iWriteInput)
             if(.not. allocated(lcmplx_ipjp)) then
-               allocate(lcmplx_ipjp(np,np)
+               allocate(lcmplx_ipjp(np,np))
             end if
             r2cut_cmplx = rcut_complexation**2
             call ComplexationDriverSub
@@ -9709,9 +9709,10 @@ module ComplexationModule
                write(uout,'(a,t35,e13.6)')     'cutoff-distance                = ', rcut_complexation
                write(uout,'(a)') 'static analysis routines used'
                write(uout,'(a)') '-----------------------------'
-               if (lInterChain)   write(uout,'(a)') '   InterChain    '
-               if (lClusterDF)    write(uout,'(a)') '   ClusterDF     '
-               if (lRg)           write(uout,'(a)') '   Rg            '
+               if (lComplexFraction)  write(uout,'(a)') '   ComplexFraction'
+               if (lInterChain)       write(uout,'(a)') '   InterChain     '
+               if (lClusterDF)        write(uout,'(a)') '   ClusterDF      '
+               if (lRg)               write(uout,'(a)') '   Rg             '
             end if
 
          end select
@@ -9720,7 +9721,7 @@ module ComplexationModule
 
          contains
             subroutine ComplexationDriverSub
-               !if (lComplexFraction)  call ComplexGraction(iStage)
+               !if (lComplexFraction)  call ComplexFraction(iStage)
                !if (lInterChain)       call InterChain(iStage)
                !if (lClusterDF)        call ClusterDF(iStage)
                !if (lRg)               call Rg(iStage)
@@ -9740,8 +9741,7 @@ module ComplexationModule
          use MolModule, only: ltrace, ltime, uout, ro, np
          implicit none
          integer(4), intent(in)  :: iStage      ! event of SSO-Move
-         character(40), parameter :: txroutine ='ComplexationDriver'
-         character(80), parameter :: txheading ='complexation analysis'
+         character(40), parameter :: txroutine ='GetComplex'
 
          integer(4)  :: ip, jp
          real(8)  :: d(3), r2
@@ -9767,6 +9767,108 @@ module ComplexationModule
          end do
 
       end subroutine GetComplex
+
+      !************************************************************************
+      !*                                                                      *
+      !*     ComplexFraction
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... calculate how many particles are complexed
+
+      !     type  label  quantity
+      !     ----  -----  --------
+      !     1     wcmplx fraction of complexation
+
+      subroutine ComplexFraction(iStage)
+
+         use MolModule, only: ltrace, ltime, uout, master, uin, lsim, master, txstart, ucnf
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: np, npt, txpt, nppt, ipnpt
+         use StatisticsModule, only: scalar_var
+         implicit none
+
+         integer(4), intent(in) :: iStage
+
+         character(40), parameter :: txroutine ='ComplexFraction'
+         character(80), parameter :: txheading ='Fraction of Complexation'
+         integer(4), save         :: nvar
+         type(scalar_var), allocatable, save :: var(:)
+         
+         integer(4)  :: ipt, jpt, ivar
+
+         if (ltrace) call WriteTrace(3, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            nvar = npt**2
+            if(.not. allocated(var)) then
+               allocate(var(nvar))
+            end if
+
+         case (iWriteInput)
+
+            do ipt = 1, npt
+               do jpt = 1, npt
+                  ivar = ivar_ptpt(ipt,jpt)
+                  var(ivar)%label = 'w(cmplx): '//trim(txpt(ipt))//' - '//trim(txpt(jpt))
+                  var(ivar)%norm = 1.0d0
+               end do
+            end do
+
+         case (iBeforeSimulation)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+
+         case (iBeforeMacrostep)
+
+            call ScalarSample(iStage, 1, nvar, var)
+
+         case (iSimulationStep)
+
+            var%value = 0.0d0
+            do ipt = 1, npt
+               do jpt = 1, npt
+                  ivar = ivar_ptpt(ipt,jpt)
+                  var(ivar)%value = var(ivar)%value + count(lcmplx_ipjp( ipnpt(ipt):(ipnpt(ipt) + nppt(ipt) - 1), ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1) ))
+               end do
+            end do
+
+            call ScalarSample(iStage, 1, nvar, var)
+
+
+         case (iAfterMacrostep)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            if (lsim .and. master) write(ucnf) var
+            call ScalarNorm(iStage, 1, nvar, var, 1)
+
+         case (iAfterSimulation)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            call ScalarNorm(iStage, 1, nvar, var, 1)
+            call WriteHead(2, txheading, uout)
+            call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,4f15.5,f15.0)', uout)
+            deallocate(var)
+
+         end select
+
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+      contains
+
+         pure function ivar_ptpt(ipt, jpt) result(ivar)
+            use MolModule, only: npt
+            implicit none
+            integer(4), intent(in)  :: ipt
+            integer(4), intent(in)  :: jpt
+            integer(4)  :: ivar
+            ivar = (ipt-1)*npt + jpt
+         end function ivar_ptpt
+
+      end subroutine ComplexFraction
 
 end module ComplexationModule
 
