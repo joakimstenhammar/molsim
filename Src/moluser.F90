@@ -9752,6 +9752,8 @@ module ComplexationModule
          if(.not. allocated(lcmplx_ipjp)) then
             call Stop(txroutine, 'lcmplx_ipjp is not allocated!', uout)
          end if
+
+         lcmplx_ipjp = .false.
         
          do ip = 1, np-1
             do jp = ip + 1, np
