@@ -6,3 +6,4 @@ Bin/
 version.conf
 Testin/out/
 Testin/diff.out
+.nfs*
