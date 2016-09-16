@@ -9648,6 +9648,7 @@ module ComplexationModule
    real(8)  :: r2cut_cmplx 
 
    logical, allocatable :: lcmplx_ipjp(:,:)
+   real(8), allocatable :: r2cmplx_ipjp(:,:)
 
    contains
 
@@ -9667,9 +9668,9 @@ module ComplexationModule
          integer(4), intent(in)  :: iStage      ! event of SSO-Move
          character(40), parameter :: txroutine ='ComplexationDriver'
          character(80), parameter :: txheading ='complexation Analysis'
-         logical,       save :: lInterChain, lClusterDF, lRg, lComplexFraction
+         logical,       save :: lClusterDF, lComplexFraction
 
-         namelist /nmlComplexation/ rcut_complexation, lInterChain, lClusterDF, lRg, lComplexFraction
+         namelist /nmlComplexation/ rcut_complexation, lClusterDF, lComplexFraction
 
          if (ltrace) call WriteTrace(2, txroutine, iStage)
          if (ltime) call CpuAdd('start', txroutine, 0, uout)
@@ -9677,9 +9678,7 @@ module ComplexationModule
          select case (iStage)
          case (iReadInput)
             rcut_complexation = 6.25
-            lInterChain = .false.
             lClusterDF = .false.
-            lRg = .false.
             lComplexFraction = .false.
             rewind(uin)
             read(uin,nmlComplexation)
@@ -9689,6 +9688,9 @@ module ComplexationModule
          case (iWriteInput)
             if(.not. allocated(lcmplx_ipjp)) then
                allocate(lcmplx_ipjp(np,np))
+            end if
+            if(.not. allocated(lcmplx_ipjp)) then
+               allocate(r2cmplx_ipjp(np,np))
             end if
             r2cut_cmplx = rcut_complexation**2
             call ComplexationDriverSub
@@ -9713,9 +9715,7 @@ module ComplexationModule
                write(uout,'(a)') 'static analysis routines used'
                write(uout,'(a)') '-----------------------------'
                if (lComplexFraction)  write(uout,'(a)') '   ComplexFraction'
-               if (lInterChain)       write(uout,'(a)') '   InterChain     '
                if (lClusterDF)        write(uout,'(a)') '   ClusterDF      '
-               if (lRg)               write(uout,'(a)') '   Rg             '
             end if
 
             call ComplexationDriverSub
@@ -9727,9 +9727,7 @@ module ComplexationModule
          contains
             subroutine ComplexationDriverSub
                if (lComplexFraction)  call ComplexFraction(iStage)
-               !if (lInterChain)       call InterChain(iStage)
                !if (lClusterDF)        call ClusterDF(iStage)
-               !if (lRg)               call Rg(iStage)
                continue
             end subroutine ComplexationDriverSub
       end subroutine
@@ -9759,6 +9757,7 @@ module ComplexationModule
          end if
 
          lcmplx_ipjp = .false.
+         r2cmplx_ipjp = 0.0d0
         
          do ip = 1, np-1
             do jp = ip + 1, np
@@ -9767,6 +9766,8 @@ module ComplexationModule
                if (r2 .le. r2cut_cmplx) then
                   lcmplx_ipjp(ip,jp) = .true.
                   lcmplx_ipjp(jp,ip) = .true.
+                  r2cmplx_ipjp(jp,ip) = r2
+                  r2cmplx_ipjp(ip,jp) = r2
                end if
             end do
          end do
@@ -9781,19 +9782,20 @@ module ComplexationModule
 
       ! ... calculate how many particles are complexed
 
-      !     type  label  quantity
-      !     ----  -----  --------
-      !     1     wcmplx fraction of complexation
-
       subroutine ComplexFraction(iStage)
 
-         use MolModule, only: ltrace, ltime, uout, master, uin, lsim, master, txstart, ucnf
+         use MolModule, only: ltrace, ltime, uout, master, lsim, txstart, ucnf
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
          use MolModule, only: np, npt, txpt, nppt, ipnpt, iptpn
          use StatisticsModule, only: scalar_var
          implicit none
 
          integer(4), intent(in) :: iStage
+
+         type cluster_var
+            integer(4), allocatable :: ip
+            integer(4), allocatable :: np
+         end type cluster_var
 
          character(40), parameter :: txroutine ='ComplexFraction'
          character(80), parameter :: txheading ='Fraction of Complexation'
@@ -9837,8 +9839,8 @@ module ComplexationModule
             do ip = 1, np
                ipt = iptpn(ip)
                do jpt = 1, npt
-                  ivar = ivar_ptpt(ipt,jpt)
                   if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed withparticle ip
+                     ivar = ivar_ptpt(ipt,jpt)
                      var(ivar)%value = var(ivar)%value + 1.0d0
                   end if
                end do
@@ -9879,6 +9881,120 @@ module ComplexationModule
          end function ivar_ptpt
 
       end subroutine ComplexFraction
+
+      !************************************************************************
+      !*                                                                      *
+      !*     ClusterDistribution
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Calculate clusters and their distribution
+
+      subroutine ClusterDF(iStage)
+
+         use MolModule, only: ltrace, ltime, uout, lsim, master, txstart, ucnf
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: npt, iptpt, nptpt, txpt, nppt, ipnpt, iptpn
+         use StatisticsModule, only: df_var
+         implicit none
+
+         integer(4), intent(in) :: iStage
+
+         character(40), parameter :: txroutine ='ClusterDF'
+         character(80), parameter :: txheading ='Size distribution of the unary/binary clusters'
+         integer(4),    save :: nvar
+         type(df_var),  allocatable, save              :: var(:)
+         
+         integer(4)  :: ipt, jpt, ivar
+
+         if (ltrace) call WriteTrace(3, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            nvar = nptpt
+            if(.not. allocated(var)) then
+               allocate(var(nvar))
+            end if
+
+         case (iWriteInput)
+
+            do ipt = 1, npt
+               ivar = ivar_ptpt(ipt,ipt)
+               var(ivar)%label = "Cluster of "//trim(txpt(ipt))
+               var(ivar)%min = -0.5d0
+               var(ivar)%max = nppt(ipt) + 0.5d0
+               var(ivar)%nbin = nppt(ipt) + 1
+               var(ivar)%norm = 1.0d0
+               do jpt = ipt, npt
+                  ivar = ivar_ptpt(ipt,jpt)
+                  var(ivar)%label = "Cluster of "//trim(txpt(ipt))//' - '//trim(txpt(jpt))
+                  var(ivar)%min = -0.5d0
+                  var(ivar)%max = nppt(ipt) + nppt(jpt) + 0.5d0
+                  var(ivar)%nbin = nppt(ipt) + nppt(jpt) + 1
+                  var(ivar)%norm = 1.0d0
+               end do
+            end do
+
+         case (iBeforeSimulation)
+
+            call DistFuncSample(iStage, nvar, var)
+            if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+
+         case (iBeforeMacrostep)
+
+            call DistFuncSample(iStage, nvar, var)
+
+         case (iSimulationStep)
+
+            var%value = 0.0d0
+            do ip = 1, np
+               ipt = iptpn(ip)
+               do jpt = 1, npt
+                  if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed withparticle ip
+                     ivar = ivar_ptpt(ipt,jpt)
+                     var(ivar)%value = var(ivar)%value + 1.0d0
+                  end if
+               end do
+            end do
+
+            call ScalarSample(iStage, 1, nvar, var)
+
+
+         case (iAfterMacrostep)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            if (lsim .and. master) write(ucnf) var
+            call ScalarNorm(iStage, 1, nvar, var, 1)
+
+         case (iAfterSimulation)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            call ScalarNorm(iStage, 1, nvar, var, 1)
+            if(master) then
+               call WriteHead(2, txheading, uout)
+               call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,4f15.5,f15.0)', uout)
+            endif
+            deallocate(var)
+
+         end select
+
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+      contains
+
+         pure function ivar_ptpt(ipt, jpt) result(ivar)
+            use MolModule, only: npt
+            implicit none
+            integer(4), intent(in)  :: ipt
+            integer(4), intent(in)  :: jpt
+            integer(4)  :: ivar
+            ivar = (ipt-1)*npt + jpt
+         end function ivar_ptpt
+
+      end subroutine ComplexFraction
+
+      end subroutine ComplexRg
 
 end module ComplexationModule
 
