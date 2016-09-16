@@ -9677,6 +9677,10 @@ module ComplexationModule
          select case (iStage)
          case (iReadInput)
             rcut_complexation = 6.25
+            lInterChain = .false.
+            lClusterDF = .false.
+            lRg = .false.
+            lComplexFraction = .false.
             rewind(uin)
             read(uin,nmlComplexation)
 
@@ -9703,7 +9707,6 @@ module ComplexationModule
             call ComplexationDriverSub
 
          case (iAfterSimulation)
-            call ComplexationDriverSub
             if (master) then
                call WriteHead(2, txheading, uout)
                write(uout,'(a,t35,e13.6)')     'cutoff-distance                = ', rcut_complexation
@@ -9715,13 +9718,15 @@ module ComplexationModule
                if (lRg)               write(uout,'(a)') '   Rg             '
             end if
 
+            call ComplexationDriverSub
+
          end select
 
          if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
          contains
             subroutine ComplexationDriverSub
-               !if (lComplexFraction)  call ComplexFraction(iStage)
+               if (lComplexFraction)  call ComplexFraction(iStage)
                !if (lInterChain)       call InterChain(iStage)
                !if (lClusterDF)        call ClusterDF(iStage)
                !if (lRg)               call Rg(iStage)
@@ -9784,7 +9789,7 @@ module ComplexationModule
 
          use MolModule, only: ltrace, ltime, uout, master, uin, lsim, master, txstart, ucnf
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-         use MolModule, only: np, npt, txpt, nppt, ipnpt
+         use MolModule, only: np, npt, txpt, nppt, ipnpt, iptpn
          use StatisticsModule, only: scalar_var
          implicit none
 
@@ -9795,7 +9800,7 @@ module ComplexationModule
          integer(4), save         :: nvar
          type(scalar_var), allocatable, save :: var(:)
          
-         integer(4)  :: ipt, jpt, ivar
+         integer(4)  :: ipt, jpt, ivar, ip
 
          if (ltrace) call WriteTrace(3, txroutine, iStage)
          if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -9812,7 +9817,7 @@ module ComplexationModule
             do ipt = 1, npt
                do jpt = 1, npt
                   ivar = ivar_ptpt(ipt,jpt)
-                  var(ivar)%label = 'w(cmplx): '//trim(txpt(ipt))//' - '//trim(txpt(jpt))
+                  var(ivar)%label = 'n(cmplx): '//trim(txpt(ipt))//' - '//trim(txpt(jpt))
                   var(ivar)%norm = 1.0d0
                end do
             end do
@@ -9829,10 +9834,13 @@ module ComplexationModule
          case (iSimulationStep)
 
             var%value = 0.0d0
-            do ipt = 1, npt
+            do ip = 1, np
+               ipt = iptpn(ip)
                do jpt = 1, npt
                   ivar = ivar_ptpt(ipt,jpt)
-                  var(ivar)%value = var(ivar)%value + count(lcmplx_ipjp( ipnpt(ipt):(ipnpt(ipt) + nppt(ipt) - 1), ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1) ))
+                  if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed withparticle ip
+                     var(ivar)%value = var(ivar)%value + 1.0d0
+                  end if
                end do
             end do
 
@@ -9849,8 +9857,10 @@ module ComplexationModule
 
             call ScalarSample(iStage, 1, nvar, var)
             call ScalarNorm(iStage, 1, nvar, var, 1)
-            call WriteHead(2, txheading, uout)
-            call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,4f15.5,f15.0)', uout)
+            if(master) then
+               call WriteHead(2, txheading, uout)
+               call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,4f15.5,f15.0)', uout)
+            endif
             deallocate(var)
 
          end select
