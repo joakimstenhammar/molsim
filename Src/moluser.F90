@@ -9645,6 +9645,9 @@ module ComplexationModule
 
 
    real(8)  :: rcut_complexation
+   real(8)  :: r2cut_cmplx 
+
+   logical, allocatable :: lcmplx_ipjp(:,:)
 
    contains
 
@@ -9659,6 +9662,7 @@ module ComplexationModule
       subroutine ComplexationDriver(iStage)
          use MolModule, only: ltrace, ltime, uout, master, uin
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: np
          implicit none
          integer(4), intent(in)  :: iStage      ! event of SSO-Move
          character(40), parameter :: txroutine ='ComplexationDriver'
@@ -9672,22 +9676,32 @@ module ComplexationModule
 
          select case (iStage)
          case (iReadInput)
-
             rcut_complexation = 6.25
             rewind(uin)
             read(uin,nmlComplexation)
 
             call ComplexationDriverSub
+
          case (iWriteInput)
+            if(.not. allocated(lcmplx_ipjp)) then
+               allocate(lcmplx_ipjp(np,np)
+            end if
+            r2cut_cmplx = rcut_complexation**2
             call ComplexationDriverSub
+
          case (iBeforeSimulation)
             call ComplexationDriverSub
+
          case (iBeforeMacrostep)
             call ComplexationDriverSub
+
          case (iSimulationStep)
+            call GetComplex(iStage)
             call ComplexationDriverSub
+
          case (iAfterMacrostep)
             call ComplexationDriverSub
+
          case (iAfterSimulation)
             call ComplexationDriverSub
             if (master) then
@@ -9699,17 +9713,18 @@ module ComplexationModule
                if (lClusterDF)    write(uout,'(a)') '   ClusterDF     '
                if (lRg)           write(uout,'(a)') '   Rg            '
             end if
+
          end select
 
          if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
          contains
             subroutine ComplexationDriverSub
-               call GetComplex(iStage)       !###FLAG always needed?
-               if (lComplexFraction)  call ComplexGraction(iStage)
-               if (lInterChain)       call InterChain(iStage)
-               if (lClusterDF)        call ClusterDF(iStage)
-               if (lRg)               call Rg(iStage)
+               !if (lComplexFraction)  call ComplexGraction(iStage)
+               !if (lInterChain)       call InterChain(iStage)
+               !if (lClusterDF)        call ClusterDF(iStage)
+               !if (lRg)               call Rg(iStage)
+               continue
             end subroutine ComplexationDriverSub
       end subroutine
 
@@ -9722,32 +9737,32 @@ module ComplexationModule
       ! ... Detect which particles form a Complex
 
       subroutine GetComplex(iStage)
-         use MolModule, only: ltrace, ltime, uout, master
-         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: ltrace, ltime, uout, ro, np
          implicit none
          integer(4), intent(in)  :: iStage      ! event of SSO-Move
          character(40), parameter :: txroutine ='ComplexationDriver'
          character(80), parameter :: txheading ='complexation analysis'
 
+         integer(4)  :: ip, jp
+         real(8)  :: d(3), r2
+
          if (ltrace) call WriteTrace(3, txroutine, iStage)
          if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
-         select case (iStage)
-         case (iReadInput)
-            continue
-         case (iWriteInput)
-            continue
-         case (iBeforeSimulation)
-            continue
-         case (iBeforeMacrostep)
-            continue
-         case (iSimulationStep)
-            continue
-         case (iAfterMacrostep)
-            continue
-         case (iAfterSimulation)
-            continue
-         end select
+         if(.not. allocated(lcmplx_ipjp)) then
+            call Stop(txroutine, 'lcmplx_ipjp is not allocated!', uout)
+         end if
+        
+         do ip = 1, np-1
+            do jp = ip + 1, np
+               d(1:3) = ro(1:3,ip) - ro(1:3,jp)
+               call PBCr2(d(1), d(2), d(3), r2)
+               if (r2 .le. r2cut_cmplx) then
+                  lcmplx_ipjp(ip,jp) = .true.
+                  lcmplx_ipjp(jp,ip) = .true.
+               end if
+            end do
+         end do
 
       end subroutine GetComplex
 
