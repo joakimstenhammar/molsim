@@ -9657,35 +9657,39 @@ module ComplexationModule
       ! ... Driver for the Complexation Analysis
       
       subroutine ComplexationDriver(iStage)
-         use MolModule, only: ltrace, ltime, uout, master
+         use MolModule, only: ltrace, ltime, uout, master, uin
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
          implicit none
          integer(4), intent(in)  :: iStage      ! event of SSO-Move
          character(40), parameter :: txroutine ='ComplexationDriver'
          character(80), parameter :: txheading ='complexation analysis'
-         logical,       save :: lInterChain, lClusterDF, lRg
+         logical,       save :: lInterChain, lClusterDF, lRg, lComplexFraction
 
-         namelist /nmlComplexation/ rcut_complexation, lInterChain, lClusterDF, lRg
+         namelist /nmlComplexation/ rcut_complexation, lInterChain, lClusterDF, lRg, lComplexFraction
 
-         if (ltrace) call WriteTrace(1, txroutine, iStage)
-
+         if (ltrace) call WriteTrace(2, txroutine, iStage)
          if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
          select case (iStage)
          case (iReadInput)
+
             rcut_complexation = 6.25
+            rewind(uin)
+            read(uin,nmlComplexation)
+
             call ComplexationDriverSub
          case (iWriteInput)
-            continue
+            call ComplexationDriverSub
          case (iBeforeSimulation)
-            continue
+            call ComplexationDriverSub
          case (iBeforeMacrostep)
-            continue
+            call ComplexationDriverSub
          case (iSimulationStep)
-            continue
+            call ComplexationDriverSub
          case (iAfterMacrostep)
-            continue
+            call ComplexationDriverSub
          case (iAfterSimulation)
+            call ComplexationDriverSub
             if (master) then
                call WriteHead(2, txheading, uout)
                write(uout,'(a,t35,e13.6)')     'cutoff-distance                = ', rcut_complexation
@@ -9697,17 +9701,57 @@ module ComplexationModule
             end if
          end select
 
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
          contains
             subroutine ComplexationDriverSub
+               call GetComplex(iStage)       !###FLAG always needed?
+               if (lComplexFraction)  call ComplexGraction(iStage)
                if (lInterChain)       call InterChain(iStage)
                if (lClusterDF)        call ClusterDF(iStage)
                if (lRg)               call Rg(iStage)
             end subroutine ComplexationDriverSub
       end subroutine
 
+      !************************************************************************
+      !*                                                                      *
+      !*     GetComplex                                                       *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Detect which particles form a Complex
+
+      subroutine GetComplex(iStage)
+         use MolModule, only: ltrace, ltime, uout, master
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         implicit none
+         integer(4), intent(in)  :: iStage      ! event of SSO-Move
+         character(40), parameter :: txroutine ='ComplexationDriver'
+         character(80), parameter :: txheading ='complexation analysis'
+
+         if (ltrace) call WriteTrace(3, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 0, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            continue
+         case (iWriteInput)
+            continue
+         case (iBeforeSimulation)
+            continue
+         case (iBeforeMacrostep)
+            continue
+         case (iSimulationStep)
+            continue
+         case (iAfterMacrostep)
+            continue
+         case (iAfterSimulation)
+            continue
+         end select
+
+      end subroutine GetComplex
+
 end module ComplexationModule
-
-
 
 subroutine DoComplexation(iStage)
    use ComplexationModule, only: ComplexationDriver
