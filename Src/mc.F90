@@ -643,7 +643,7 @@ subroutine IOMC(iStage)
             allocate(lssopt(npt))
          end if
          lssopt = .false.
-         where ( pspartsso > Zero) lssopt = .true.
+         where ( pspartsso(1:npt) > Zero) lssopt = .true.
       end if
             
 
