@@ -151,7 +151,7 @@ module MCModule
 
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
    logical, allocatable       :: lssopt(:)           ! flag for single particle move sso of particle types  ! Pascal Hebbeker
-   logical                    :: lmcsep              ! flag for sparating local from global moves
+   logical                    :: lmcsep              ! flag for sparating local from non-local moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
    real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
@@ -289,7 +289,7 @@ module MCModule
          else if (prandom < pspartsso(iptmove)) then
             call SPartMove(iStage, loptsso=.true.)
 
-         !then global moves
+         !then non-local moves
          else if (prandom < pspartcl2(iptmove)) then
             call SPartCl2Move(iStage)                          ! single-particle + cluster2 trial move
          else if (prandom < ppivot(iptmove)) then
@@ -976,7 +976,7 @@ subroutine IOMC(iStage)
          plocal(1:npt) = pspartsso(1:npt)       !the probability to perform a local move
       end if
 
-! ... then the global moves
+! ... then the non-local moves
       pspartcl2(1:npt)      = pspartcl2(1:npt)      + pspartsso(1:npt)
       ppivot(1:npt)         = ppivot(1:npt)         + pspartcl2(1:npt)
       pchain(1:npt)         = pchain(1:npt)         + ppivot(1:npt)
@@ -1099,7 +1099,7 @@ subroutine MCPass(iStage)
 
    drostep= Zero
 
-   if(lmcsep) then ! call only local or global movex, not both
+   if(lmcsep) then ! call only local or non-local moves, not both
       prandom = Random(iseed)
       lnonloc = .false.
       if (any( prandom > plocal(1:npt) )) then !only also non-local moves are present
