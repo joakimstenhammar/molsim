@@ -9936,7 +9936,6 @@ module ComplexationModule
                   var(ivar)%max = nppt(ipt) + nppt(jpt) + 0.5d0
                   var(ivar)%nbin = nppt(ipt) + nppt(jpt) + 1
                   var(ivar)%norm = 1.0d0
-                  write(41,*) ipt, jpt, ivar, nvar
                end do
             end do
             call DistFuncSample(iStage, nvar, var)
@@ -9971,7 +9970,6 @@ module ComplexationModule
                   do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
                      if(.not. linclstr(ip)) then
                         nbead_clstr = 0
-                        write(41,*) "start it with ip ", ip
                         call get_nbead_clstr(ip,ipt, jpt,nbead_clstr)
                         ibin = nbead_clstr
                         if(nbead_clstr < 1) then
@@ -10019,19 +10017,13 @@ module ComplexationModule
 
             integer(4)  :: jp, ipt
 
-            write(41,*) "arrived with ip ", ip, " ;pt-pt: ", iptc, "-",jptc
-
             if(linclstr(ip)) then
-               write(41,*) "exited as already in complex"
                return
             else
                nbead = nbead + 1
                linclstr(ip) = .true.
-               write(41,*) "set linclstr(",ip,") as ", linclstr(ip)
                do jp = ipnpt(jptc), ipnpt(jptc) + nppt(jptc) - 1
-                  write(41,*) "ip = ", ip, ": checking jp ", jp, " pt: ", iptpn(jp)
                   if( (.not. linclstr(jp)) .and. (lcmplx_ipjp(ip,jp))) then
-                        write(41,*) "ip", ip," and jp", jp, " are complexed!", lcmplx_ipjp(ip,jp)
                         call get_nbead_clstr(jp, jptc, iptc, nbead)
                   endif
                end do
