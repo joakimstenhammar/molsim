@@ -153,7 +153,7 @@
             !--------------------------------------------------------------------------------------
 
             ! calculate part lengths---------------------------------------------------------------
-            if((nstepzero .le. 0) .or. (nstepend .le. 0) .or. (nstepzero + nstepend > nstep) ) then
+            if((nstepzero .le. 0) .or. (nstepend .le. 0)) then
                call Warn(txroutine, "stepzero and nstepend are wrong. Doing only one SSO part", uout)
                SSOPart%fac = One
                SSOPart%n = 1
