@@ -834,7 +834,7 @@ subroutine IOMC(iStage)
       end if
 
       call WriteHead(2, 'mc data', uout)
-      if (lmcsep) write(uout,'(a)') 'sperating moves types (lmcsep)'
+      if (lmcsep) write(uout,'(a)') 'separating move types (lmcsep)'
       if (isamp == 0) write(uout,'(a)') 'uniform sampling, sequence'
       if (isamp == 1) write(uout,'(a)') 'uniform sampling, random'
       if (dtran(1) < 0) write(uout,'(a)') 'spherical displacement area'
