@@ -151,7 +151,7 @@ module MCModule
 
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
    logical, allocatable       :: lssopt(:)           ! flag for single particle move sso of particle types  ! Pascal Hebbeker
-   logical                    :: lmcsep              ! flag for sparating local from non-local moves
+   logical                    :: lmcsep              ! flag for separating local from non-local moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
    real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
