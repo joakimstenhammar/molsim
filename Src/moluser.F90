@@ -9648,7 +9648,6 @@ module ComplexationModule
    real(8)  :: r2cut_cmplx 
 
    logical, allocatable :: lcmplx_ipjp(:,:)
-   real(8), allocatable :: r2cmplx_ipjp(:,:)
 
    contains
 
@@ -9689,9 +9688,6 @@ module ComplexationModule
             if(.not. allocated(lcmplx_ipjp)) then
                allocate(lcmplx_ipjp(np,np))
             end if
-            if(.not. allocated(lcmplx_ipjp)) then
-               allocate(r2cmplx_ipjp(np,np))
-            end if
             r2cut_cmplx = rcut_complexation**2
             call ComplexationDriverSub
 
@@ -9727,7 +9723,7 @@ module ComplexationModule
          contains
             subroutine ComplexationDriverSub
                if (lComplexFraction)  call ComplexFraction(iStage)
-               !if (lClusterDF)        call ClusterDF(iStage)
+               if (lClusterDF)        call ClusterDF(iStage)
                continue
             end subroutine ComplexationDriverSub
       end subroutine
@@ -9757,7 +9753,6 @@ module ComplexationModule
          end if
 
          lcmplx_ipjp = .false.
-         r2cmplx_ipjp = 0.0d0
         
          do ip = 1, np-1
             do jp = ip + 1, np
@@ -9766,8 +9761,6 @@ module ComplexationModule
                if (r2 .le. r2cut_cmplx) then
                   lcmplx_ipjp(ip,jp) = .true.
                   lcmplx_ipjp(jp,ip) = .true.
-                  r2cmplx_ipjp(jp,ip) = r2
-                  r2cmplx_ipjp(ip,jp) = r2
                end if
             end do
          end do
@@ -9892,27 +9885,42 @@ module ComplexationModule
 
       subroutine ClusterDF(iStage)
 
-         use MolModule, only: ltrace, ltime, uout, lsim, master, txstart, ucnf
+         use MolModule, only: ltrace, ltime, uout, lsim, master, txstart, ucnf, ulist, ishow, iplot, ilist
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-         use MolModule, only: npt, iptpt, nptpt, txpt, nppt, ipnpt, iptpn
+         use MolModule, only: npt, iptpt, nptpt, txpt, nppt, ipnpt, iptpn, np
          use StatisticsModule, only: df_var
          implicit none
 
          integer(4), intent(in) :: iStage
 
          character(40), parameter :: txroutine ='ClusterDF'
-         character(80), parameter :: txheading ='Size distribution of the unary/binary clusters'
+         character(80), parameter :: txheading ='Size distribution of the binary clusters'
          integer(4),    save :: nvar
          type(df_var),  allocatable, save              :: var(:)
-         
-         integer(4)  :: ipt, jpt, ivar
+         integer, allocatable, save              :: ivar_ptpt(:,:)
+
+         logical(4), allocatable, save :: linclstr(:)        !number of particles per cluster (clstr)
+         integer(4)  :: nbead_clstr                    !number of clusters
+
+         integer(4)  :: ip, ipt, jpt, ivar, ibin
 
          if (ltrace) call WriteTrace(3, txroutine, iStage)
          if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
          select case (iStage)
          case (iReadInput)
-            nvar = nptpt
+            if(.not. allocated(ivar_ptpt)) then
+               allocate(ivar_ptpt(npt,npt))
+            end if
+            ivar = 0
+            do ipt = 1, npt
+               do jpt = ipt + 1, npt
+                  ivar = ivar + 1
+                  ivar_ptpt(ipt,jpt) = ivar
+               end do
+            end do
+
+            nvar = ivar_ptpt(npt-1, npt)
             if(.not. allocated(var)) then
                allocate(var(nvar))
             end if
@@ -9921,25 +9929,26 @@ module ComplexationModule
 
             do ipt = 1, npt
                ivar = ivar_ptpt(ipt,ipt)
-               var(ivar)%label = "Cluster of "//trim(txpt(ipt))
-               var(ivar)%min = -0.5d0
-               var(ivar)%max = nppt(ipt) + 0.5d0
-               var(ivar)%nbin = nppt(ipt) + 1
-               var(ivar)%norm = 1.0d0
-               do jpt = ipt, npt
+               do jpt = ipt + 1, npt
                   ivar = ivar_ptpt(ipt,jpt)
                   var(ivar)%label = "Cluster of "//trim(txpt(ipt))//' - '//trim(txpt(jpt))
                   var(ivar)%min = -0.5d0
                   var(ivar)%max = nppt(ipt) + nppt(jpt) + 0.5d0
                   var(ivar)%nbin = nppt(ipt) + nppt(jpt) + 1
                   var(ivar)%norm = 1.0d0
+                  write(41,*) ipt, jpt, ivar, nvar
                end do
             end do
+            call DistFuncSample(iStage, nvar, var)
 
          case (iBeforeSimulation)
 
             call DistFuncSample(iStage, nvar, var)
             if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+            if(.not. allocated(linclstr)) then
+               allocate(linclstr(np))
+               linclstr = .false.
+            endif
 
          case (iBeforeMacrostep)
 
@@ -9947,35 +9956,50 @@ module ComplexationModule
 
          case (iSimulationStep)
 
-            var%value = 0.0d0
-            do ip = 1, np
-               ipt = iptpn(ip)
-               do jpt = 1, npt
-                  if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed withparticle ip
-                     ivar = ivar_ptpt(ipt,jpt)
-                     var(ivar)%value = var(ivar)%value + 1.0d0
-                  end if
+            var%nsamp2 = var%nsamp2 + 1
+            
+            do ipt = 1, npt
+               do jpt = ipt + 1, npt
+                  ivar = ivar_ptpt(ipt, jpt)
+
+                  !initialize linclstr
+                  linclstr = .true.
+                  linclstr((ipnpt(ipt)):(ipnpt(ipt)+nppt(ipt)-1)) = .false.
+                  linclstr(ipnpt(jpt):(ipnpt(jpt)+nppt(jpt)-1)) = .false.
+
+                  !count complexes (it is sufficient to count the ones where ipt is inside, the rest un in a cluster of size 1
+                  do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
+                     if(.not. linclstr(ip)) then
+                        nbead_clstr = 0
+                        write(41,*) "start it with ip ", ip
+                        call get_nbead_clstr(ip,ipt, jpt,nbead_clstr)
+                        ibin = nbead_clstr
+                        if(nbead_clstr < 1) then
+                           call Stop(txroutine, 'found particle which has wrong cluster size', uout)
+                        endif
+                        var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + 1.0d0
+                     end if
+                  end do
+
+                  !all particles of jpt which are not in a cluster with particles of ipt are individial particles (ibin 1)
+                  var(ivar)%avs2(1) = var(ivar)%avs2(1) + count(.not. linclstr(ipnpt(jpt):(ipnpt(jpt)+nppt(jpt)-1)))
+
                end do
             end do
 
-            call ScalarSample(iStage, 1, nvar, var)
-
-
          case (iAfterMacrostep)
 
-            call ScalarSample(iStage, 1, nvar, var)
+            call DistFuncSample(iStage, nvar, var)
             if (lsim .and. master) write(ucnf) var
-            call ScalarNorm(iStage, 1, nvar, var, 1)
 
          case (iAfterSimulation)
 
-            call ScalarSample(iStage, 1, nvar, var)
-            call ScalarNorm(iStage, 1, nvar, var, 1)
-            if(master) then
-               call WriteHead(2, txheading, uout)
-               call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,4f15.5,f15.0)', uout)
-            endif
-            deallocate(var)
+            call DistFuncSample(iStage, nvar, var)
+            call WriteHead(2, txheading, uout)
+            call DistFuncHead(nvar, var, uout)
+            call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
+
+            deallocate(var, linclstr)
 
          end select
 
@@ -9983,18 +10007,40 @@ module ComplexationModule
 
       contains
 
-         pure function ivar_ptpt(ipt, jpt) result(ivar)
-            use MolModule, only: npt
+         recursive subroutine get_nbead_clstr(ip, iptc, jptc, nbead)
+              
+            use MolModule ,only: np
             implicit none
-            integer(4), intent(in)  :: ipt
-            integer(4), intent(in)  :: jpt
-            integer(4)  :: ivar
-            ivar = (ipt-1)*npt + jpt
-         end function ivar_ptpt
 
-      end subroutine ComplexFraction
+            integer(4), intent(in)  :: ip
+            integer(4), intent(in)  :: iptc
+            integer(4), intent(in)  :: jptc
+            integer(4), intent(inout)  :: nbead
 
-      end subroutine ComplexRg
+            integer(4)  :: jp, ipt
+
+            write(41,*) "arrived with ip ", ip, " ;pt-pt: ", iptc, "-",jptc
+
+            if(linclstr(ip)) then
+               write(41,*) "exited as already in complex"
+               return
+            else
+               nbead = nbead + 1
+               linclstr(ip) = .true.
+               write(41,*) "set linclstr(",ip,") as ", linclstr(ip)
+               do jp = ipnpt(jptc), ipnpt(jptc) + nppt(jptc) - 1
+                  write(41,*) "ip = ", ip, ": checking jp ", jp, " pt: ", iptpn(jp)
+                  if( (.not. linclstr(jp)) .and. (lcmplx_ipjp(ip,jp))) then
+                        write(41,*) "ip", ip," and jp", jp, " are complexed!", lcmplx_ipjp(ip,jp)
+                        call get_nbead_clstr(jp, jptc, iptc, nbead)
+                  endif
+               end do
+            end if
+
+
+         end subroutine get_nbead_clstr
+
+      end subroutine ClusterDF
 
 end module ComplexationModule
 
