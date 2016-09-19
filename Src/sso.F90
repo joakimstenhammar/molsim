@@ -89,7 +89,7 @@
             real(8)     :: opt      ! dtran with the highest mobility
             real(8)     :: err   ! accuracy of opt
          end type ssoparam
-         type(ssoparam), save, allocatable  :: param(:,:)
+         type(ssoparam), save, allocatable  :: SSOParameters(:,:)
 
          type  :: mobility_var
             real(8)     :: val         !value
@@ -175,7 +175,7 @@
             if(.not. allocated(ssos)) allocate(ssos(nssobin, npt))
 
             if(.not. allocated(mob)) allocate(mob(0:nssobin))
-            if(.not.allocated(param)) allocate(param(npt,SSOPart%n))
+            if(.not.allocated(SSOParameters)) allocate(SSOParameters(npt,SSOPart%n))
             ! -------------------------------------------------------------------------------------
 
 
@@ -184,16 +184,17 @@
 
             ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               read(ucnf) curdtranpt, SSOPart%i, ssos, tots, param
+               read(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
             else
                curdtranpt(1:npt) = dtransso(1:npt)
                ssos=step(0, Zero, Zero)
                tots=step(0, Zero, Zero)
                SSOPart%i = 1
                SSOPart%nextstep = nstepzero
-               param = ssoparam(Zero, Zero, Zero)
+               SSOParameters = ssoparam_var(Zero, Zero, Zero)
             end if
             if(SSOPart%i == SSOPart%n) SSOPart%nextstep = nstep
+
             do ipt = 1, npt
                if (lssopt(ipt)) then
                   if (curdtranpt(ipt) > 0) then
@@ -221,7 +222,7 @@
                do ipt = 1, npt
                   if (lssopt(ipt)) then
 
-                     param(ipt,SSOPart%i)%used = curdtranpt(ipt) !store used dtran
+                     SSOParameters(ipt,SSOPart%i)%used = curdtranpt(ipt) !store used dtran
 
                      call CalcLocMob(ipt)                      !calculate local mobility
 
@@ -264,9 +265,9 @@
                      end do
                      !--------------------------------------------------------------------------------
 
-                     !store results in param----------------------------------------------------------
-                     param(ipt,SSOPart%i)%opt = Two*ssorad(maxbin,ipt)
-                     param(ipt,SSOPart%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
+                     !store results in SSOParameters----------------------------------------------------------
+                     SSOParameters(ipt,SSOPart%i)%opt = Two*ssorad(maxbin,ipt)
+                     SSOParameters(ipt,SSOPart%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
                      !--------------------------------------------------------------------------------
 
                      !print tests---------------------------------------------------------------------
@@ -305,7 +306,7 @@
 
          case (iAfterMacrostep)
 
-               write(ucnf) curdtranpt, SSOPart%i, ssos, tots, param
+               write(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
 
          case (iAfterSimulation)
 
@@ -315,7 +316,7 @@
             write(uout,'(a)') '------------------------------------'
             write(uout,'(a15,a15)') 'particle type' , 'optimal dtran'
             write(uout,'(a15,a15)') '---------------' , '---------------'
-            write(uout,'(i15,g15.5)') (ipt, param(ipt,SSOPart%n)%opt, ipt = 1, npt)
+            write(uout,'(i15,g15.5)') (ipt, SSOParameters(ipt,SSOPart%n)%opt, ipt = 1, npt)
             write(uout,'(a)') ''
             write(uout,'(a)') ''
             write(uout,'(a)')'Number of SSO parts'
@@ -328,7 +329,7 @@
                write(uout,'(a15,a,a15,a,a15,a,a20)')  'sso-part' , char(9), 'used dran' , char(9), 'optimal dtran' , char(9) , 'error on opt. dtran'
                write(uout,'(a15,a,a15,a,a15,a,a20)')  '---------------' , char(9), '---------------' , char(9), '---------------' , char(9) , '--------------------'
                write(uout,'(i15,a,g15.5,a,g15.5,a,g20.5)') &
-               (ipart, char(9), param(ipt,ipart)%used, char(9),param(ipt,ipart)%opt, char(9), param(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
+               (ipart, char(9), SSOParameters(ipt,ipart)%used, char(9),SSOParameters(ipt,ipart)%opt, char(9), SSOParameters(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
                write(uout,'(a)') ''
                write(uout,'(a)') ''
             end do
@@ -362,7 +363,7 @@
 
 
             stepbin = step(0, Zero, Zero) 
-            mob(0) = mobility(Zero, Zero, Zero)
+            mob(0) = mobility_var(Zero, Zero, Zero)
 
             do ibin = 1, nssobin
                stepbin = stepbin + ssos(ibin,ipt)
