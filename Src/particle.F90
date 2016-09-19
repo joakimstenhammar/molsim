@@ -1264,11 +1264,15 @@ end subroutine Set_bondnn
 !........................................................................
 
 subroutine Set_ipnhn  ! hierarchical strcture -> its first particle
-   igen = 0
-   ict = ictgen(igen)
-   ic = icnct(ict)
-   iseg = 1
-   ipnhn = ipnsegcn(iseg,ic)
+   ! get particle with lowest number in hierarchical strucutre
+   ipnhn = minval(ipnsegcn(1,icnct(ictgen(0:ngen))))
+
+   !old code gets number of first particle in strucutre:
+      !igen = 0
+      !ict = ictgen(igen)
+      !ic = icnct(ict)
+      !iseg = 1
+      !ipnhn = ipnsegcn(iseg,ic)
 end subroutine Set_ipnhn
 
 !........................................................................
