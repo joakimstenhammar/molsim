@@ -9812,8 +9812,8 @@ module ComplexationModule
             do ipt = 1, npt
                do jpt = 1, npt
                   ivar = ivar_ptpt(ipt,jpt)
-                  var(ivar)%label = 'n(cmplx): '//trim(txpt(ipt))//' - '//trim(txpt(jpt))
-                  var(ivar)%norm = 1.0d0
+                  var(ivar)%label = 'w(cmplx): '//trim(txpt(ipt))//' - '//trim(txpt(jpt))
+                  var(ivar)%norm = 1.0d0/nppt(ipt)
                end do
             end do
 
