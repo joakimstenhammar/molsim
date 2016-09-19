@@ -676,7 +676,7 @@ subroutine IOMC(iStage)
       end if
       lptm =.false.
 
-! ... initialte lmcsep
+! ... initiate lmcsep
 
       if (lmcsep .and. (.not. allocated(plocal))) then 
          allocate(plocal(npt))
