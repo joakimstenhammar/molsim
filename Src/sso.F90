@@ -88,15 +88,15 @@
             real(8)     :: used     ! used dtran
             real(8)     :: opt      ! dtran with the highest mobility
             real(8)     :: err   ! accuracy of opt
-         end type ssoparam
-         type(ssoparam), save, allocatable  :: SSOParameters(:,:)
+         end type ssoparam_var
+         type(ssoparam_var), save, allocatable  :: SSOParameters(:,:)
 
          type  :: mobility_var
             real(8)     :: val         !value
             real(8)     :: error       !error
             real(8)     :: smooth      !smooth
          end type mobility_var
-         type(mobility), allocatable, save :: mob(:)
+         type(mobility_var), allocatable, save :: Mobility(:)
 
 
          namelist /nmlSPartSSO/ dtransso, nstepzero, nssobin, nstepend, ltestsso, maxdtransso, dtranfac
@@ -174,7 +174,7 @@
             if(.not. allocated(tots)) allocate(tots(npt))
             if(.not. allocated(ssos)) allocate(ssos(nssobin, npt))
 
-            if(.not. allocated(mob)) allocate(mob(0:nssobin))
+            if(.not. allocated(Mobility)) allocate(Mobility(0:nssobin))
             if(.not.allocated(SSOParameters)) allocate(SSOParameters(npt,SSOPart%n))
             ! -------------------------------------------------------------------------------------
 
@@ -224,12 +224,12 @@
 
                      SSOParameters(ipt,SSOPart%i)%used = curdtranpt(ipt) !store used dtran
 
-                     call CalcLocMob(ipt)                      !calculate local mobility
+                     call CalcCurrentMobility(ipt)                      !calculate current Mobility
 
                      ! get bin with maximum mobility--------------------------------------------------
                      maxbin = 0
                      do ibin = 1, nssobin - 1
-                        if(mob(ibin)%smooth > mob(ibin + 1)%smooth .and. mob(ibin)%smooth > mob(maxbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
+                        if(Mobility(ibin)%smooth > Mobility(ibin + 1)%smooth .and. Mobility(ibin)%smooth > Mobility(maxbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
                            maxbin = ibin
                         end if
                      end do
@@ -244,13 +244,13 @@
                         upperbin = ceiling((dtranfac - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
                      else
                         do ibin = maxbin + 1 , nssobin !find position where locmob is significantly different from maximum
-                           if ( (mob(maxbin)%smooth - mob(maxbin)%error) .ge. (mob(ibin)%smooth + mob(ibin)%error) ) then
+                           if ( (Mobility(maxbin)%smooth - Mobility(maxbin)%error) .ge. (Mobility(ibin)%smooth + Mobility(ibin)%error) ) then
                               upperbin = (ibin - maxbin) + 1
                               exit
                            end if
                         end do
                         if (upperbin == 0) then        ! no significantly different position found
-                           upperbin = 1 + ceiling(Two*mob(maxbin)%error*(nssobin - maxbin)/real((mob(maxbin)%smooth + mob(maxbin)%error) - (mob(nssobin)%smooth + mob(nssobin)%error)) ) ! extrapolate position
+                           upperbin = 1 + ceiling(Two*Mobility(maxbin)%error*(nssobin - maxbin)/real((Mobility(maxbin)%smooth + Mobility(maxbin)%error) - (Mobility(nssobin)%smooth + Mobility(nssobin)%error)) ) ! extrapolate position
                         end if
                      end if
                      ! -------------------------------------------------------------------------------
@@ -258,14 +258,14 @@
                      ! get lower boundary (relative to maxbin)----------------------------------------
                      lowerbin = 0
                      do ibin = maxbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
-                        if (mob(maxbin)%smooth - mob(maxbin)%error .ge. mob(ibin)%smooth + mob(ibin)%error) then
+                        if (Mobility(maxbin)%smooth - Mobility(maxbin)%error .ge. Mobility(ibin)%smooth + Mobility(ibin)%error) then
                            lowerbin = maxbin - ibin
                            exit
                         end if
                      end do
                      !--------------------------------------------------------------------------------
 
-                     !store results in SSOParameters----------------------------------------------------------
+                     !store results in SSOParameters--------------------------------------------------
                      SSOParameters(ipt,SSOPart%i)%opt = Two*ssorad(maxbin,ipt)
                      SSOParameters(ipt,SSOPart%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
                      !--------------------------------------------------------------------------------
@@ -277,7 +277,7 @@
                         write(uout,'(a,I5)')  'number of bins: ', nssobin
                         write(uout,'(a, a, a, a, a, a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
                         write(uout,'(i0, g15.5,a,g15.5,a,g15.5,a,g15.5,a,g15.5)') &
-                        (ibin, ssorad(ibin,ipt), char(9), mob(ibin)%val, char(9), ssos(ibin, ipt)%d2, char(9), mob(ibin)%smooth, char(9), ssos(ibin, ipt)%n, ibin = 1,nssobin)
+                        (ibin, ssorad(ibin,ipt), char(9), Mobility(ibin)%val, char(9), ssos(ibin, ipt)%d2, char(9), Mobility(ibin)%smooth, char(9), ssos(ibin, ipt)%n, ibin = 1,nssobin)
                         write(uout,'(a,I4)')  'average msd of pt ',ipt
                         write(uout,'(g15.5)') tots(ipt)%d2/real(tots(ipt)%n)
                         write(uout,'(a)')  ''
@@ -340,7 +340,7 @@
 
          contains
 
-         subroutine CalcLocMob(ipt)
+         subroutine CalcCurrentMobility(ipt)
 
             implicit none
             
@@ -363,32 +363,32 @@
 
 
             stepbin = step(0, Zero, Zero) 
-            mob(0) = mobility_var(Zero, Zero, Zero)
+            Mobility(0) = mobility_var(Zero, Zero, Zero)
 
             do ibin = 1, nssobin
                stepbin = stepbin + ssos(ibin,ipt)
                if(stepbin%n < 1) then
                   !assume 100% acceptance rate if no move was done
-                  mob(ibin)%val = 0.15d0 * (real(ibin) / real(nssobin)  * curdtranpt(ipt))**2 ! 0.15 comes from 3/5 (from mean squared displacement in a sphere) and 1/4 (from squared diameter to squared radius
-                  mob(ibin)%error = Zero
+                  Mobility(ibin)%val = 0.15d0 * (real(ibin) / real(nssobin)  * curdtranpt(ipt))**2 ! 0.15 comes from 3/5 (from mean squared displacement in a sphere) and 1/4 (from squared diameter to squared radius
+                  Mobility(ibin)%error = Zero
                else
                   !else: average displacement is displacement divided by number of steps; error calculated from variance
                   invntot = One/real(stepbin%n)
-                  mob(ibin)%val = stepbin%d2 * invntot
-                  mob(ibin)%error = sqrt((stepbin%d4 * invntot - (mob(ibin)%val)**2)*invntot)
+                  Mobility(ibin)%val = stepbin%d2 * invntot
+                  Mobility(ibin)%error = sqrt((stepbin%d4 * invntot - (Mobility(ibin)%val)**2)*invntot)
                end if
             end do
 
             x = real( (/ (ibin, ibin = 0, nssobin) /) , KIND=8  )
-            y = mob(0:nssobin)%val
-            dy = mob(0:nssobin)%error
+            y = Mobility(0:nssobin)%val
+            dy = Mobility(0:nssobin)%error
             !smooth using spline
             call Smooth(nssobin + 1, x, y, dy, real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), a, btmp, ctmp, dtmp)
 
-            mob(0:nssobin)%smooth = a
+            Mobility(0:nssobin)%smooth = a
 
 
-         end subroutine CalcLocMob
+         end subroutine CalcCurrentMobility
 
       !........................................................................
 
