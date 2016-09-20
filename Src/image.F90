@@ -804,7 +804,6 @@ end subroutine DrawAtom_jasper
 subroutine DrawAtom
       if(.not.allocated(icount)) then 
          allocate(icount(nat))
-         icount = 0
       end if
       icount = 0
       write(unit,'(a)') '# ... object: atom'
