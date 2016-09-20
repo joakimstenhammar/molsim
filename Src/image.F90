@@ -158,8 +158,6 @@ subroutine ImageVRML(iStage, iimage)
 
       if (.not.allocated(atsize)) then 
          allocate(atsize(nat), rgbcolor(3,nat))
-         atsize = 0.0E+00
-         rgbcolor = 0.0E+00
       end if
 
 ! ... set default values
