@@ -1,0 +1,53 @@
+!molsim 6.23_1.2
+&nmlSystem
+  txmode = 'simulation',
+  txtitle ='RI-PHA-046 - 00',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',       txstart='setconf',
+  nstep1= 1,        nstep2= 10,
+  boxlen = 3*1732.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic =.f.,  limage=.f.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 0,   ishow = 0,     iplot = 0,   ilist = 0,
+  ltrace = .f.,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct = 1,
+  txct = 'chain',
+  npt   = 1,
+  ncct = 1,
+  npptct(1,1) = 10,
+  txpt  = 'bead',
+  nppt  = 10,
+  natpt =  1,
+  txat  = 'bead',
+  massat= 0.0,
+  radat =  2.0,
+  zat =   0.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'pebead',
+  epsat  = 2.4777,
+  sigat  = 4,
+ /
+ &nmlPotential
+  txpot = '(1,6,12)',
+  rcut = 17.6,
+ /
+ &nmlPotentialChain bond = 4.955, 2, 6.0, angle = 0.0 /
+ &nmlSetConfiguration
+  txsetconf = 'chainline',
+ /
+ &nmlMC
+  pspart   = 0.0,
+  dtran      = 1.0,
+  pspartsso = 1.0,
+ /
+ &nmlSPartSSO
+  dtransso = 0.400000,
+  nssobin    = 20,
+  ltestsso   = .t.,
+ /
+ &nmlGroup /
+ &nmlIntList inlist = 0, drnlist = 10.0,   facnneigh = 2.0 /
