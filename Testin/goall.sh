@@ -272,7 +272,11 @@ $molsim  b.md.mix                 $core
 $molsim  hs.b2.mix                $core
 
 #bugfixes
-$molsim  ltime                    $core
+$molsim  bugfixes.ltime               $core
+
+#sso
+$molsim  sso.lmcsep                   $core
+$molsim  sso.sso                      $core
 
 #complexation-analysis
 $molsim  hierarchical.mc          $core

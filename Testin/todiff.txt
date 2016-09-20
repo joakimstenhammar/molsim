@@ -196,7 +196,9 @@ ellipsoidpro.dip.mc.out
 w.mc.mix.out 
 b.md.mix.out 
 hs.b2.mix.out 
-ltime.out
+bugfixes.ltime.out
+sso.lmcsep.out
+sso.sso.out
 hierarchical.mc.out
 copoly-seq.mc.out
 complexation.mc.out
