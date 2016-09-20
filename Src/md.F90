@@ -161,7 +161,6 @@ subroutine IOMD(iStage)
       lzeromom =.false.
       tvscl    = Zero
       tlscl    = Zero
-      !tstep    = 0.0
 
       rewind(uin)
       read(uin,nmlMD)
