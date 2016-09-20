@@ -1813,16 +1813,18 @@ end subroutine CalcClusterMember
 
 ! ... transform a vector from a cartensian to a spherical polar coordinate system
 
-subroutine CarToSph(txopt,x,y,z,r,theta,phi)
+subroutine CarToSph(txoptin,x,y,z,r,theta,phi)
    implicit none
    real(8), parameter :: radtodeg = 57.29577951d0
    real(8), parameter :: pihalf = 1.570796327d0
    real(8), parameter :: zero = 0.0d0, one = 1.0d0, small = 1.0d-6
-   character(*), intent(inout)  :: txopt              ! select 'rad' or 'deg'
+   character(*), intent(in)  :: txoptin              ! select 'rad' or 'deg'
    real(8),      intent(in)     :: x, y, z            ! cartesian coordinate
    real(8),      intent(out)    :: r, theta, phi      ! spherical polar coordinate
    real(8) :: norm, xn, yn, zn
+   character(LEN=len(txoptin))  :: txopt              ! select 'rad' or 'deg'
 
+   txopt = txoptin
    call LowerCase(txopt)
 
    r = sqrt(x**2+y**2+z**2)
@@ -2229,16 +2231,21 @@ end subroutine PriToLab
 !         function              rotated           p(-a)p(-b)p(-c)
 !         function              fixed             p(-c)p(-b)p(-a)
 
-subroutine EulerRot(mode1,mode2,alpha,beta,gamma,x,y,z)
+subroutine EulerRot(mode1in,mode2in,alpha,beta,gamma,x,y,z)
    implicit none
    real(8), parameter :: degrad = 0.01745329252d0
-   character(*), intent(inout) :: mode1            ! select convention
-   character(*), intent(inout) :: mode2            ! select rad/deg
+   character(*), intent(in) :: mode1in            ! select convention
+   character(*), intent(in) :: mode2in            ! select rad/deg
    real(8), intent(in) :: alpha, beta, gamma       ! Euler angles
    real(8), intent(inout) :: x, y, z               ! cartesian coordinate
    real(8) :: a, b, c, ca, cb, cc, sa, sb, sc
    real(8) :: d11, d12, d13, d21, d22, d23, d31, d32, d33
    real(8) :: x1, y1, z1
+   character(len=len(mode1in)) :: mode1            ! select convention
+   character(len=len(mode2in)) :: mode2            ! select rad/deg
+
+   mode1 = mode1in
+   mode2 = mode2in
 
    call LowerCase(mode1)
    call LowerCase(mode2)
@@ -2349,7 +2356,7 @@ subroutine OrthoOri(np, iplow, ipupp, ori, tol, unit)
    integer(4), intent(in)    :: ipupp
    real(8),    intent(inout) :: ori(3,3,np)
    real(8),    intent(in)    :: tol
-   integer(4), intent(out)   :: unit
+   integer(4), intent(in)   :: unit
 
    logical    :: ltext
    integer(4) :: ip
@@ -2694,11 +2701,11 @@ end function GetRelDiff
 
 ! ... add and write total cpu time elapsed since start
 
-subroutine CpuAdd(whattodo,label,level,unit)
+subroutine CpuAdd(txwhattodo,label,level,unit)
 
    implicit none
    integer(4), parameter :: mnlabel = 100
-   character(*), intent(inout) :: whattodo !'start'
+   character(*), intent(in) :: txwhattodo !'start'
                                            !'stop'
                                            !'write'
                                            !'interrupt' disable the effect of 'start', 'stop', and 'write'
@@ -2714,7 +2721,10 @@ subroutine CpuAdd(whattodo,label,level,unit)
    logical,       save :: interrupt = .false.
    character(2)  :: str
    integer(4) :: i
+   character(LEN=len(txwhattodo))   :: whattodo
    real(8) :: Second, tot
+
+   whattodo = txwhattodo
 
    call LowerCase(whattodo)
 

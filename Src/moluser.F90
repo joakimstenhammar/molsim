@@ -673,7 +673,7 @@ subroutine SetChainRandomTrans(iptset)
             ro(1:3,ip) = Zero
          else                                           ! remaining segments
             jp = ipnsegcn(nset-1,ic)
-            call SetPartPosRandom(ip, jp, bond(ict)%eq)
+            call SetPartPosRandomN(ip, jp, bond(ict)%eq)
          end if
          if (CheckPartOutsideBox(ip)) cycle
          if (CheckTooFoldedChain(ip,bond(ict)%eq)) cycle! check if a too folded chain
@@ -3011,7 +3011,7 @@ subroutine Min(iStage)
       do
          scfac= scfac + sgn*delta
          Call setsheet(1,scfac,1.0d0,.false.)
-         Call Utotal
+         Call UTotal(iStage)
          U2 = u%tot
          if (U2 > U1) then
             sgn = -sgn

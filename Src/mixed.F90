@@ -395,7 +395,7 @@ subroutine Mixed5(ip)
    character(80), parameter :: txheading ='second virial coefficient'
    integer(4) :: nblock
    integer(4) :: iwr, no, ntry, m, mm
-   real(8)    :: rlow, rupp, thlow, thupp, filow, fiupp, ulow, uupp, dum, utwob
+   real(8)    :: rlow, rupp, thlow, thupp, filow, fiupp, ulow, uupp, dum(3), utwob
    real(8)    :: sum, sum1, sum2, term, r1, rfac, fac
 
    namelist /nmlMixed5/ iwr, rlow, rupp, thlow, thupp, filow, fiupp, no, nblock
@@ -648,7 +648,7 @@ subroutine RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, r)
 
    implicit none
 
-   integer(4), intent(in)  :: iseed         ! seed to random number generator
+   integer(4), intent(inout)  :: iseed         ! seed to random number generator
    integer(4), intent(in)  :: iwr           ! radial weigth
    real(8),    intent(in)  :: rlow, rupp    ! lower and upper radial distance
    real(8),    intent(in)  :: thlow, thupp  ! lower and upper theta angle

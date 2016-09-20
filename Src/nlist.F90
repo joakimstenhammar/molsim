@@ -78,6 +78,8 @@ module NListModule
    integer(4)    :: npmyid                 ! number of particles handled by processor myid
    integer(4)    :: maxnneigh              ! maximum number of neighbours; used in memory allocation
 
+   real(8), allocatable, save :: drosum(:,:)                ! sum of displacements   !Pascal Hebbeker moved vom subroutine NList
+
 end module NListModule
 
 !************************************************************************
@@ -508,7 +510,6 @@ subroutine NList(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='NList'
-   real(8), allocatable, save :: drosum(:,:)                ! sum of displacements
    integer(4) :: ip, ntotpppair, ntotaapair
    real(8)    :: r2, r2max1, r2max2, naux
 

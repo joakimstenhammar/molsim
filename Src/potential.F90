@@ -3567,7 +3567,7 @@ subroutine BondLengthTab(action, ictx, b)
    implicit none
 
    character(5), intent(in)    :: action           ! 'setup' or 'value'
-   integer(4),   intent(inout) :: ictx             ! chain type
+   integer(4),   intent(in) :: ictx             ! chain type
    real(8),      intent(out)   :: b                ! random bond length
 
    character(40), parameter :: txroutine ='BondLengthTab'
@@ -3665,7 +3665,7 @@ subroutine BondAngleTab(action, ictx, a)
    implicit none
 
    character(5), intent(in)    :: action           ! 'setup' or 'value'
-   integer(4),   intent(inout) :: ictx             ! chain type
+   integer(4),   intent(in) :: ictx             ! chain type
    real(8),      intent(out)   :: a                ! random bond angle
 
    character(40), parameter :: txroutine ='BondAngleTab'
