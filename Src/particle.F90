@@ -39,8 +39,8 @@ module ParticleModule
    integer(4)    :: itestpart              !*=10, call of TestChainPointer
 
    type :: block_type
-      integer(4)  :: pt  !number of steps
-      integer(4)  :: np  !squared displacement
+      integer(4)  :: pt  !particle type
+      integer(4)  :: np  !number of particles
    end type block_type
 
    type(block_type), allocatable :: rep_iblock_ict(:,:)
@@ -356,7 +356,6 @@ subroutine Particle(iStage)
          if (lspma) write(uout,'(a)')
          if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
       end if
-
 
       write(uout,'()')
       write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
