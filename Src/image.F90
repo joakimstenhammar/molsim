@@ -1505,7 +1505,9 @@ end subroutine WriteTCLScript
 
 module  UndoPBCModule   !Pascal Hebbeker 
 
-   !use MolModule
+   use MolModule, only: np, ro, iptpn
+   use MolModule, only: lhierarchical, lclink, bondnn, nbondcl, bondcl
+   use MolModule, only: na, ianpn, napt, r
    implicit none
    public   :: ipatcenter
    public   :: UndoclPBC
