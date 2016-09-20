@@ -756,7 +756,6 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    character(40), parameter :: txroutine ='Set_ipnsegcn'
    integer(4) :: nrep, irep, nreplen
    integer(4) :: iblock
-   integer(4), allocatable :: npptrep(:)
    integer(4), allocatable :: npset(:)
    integer(4), allocatable :: ipstart(:)
    integer(4), allocatable :: iptiseg(:)
@@ -802,19 +801,12 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
             end do
          end do
       else if (txcopolymer(ict) == 'repeating') then
-         if(.not. allocated(npptrep)) allocate(npptrep(npt))
          if(.not. allocated(npset)) allocate(npset(npt))
          if(.not. allocated(ipstart)) allocate(ipstart(npt))
-         npptrep = 0
          npset = 0
          ipstart = 0
          if(any( rep_iblock_ict(1:nblockict(ict),ict)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
          if(any( rep_iblock_ict(1:nblockict(ict),ict)%pt .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
-
-         do iblock = 1, nblockict(ict)
-            ipt = rep_iblock_ict(iblock,ict)%pt
-            npptrep(ipt) = sum(rep_iblock_ict(1:nblockict(ict),ict)%np, MASK=(rep_iblock_ict(1:nblockict(ict),ict)%pt == ipt))
-         end do
 
          do icloc = 1, ncct(ict)                               ! loop over chains of type ict
             ic = ic + 1
@@ -823,7 +815,6 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
                ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc - 1)*npptct(ipt,ict)
             end do
             iseg = 0
-            irep = 0
             npset = 0
             do while (iseg < sum(npptct(1:npt,ict)))
                do iblock = 1, nblockict(ict)
@@ -838,7 +829,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
          end do
 
-         deallocate(npptrep, npset, ipstart)
+         deallocate(npset, ipstart)
 
       else if (txcopolymer(ict) == 'random') then
 
