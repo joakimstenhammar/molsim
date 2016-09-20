@@ -1468,7 +1468,11 @@ real(8) function PerLengthRg(rg2, l)
    do i = 1, 500
       PerLengthRgOld = PerLengthRg
       fac = PerLengthRg/l
-      PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0*(1-2*fac*(1.0-fac*(1.0-exp(-1.0/fac)))))
+      if(fac == 0.0d0) then ! prevent division by zero
+         PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0)
+      else
+         PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0*(1-2*fac*(1.0-fac*(1.0-exp(-1.0/fac)))))
+      end if
       if (abs(PerLengthRg-PerLengthRgOld)/PerLengthRg < 1e-3) return
    end do
 end function PerLengthRg
@@ -3048,3 +3052,66 @@ subroutine SuperballDF(iStage, rr, loverlap, time)
 
 end subroutine SuperballDF
 
+module MolauxModule
+
+   implicit none
+   private
+   public CalcCOM
+
+   contains
+
+      !************************************************************************
+      !*                                                                      *
+      !*     CalcCOM                                                              *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Calculate the Center of Mass of given coordinates.
+      !     If MASK is given, use only the coordinates for which MASK is true
+
+      function CalcCOM(r,MASK, MASS) result(com)
+         implicit none
+         real(8), intent(in), dimension (:,:)   :: r
+         logical, intent(in), optional, dimension (:)   :: MASK
+         real(8), intent(in), optional, dimension (:)   :: MASS
+         real(8)   :: com(3)
+
+         logical, dimension (size(r,DIM=2))   :: l
+         real(8), dimension (size(r,DIM=2))   :: m
+
+         integer(4)  :: i, n, first
+         real(8)  :: d(3)
+
+         if(present(MASK)) then
+            l = MASK
+         else
+            l = .true.
+         end if
+         if(present(MASS)) then
+            m = MASS
+         else
+            m = 1.0d0
+         end if
+         n = size(l)
+         com = 0.0d0
+
+         do i = 1, n   ! locate first particle which is to be used
+            if(l(i)) then
+               first = i
+               exit
+            end if
+         end do
+
+         do i = 1, n
+            if (.not. l(i)) cycle
+            d(1:3) = r(1:3,i) - r(1:3,first)
+            call PBC(d(1),d(2),d(3))
+            com(1:3) = com(1:3) + m(i)*d(1:3)
+         end do
+         com(1:3) = com(1:3)/(sum(m,MASK=l)) + r(1:3,first)
+
+         call PBC(com(1),com(2),com(3))
+
+      end function CalcCOM
+
+end module MolauxModule

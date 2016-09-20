@@ -1,0 +1,110 @@
+ &nmlSystem
+  txtitle ='salt free iPMA cm=0.1 25-mer',
+  txmethod= 'mc',   txensemb='nvt',     txbc   ='xyz',  txstart ='zero',
+  txmethod= 'mc',   txensemb='nvt',     txbc   ='xyz',  txstart ='setconf',
+
+  nstep1   = 2,    nstep2   = 100,
+  boxlen =  185.4372, 185.4372, 185.4372,
+  boxlen =  3*100.00
+  temp  =  298.15,   prsr  = 0.1013,
+
+  iseed  = 136543,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.f.,  lstatic =.f.,
+  itest = 0,   ipart = 1, iatom = 1,   iaver = 1000, ishow = 1,   iplot = 1,   ilist = 0, limage=.t.,
+ /
+
+ &nmlScale /
+
+ &nmlParticle
+  txelec = 'weakcharge'
+  nct=1
+  txct='iPMA'
+  ncct(1) = 2,
+  npptct(1,1) = 24, 24
+  txcopolymer='regular',
+  lspma=.f.
+
+  npt   = 3,
+  txpt  = 'CH2', 'Cneg', 'Na',
+  nppt  =  48,   48,  48,
+  natpt =  1,      3,     1,
+
+  txat  = 'CH2', 'Csp3',  'CH3','COO', 'Na',
+  massat=  14.,   12.0,    0.,   0.,    23.,
+  radat =  0.675, 0.675,   0.9,  1.14,   0.9,
+  zat   =  0.,    0.,      0.,  -1.,     1., 
+  latweakcharge = ,,, .t.,,
+  pK    = ,,, 5.0,,
+  pH    = 5,
+  jatweakcharge = 5,
+
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'CH2',
+  rain(1,1,1)  =  0.0, 0.0, 0.0,
+
+  naatpt(1,2)=  1,                           
+  txaat(1,2) = 'Csp3',                      
+  rain(1,1,2)  =  0.0, 0.0, 0.0,
+
+  naatpt(2,2)=  1,
+  txaat(2,2) = 'CH3',
+  rain(1,2,2)  =  0., 1.30639, -0.92376,
+
+  naatpt(3,2)=  1,
+  txaat(3,2) = 'COO',
+  rain(1,3,2)  =  0., 1.47, 1.04,
+
+  naatpt(1,3)=  1,
+  txaat(1,3) = 'Na',
+  rain(1,1,3)  =  0.0, 0.0, 0.0,
+/
+
+ &nmlPotential
+  r2uminin= 1.0d-3,
+  utoltab = 1.0d-4,
+  ftoltab = 1.0d-3,
+  umaxtab = 2.0d5,
+  fmaxtab = 2.0d6,
+  rcut    = 50.,
+  lewald= .true.,
+  iewaldopt=1,
+  ualphared = 3.0,
+  relpermitt = 78.4,
+  ncut      = -1,
+  lsurf     =.false.,
+ /
+
+ &nmlPotentialChain bond(1)=10., 2, 1.4, /
+
+ &nmlSetConfiguration txsetconf='chainlinePMA','chainlinePMA','random', /
+
+ &nmlMC
+  isamp = 0,
+  pspart    = 0.0, 0.0, 1.0,  dtran     = 0.0, 0.0, 20.,   
+  ppivot    = 1.0, 1.0, 0.0,  drotpivot = 30.0, 30., 0.,   ipivotrotmode  = 1
+  pchain    = 1.0, 1.0, 0.0,  dtranchain= 0.3, 0.3, 0.0,
+  pcharge   = 0.0, 1.0, 0.0,
+  itestmc = 0
+ /
+
+ &nmlIntList inlist= 0,        drnlist  = 100.0, /
+
+ &nmlDist
+  vtype(5)=.t., 0.0, 100.0,200,
+  vtype(6)=.f., 0.0, 73.0, 73
+  idist=10, 
+  rcutdist =  100.0,
+ /
+
+ &nmlDump idump = 100, ldpos =.f., /
+
+ &nmlGroup ref='type=1', field='type=1' , lwref=.false., /
+
+ &nmlImage iimage = 1, lvrml=.t.,/
+ &nmlVRML
+  txwhen ='after_run',
+!   txat  = 'CH2', 'Csp3',  'CH3','COO', 'Na',
+  rgbcolor = .5,.5,.5, .5,.5,.5, 0.,0.,1., 1.,0.,0., 0.,1.,0.,
+  blmax=1.5
+ /
+

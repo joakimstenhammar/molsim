@@ -1,0 +1,51 @@
+ &nmlSystem
+  txtitle ='charged cylinder, counterions, and coions (Jos)',
+  txmethod ='mc',    	txensemb='nvt',		txbc='cyl',	txstart='setconf', txuser = 'jos',
+  nstep1 = 2,        	nstep2 = 10,
+  cylrad = 300, 	cyllen = 600,
+  temp  = 298.0,    	prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,  lstatic =.t.,  limage=.t.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,   ishow = 1,     iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt    = 2,
+  txpt   = 'counterion','coion',
+  nppt   = 240,		102,
+  natpt  = 1,         	1,
+  txat   = 'counterion','coion',
+  massat = 10.0,	10.0,
+  radat  = 2.0,		2.0,
+  zat    = 1.0,		-1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'counterion',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'coion',
+ /
+ &nmlPotential
+  rcut = 0,
+  relpermitt = 78.35,
+  luext = .true.,
+ /
+ &nmlPotentialExternal
+  txuext = 'hard_cylinder', 'hard_cylinder',
+  rCylinder = 5.0,
+  zCylinder = -0.23,
+ /
+ &nmlSetConfiguration
+  txsetconf = 'randomcylindershell', 'randomcylindershell',
+  radlimit = 10, 
+ /
+ &nmlMC
+  isamp = 0,
+  pspart   = 1.0,   dtran      = 25.0, 25.0,
+ /
+ &nmlGroup ref = 'type=all', field= 'type=all', lwref =.false. /
+ &nmlIntList inlist = 0, drnlist = 2600.0,   facnneigh = 50.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlStatic istatic = 1, lspdf =.true. /
+ &nmlSPDF vtype(8) =.true. /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 2.0, 2.0, blmax = 5.0, bondr = 0.3 /

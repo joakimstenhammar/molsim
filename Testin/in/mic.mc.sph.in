@@ -1,0 +1,58 @@
+ &nmlSystem
+  txtitle ='hs 60:1 system, spherical cell',
+  txmethod='mc',    txensemb='nvt',     txbc ='sph',  txstart ='setconf', txuser = 'twocomponentmodel_corr',
+  nstep1   = 2,     nstep2   = 100,
+ 
+  sphrad= 50.0,
+ 
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 9876543,
+  lcont =.t.,  laver =.t.,    ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.t.,limage =.f.,
+  itest = 0,   ipart = 1,     iatom = 0,   iaver = 50,  ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'micelle','ion',
+  nppt  =  1,        60,
+  natpt =  1,        1,
+  txat  = 'mic',     'ion',
+  massat= 460.0,     23.0,
+  zat   = -60,       1,
+  radat = 20.0,      2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'mic',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'ion',
+ /
+ &nmlPotential
+  relpermitt = 78.4026,
+ /
+ &nmlSetConfiguration txsetconf='origin', 'random',
+ /
+ &nmlMC
+  pspart=  1.0,           1.0,
+  dtran =  0.0,          15.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 30.0 /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 50.0, 170,
+  vtype%l =.true., .true., .true., .true., .true.,
+  vtype%min = -10.0,   -20.0,  -250.0,  -15.0,     0.0,
+  vtype%max  =  -5.0,    25.0,    25.0,    5.0,    50.0,
+  vtype%nbin = 100, 100, 100, 100, 100,
+  rcutdist = 170.0,
+ /
+ &nmlDump idump = 1, txptdump='micelle',  ldpos =.true. /
+ &nmlGroup /
+ &nmlStatic
+  istatic = 1,
+  lspdf =.true.,
+  lrdfsph=.true.,
+  lstaticuser=.true.,
+ /
+ &nmlSPDF vtype(1) =.true., 0.0, 50.0, vtype(2) =.true., 0.0, 50.0, vtype(9) =.true., 0.0, 50.0 /
+ &nmlRDFSph ipsph = 1, iptrdfsph = 2, jptrdfsph = 2, nbin = 100, func = 'rdf' /
+ &nmlMacroionOneSph vtype(1) =.true., -20.0, 20.0, iptmacroion = 1, iptproject = 2, vtype(2) =.true., , , 50, vtype(3) =.true., , , 50 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 20,  2, blmax  = 1.5, bondr =  0.1 /

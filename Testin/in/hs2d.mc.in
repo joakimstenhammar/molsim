@@ -1,0 +1,47 @@
+ &nmlSystem
+  txtitle ='hs(2d): ro(red) =0.40',
+  txmethod='mc',    txensemb='nvt',     txbc ='xy',   txstart ='setconf',
+  nstep1= 1,        nstep2= 1000,
+  boxlen= 3*10.0,
+  temp  = 100.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f., lgroup =.true.,  lstatic =.t., limage =.f.
+  itest = 0,   ipart = 1,  iatom = 0,   iaver = 100,  ishow = 1,   iplot = 1,   ilist = 0,
+/
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'hs',
+  nppt  =  40,
+  natpt =  1,
+  txat  = 'hs',
+  massat= 1.0,
+  radat = 0.5,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'hs',
+ /
+ &nmlPotential
+  rcut = 2.0,
+  npot(1) = 0,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) ='random',
+  rclow(3,1) = -5.,  rcupp(3,1) = -5.,
+ /
+ &nmlMC
+  dtran = 5,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /
+ &nmlGroup /
+ &nmlStatic
+  istatic = 1,
+  lspdf  =     .true.,
+  lrdf   =     .true.,
+  lsf    =     .true.,
+ /
+ &nmlSPDF vtype(3) =.true., -5.0, 5.0, 100 /
+ &nmlRDF vtype(1) =.true., 0.0, 5.0, 250, ndim = 2, func='rdf' /
+ &nmlSF ndim=2, lqsorted =.f., nbin = 20 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 0.5 /

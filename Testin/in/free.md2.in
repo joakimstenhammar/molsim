@@ -1,0 +1,38 @@
+ 0.0 0.0 0.0  1.0 0.0 0.0  0.0 0.0 -1.  0.0 1.0 0.0,
+ 12.247   0.0 0.0      0.0 5.0   0.0,
+ 0.012247 0.0 0.0      0.0 0.005 0.0,
+ &nmlSystem
+  txtitle ='free translation and rotation',
+  txmethod='md',    txensemb='nve',     txbc ='xyz',   txstart ='readfin',
+  nstep1= 1,        nstep2= 2,
+  boxlen= 3*20.0,
+  temp  = 120.3,    prsr = 0.1013,
+  iseed = 999,
+  lcont =.t.,  laver =.t.,  ldist =.f.,
+  itest = 1,   ipart = 1,   iatom = 1,   iaver = 1,   ishow = 0,   iplot = 0,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'mol1',
+  nppt  =  1,
+  natpt =  1,
+  txat  = 'k1   ',
+  massat= 1.0,
+  radat = 1.0,
+  naatpt(1,1) =  2,
+  txaat(1,1) = 'k1   ','k1 ',
+  rain(1,1,1) =-2.0, 0.0, 0.0,
+  rain(1,2,1) = 2.0, 0.0, 0.0,
+ /
+ &nmlPotential
+  npot(1)   = 1,
+  ipot(1,1) = 1,
+  ucoff(1,1) = 0.0,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.100,    nvvite= 2,    lsetvel =.false.,
+  integ ='gear4 ',  tstep = 0.100,    nvvite= 2,    lsetvel =.false.,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

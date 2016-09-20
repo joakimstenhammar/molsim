@@ -169,7 +169,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, Sep 18, 2015 v1.2.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v1.3.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -260,7 +260,7 @@ module MolModule
    real(8)       :: ellradi(3)             ! 1/ellrad
    real(8)       :: cylrad                 ! radius of cylindrical cell
    real(8)       :: cylrad2                ! cylrad**2
-   real(8)       :: cyllen                 ! length of cylindrical cell
+   real(8)       :: cyllen = 0.0d0         ! length of cylindrical cell
    real(8)       :: cyllen2                ! length of cylindrical cell/2
    real(8)       :: lenscl                 ! scaling factor of box length and particle positions
    logical       :: lPBC                   ! periodic boundary conditions
@@ -705,7 +705,7 @@ module MolModule
 
 ! ... energy
 
-   real(8)       :: ekin                   ! kinetic energy
+   real(8)       :: ekin = 0.0d0           ! kinetic energy
    type(potenergy_var) :: u                ! potential energy
    type(potenergy_var) :: du               ! difference in potential energy between two configurations
    real(8)       :: htot                   ! total enthalpy

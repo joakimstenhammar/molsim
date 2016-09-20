@@ -1,0 +1,61 @@
+ &nmlSystem
+  txtitle ='Carnal et al. (Macromolecules, 2010, 43, 2544)'
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',       txstart='setconf',
+  nstep1= 1,       nstep2= 10,        
+  boxlen = 3*400.,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.f.,  lstatic =.t.,  limage=.t.
+  itest = 0,   ipart = 0,   iatom = 1,   iaver = 0,   ishow = 1,     iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec = 'weakcharge',
+  nct   = 1,
+  txct  ='100-mer',
+  ncct  = 1,
+  npptct(1,1) = 100, 
+  npt   = 2,
+  txpt  = 'pe-', 'cion+', 
+  nppt  =  100,   100,    
+  natpt =  1,     1,      
+  txat  = 'bead', 'cion+',
+  radat =  2.0,   2.0,    
+  zat =   -1.0,   1.0,    
+  txelec = 'weakcharge'
+  latweakcharge = .t.,
+  pK = 0.0, 
+  pH = 1.0,
+  jatweakcharge = 2,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'pe-',
+  naatpt(1,2) = 1,
+  txaat(1,2) = 'cion+',
+ /
+ &nmlPotential
+  rcut = 0,
+  relpermitt = 78.54,
+ /
+ &nmlPotentialChain bond = 2.4088, 2, 5.0, angle = 0.0/
+ &nmlSetConfiguration txsetconf = 2*'random', anglemin = 120.0 /
+ &nmlMC
+  pspart = 1.0, 1.0,  dtran      = 5.0, 25.0, 
+  pchain = 0.5,       dtranchain = 3.0, 
+  ppivot = 0.5,       drotpivot  = 360.0,     ipivotrotmode = 1,
+  pcharge = 1.0, 
+  itestmc = 0,
+ /
+ &nmlStatic
+  istatic = 1,
+  lchaintypedf = .t.,
+  lcbpc = .f.,
+  lstaticuser=.f., 
+ /
+ &nmlChainTypeDF vtype(2) =.true., 0.0, 150., 150, vtype(3) = .true., 0.0, 150., 150 /
+ &nmlCBPC iptpart = 3, rcontact = 28.0, /
+ &nmlMeanSegCharge vtype(1) = .true., / 
+ &nmlIntList inlist = 0, drnlist = 2600.0,   facnneigh = 50.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 2.0, 2.0, blmax = 5.0, bondr = 0.3 /

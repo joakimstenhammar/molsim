@@ -269,7 +269,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
 
       if (lblockaverwrite) call ScalarSampleWrite(1)  ! open unit and write head
       do i = ilow, iupp
-         nblocklen = max(1,min(int(1+log(float(var(i)%nsamp))/log(2.0d0)),mnblocklen)) ! number of block lenghts
+         nblocklen = max(1,min(int(1+log(float(max(var(i)%nsamp,1)))/log(2.0d0)),mnblocklen)) ! number of block lenghts
          var(i)%nblocklen = nblocklen
          if ((nblocklen > 1) .and. minval(var(i)%nblock(1:nblocklen)) > 0) then ! extrapolate by linear fit of av_sd vs log(nblock) to nblock = 1
             do ibl = 1, nblocklen                              ! make block averages for varying block length

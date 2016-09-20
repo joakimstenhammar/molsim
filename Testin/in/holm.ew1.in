@@ -1,0 +1,46 @@
+ &nmlSystem
+  txtitle ='two charges, test of ewald summation, elongated box',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 1.0,   1.0,   2.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,
+  itest = 3,   ipart = 1,   iatom = 1,   iaver = 50,   ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'jon1   ','jon2   ',
+  nppt  =  1,        1,
+  natpt =  1,        1,
+  txat  = 'site1','site2',
+  massat= 23.0,    35.4,
+  radat = 0.01,      0.01,
+  zat(1)   = 1.0,     -1.0,
+  sigat(1) = 2.0,      2.0,
+  epsat(1) = 0.0,      0.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'site1',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'site2',
+ /
+ &nmlPotential
+  rcut = 0.5,
+  lewald = .true.,  iewaldopt = 0,  ualphared = 3.0,    ncut = 15, ncutregion = 'cube', lsurf =.true.,
+  r2uminin  =1d-8,
+  umaxtab   = 1d6,
+  fmaxtab   = 1d6,
+ /
+ &nmlSetConfiguration
+   txsetconf(1) = 'pclattice', 'pclattice',
+   nucell(1,1) =   1,    1     1,
+   rclow(1,1) = 0.0, 0.0, 0.0,   rcupp(1,1) = 0.0, 0.0, 0.0,
+   nucell(1,2) =   1,    1,    1,
+   rclow(1,2) = 0.1, 0.0, 0.0,   rcupp(1,1) = 0.1, 0.0, 0.0,
+ /
+ &nmlMC
+  dtran = 10.0,             10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

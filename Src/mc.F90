@@ -151,7 +151,7 @@ module MCModule
 
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
    logical, allocatable       :: lssopt(:)           ! flag for single particle move sso of particle types  ! Pascal Hebbeker
-   logical                    :: lmcsep              ! flag for sparating local from global moves
+   logical                    :: lmcsep              ! flag for separating local from non-local moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
    real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
@@ -289,7 +289,7 @@ module MCModule
          else if (prandom < pspartsso(iptmove)) then
             call SPartMove(iStage, loptsso=.true.)
 
-         !then global moves
+         !then non-local moves
          else if (prandom < pspartcl2(iptmove)) then
             call SPartCl2Move(iStage)                          ! single-particle + cluster2 trial move
          else if (prandom < ppivot(iptmove)) then
@@ -643,7 +643,7 @@ subroutine IOMC(iStage)
             allocate(lssopt(npt))
          end if
          lssopt = .false.
-         where ( pspartsso > Zero) lssopt = .true.
+         where ( pspartsso(1:npt) > Zero) lssopt = .true.
       end if
             
 
@@ -676,7 +676,7 @@ subroutine IOMC(iStage)
       end if
       lptm =.false.
 
-! ... initialte lmcsep
+! ... initiate lmcsep
 
       if (lmcsep .and. (.not. allocated(plocal))) then 
          allocate(plocal(npt))
@@ -834,7 +834,7 @@ subroutine IOMC(iStage)
       end if
 
       call WriteHead(2, 'mc data', uout)
-      if (lmcsep) write(uout,'(a)') 'sperating moves types (lmcsep)'
+      if (lmcsep) write(uout,'(a)') 'separating move types (lmcsep)'
       if (isamp == 0) write(uout,'(a)') 'uniform sampling, sequence'
       if (isamp == 1) write(uout,'(a)') 'uniform sampling, random'
       if (dtran(1) < 0) write(uout,'(a)') 'spherical displacement area'
@@ -976,7 +976,7 @@ subroutine IOMC(iStage)
          plocal(1:npt) = pspartsso(1:npt)       !the probability to perform a local move
       end if
 
-! ... then the global moves
+! ... then the non-local moves
       pspartcl2(1:npt)      = pspartcl2(1:npt)      + pspartsso(1:npt)
       ppivot(1:npt)         = ppivot(1:npt)         + pspartcl2(1:npt)
       pchain(1:npt)         = pchain(1:npt)         + ppivot(1:npt)
@@ -1099,7 +1099,7 @@ subroutine MCPass(iStage)
 
    drostep= Zero
 
-   if(lmcsep) then ! call only local or global movex, not both
+   if(lmcsep) then ! call only local or non-local moves, not both
       prandom = Random(iseed)
       lnonloc = .false.
       if (any( prandom > plocal(1:npt) )) then !only also non-local moves are present
@@ -1784,7 +1784,7 @@ subroutine PivotDual    ! dual pivot rotation
 
    dtemp(1:np,2) = 0.0
    dtemp_min(1:2) = 10000
-   iseg_min = 0.0
+   iseg_min = 0
 ! ..............   linear .............
 
    if (txdualpivot == 'linear') then      ! dual pivot: reference: linear chain (ict=3)
@@ -1831,6 +1831,9 @@ subroutine PivotDual    ! dual pivot rotation
     end do
 
     do iseg_loc = iseg_min-1, iseg_min +1, 2  !  compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
+       if( (iseg_loc < 1) .or. (iseg_loc > npct(ict_temp)) ) then !if neighbour does not exists
+          cycle
+       end if
        dx2 = vaux(1,ipnsegcn(iseg_loc,ic_temp)) - vaux(1,ip3)
        dy2 = vaux(2,ipnsegcn(iseg_loc,ic_temp)) - vaux(2,ip3)
        dz2 = vaux(3,ipnsegcn(iseg_loc,ic_temp)) - vaux(3,ip3)
@@ -1838,6 +1841,9 @@ subroutine PivotDual    ! dual pivot rotation
        if (dtemp(iseg_loc,2) < dtemp_min(2))  dtemp_min(2) = dtemp(iseg_loc,2)
     end do
     do iseg_loc = iseg_min-1, iseg_min +1, 2
+       if( (iseg_loc < 1) .or. (iseg_loc > npct(ict_temp)) ) then !if neighbour does not exists
+          cycle
+       end if
        if (dtemp_min(2) == dtemp(iseg_loc,2)) then
           jp1 =  ipnsegcn(iseg_min,ic_temp) ! store closest particle to ip1 as jp1
           jp3 = ipnsegcn(iseg_loc,ic_temp)  ! store closest particle to ip3 as jp3

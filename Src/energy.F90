@@ -187,8 +187,11 @@ module EnergyModule
    type(C_PTR) :: qmesh_ptr, qmeshtm_ptr, fqmesh_ptr              ! c-pointers for the allocation of the above
    type(C_PTR) :: plan_fwd, plan_bwd                              ! pointers to store the plan for forward and backward
    logical, save :: plan_fwd_done=.false., plan_bwd_done=.false.
-!  integer(C_INT), parameter :: plan_methode = FFTW_ESTIMATE      ! select a planning strategy
+# ifdef _TEST_
+   integer(C_INT), parameter :: plan_methode = FFTW_ESTIMATE      ! select a planning strategy
+# else
    integer(C_INT), parameter :: plan_methode = FFTW_MEASURE       ! select a planning strategy
+# endif
 !  integer(C_INT), parameter :: plan_methode = FFTW_PATIENT       ! select a planning strategy
 
    real(8),   allocatable :: meshfac(:,:,:)  ! influence function in reciprocal space
@@ -2970,7 +2973,10 @@ subroutine IterIdm(lforceiter)
          idmsize = sqrt( (idm(1,ia))**2            + (idm(2,ia))**2            + (idm(3,ia))**2 )
 
 ! ... check if not converged, then exit the test loop
-
+         if(idmsize == Zero) then 
+            lidmconv =.false.
+            exit
+         end if
          if ((idmdiff/idmsize > tpolit) .or. (lforceiter.and.(iter==1)) ) then
             lidmconv =.false.
             exit
@@ -4649,12 +4655,15 @@ subroutine UDielDisPlane
          dz = ro(3,ip)-ro(3,jp)
          call PBCr2(dx,dy,dz,r2)
          ri = one/sqrt(r2)
-         dz = ro(3,ip)+ro(3,jp)       ! image location
-         call PBCr2(dx,dy,dz,r2)
-         rip = one/sqrt(r2)
          if ((r(3,ip) < Zero) .and. (r(3,jp) < Zero)) then  ! ion--ion and ion--image interaction
+            dz = ro(3,ip)+ro(3,jp)       ! image location
+            call PBCr2(dx,dy,dz,r2)
+            rip = one/sqrt(r2)
             u%twob(iptjpt) = u%twob(iptjpt) + epsi1FourPi*az(ip)*az(jp)*(ri - delta*rip)
          elseif ((r(3,ip) > Zero) .and. (r(3,jp) > Zero)) then
+            dz = ro(3,ip)+ro(3,jp)       ! image location
+            call PBCr2(dx,dy,dz,r2)
+            rip = one/sqrt(r2)
             u%twob(iptjpt) = u%twob(iptjpt) + epsi2FourPi*az(ip)*az(jp)*(ri + delta*rip)
          else
             u%twob(iptjpt) = u%twob(iptjpt) + epsi1FourPi*az(ip)*az(jp)*(ri - delta*ri)
@@ -6434,6 +6443,7 @@ subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
 ! ... calculate the generalized influence function in the reciprocal space
 
    if (ltime) call CpuAdd('start', txRec, level, uout)
+   uloc = Zero             ! uloc needs to be initialized!
    do nz = 0,s(3)/2
       nza = mod(s(3)-nz,s(3))
       do ny = 0,s(2)/2

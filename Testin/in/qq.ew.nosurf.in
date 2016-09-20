@@ -1,0 +1,48 @@
+ &nmlSystem
+  txtitle ='two charges, test of ewald summation, jcp 112, 6152 (2000)',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*10.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,
+  itest = 3,   ipart = 1,   iatom = 1,   iaver = 50,   ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'jon1   ','jon2   ',
+  nppt  =  1,        1,
+  natpt =  1,        1,
+  txat  = 'site1','site2',
+  massat= 23.0,    35.4,
+  radat = 0.1,      0.1,
+  zat(1)   = 1.0,     -1.0,
+  sigat(1) = 2.0,      2.0,
+  epsat(1) = 0.0,      0.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'site1',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'site2',
+ /
+ &nmlPotential
+  rcut = 5.0,
+  lewald = .true., iewaldopt = 1,  ualphared = 4.0,  lsurf =.false.,
+  txpot     ='(1,6,12)','(1,6,12)','(1,6,12)',
+ /
+ &nmlSetConfiguration
+   txsetconf(1) = 'pclattice', 'pclattice',
+   nucell(1,1) =   1,    1     1,
+   roshift(1,1) = 0.5,  0.5,  0.5,
+   nucell(1,2) =   1,    1,    1,
+   roshift(1,2) = 0.6,  0.5,  0.5,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.001,    nvvite= 2,       lsetvel =.false.,
+  tvscl = 0.1,      tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlMC
+  dtran = 10.0,             10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

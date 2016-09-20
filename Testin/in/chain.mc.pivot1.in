@@ -1,0 +1,41 @@
+ &nmlSystem
+  txtitle ='testchain: 20-mer',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',
+  nstep1= 1,        nstep2= 100,
+  boxlen= 3*100.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic=.f., limage=.f.,
+  itest = 0,   ipart = 1,   iatom = 1,   iaver = 100, ishow = 1,   iplot = 0,   ilist = 0
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='20-mer',
+  ncct  = 1,
+  npptct(1,1) = 20,
+  npt   = 1,
+  txpt  = 'bead',
+  nppt  =  20,
+  natpt =  1,
+  txat  = 'site',
+  massat= 10.0,
+  radat = 2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'site',
+ /
+ &nmlPotential
+  r2uminin  = 0.0001,
+ /
+ &nmlPotentialChain bond = 2.5, 2 , 5.0, angle = 0.001 /
+ &nmlSetConfiguration
+  txsetconf(1) ='random',
+  anglemin = 120.0,
+ /
+ &nmlMC
+  pspart = 0.0, dtran      = 5.0,       drot  = 20.0,
+  ppivot = 1.0, drotpivot  = 360.0,     ipivotrotmode = 1,
+  pchain = 0.0, dtranchain = 5.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 180.0 /
