@@ -231,6 +231,7 @@ OBJS1=mol.o           \
       molaux.o        \
       mollib.o        \
       moluser.o       \
+      sso.o	      \
       mesh.o
  
 OBJS2=mol.o           \
@@ -254,6 +255,7 @@ OBJS2=mol.o           \
       mollib_par.o    \
       parallel_par.o  \
       moluser_par.o   \
+      sso_par.o       \
       mesh_par.o
  
 OBJS3=mol.o           \
@@ -302,7 +304,7 @@ coordinate.o    : coordinate.F90  mol.o
 	$(COMP_SER) $(FLAG_SER) -c coordinate.F90
 md.o            : md.F90        mol.o
 	$(COMP_SER) $(FLAG_SER) -c md.F90
-mc.o            : mc.F90        mol.o
+mc.o            : mc.F90        mol.o	nlist.o
 	$(COMP_SER) $(FLAG_SER) -c mc.F90
 bd.o            : bd.F90      mol.o	md.o
 	$(COMP_SER) $(FLAG_SER) -c bd.F90
@@ -334,6 +336,8 @@ moluser.o       : moluser.F90  mol.o   	   statistics.o	potential.o
 	$(COMP_SER) $(FLAG_SER) -c moluser.F90
 mesh.o          : mesh.F90
 	$(COMP_SER) $(FLAG_SER) -c mesh.F90
+sso.o      : sso.F90  mc.o	mol.o
+	$(COMP_SER) $(FLAG_SER) -c sso.F90
 testmesh.o      : testmesh.F90  mesh.o
 	$(COMP_SER) $(FLAG_SER) -c testmesh.F90
 molsim_par.o    : molsim.F90      mol.o      statistics_par.o
@@ -346,7 +350,7 @@ coordinate_par.o : coordinate.F90 mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o coordinate_par.o -c coordinate.F90
 md_par.o        : md.F90      mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o md_par.o -c md.F90
-mc_par.o        : mc.F90      mol.o
+mc_par.o        : mc.F90      mol.o	nlist.o
 	$(COMP_PAR) $(FLAG_PAR) -o mc_par.o -c mc.F90
 bd_par.o        : bd.F90      mol.o	md_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o bd_par.o -c bd.F90
@@ -376,6 +380,8 @@ moluser_par.o : moluser.F90  mol.o     potential_par.o    statistics_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o moluser_par.o -c moluser.F90
 mesh_par.o    : mesh.F90
 	$(COMP_PAR) $(FLAG_PAR) -o mesh_par.o -c mesh.F90
+sso_par.o      : sso.F90  mc_par.o	mol.o
+	$(COMP_PAR) $(FLAG_PAR) -o sso_par.o -c sso.F90
  
 #*****************************************************************
 #*                         Tidy                                  *
