@@ -1503,6 +1503,127 @@ end subroutine DrawRhombicDodecahedronTCL
 
 end subroutine WriteTCLScript
 
+module  UndoPBCModule   !Pascal Hebbeker 
+
+   !use MolModule
+   implicit none
+   public   :: ipatcenter
+   public   :: UndoclPBC
+   private  :: ipclose
+
+   real(8)  , allocatable, public  :: rotmp(:,:)
+   logical  , allocatable, public  :: lundo(:)
+
+   logical, private, allocatable :: loclundoip(:)
+
+
+   contains
+
+   function ipatcenter(ip) result(ipcenter)
+      implicit none
+      integer, intent(in)  :: ip
+      integer  :: ipcenter
+      real  :: r2
+
+      if (.not. allocated(loclundoip)) then 
+         allocate(loclundoip(np))
+      end if
+      loclundoip = .false.
+
+      call ipclose(ip, ipcenter,r2)
+
+      deallocate(loclundoip)
+
+   end function ipatcenter
+
+   recursive subroutine ipclose(ip, ipcenter, r2min)
+      implicit none
+      integer, intent(in)  :: ip
+      integer, intent(out)  :: ipcenter
+      real,    intent(out)  :: r2min
+      integer  :: jpcenter
+      integer  :: jp, icl, ib
+      real  :: r2
+
+      if (loclundoip(ip) == .true.) then
+         ipcenter = 0
+         r2min = huge(r2min)
+      else
+
+         loclundoip(ip) = .true.
+         ipcenter = ip
+         r2min = (ro(1,ip)**2 + ro(2,ip)**2 + ro(3,ip)**2)
+          
+         do ib = 1, 2      ! check bonded partners
+            jp = bondnn(ib,ip)
+            if(jp /= 0 ) then
+               call ipclose(jp, jpcenter, r2)
+               if( (jpcenter > 0) .and. (r2 < r2min))  then
+                  ipcenter = jpcenter
+                  r2min = r2
+               end if
+            end if
+         end do
+
+         if(lhierarchical .or. lclink) then
+            do icl = 1, nbondcl(ip) ! check crosslinked partners
+               jp = bondcl(icl,ip)
+               call ipclose(jp, jpcenter, r2)
+               if( (jpcenter > 0) .and. (r2 < r2min))  then
+                  ipcenter = jpcenter
+                  r2min = r2
+               end if
+            end do
+         end if
+
+      end if
+
+   end subroutine ipclose
+!
+!  UndoClPBC undoes all periodic boundary conditions along the bonds and crosslinked particles
+!
+   recursive subroutine UndoClPBC(rref, ip)
+      implicit none
+      real(8), intent(in)     :: rref(3)     ! reference point for the undo
+      integer, intent(in)     :: ip     ! particle to be undone for the undo
+
+      real(8)  ::  dr(3)
+      integer  :: ia, ipt, ib, jp, icl
+      real(8)  :: rip(3)     ! reference point for the undo
+
+      if(lundo(ip)) then
+         return
+      else
+         dr(1:3) = ro(1:3,ip) - rref(1:3)
+         call PBC(dr(1), dr(2), dr(3))
+         rip(1:3) = rref(1:3) + dr(1:3)
+
+         do ia = ianpn(ip), ianpn(ip) + napt(iptpn(ip)) - 1
+            rotmp(1:3, ia) = r(1:3,ia) - ro(1:3,ip) + rip(1:3)
+         end do
+
+         lundo(ip) = .true.
+
+         do ib = 1, 2      ! check bonded partners
+            jp = bondnn(ib,ip)
+            if(jp /= 0 ) then
+               call UndoClPBC(rip(1:3), jp)
+            end if
+         end do
+
+         if(lhierarchical .or. lclink) then 
+            do icl = 1, nbondcl(ip) ! check crosslinked partners
+               jp = bondcl(icl,ip)
+               call UndoClPBC(rip(1:3), jp)
+            end do
+         end if
+
+      end if
+
+   end subroutine UndoClPBC
+
+end module UndoPBCModule
+
 !************************************************************************
 !*                                                                      *
 !*     UndoPBC                                                          *
@@ -1513,31 +1634,31 @@ end subroutine WriteTCLScript
 
 subroutine UndoPBC(vhelp)
 
-   use MolModule
+   use UndoPBCModule
    implicit none
    real(8),    intent(out)  :: vhelp(1:3,*)       ! undone atom position
-   integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, ict, ic, ic_loc, ih, igen, iseg, icorner, jp
+   integer :: ip, ipmin, jp
 
-   if (lhierarchical) then                                                ! hierarchical structures
-      do ih = 1, nh                                                       ! loop over number of hierarchic structures
-         do igen = 0, ngen                                                ! loop over generations
-            ict = ictgen(igen)                                            ! chain type
-            do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1   ! loop over chains of the structure
-                if ((igen == 0) .and. (ic == 1)) then                     ! UNDO first chain of generation zero
-                   call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
-                else
-                   ip = ipnsegcn(1,ic)                                    ! chain ic has particle ip as its first particle
-                   jp = bondcl(1,ip)                                      ! particle ip is crosslinked to particle jp
-                   call UndoPBCChain(vhelp(1,jp), ic, 1, vhelp)           ! UNDO chain ic, using UNDO position of particle jp
-                end if
-            end do
-         end do
-      end do
-   else                                                                   ! systems with no hierarchical structures
-      do ic = 1, nc
-         call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
-      end do
+
+   if(.not. allocated(lundo)) then
+      allocate(lundo(np), rotmp(3,na))
    end if
+
+   lundo = .false.
+   rotmp = 0.0
+
+   do ip = 1, np
+      if(.not. lundo(ip)) then
+!          jp = ip
+         ipmin = ipatcenter(ip)
+         call UndoClPBC(ro(1:3,ipmin),ipmin)
+      end if
+   end do
+
+   vhelp(1:3,1:na) = rotmp(1:3, 1:na)
+
+   deallocate(lundo, rotmp)
+
 end subroutine UndoPBC
 
 !************************************************************************
