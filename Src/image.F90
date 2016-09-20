@@ -361,17 +361,11 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    integer(4), allocatable :: icount(:)
    integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, ict, ic, ic_loc, ih, igen, iseg, icorner, jp, t(3)
    real(8) :: xdir, ydir, zdir, xnorm, ynorm, znorm, xc, yc, zc, height, arg, dangle, rrr(3), mat(4,4), dir
-   real(8), allocatable, save :: ro_temp(:,:)
    real(8)     ,  parameter :: cornerref(3,8) = reshape( &
            [-One, One, One,   One, One, One,   One, One,-One,  -One, One,-One, &
             -One,-One, One,   One,-One, One,   One,-One,-One,  -One,-One,-One ] , [3,8] )
    real(8) :: corner(1:3,1:8)
    real(8), save :: rgbcolor_dipole(1:3,1:2) = reshape([One, One, Zero,  Zero, One, One],[3,2])
-
-   if (.not.allocated(ro_temp)) then 
-      allocate(ro_temp(1:3,1:na))
-      ro_temp = 0.0E+00
-   end if
 
 ! ... initializing label
 
