@@ -9676,7 +9676,7 @@ module ComplexationModule
 
          select case (iStage)
          case (iReadInput)
-            rcut_complexation = 6.25
+            rcut_complexation = 0.0
             lClusterDF = .false.
             lComplexFraction = .false.
             rewind(uin)
