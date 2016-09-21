@@ -894,13 +894,23 @@ subroutine DistFuncAverDist(nvar2, ilow, iupp, var, var2, var2_spread)
    implicit none
 
    integer(4),   intent(in)  :: nvar2                 ! number of distribution functions
-   integer(4),   intent(in)  :: ilow(*)               ! lower distribution functions
-   integer(4),   intent(in)  :: iupp(*)               ! upper distribution functions
+   integer(4),   intent(in)  :: ilow(nvar2)               ! lower distribution functions
+   integer(4),   intent(in)  :: iupp(nvar2)               ! upper distribution functions
    type(df_var), intent(in)  :: var(*)                ! underlaying distribution functions
-   type(df_var), intent(out) :: var2(:)               ! average of var from ilow to iupp
-   real(8)     , intent(out) :: var2_spread(*)        ! var%avsd averaged over 0 to nbin-1
-   integer(4) :: i, ibin, ncount, il, iu
+   type(df_var), intent(inout) :: var2(nvar2)               ! average of var from ilow to iupp
+   real(8)     , intent(out) :: var2_spread(nvar2)        ! var%avsd averaged over 0 to nbin-1
+   integer(4) :: i, ibin, ncount, il, iu, nbin
    real(8)    :: InvInt
+
+   do i = 1, nvar2
+      if(.not. allocated(var2(i)%nsampbin)) then
+         nbin = maxval(var2(1:nvar2)%nbin)
+         allocate(var2(i)%nsampbin(-1:nbin))
+         allocate(var2(i)%avs1(-1:nbin))
+         allocate(var2(i)%avsd(-1:nbin))
+         allocate(var2(i)%avs2(-1:nbin))
+      end if
+   end do
 
    do i = 1, nvar2
 
