@@ -112,6 +112,11 @@ subroutine StaticDriver(iStage)
       allocate(var(nvar))
       var(1)%label = 'volume'
 
+      if(istatic > nstep2) then
+         call Stop(txroutine, 'istatic > nstep2', uout)
+      end if
+
+
       if (.not.lgroup) then
          if (lspdf    ) call Stop(txroutine, 'spdf is selected, but no group division', uout)
          if (lrdf     ) call Stop(txroutine, 'rdf is selected, but no group division', uout)
