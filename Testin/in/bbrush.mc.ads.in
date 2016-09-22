@@ -68,7 +68,7 @@
  &nmlIntList inlist = 0, drnlist = 180.0 /
  &nmlGroup /
  &nmlStatic
-  istatic = 40,
+  istatic = 1,
   lspdf		  =.true.,
  /
  &nmlSPDF vtype(3) =.true., -120.0, 120.0, 240 /
