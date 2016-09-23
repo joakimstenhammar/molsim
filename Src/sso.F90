@@ -137,17 +137,19 @@
          case (iWriteInput) 
 
             ! check conditions---------------------------------------------------------------------
-            if (nstepzero + nstepend > nstep) then
-               write(uout, *) "nstepzero: ", nstepzero, "; nstepend: ", nstepend, "; nstep: ", nstep
-               call Stop(txroutine, 'nstepzero + nstepend > nstep', uout)
-            end if
-            if (nstepend < nstepzero) then
-               write(uout, *) "nstepzero: ", nstepzero, "; nstepend: ", nstepend, "; nstep: ", nstep
-               call Stop(txroutine, 'nstepend < nstepzero', uout)
-            end if
-            if (dtranfac .le. One) then
-               write(uout, *) "dtranfac: ", dtranfac
-               call Stop(txroutine, 'dtranfac .le. 1', uout)
+            if (master) then
+               if (nstepzero + nstepend > nstep) then
+                  write(uout, *) "nstepzero: ", nstepzero, "; nstepend: ", nstepend, "; nstep: ", nstep
+                  call Stop(txroutine, 'nstepzero + nstepend > nstep', uout)
+               end if
+               if (nstepend < nstepzero) then
+                  write(uout, *) "nstepzero: ", nstepzero, "; nstepend: ", nstepend, "; nstep: ", nstep
+                  call Stop(txroutine, 'nstepend < nstepzero', uout)
+               end if
+               if (dtranfac .le. One) then
+                  write(uout, *) "dtranfac: ", dtranfac
+                  call Stop(txroutine, 'dtranfac .le. 1', uout)
+               end if
             end if
             dtransso = abs(dtransso) !dtransso must always be positive
             !--------------------------------------------------------------------------------------
@@ -215,7 +217,7 @@
 
             if(istep == SSOPart%nextstep) then
 
-               if(ltestsso) then
+               if(ltestsso .and. master) then
                   call WriteHead(2, 'SSO - Results of current part', uout)
                end if
 
@@ -271,7 +273,7 @@
                      !--------------------------------------------------------------------------------
 
                      !print tests---------------------------------------------------------------------
-                     if(ltestsso) then
+                     if(ltestsso .and. master) then
                         write(uout,'(a,I0,a,I0,a,I0)') 'mobility of pt ',ipt, " part ", SSOPart%i, "; current step: ", istep
                         write(uout,'(a,g15.5)') 'current dtran ', curdtranpt(ipt)
                         write(uout,'(a,I5)')  'number of bins: ', nssobin
@@ -310,29 +312,31 @@
 
          case (iAfterSimulation)
 
-            call WriteHead(2, txroutine, uout)
+            if(master) then
+               call WriteHead(2, txroutine, uout)
 
-            write(uout,'(a)') 'SSO - optimal displacement parameter'
-            write(uout,'(a)') '------------------------------------'
-            write(uout,'(a15,a15)') 'particle type' , 'optimal dtran'
-            write(uout,'(a15,a15)') '---------------' , '---------------'
-            write(uout,'(i15,g15.5)') (ipt, SSOParameters(ipt,SSOPart%n)%opt, ipt = 1, npt)
-            write(uout,'(a)') ''
-            write(uout,'(a)') ''
-            write(uout,'(a)')'Number of SSO parts'
-            write(uout,'(i5)') SSOPart%n
-            write(uout,'(a)') ''
-            write(uout,'(a)') ''
-
-            do ipt = 1, npt
-               write(uout,'(a,I4)')  'displacement parameters of',ipt
-               write(uout,'(a15,a,a15,a,a15,a,a20)')  'sso-part' , char(9), 'used dran' , char(9), 'optimal dtran' , char(9) , 'error on opt. dtran'
-               write(uout,'(a15,a,a15,a,a15,a,a20)')  '---------------' , char(9), '---------------' , char(9), '---------------' , char(9) , '--------------------'
-               write(uout,'(i15,a,g15.5,a,g15.5,a,g20.5)') &
-               (ipart, char(9), SSOParameters(ipt,ipart)%used, char(9),SSOParameters(ipt,ipart)%opt, char(9), SSOParameters(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
+               write(uout,'(a)') 'SSO - optimal displacement parameter'
+               write(uout,'(a)') '------------------------------------'
+               write(uout,'(a15,a15)') 'particle type' , 'optimal dtran'
+               write(uout,'(a15,a15)') '---------------' , '---------------'
+               write(uout,'(i15,g15.5)') (ipt, SSOParameters(ipt,SSOPart%n)%opt, ipt = 1, npt)
                write(uout,'(a)') ''
                write(uout,'(a)') ''
-            end do
+               write(uout,'(a)')'Number of SSO parts'
+               write(uout,'(i5)') SSOPart%n
+               write(uout,'(a)') ''
+               write(uout,'(a)') ''
+
+               do ipt = 1, npt
+                  write(uout,'(a,I4)')  'displacement parameters of',ipt
+                  write(uout,'(a15,a,a15,a,a15,a,a20)')  'sso-part' , char(9), 'used dran' , char(9), 'optimal dtran' , char(9) , 'error on opt. dtran'
+                  write(uout,'(a15,a,a15,a,a15,a,a20)')  '---------------' , char(9), '---------------' , char(9), '---------------' , char(9) , '--------------------'
+                  write(uout,'(i15,a,g15.5,a,g15.5,a,g20.5)') &
+                  (ipart, char(9), SSOParameters(ipt,ipart)%used, char(9),SSOParameters(ipt,ipart)%opt, char(9), SSOParameters(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
+                  write(uout,'(a)') ''
+                  write(uout,'(a)') ''
+               end do
+            end if
 
          end select
 
