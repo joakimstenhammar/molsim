@@ -43,7 +43,7 @@ module StatisticsModule
 
 ! ... data structure for one-dimensional distribution functions
 
-   integer(4), parameter :: mnbin_df = 10000
+   integer(4), parameter :: mnbin_df =1000
 
    type df_var
       character(27) :: label                             ! label
