@@ -43,7 +43,7 @@ module StatisticsModule
 
 ! ... data structure for one-dimensional distribution functions
 
-   integer(4), parameter :: mnbin_df = 1000
+   integer(4), parameter :: mnbin_df =1000
 
    type df_var
       character(27) :: label                             ! label
@@ -55,10 +55,10 @@ module StatisticsModule
       integer(4)    :: nbin                              ! number of grid points
       real(8)       :: bin                               ! grid length of df
       real(8)       :: bini                              ! inverse of bin
-      real(8), allocatable       :: nsampbin(:)             ! number of values sampled in each bin
-      real(8), allocatable       :: avs1(:)                 ! average of the run
-      real(8), allocatable       :: avsd(:)                 ! precision of average of the run
-      real(8), allocatable       :: avs2(:)                 ! average of a macrostep
+      real(8)       :: nsampbin(-1:mnbin_df)             ! number of values sampled in each bin
+      real(8)       :: avs1(-1:mnbin_df)                 ! average of the run
+      real(8)       :: avsd(-1:mnbin_df)                 ! precision of average of the run
+      real(8)       :: avs2(-1:mnbin_df)                 ! average of a macrostep
    end type df_var
 
 ! ... data structure for two-dimensional distribution functions
@@ -595,18 +595,8 @@ subroutine DistFuncSample(iStage, nvar, var)
    integer(4),   intent(in)    :: iStage
    integer(4),   intent(in)    :: nvar     ! number of distribution functions
    type(df_var), intent(inout) :: var(*)   ! distribution functions
-   integer(4) :: i, ibin, nbin
+   integer(4) :: i, ibin
    real(8)    :: norm, norm1, InvInt
-
-   do i = 1, nvar
-      if(.not. allocated(var(i)%nsampbin)) then
-         nbin = maxval(var(1:nvar)%nbin)
-         allocate(var(i)%nsampbin(-1:nbin))
-         allocate(var(i)%avs1(-1:nbin))
-         allocate(var(i)%avsd(-1:nbin))
-         allocate(var(i)%avs2(-1:nbin))
-      end if
-   end do
 
    select case (iStage)
    case (2)  ! read input
@@ -894,23 +884,13 @@ subroutine DistFuncAverDist(nvar2, ilow, iupp, var, var2, var2_spread)
    implicit none
 
    integer(4),   intent(in)  :: nvar2                 ! number of distribution functions
-   integer(4),   intent(in)  :: ilow(nvar2)               ! lower distribution functions
-   integer(4),   intent(in)  :: iupp(nvar2)               ! upper distribution functions
+   integer(4),   intent(in)  :: ilow(*)               ! lower distribution functions
+   integer(4),   intent(in)  :: iupp(*)               ! upper distribution functions
    type(df_var), intent(in)  :: var(*)                ! underlaying distribution functions
-   type(df_var), intent(inout) :: var2(nvar2)               ! average of var from ilow to iupp
-   real(8)     , intent(out) :: var2_spread(nvar2)        ! var%avsd averaged over 0 to nbin-1
-   integer(4) :: i, ibin, ncount, il, iu, nbin
+   type(df_var), intent(inout) :: var2(*)               ! average of var from ilow to iupp
+   real(8)     , intent(out) :: var2_spread(*)        ! var%avsd averaged over 0 to nbin-1
+   integer(4) :: i, ibin, ncount, il, iu
    real(8)    :: InvInt
-
-   do i = 1, nvar2
-      if(.not. allocated(var2(i)%nsampbin)) then
-         nbin = maxval(var2(1:nvar2)%nbin)
-         allocate(var2(i)%nsampbin(-1:nbin))
-         allocate(var2(i)%avs1(-1:nbin))
-         allocate(var2(i)%avsd(-1:nbin))
-         allocate(var2(i)%avs2(-1:nbin))
-      end if
-   end do
 
    do i = 1, nvar2
 
