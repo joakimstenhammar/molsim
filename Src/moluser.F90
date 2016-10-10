@@ -9881,14 +9881,14 @@ module ComplexationModule
       !*                                                                      *
       !************************************************************************
 
-      ! ... Calculate clusters and their distribution
+      ! ... Calculate clusters and their distribution (first and second moment)
 
       subroutine ClusterDF(iStage)
 
          use MolModule, only: ltrace, ltime, uout, lsim, master, txstart, ucnf, ulist, ishow, iplot, ilist
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
          use MolModule, only: npt, iptpt, nptpt, txpt, nppt, ipnpt, iptpn, np
-         use StatisticsModule, only: df_var
+         use StatisticsModule, only: df_var, mnbin_df
          implicit none
 
          integer(4), intent(in) :: iStage
@@ -9896,13 +9896,14 @@ module ComplexationModule
          character(40), parameter :: txroutine ='ClusterDF'
          character(80), parameter :: txheading ='Size distribution of the binary clusters'
          integer(4),    save :: nvar
-         type(df_var),  allocatable, save              :: var(:)
+         integer(4)   , parameter :: nmoment = 2
+         type(df_var),  allocatable, save              :: var(:,:)
          integer, allocatable, save              :: ivar_ptpt(:,:)
 
          logical(4), allocatable, save :: linclstr(:)        !number of particles per cluster (clstr)
          integer(4)  :: nbead_clstr                    !number of clusters
 
-         integer(4)  :: ip, ipt, jpt, ivar, ibin
+         integer(4)  :: ip, ipt, jpt, ivar, ibin, imoment
 
          if (ltrace) call WriteTrace(3, txroutine, iStage)
          if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -9922,27 +9923,34 @@ module ComplexationModule
 
             nvar = ivar_ptpt(npt-1, npt)
             if(.not. allocated(var)) then
-               allocate(var(nvar))
+               allocate(var(nvar,nmoment))
             end if
 
          case (iWriteInput)
 
-            do ipt = 1, npt
-               ivar = ivar_ptpt(ipt,ipt)
-               do jpt = ipt + 1, npt
-                  ivar = ivar_ptpt(ipt,jpt)
-                  var(ivar)%label = "Cluster of "//trim(txpt(ipt))//' - '//trim(txpt(jpt))
-                  var(ivar)%min = -0.5d0
-                  var(ivar)%max = nppt(ipt) + nppt(jpt) + 0.5d0
-                  var(ivar)%nbin = nppt(ipt) + nppt(jpt) + 1
-                  var(ivar)%norm = 1.0d0
+            do imoment = 1, nmoment
+               do ipt = 1, npt
+                  ivar = ivar_ptpt(ipt,ipt)
+                  do jpt = ipt + 1, npt
+                     ivar = ivar_ptpt(ipt,jpt)
+                     write(var(ivar,imoment)%label,'(4a,i1)') trim(txpt(ipt)), ' - ', trim(txpt(jpt)), '; Moment = ', imoment
+                     var(ivar,imoment)%min = -0.5d0
+                     var(ivar,imoment)%max = nppt(ipt) + nppt(jpt) + 0.5
+                     var(ivar,imoment)%nbin = min(mnbin_df,nppt(ipt) + nppt(jpt) + 1)
+                     var(ivar,imoment)%norm = 1.0d0
+                  end do
                end do
             end do
-            call DistFuncSample(iStage, nvar, var)
+
+            do imoment = 1, nmoment
+               call DistFuncSample(iStage, nvar, var(:,imoment))
+            end do
 
          case (iBeforeSimulation)
 
-            call DistFuncSample(iStage, nvar, var)
+            do imoment = 1, nmoment
+               call distfuncsample(istage, nvar, var(:,imoment))
+            end do
             if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
             if(.not. allocated(linclstr)) then
                allocate(linclstr(np))
@@ -9952,6 +9960,9 @@ module ComplexationModule
          case (iBeforeMacrostep)
 
             call DistFuncSample(iStage, nvar, var)
+            do imoment = 1, nmoment
+               call distfuncsample(istage, nvar, var(:,imoment))
+            end do
 
          case (iSimulationStep)
 
@@ -9971,31 +9982,39 @@ module ComplexationModule
                      if(.not. linclstr(ip)) then
                         nbead_clstr = 0
                         call get_nbead_clstr(ip,ipt, jpt,nbead_clstr)
-                        ibin = nbead_clstr
                         if(nbead_clstr < 1) then
                            call Stop(txroutine, 'found particle which has wrong cluster size', uout)
                         endif
-                        var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + 1.0d0
+                        do imoment = 1, nmoment
+                           ibin = max(-1,min(floor(var(ivar,imoment)%bini*(nbead_clstr-var(ivar,imoment)%min)),int(var(ivar,imoment)%nbin)))
+                           var(ivar,imoment)%avs2(ibin) = var(ivar,imoment)%avs2(ibin) + 1.0d0**(imoment - 1)
+                        end do
                      end if
                   end do
 
                   !all particles of jpt which are not in a cluster with particles of ipt are individial particles (ibin 1)
-                  var(ivar)%avs2(1) = var(ivar)%avs2(1) + count(.not. linclstr(ipnpt(jpt):(ipnpt(jpt)+nppt(jpt)-1)))
+                  var(ivar,:)%avs2(1) = var(ivar,:)%avs2(1) + count(.not. linclstr(ipnpt(jpt):(ipnpt(jpt)+nppt(jpt)-1)))
 
                end do
             end do
 
          case (iAfterMacrostep)
 
-            call DistFuncSample(iStage, nvar, var)
+            do imoment = 1, nmoment
+               call DistFuncSample(iStage, nvar, var(:,imoment))
+            end do
             if (lsim .and. master) write(ucnf) var
 
          case (iAfterSimulation)
 
-            call DistFuncSample(iStage, nvar, var)
+            do imoment = 1, nmoment
+               call DistFuncSample(iStage, nvar, var(:,imoment))
+            end do
             call WriteHead(2, txheading, uout)
-            call DistFuncHead(nvar, var, uout)
-            call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
+            do imoment = 1, nmoment
+               call DistFuncHead(nvar, var(:,imoment), uout)
+               call DistFuncWrite(txheading, nvar, var(:,imoment), uout, ulist, ishow, iplot, ilist)
+            end do
 
             deallocate(var, linclstr)
 
