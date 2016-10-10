@@ -9987,7 +9987,7 @@ module ComplexationModule
                         endif
                         do imoment = 1, nmoment
                            ibin = max(-1,min(floor(var(ivar,imoment)%bini*(nbead_clstr-var(ivar,imoment)%min)),int(var(ivar,imoment)%nbin)))
-                           var(ivar,imoment)%avs2(ibin) = var(ivar,imoment)%avs2(ibin) + 1.0d0**(imoment - 1)
+                           var(ivar,imoment)%avs2(ibin) = var(ivar,imoment)%avs2(ibin) + nbead_clstr**(imoment - 1)
                         end do
                      end if
                   end do
