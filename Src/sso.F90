@@ -60,7 +60,7 @@
 
          integer(4), intent(in) :: iStage
 
-         character(40), parameter :: txroutine ='SSODriver'
+         character(40), parameter :: txroutine ='SSOSetup'
 
          integer(4)  :: ipt
          integer(4)  :: maxbin, upperbin, lowerbin ! bin where the local mobility is found and upper and lower boundary
