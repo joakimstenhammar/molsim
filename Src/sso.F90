@@ -41,7 +41,7 @@
 
       !************************************************************************
       !*                                                                      *
-      !*     SSODriver                                                        *
+      !*     SSOSetup                                                         *
       !*                                                                      *
       !************************************************************************
 
@@ -60,10 +60,10 @@
 
          integer(4), intent(in) :: iStage
 
-         character(40), parameter :: txroutine ='SSODriver'
+         character(40), parameter :: txroutine ='SSOSetup'
 
          integer(4)  :: ipt
-         integer(4)  :: maxbin, upperbin, lowerbin ! bin where the local mobility is found and upper and lower boundary
+         integer(4)  :: maxmobbin, upperbin, lowerbin ! bin where the maximumlocal mobility is found and upper and lower boundary
          integer(4)  :: ibin, ipart
 
          !input variables--------------------------------------------------------------------------
@@ -111,7 +111,7 @@
             if (.not. allocated(maxdtransso)) allocate(maxdtransso(npt))
 
             dtransso  = One
-            nstepzero   = ceiling(sqrt(real(nstep)))
+            nstepzero   = ceiling(sqrt(real(nstep))) ! set shortest step as the square root of the total number of steps (see Phys. Procedia 2011, 15, 81-86.)
             nstepend    = max(nstepzero, int(0.1*nstep))
             nssobin     = 20
             ltestsso    = .false.
@@ -229,57 +229,57 @@
                      call CalcCurrentMobility(ipt)                      !calculate current Mobility
 
                      ! get bin with maximum mobility--------------------------------------------------
-                     maxbin = 0
+                     maxmobbin = 0
                      do ibin = 1, nssobin - 1
-                        if(Mobility(ibin)%smooth > Mobility(ibin + 1)%smooth .and. Mobility(ibin)%smooth > Mobility(maxbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
-                           maxbin = ibin
+                        if(Mobility(ibin)%smooth > Mobility(ibin + 1)%smooth .and. Mobility(ibin)%smooth > Mobility(maxmobbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
+                           maxmobbin = ibin
                         end if
                      end do
-                     if(maxbin == 0) then  ! no local maximum found, maximum at border
-                        maxbin = nssobin
+                     if(maxmobbin == 0) then  ! no local maximum found, maximum at border
+                        maxmobbin = nssobin
                      end if
                      !--------------------------------------------------------------------------------
 
-                     ! get upper boundary (relative to maxbin)----------------------------------------
+                     ! get upper boundary (relative to maxmobbin)----------------------------------------
                      upperbin = 0
-                     if(maxbin == nssobin) then
-                        upperbin = ceiling((dtranfac - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
+                     if(maxmobbin == nssobin) then
+                        upperbin = ceiling((dtranfac - One)*nssobin) ! use dtranfac to estimate upper boundary if maxmobbin is at border
                      else
-                        do ibin = maxbin + 1 , nssobin !find position where locmob is significantly different from maximum
-                           if ( (Mobility(maxbin)%smooth - Mobility(maxbin)%error) .ge. (Mobility(ibin)%smooth + Mobility(ibin)%error) ) then
-                              upperbin = (ibin - maxbin) + 1
+                        do ibin = maxmobbin + 1 , nssobin !find position where locmob is significantly different from maximum
+                           if ( (Mobility(maxmobbin)%smooth - Mobility(maxmobbin)%error) .ge. (Mobility(ibin)%smooth + Mobility(ibin)%error) ) then
+                              upperbin = (ibin - maxmobbin) + 1
                               exit
                            end if
                         end do
                         if (upperbin == 0) then        ! no significantly different position found
-                           upperbin = 1 + ceiling(Two*Mobility(maxbin)%error*(nssobin - maxbin)/real((Mobility(maxbin)%smooth + Mobility(maxbin)%error) - (Mobility(nssobin)%smooth + Mobility(nssobin)%error)) ) ! extrapolate position
+                           upperbin = 1 + ceiling(Two*Mobility(maxmobbin)%error*(nssobin - maxmobbin)/real((Mobility(maxmobbin)%smooth + Mobility(maxmobbin)%error) - (Mobility(nssobin)%smooth + Mobility(nssobin)%error)) ) ! extrapolate position
                         end if
                      end if
                      ! -------------------------------------------------------------------------------
 
-                     ! get lower boundary (relative to maxbin)----------------------------------------
+                     ! get lower boundary (relative to maxmobbin)----------------------------------------
                      lowerbin = 0
-                     do ibin = maxbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
-                        if (Mobility(maxbin)%smooth - Mobility(maxbin)%error .ge. Mobility(ibin)%smooth + Mobility(ibin)%error) then
-                           lowerbin = maxbin - ibin
+                     do ibin = maxmobbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
+                        if (Mobility(maxmobbin)%smooth - Mobility(maxmobbin)%error .ge. Mobility(ibin)%smooth + Mobility(ibin)%error) then
+                           lowerbin = maxmobbin - ibin
                            exit
                         end if
                      end do
                      !--------------------------------------------------------------------------------
 
                      !store results in SSOParameters--------------------------------------------------
-                     SSOParameters(ipt,SSOPart%i)%opt = Two*ssorad(maxbin,ipt)
+                     SSOParameters(ipt,SSOPart%i)%opt = Two*ssorad(maxmobbin,ipt)
                      SSOParameters(ipt,SSOPart%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
                      !--------------------------------------------------------------------------------
 
                      !print tests---------------------------------------------------------------------
                      if(ltestsso .and. master) then
-                        write(uout,'(a,I0,a,I0,a,I0)') 'mobility of pt ',ipt, " part ", SSOPart%i, "; current step: ", istep
+                        write(uout,'(3(a,I0))') 'mobility of pt ',ipt, " part ", SSOPart%i, "; current step: ", istep
                         write(uout,'(a,g15.5)') 'current dtran ', curdtranpt(ipt)
                         write(uout,'(a,I5)')  'number of bins: ', nssobin
-                        write(uout,'(a, a, a, a, a, a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
-                        write(uout,'(i0, g15.5,a,g15.5,a,g15.5,a,g15.5,a,g15.5)') &
-                        (ibin, ssorad(ibin,ipt), char(9), Mobility(ibin)%val, char(9), ssos(ibin, ipt)%d2, char(9), Mobility(ibin)%smooth, char(9), ssos(ibin, ipt)%n, ibin = 1,nssobin)
+                        write(uout,'(6a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
+                        write(uout,'(i0,6(g15.5,9x))') &
+                        (ibin, ssorad(ibin,ipt), Mobility(ibin)%val, ssos(ibin, ipt)%d2, Mobility(ibin)%error, Mobility(ibin)%smooth, ssos(ibin, ipt)%n, ibin = 1,nssobin)
                         write(uout,'(a,I4)')  'average msd of pt ',ipt
                         write(uout,'(g15.5)') tots(ipt)%d2/real(tots(ipt)%n)
                         write(uout,'(a)')  ''
@@ -288,7 +288,7 @@
                      !--------------------------------------------------------------------------------
 
                      !set next displacement parameter-------------------------------------------------
-                     curdtranpt(ipt) = min(Two*ssorad((maxbin + max(upperbin,1)),ipt),maxdtransso(ipt))
+                     curdtranpt(ipt) = min(Two*ssorad((maxmobbin + max(upperbin,1)),ipt),maxdtransso(ipt))
                      invrsso(ipt) = real(nssobin) * Two / real(curdtranpt(ipt))
                      !--------------------------------------------------------------------------------
                   end if
@@ -329,9 +329,9 @@
 
                do ipt = 1, npt
                   write(uout,'(a,I4)')  'displacement parameters of',ipt
-                  write(uout,'(a15,a,a15,a,a15,a,a20)')  'sso-part' , char(9), 'used dran' , char(9), 'optimal dtran' , char(9) , 'error on opt. dtran'
-                  write(uout,'(a15,a,a15,a,a15,a,a20)')  '---------------' , char(9), '---------------' , char(9), '---------------' , char(9) , '--------------------'
-                  write(uout,'(i15,a,g15.5,a,g15.5,a,g20.5)') &
+                  write(uout,'(3(a15,9x),a20)')  'sso-part' , 'used dran' , 'optimal dtran' , 'error on opt. dtran'
+                  write(uout,'(3(a15,9x),a20)')  '---------------' , '---------------' , '---------------' , '--------------------'
+                  write(uout,'(i15,2(9x,g15.5),9x,g20.5)') &
                   (ipart, char(9), SSOParameters(ipt,ipart)%used, char(9),SSOParameters(ipt,ipart)%opt, char(9), SSOParameters(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
                   write(uout,'(a)') ''
                   write(uout,'(a)') ''
@@ -435,7 +435,7 @@ subroutine SSOUpdate(lacc, ipt, dr)
    use SSOModule, only: DoSSOUpdate
    implicit none
    logical, intent(in)  :: lacc      ! event of SSO-Move
-   integer, intent(in)  :: ipt        ! number of moving particles
+   integer, intent(in)  :: ipt       ! particle type of moving particle
    real(8),    intent(in) :: dr(3)  ! suggested particle move
 
    call DoSSOUpdate(lacc, ipt, dr(1:3))
