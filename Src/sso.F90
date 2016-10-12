@@ -435,7 +435,7 @@ subroutine SSOUpdate(lacc, ipt, dr)
    use SSOModule, only: DoSSOUpdate
    implicit none
    logical, intent(in)  :: lacc      ! event of SSO-Move
-   integer, intent(in)  :: ipt        ! number of moving particles
+   integer, intent(in)  :: ipt       ! particle type of moving particle
    real(8),    intent(in) :: dr(3)  ! suggested particle move
 
    call DoSSOUpdate(lacc, ipt, dr(1:3))
