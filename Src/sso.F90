@@ -63,7 +63,7 @@
          character(40), parameter :: txroutine ='SSOSetup'
 
          integer(4)  :: ipt
-         integer(4)  :: maxbin, upperbin, lowerbin ! bin where the local mobility is found and upper and lower boundary
+         integer(4)  :: maxmobbin, upperbin, lowerbin ! bin where the maximumlocal mobility is found and upper and lower boundary
          integer(4)  :: ibin, ipart
 
          !input variables--------------------------------------------------------------------------
@@ -229,46 +229,46 @@
                      call CalcCurrentMobility(ipt)                      !calculate current Mobility
 
                      ! get bin with maximum mobility--------------------------------------------------
-                     maxbin = 0
+                     maxmobbin = 0
                      do ibin = 1, nssobin - 1
-                        if(Mobility(ibin)%smooth > Mobility(ibin + 1)%smooth .and. Mobility(ibin)%smooth > Mobility(maxbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
-                           maxbin = ibin
+                        if(Mobility(ibin)%smooth > Mobility(ibin + 1)%smooth .and. Mobility(ibin)%smooth > Mobility(maxmobbin)%smooth ) then !maximum found if the nextbin has a lower mobility and the current bin is the highest
+                           maxmobbin = ibin
                         end if
                      end do
-                     if(maxbin == 0) then  ! no local maximum found, maximum at border
-                        maxbin = nssobin
+                     if(maxmobbin == 0) then  ! no local maximum found, maximum at border
+                        maxmobbin = nssobin
                      end if
                      !--------------------------------------------------------------------------------
 
-                     ! get upper boundary (relative to maxbin)----------------------------------------
+                     ! get upper boundary (relative to maxmobbin)----------------------------------------
                      upperbin = 0
-                     if(maxbin == nssobin) then
-                        upperbin = ceiling((dtranfac - One)*nssobin) ! use dtranfac to estimate upper boundary if maxbin is at border
+                     if(maxmobbin == nssobin) then
+                        upperbin = ceiling((dtranfac - One)*nssobin) ! use dtranfac to estimate upper boundary if maxmobbin is at border
                      else
-                        do ibin = maxbin + 1 , nssobin !find position where locmob is significantly different from maximum
-                           if ( (Mobility(maxbin)%smooth - Mobility(maxbin)%error) .ge. (Mobility(ibin)%smooth + Mobility(ibin)%error) ) then
-                              upperbin = (ibin - maxbin) + 1
+                        do ibin = maxmobbin + 1 , nssobin !find position where locmob is significantly different from maximum
+                           if ( (Mobility(maxmobbin)%smooth - Mobility(maxmobbin)%error) .ge. (Mobility(ibin)%smooth + Mobility(ibin)%error) ) then
+                              upperbin = (ibin - maxmobbin) + 1
                               exit
                            end if
                         end do
                         if (upperbin == 0) then        ! no significantly different position found
-                           upperbin = 1 + ceiling(Two*Mobility(maxbin)%error*(nssobin - maxbin)/real((Mobility(maxbin)%smooth + Mobility(maxbin)%error) - (Mobility(nssobin)%smooth + Mobility(nssobin)%error)) ) ! extrapolate position
+                           upperbin = 1 + ceiling(Two*Mobility(maxmobbin)%error*(nssobin - maxmobbin)/real((Mobility(maxmobbin)%smooth + Mobility(maxmobbin)%error) - (Mobility(nssobin)%smooth + Mobility(nssobin)%error)) ) ! extrapolate position
                         end if
                      end if
                      ! -------------------------------------------------------------------------------
 
-                     ! get lower boundary (relative to maxbin)----------------------------------------
+                     ! get lower boundary (relative to maxmobbin)----------------------------------------
                      lowerbin = 0
-                     do ibin = maxbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
-                        if (Mobility(maxbin)%smooth - Mobility(maxbin)%error .ge. Mobility(ibin)%smooth + Mobility(ibin)%error) then
-                           lowerbin = maxbin - ibin
+                     do ibin = maxmobbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
+                        if (Mobility(maxmobbin)%smooth - Mobility(maxmobbin)%error .ge. Mobility(ibin)%smooth + Mobility(ibin)%error) then
+                           lowerbin = maxmobbin - ibin
                            exit
                         end if
                      end do
                      !--------------------------------------------------------------------------------
 
                      !store results in SSOParameters--------------------------------------------------
-                     SSOParameters(ipt,SSOPart%i)%opt = Two*ssorad(maxbin,ipt)
+                     SSOParameters(ipt,SSOPart%i)%opt = Two*ssorad(maxmobbin,ipt)
                      SSOParameters(ipt,SSOPart%i)%err = ssorad(max((upperbin + lowerbin),2),ipt)
                      !--------------------------------------------------------------------------------
 
@@ -288,7 +288,7 @@
                      !--------------------------------------------------------------------------------
 
                      !set next displacement parameter-------------------------------------------------
-                     curdtranpt(ipt) = min(Two*ssorad((maxbin + max(upperbin,1)),ipt),maxdtransso(ipt))
+                     curdtranpt(ipt) = min(Two*ssorad((maxmobbin + max(upperbin,1)),ipt),maxdtransso(ipt))
                      invrsso(ipt) = real(nssobin) * Two / real(curdtranpt(ipt))
                      !--------------------------------------------------------------------------------
                   end if
