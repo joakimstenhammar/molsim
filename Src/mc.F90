@@ -1337,9 +1337,11 @@ subroutine SPartMove(iStage, loptsso)
    call Metropolis(lboxoverlap, lhsoverlap, lhepoverlap, weight, du%tot*beta)
 
 ! .............. update .............
-   do iploc = 1, nptm
-      if (lsso) call SSOUpdate((ievent == imcaccept), iptmove, drotm(1:3,iploc))
-   end do
+   if(lsso) then
+      do iploc = 1, nptm
+         call SSOUpdate((ievent == imcaccept), iptmove, drotm(1:3,iploc))
+      end do
+   end if
    if (ievent == imcaccept) call MCUpdate       ! update energies and coordinates
 
    if (lautumb) call UmbrellaUpdate              ! update weight function for umbrella potential
