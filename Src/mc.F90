@@ -1259,7 +1259,7 @@ subroutine SPartMove(iStage, loptsso)
 ! .. get displacement parameter
    dtr=dtran(iptmove)
    if(lsso) then
-      dtr=-curdtranpt(iptmove)
+      dtr=-curdtranpt(iptmove) !sso always produces positiv values in curdtranpt; but requires sperical displacement volume. GetRandomTrialPos uses spherical displacement volume id dtr<0
    end if
 
 
