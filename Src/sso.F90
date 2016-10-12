@@ -274,12 +274,12 @@
 
                      !print tests---------------------------------------------------------------------
                      if(ltestsso .and. master) then
-                        write(uout,'(a,I0,a,I0,a,I0)') 'mobility of pt ',ipt, " part ", SSOPart%i, "; current step: ", istep
+                        write(uout,'(3(a,I0)') 'mobility of pt ',ipt, " part ", SSOPart%i, "; current step: ", istep
                         write(uout,'(a,g15.5)') 'current dtran ', curdtranpt(ipt)
                         write(uout,'(a,I5)')  'number of bins: ', nssobin
-                        write(uout,'(a, a, a, a, a, a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
-                        write(uout,'(i0, g15.5,a,g15.5,a,g15.5,a,g15.5,a,g15.5)') &
-                        (ibin, ssorad(ibin,ipt), char(9), Mobility(ibin)%val, char(9), ssos(ibin, ipt)%d2, char(9), Mobility(ibin)%smooth, char(9), ssos(ibin, ipt)%n, ibin = 1,nssobin)
+                        write(uout,'(6a)') "trans. rad", "mob", "msd", "error", "smoothed", "number of steps"
+                        write(uout,'(i0, 6(g15.5,x9)') &
+                        (ibin, ssorad(ibin,ipt), Mobility(ibin)%val, ssos(ibin, ipt)%d2, Mobility(ibin)%error, Mobility(ibin)%smooth, ssos(ibin, ipt)%n, ibin = 1,nssobin)
                         write(uout,'(a,I4)')  'average msd of pt ',ipt
                         write(uout,'(g15.5)') tots(ipt)%d2/real(tots(ipt)%n)
                         write(uout,'(a)')  ''
@@ -329,9 +329,9 @@
 
                do ipt = 1, npt
                   write(uout,'(a,I4)')  'displacement parameters of',ipt
-                  write(uout,'(a15,a,a15,a,a15,a,a20)')  'sso-part' , char(9), 'used dran' , char(9), 'optimal dtran' , char(9) , 'error on opt. dtran'
-                  write(uout,'(a15,a,a15,a,a15,a,a20)')  '---------------' , char(9), '---------------' , char(9), '---------------' , char(9) , '--------------------'
-                  write(uout,'(i15,a,g15.5,a,g15.5,a,g20.5)') &
+                  write(uout,'(3(a15,x9),a20)')  'sso-part' , 'used dran' , 'optimal dtran' , 'error on opt. dtran'
+                  write(uout,'(3(a15,x9),a20)')  '---------------' , '---------------' , '---------------' , '--------------------'
+                  write(uout,'(i15,2(x9,g15.5),x9,g20.5)') &
                   (ipart, char(9), SSOParameters(ipt,ipart)%used, char(9),SSOParameters(ipt,ipart)%opt, char(9), SSOParameters(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
                   write(uout,'(a)') ''
                   write(uout,'(a)') ''
