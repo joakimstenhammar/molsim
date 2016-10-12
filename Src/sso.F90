@@ -111,7 +111,7 @@
             if (.not. allocated(maxdtransso)) allocate(maxdtransso(npt))
 
             dtransso  = One
-            nstepzero   = ceiling(sqrt(real(nstep)))
+            nstepzero   = ceiling(sqrt(real(nstep))) ! set shortest step as the square root of the total number of steps (see Phys. Procedia 2011, 15, 81-86.)
             nstepend    = max(nstepzero, int(0.1*nstep))
             nssobin     = 20
             ltestsso    = .false.
