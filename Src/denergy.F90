@@ -2544,7 +2544,7 @@ subroutine DUBond
          if (.not.lptm(jp_m)) then                 ! lower neighbour is not moved
             call DUBondSub(ro(1,jp_m),ro(1,jp_m))
          else                                      ! lower neighbour is moved
-            if(iploc > 2) then
+            if(iploc > 1) then
                call DUBondSub(rotm(1,iploc-1),ro(1,jp_m))          ! orig
             else
                call DUBondSub(rotm(1,iptmpn(jp_m)),ro(1,jp_m))     ! Jos
@@ -2621,13 +2621,13 @@ subroutine DUAngle
       if ((jp_m /= 0) .and. (jp_p /= 0)) then    ! segment has two neighbours
          if (lptm(jp_m)) then
             if (lptm(jp_p)) then
-               if(iploc > 2) then
+               if(( iploc > 1 ) .and. (iploc < nptm)) then
                   call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
                else
                   call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p))  ! Jos
                end if
             else
-               if(iploc > 2) then
+               if(iploc > 1) then
                   call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
                else
                   call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))    ! Jos
@@ -2635,8 +2635,11 @@ subroutine DUAngle
             end if
          else
             if (lptm(jp_p)) then
-              call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
-       !!        call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p)) ! Jos
+               if(iploc < nptm) then
+                  call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+               else
+                  call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p)) ! Jos
+               endif
             else
                call DUAngleSub(ro(1,jp_m), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
             end if
