@@ -1,0 +1,44 @@
+ &nmlSystem
+  txtitle ='pentrable charged sphere + ions',
+  txmethod='mc',    txensemb='nvt',     txbc='sph',      txstart='setconf',
+  nstep1= 1,        nstep2= 10,
+  sphrad= 500.0,
+  temp  = 298.0,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.t.,limage =.true.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,    ishow = 1,   iplot = 1,  ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'counterion',
+  nppt  = 1000,
+  natpt =   1,
+  txat  = 'counterion',
+  radat = 2.0,
+  zat   =-1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'counterion',
+ /
+ &nmlPotential
+  relpermitt = 80.0,
+  luext=.true.,
+ /
+ &nmlPotentialExternal txuext = 'hollow_sphere', rInSphere = 150., rOutSphere = 250., zInsSphere = 2000. /
+ &nmlSetConfiguration
+  txsetconf = 'random',
+ /
+ &nmlMC
+  dtran = 100.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 100.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100, rcutdist = 100.0 /
+ &nmlGroup /
+ &nmlStatic
+  istatic =10,
+  lspdf =.true.,
+ /
+ &nmlSPDF vtype(1) =.true., 0.0, 500.0, 500 /
+ &nmlImage iimage = 1, lvrml =.true. /
+ &nmlVrml atsize = 2.0, blmax= 15.0, bondr=0.3 /

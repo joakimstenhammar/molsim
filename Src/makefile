@@ -76,12 +76,44 @@ ifeq ($(ARCH), LOCAL_INTEL)
   
   COMP_SER = ifort
   LINK_SER = $(COMP_SER)
-  OPT_SER  = -O3 -ipo                                  # inter processoptimization
-  OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # repot on vecorization
-  OPT_SER  = -O0 -traceback -check                     # provide useful info at exceptions
+
+
+  OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # report on vecorization
+  OPT_SER  = -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
+  OPT_SER  = -O3 -ipo -fp-model strict                 # inter processoptimization
+  OPT_SER  = -O3 -traceback -check all     	       # provide useful info at exceptions (gives many #406 warnings)
+  OPT_SER  = -O0                                       # quick compilation (useful for debug)
+  OPT_SER  = -warn     				       # provides many warnings
+  OPT_SER  = -prof-gen                                 # generate profile for profiled-optimization
+  OPT_SER  = -prof-use -O3 -ipo                        # profiled-optimization
   OPT_SER  = -O3                                       # normal
+  OPT_SER  = -O3 -ipo                                  # inter processoptimization #proviedes approx. 15% more speed
+
+  OPT_normal = -O3 -ipo
+  OPT_quick := -O0	#quick compilation
+  OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
+  OPT_debug := -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
+  OPT_warn := -warn     				       # provides many warnings
+
+  mode = normal 
+  ifeq ($(mode),normal)
+     	OPT_SER = $(OPT_normal)
+  endif
+  ifeq ($(mode),test)
+     	OPT_SER = $(OPT_test)
+  endif
+  ifeq ($(mode),debug)
+     	OPT_SER = $(OPT_debug)
+  endif
+  ifeq ($(mode),quick)
+     	OPT_SER = $(OPT_quick)
+  endif
+  ifeq ($(mode),warn)
+     	OPT_SER = $(OPT_warn)
+  endif
   
   COMP_PAR = $(MPIFC)
+
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
    
@@ -164,7 +196,11 @@ DEFINES_BASE = -D$(ARCH)
 
 ifeq ($(CBIND), TRUE)                      #F03 c-bindings
   DEFINES_BASE += -DF03_CBIND
+    ifeq ($(mode),test)
+      DEFINES_BASE += -D_TEST_
+    endif
 endif
+
 
 DEFINES_SER  = $(DEFINES_BASE)
 DEFINES_PAR  = $(DEFINES_BASE) -D_PAR_
@@ -296,7 +332,7 @@ molsim.o        : molsim.F90      mol.o      statistics.o
 	$(COMP_SER) $(FLAG_SER) -c molsim.F90
 moldyn.o        : moldyn.F90	statistics.o
 	$(COMP_SER) $(FLAG_SER) -c moldyn.F90
-particle.o      : particle.F90    mol.o
+particle.o      : particle.F90    mol.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c particle.F90
 potential.o     : potential.F90   mol.o
 	$(COMP_SER) $(FLAG_SER) -c potential.F90
@@ -342,7 +378,7 @@ testmesh.o      : testmesh.F90  mesh.o
 	$(COMP_SER) $(FLAG_SER) -c testmesh.F90
 molsim_par.o    : molsim.F90      mol.o      statistics_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o molsim_par.o -c molsim.F90
-particle_par.o  : particle.F90    mol.o
+particle_par.o  : particle.F90    mol.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90
 potential_par.o : potential.F90   mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o potential_par.o -c potential.F90

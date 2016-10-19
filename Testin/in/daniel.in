@@ -1,0 +1,165 @@
+! particle id
+!                14        18
+!                13        17
+!                12        16
+!                11        15
+!        1 2 3 4 5 6 7 8 9 10
+ &nmlSystem
+  txtitle = 'comb polymer: single-graft chain PLUS linear chain PLUS counterions', 
+  txmethod= 'mc',     txensemb='nvt',     txbc  ='xyz',    txstart ='setconf',  
+                                                       txstart ='zero',
+  nstep1 = 2,         nstep2 = 10,
+!  nstep1 = 10,        nstep2 = 100,
+!  nstep1 = 3,       nstep2 = 60000,
+  boxlen= 3*50.0,  sphrad = 200.0,
+  boxlen= 3*550.0,
+  temp  = 298.0,    prsr  = 0.1013,
+  iseed =  1298643,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.t.,  lstatic=.t., limage=.t.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 0, ishow = 1,   iplot = 0,   ilist = 1,
+  txuser = 'daniel',
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  lclink      =.t.,
+  lmultigraft =.t.,
+  maxnbondcl   = 6,  6, 
+  ngen        = 1, 
+  ictgen(0)   = 1, 
+  ictgen(1)   = 2,
+  nbranch     = 7,  1,    !  number of branching point, second must be one for multigrafting
+  ibranchpbeg = 2, 1,    !  where starts first branching point, second must be one for multigrafting
+  ibranchpinc = 16, 0,    !  distence between branching points, second must be zero for multigrafting 
+  nct   = 3,                    ! 2(grafted) + 1 (linear)  
+  txct  ='99-mer1','6-mer2',  '99-mer6',
+  ncct  = 1,         7,           1,       !   one = backbone,  rest = one x nbranch, last is linear
+  npptct(1,1)= 99,   0,           0,          !   backbone length
+  npptct(1,2)= 0,   6,           0,         !   length of the side chains
+  npptct(1,3)= 0,    0,          99, 
+  npt   = 5,                                              !  1 backbone, 4 grafted chains, 1 linear chain and two counterions
+  txpt  = 'bead1', 'bead2',   'bead3',   'cion1',    'cion2',
+  nppt  =  99,     42,          99,       99,         99,                        !  ncct x npptct
+  natpt =  1,           1,          1,          1,         1,
+  txat  = 'site1', 'site2',    'site3',   'cion1',   'cion2',
+  massat= 10.0,      10.0,        10.0,      10,        10,
+  zat =   1.0,       0.0,        -1.0,    -1.0,        1.0,
+  radat = 1.0,       1.0,         1.0,     1.0,        1.0,
+  sigat = 3.405,    3.405,       3.405,   3.405,      3.405,
+  epsat = 0.9961,  0.9961,      0.9961,    0.9961,      0.9961,
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'site1',
+  rain(1,1,1)  =  0.0,
+  rain(2,1,1)  =  0.0,
+  rain(3,1,1)  =  0.0,
+  naatpt(1,2)=  1,
+  txaat(1,2) = 'site2',
+  rain(1,1,2)  =  0.0,
+  rain(2,1,2)  =  0.0,
+  rain(3,1,2)  =  0.0,
+  naatpt(1,3) = 1,
+  txaat(1,3) = 'site3',
+  rain(1,1,3)  = 0.0,
+  rain(2,1,3)  = 0.0,
+  rain(3,1,3)  = 0.0,
+  naatpt(1,4)= 1,
+  txaat(1,4) = 'site4',
+  rain(1,1,4)  = 0.0,
+  rain(2,1,4)  = 0.0,
+  rain(3,1,4)  = 0.0,
+  naatpt(1,5)= 1,
+  txaat(1,5) = 'site5',
+  rain(1,1,5)  = 0.0,
+  rain(2,1,5)  = 0.0,
+  rain(3,1,5)  = 0.0,
+
+!  itestpart = 10,
+ /
+ &nmlPotential
+  r2uminin   = 0.0001,
+  relpermitt = 78.4,
+  txpot = 15*'(1,6,12)',
+  lljcut     = .t.,
+ /
+ &nmlPotentialChain
+ bond%k = 2.4088, 2.4088, 2.4088, bond%eq = 5.0, 5.0, 5.0,  angle%k = 0.00031, 0.00031, 0.00031,
+ clink%k = 2.4088, clink%eq = 5.0,
+ /
+ &nmlSetConfiguration
+  txsetconf(1)=2*'hierarchicalrandom', 
+  txsetconf(3)= 'chainrandom',
+  txsetconf(4)= 'random',
+  txsetconf(5)= 'random',
+  itestcoordinate = 1,
+ /
+ &nmlMC
+  pspart = 5*1.0, dtran      = 5*5.0,   drot  = 5*20.0,
+  dtran(1)   = 2.5, dtran(2) = 2.5, dtran(3) = 2.5, dtran(4) = 15.0, dtran(5) = 15.0,
+!                  dtran      = 0.0, 0.0, 0.0, 0.0, 0.0,   drot  = 0.0, 0.0, 0.0, 0.0, 0.0,
+  ppivot = 3*0.15, drotpivot  = 3*360.0,
+  drotpivot(1) = 60.0, drotpivot(2) = 180.0, drotpivot(3) = 60.0,
+  txpivot = 'short', 'upper', 
+  txdualpivot =  'linear',
+  phierarchical = 2*0.005,  dtranhierarchical = 2*1.0,  
+  pchain = 3*0.05, dtranchain = 3*1.0, drotchain = 3*10.0,
+  pslither(1) = 0.01, pslither(3) = 0.01, 
+  pchain(3) = 0.01, dtranchain(3) = 1.0,
+!  itestmc = 2,
+ /
+ &nmlIntList
+  inlist= 0,        drnlist  = 180.0,
+ / 
+ &nmlGroup
+! ref   =      'type = all',
+! field =      'type = all',
+! lwref =       .false.,
+ /
+ &nmlStatic
+ istatic = 10,
+ lstaticuser = .t.,
+ lsf =.f.,
+ lchaintypedf = .t.,
+ /
+ &nmlSF
+ /
+ &nmlChainTypeDF
+ vtype(1:7)%l = .f., .t., .t.,.f.,.f.,.t.,.t.,
+ vtype(1:7)%min  = 0.0, 0.0, 0.0,
+ vtype(1:7)%max  = 10.0, 400, 200,
+ vtype(1:7)%nbin = 200,200,200,200,200,200,
+ /
+ &nmlCombAver
+ /
+ &nmlSPDF_COMB
+ ltype = .t.,.t.,.f.,
+ vmax = 200, 200,
+ nbin = 200, 
+ /
+ &nmlCOMB_DF
+ ltype = .t.,.t.,
+ /
+ &nmlSFPBC_COMB
+ ltype = .t.,
+ /
+ &nmlOCF
+ ltype = .t., .f.,.t.,
+ /
+ &nmlOCF_DF
+ ltype = .t.,.t.,.t.,.t.,.t.,
+ n_excl = 1,
+ /
+ &nmlCBCB
+ ltype = .t.,
+ iptpart_bead = 3,
+ rcontact_bead = 6,
+ /
+ &nmlImage 
+  lvrml= .t.,
+ /
+ &nmlVRML
+  txwhen = 'after_macro',
+  txwhen = 'after_run',
+  tximage(3) = 'undopbc',
+  atsize = 5*0.6,
+! atsize = 5*2.0,
+ /

@@ -1,0 +1,214 @@
+ &nmlSystem
+  txtitle ='test of molsim: aqueous solution of benzene',
+  txmode ='analysis',
+  txmode ='simulation',
+  txmode ='mixed',
+  txmethod='md',    txensemb='nve',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*20.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 987,
+  iseed = 987657,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  ldump =.f.,  lgroup=.f.,  lstatic =.f.,
+  itest = 0,   ipart = 10,  iatom = 0,   iaver = 100, ishow = 1,   iplot = 1,   ilist = 1,
+/
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'water', 'benzene',
+  nppt  =  249,    1,
+  natpt =  3,      2,
+  txat  = 'o    ','h     ','m     ','c     ','h     ',
+  massat=  16.0,    1.0018,  0.0,    12.0,  1.0018,
+  radat =  0.5,     0.5,     0.5,     0.5,     0.5,
+  radat =  0.0,     0.0,     0.0,     0.0,     0.0,
+  naatpt(1,1) =  1,       2,       1,
+  txaat(1,1) = 'o     ','h     ','h     ','m     ',
+  rain(1,1,1) = 0.0,     0.0,     0.0,
+  rain(1,2,1) = 0.0,     0.7568,  0.5860,
+  rain(1,3,1) = 0.0     -0.7568,  0.5860,
+  rain(1,4,1) = 0.0      0.0,     0.15,
+  naatpt(1,2) =  6,       6,
+  txaat(1,2) = 'c     ','c     ','c     ','c     ','c     ','c     ',
+  txaat(7,2) = 'h     ','h     ','h     ','h     ','h     ','h     ',
+  rain(1, 1,2) =  1.39502,  0.0,     0.0,
+  rain(1, 2,2) =  0.69751,  1.20812, 0.0,
+  rain(1, 3,2) = -0.69751,  1.20812, 0.0,
+  rain(1, 4,2) = -1.39502,  0.0,     0.0,
+  rain(1, 5,2) = -0.69751, -1.20812, 0.0,
+  rain(1, 6,2) =  0.69751, -1.20812, 0.0,
+  rain(1, 7,2) =  2.47903,  0.0,     0.0,
+  rain(1, 8,2) =  1.23952,  2.14690, 0.0,
+  rain(1, 9,2) = -1.23952,  2.14690, 0.0,
+  rain(1,10,2) = -2.47903,  0.0,     0.0,
+  rain(1,11,2) = -1.23952, -2.14690, 0.0,
+  rain(1,12,2) =  1.23952, -2.14690, 0.0,
+ /
+ &nmlPotential
+  rcut = 8.0,
+  txpot = 'tip4p','      ','      ',
+  npot(1)   = 2,
+  ipot(1,1) = 6,          12,
+  ucoff(1,1) = -2.5539e3,  2.5120e6,
+  npot(2)   = 1,
+  ipot(1,2) = 1,
+  ucoff(1,2) = 0.0,
+  npot(3)   = 1,
+  ipot(1,3) = 1,
+  ucoff(1,3) = 0.0,
+  npot(4)   = 5,
+  ipot(1,4) = 1,         4,         6,         9,         12,
+  ucoff(1,4) = 1.40890e2, 6.86020e2,-1.08290e4, 1.87880e5, 4.60200e5,
+  npot(5)   = 5,
+  ipot(1,5) = 1,         4,         6,         9,         12,
+  ucoff(1,5) =-1.40890e2,-7.37430e2, 4.79040e3,-2.44490e4, 5.83330e4,
+  npot(6)   = 1,
+  ipot(1,6) = 1,
+  ucoff(1,6) = 375.668,
+  npot(7)   = 1,
+  ipot(1,7) = 1,
+  ucoff(1,7) = -751.336,
+  npot(8)   = 5,
+  ipot(1,8) = 1,         4,         6,         9,         12,
+  ucoff(1,8) =-7.04450e1,-3.95060e2, 3.59500e3,-2.72380e4, 1.15860e5,
+  npot(9)   = 5,
+  ipot(1,9) = 1,         4,         6,         9,         12,
+  ucoff(1,9) = 7.04450e1, 4.20760e2,-2.68980e3, 9.37170e3, 1.30590e4,
+  npot(10)   = 1,
+  ipot(1,10) = 1,
+  ucoff(1,10) = 1502.672,
+  npot(11)   = 1,
+  ipot(1,11) = 1,
+  ucoff(1,11) = 0.0,
+  npot(12)   = 1,
+  ipot(1,12) = 1,
+  ucoff(1,12) = 0.0,
+  npot(13)   = 5,
+  ipot(1,13) = 1,         4,         6,         9,         12,
+  ucoff(1,13) = 3.07109e1,-1.23353e2,-1.36232e3, 6.70010e4, 8.13423e5,
+  npot(14)   = 5,
+  ipot(1,14) = 1,         4,         6,         9,         12,
+  ucoff(1,14) =-3.07109e1, 1.16745e2,-1.19971e3, 6.87140e3, 1.15815e5,
+  npot(15)   = 5,
+  ipot(1,15) = 1,         4,         6,         9,         12,
+  ucoff(1,15) = 3.07109e1,-1.10136e2, 4.80273e2,-2.46977e3, 1.30592e4,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) ='h2olattice', 'pclattice' ,
+  nucell(1,1) =   5,   5,   5,
+  nucell(1,2) =   1,   1,   1,
+  rclow(1,2)  = 8.0, 8.0, 8.0,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.001,    nvvite= 2,       lsetvel =.true.,
+  tvscl = 0.1,      tlscl = 0.1,      compre= 5.0e-4,
+  tvscl = 0.001,    tlscl = 0.1,      compre= 5.0e-4,
+ /
+ &nmlMC
+  dtran = 0.6,              0.6,
+  drot  = 15.0,             15.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 0.1 /
+ &nmlDist
+  vtype%l    =.true., .true.,   .true., .true.,  .true.,  .true.,
+  vtype%min  =-40.0,   -40.0,   -125.0,  -40.0,     0.0,     0.0,
+  vtype%max  =-35.0,   -35.0,      0.0,   10.0,    10.0,    10.0,
+  vtype%nbin =  100,     100,      100,    100,     100,     100,
+  idist = 20 ,
+  rcutdist = 10,
+ /
+ 
+ &nmlDump idump = 1, ldpos =.true., ldori =.true., ldliv =.true., ldanv =.true., ldfor =.true., ldtor =.true. /
+ &nmlGroup ref  ='benzene_in_water_1', field='type=water', lwref =.true. /
+
+ &nmlStatic
+  lrdf  =.true.,
+  langdf=.true.,
+  langextdf=.true.,
+  lnnhb =.true.,
+  lnndf =.true.,
+  lenergydf =.true.,
+  lsurfacearea =.true.,
+  lcrystalformat =.true.,
+  ltrajectory =.true.,
+ /
+ &nmlRDF vtype(2) =.true., rmax=11.0, func='rdf' /
+ &nmlAngDF vtype(1:7)%l =.f.,.f.,.true.,.f.,.true.,.f.,.f., rmax=7.0 /
+ &nmlAngExtDF vtype(1)%l =.true. /
+ &nmlNNHB /
+ &nmlNNDF vtype(1)%l =.true. /
+ &nmlEnergyDF vtype(1:3)%l = .true., .true., .true., rmax=3.5  /
+ &nmlSurfaceArea ipt = 2, wradat = 1.3, 2.5, nrandom = 1000 /
+ &nmlTrajectory iskip = 1, rmin = -11.0, -11.0, -11.0, rmax = -9.0, -9.0, -9.0 /
+
+ &nmlDynamic 
+ /
+
+ &nmlMixed
+  mode = 1, 1, 1, 1, 1, 2, 3, 4, 6,
+  txpt1 ='water',
+  txpt2 ='benzene',
+  coord1= 0.0,0.0,3.217,     1.0,0.0,0.0,  0.0,-1.0,0.0,  0.0,0.0,-1.0,
+  coord2= 0.0,0.0,0.0,       1.0,0.0,0.0,  0.0,1.0,0.0,   0.0,0.0,1.0,
+  ip    = 1,
+ /
+ &nmlMixed1
+  dxx  =  0.0,   dyy  =  0.2,   dzz  =  0.0,
+  iaxis= 1,      dr   = 0.0,
+  mstep= 100,    umax = 100,
+ /
+ &nmlMixed1
+  dxx  =  0.0,   dyy  =  0.0,   dzz  = +0.2,
+  iaxis= 1,      dr   = 0.0,
+  mstep= 20,     umax = 100,
+ /
+ &nmlMixed1
+  dxx  =  0.0,   dyy  =  0.0,   dzz  =  0.0,
+  iaxis= 1,      dr   = 10.0,
+  mstep= 18,     umax = 100,
+ /
+ &nmlMixed1
+  dxx  =  0.0,   dyy  =  0.0,   dzz  =  0.0,
+  iaxis= 2,      dr   = 10.0,
+  mstep= 18,     umax = 100,
+ /
+ &nmlMixed1
+  dxx  =  0.0,   dyy  =  0.0,   dzz  =  0.0,
+  iaxis= 3,      dr   = 10.0,
+  mstep= 18,     umax = 100,
+ /
+ &nmlMixed2
+  itmax= 10,    udel= 0.001,
+  dr   = 2.0,   iaxis= 3,     rdist=3.217,
+  rlow1= 0.0,   rupp1= 9.0,   nrdiv1= 5,
+  rlow2= 0.0,   rupp2= 9.0,   nrdiv2= 5,
+ /
+ &nmlMixed3
+  itmax= 100,   udel= 0.0001,
+  dxx  = 0.01,  dyy = 0.01,   dzz =  0.01,
+  dr   = 0.5,
+ /
+ &nmlMixed4
+  iwr  = 0,
+  rlow = 3.0,    rupp = 10.0,
+  thlow= 0.0,    thupp=180.0,
+  filow= 0.0,    fiupp=360.0,
+  ulow =-20.0,   uupp = 20.0,
+  no   = 10,     ntry =20,
+ /
+ &nmlMixed5
+  iwr  = 0,
+  rlow = 3.0,    rupp = 10.0,
+  thlow= 0.0,    thupp=180.0,
+  filow= 0.0,    fiupp=360.0,
+  no   = 10000,
+ /
+ &nmlMixed6
+  nbin =100,
+  rlow = 5.0,    rupp =  5.0,
+  thlow= 0.0,    thupp=180.0,
+  filow= 0.0,    fiupp=360.0,
+  ulow =-10.0,   uupp=  10.0,
+  no   =10000,
+ /

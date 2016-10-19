@@ -43,7 +43,7 @@ module StatisticsModule
 
 ! ... data structure for one-dimensional distribution functions
 
-   integer(4), parameter :: mnbin_df = 1000
+   integer(4), parameter :: mnbin_df =1000
 
    type df_var
       character(27) :: label                             ! label
@@ -269,7 +269,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
 
       if (lblockaverwrite) call ScalarSampleWrite(1)  ! open unit and write head
       do i = ilow, iupp
-         nblocklen = max(1,min(int(1+log(float(var(i)%nsamp))/log(2.0d0)),mnblocklen)) ! number of block lenghts
+         nblocklen = max(1,min(int(1+log(float(max(var(i)%nsamp,1)))/log(2.0d0)),mnblocklen)) ! number of block lenghts
          var(i)%nblocklen = nblocklen
          if ((nblocklen > 1) .and. minval(var(i)%nblock(1:nblocklen)) > 0) then ! extrapolate by linear fit of av_sd vs log(nblock) to nblock = 1
             do ibl = 1, nblocklen                              ! make block averages for varying block length
@@ -887,7 +887,7 @@ subroutine DistFuncAverDist(nvar2, ilow, iupp, var, var2, var2_spread)
    integer(4),   intent(in)  :: ilow(*)               ! lower distribution functions
    integer(4),   intent(in)  :: iupp(*)               ! upper distribution functions
    type(df_var), intent(in)  :: var(*)                ! underlaying distribution functions
-   type(df_var), intent(out) :: var2(*)               ! average of var from ilow to iupp
+   type(df_var), intent(inout) :: var2(*)               ! average of var from ilow to iupp
    real(8)     , intent(out) :: var2_spread(*)        ! var%avsd averaged over 0 to nbin-1
    integer(4) :: i, ibin, ncount, il, iu
    real(8)    :: InvInt

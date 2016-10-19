@@ -1,0 +1,71 @@
+     0.000   0.000    0.000   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
+     2.000   0.000    0.000   0.961 -0.269 -0.060    0.083  0.073  0.994   -0.263 -0.960  0.093
+     0.000   2.000    0.000   0.961 -0.269 -0.060    0.083  0.073  0.994   -0.263 -0.960  0.093
+ &nmlSystem
+  txtitle ='hs 0:1 system, spherical cell, low dielectric micelle, p-algorithm',
+  txmethod= 'mc',     txensemb='nvt',     txbc  ='sph',  txstart ='setconf',
+  txmethod= 'mc',     txensemb='nvt',     txbc  ='sph',  txstart ='readfin',
+  nstep1   = 1,     nstep2   = 1,
+ 
+  sphrad= 50.0,
+ 
+  temp  = 298.0,    prsr  = 0.1013,
+  iseed = 9876543,
+  lcont =.t.,  laver =.t.,    ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.f.,limage =.f.,
+  itest = 0,   ipart = 1,     iatom = 0,   iaver = 50,  ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'micelle','ion',
+  nppt  =  1,        1,
+  natpt =  1,        1,
+  txat  = 'mic',     'ion',
+  massat= 460.0,     23.0,
+  zat   =  0 ,        1,
+  radat = 1.,        0,
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'mic',
+  naatpt(1,2)=  1,
+  txaat(1,2) = 'ion',
+ /
+ &nmlPotential
+  relpermitt = 100,
+  luext = .true.
+ /
+ &nmlPotentialExternal
+  txuext(2) = 'sphdielboundary_p2',
+  boundaryrad = 1.0,
+  epsi1 = 1.0,
+  epsi2 = 100,
+  lmaxdiel = 10,
+ /
+ &nmlSetConfiguration txsetconf='origin', 'random',
+ /
+ &nmlMC
+  pspart=  1.0,           1.0,
+  dtran =  0.0,           1.0,
+ /
+ &nmlIntList
+  inlist= 0,        drnlist  = 30.0,
+ /
+ &nmlDist
+  vtype%l = .true., .true., .true., .true., .true.,
+  vtype%min  = -10.0,   -20.0,  -250.0,  -15.0,     0.0,
+  vtype%max  =  -5.0,    25.0,    25.0,    5.0,    50.0,
+  vtype%nbin = 100, 100, 100, 100, 100,
+  idist=1,
+  rcutdist = 170.0, /
+ &nmlDump idump = 1, txptdump='micelle',  ldpos =.t., /
+ &nmlGroup
+ /
+ &nmlStatic
+  istatic = 1,
+  lspdf = .true.,
+  lrcnsph = .true.,
+ /
+ &nmlSPDF vtype(1) =.true., 0.0, 50.0, vtype(2) =.true., 0.0, 50.0, /
+ &nmlRCNsph ipsph = 1, iptrcnsph = 2, jptrcnsph = 2, nbin = 100, func = 'rdf' /
+ &nmlImage lvrml = .true., /
+ &nmlVRML atsize = 20,  2, blmax  = 1.5, bondr  = 0.1, /

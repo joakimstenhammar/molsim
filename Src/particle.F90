@@ -38,6 +38,14 @@ module ParticleModule
    real(8)       :: raintin(3,mnapt,mnpt)  !*interaction site coordinates in input frame, cf rain
    integer(4)    :: itestpart              !*=10, call of TestChainPointer
 
+   type :: block_type
+      integer(4)  :: pt  !particle type
+      integer(4)  :: np  !number of particles
+   end type block_type
+
+   type(block_type), allocatable :: rep_iblock_ict(:,:)
+   integer(4)  :: nblockict(mnct)
+
 end module ParticleModule
 
 !************************************************************************
@@ -63,10 +71,13 @@ subroutine Particle(iStage)
                           lclink, lmultigraft, maxnbondcl,                              &
                           ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,              &
                           nct, txct, ncct, npptct, txcopolymer, lspma,                  &
+                          nblockict,                                                    &
                           npt, txpt, nppt, natpt,                                       &
                           txat, massat, radat, zat, zatalpha, sigat, epsat, latweakcharge, pK, pH, jatweakcharge, &
                           naatpt, txaat, rain, dipain, polain, lintsite, raintin,       &
                           lradatbox, itestpart
+
+   namelist /nmlRepeating/  rep_iblock_ict
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -88,6 +99,7 @@ subroutine Particle(iStage)
       npptct          = 0
       txcopolymer     = 'block'
       lspma           = .false.
+      nblockict       = 0
       zat             = Zero
       zatalpha        = Zero
       sigat           = Zero
@@ -113,6 +125,16 @@ subroutine Particle(iStage)
       do ict = 1, nct
          call LowerCase(txcopolymer(ict))
       end do
+
+      if(any(txcopolymer(1:nct) == 'repeating')) then
+         if(.not. allocated(rep_iblock_ict)) then
+            allocate(rep_iblock_ict(maxval(nblockict(1:nct)),nct))
+         end if
+
+         rep_iblock_ict = block_type(0,0)
+         rewind(uin)
+         read(uin,nmlRepeating)
+      end if
 
 ! ... determine types of atoms
 
@@ -732,6 +754,10 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
    character(40), parameter :: txroutine ='Set_ipnsegcn'
    integer(4) :: nrep, irep, nreplen
+   integer(4) :: iblock
+   integer(4), allocatable :: npset(:)
+   integer(4), allocatable :: ipstart(:)
+   integer(4), allocatable :: iptiseg(:)
 
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
@@ -773,6 +799,69 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
                end do
             end do
          end do
+      else if (txcopolymer(ict) == 'repeating') then
+         if(.not. allocated(npset)) allocate(npset(npt))
+         if(.not. allocated(ipstart)) allocate(ipstart(npt))
+         npset = 0
+         ipstart = 0
+         if(any( rep_iblock_ict(1:nblockict(ict),ict)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
+         if(any( rep_iblock_ict(1:nblockict(ict),ict)%pt .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
+
+         do icloc = 1, ncct(ict)                               ! loop over chains of type ict
+            ic = ic + 1
+            !repeating structure
+            do ipt = 1, npt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc - 1)*npptct(ipt,ict)
+            end do
+            iseg = 0
+            npset = 0
+            do while (iseg < sum(npptct(1:npt,ict)))
+               do iblock = 1, nblockict(ict)
+                  ipt = rep_iblock_ict(iblock,ict)%pt
+                  do iploc = 1, min(rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npset(ipt))
+                     iseg = iseg + 1
+                     npset(ipt) = npset(ipt) + 1
+                     ipnsegcn(iseg,ic) = npset(ipt) + ipstart(ipt)
+                  end do
+               end do
+            end do
+
+         end do
+
+         deallocate(npset, ipstart)
+
+      else if (txcopolymer(ict) == 'random') then
+
+
+         !prepare allocatable variables
+         if(.not. allocated(ipstart)) allocate(ipstart(npt))
+         allocate(iptiseg(npct(ict)))
+
+         !loob over chains
+         do icloc = 1, ncct(ict)
+            ic = ic+1                                          ! global chain number
+
+            !create fresh list of iptiseg and iplowipt
+            iseg = 0
+            do ipt = 1, npt
+               iptiseg((iseg+1):(iseg+npptct(ipt,ict))) = ipt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+               iseg = iseg+npptct(ipt,ict)
+            end do
+
+            !shuffle iptiseg
+            call KnuthShuffle(iptiseg, size(iptiseg))
+
+            !assign particles
+            do iseg = 1, npct(ict)
+               ipt = iptiseg(iseg)
+               ipstart(ipt) = ipstart(ipt) + 1
+               ipnsegcn(iseg,ic) = ipstart(ipt)
+            end do
+
+         end do
+
+         deallocate(iptiseg, ipstart)
       end if
     end do
 
@@ -1165,11 +1254,15 @@ end subroutine Set_bondnn
 !........................................................................
 
 subroutine Set_ipnhn  ! hierarchical strcture -> its first particle
-   igen = 0
-   ict = ictgen(igen)
-   ic = icnct(ict)
-   iseg = 1
-   ipnhn = ipnsegcn(iseg,ic)
+   ! get particle with lowest number in hierarchical strucutre
+   ipnhn = minval(ipnsegcn(1,icnct(ictgen(0:ngen))))
+
+   !old code gets number of first particle in strucutre:
+      !igen = 0
+      !ict = ictgen(igen)
+      !ic = icnct(ict)
+      !iseg = 1
+      !ipnhn = ipnsegcn(iseg,ic)
 end subroutine Set_ipnhn
 
 !........................................................................
@@ -1313,8 +1406,8 @@ subroutine SetObjectParam2
    implicit none
 
    character(40), parameter :: txroutine ='SetObjectParam2'
-   integer(4) :: ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ialoc, ja, jalow
-   real(8)    :: term, r2
+   integer(4) :: ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ja
+   real(8)    :: r2
 
 ! ... set txctct, txptpt, and txatat
 

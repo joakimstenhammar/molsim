@@ -1,0 +1,47 @@
+ &nmlSystem
+  txtitle ='one dipole, test of ewald summation, jcp 112, 6152 (2000)',
+  txmethod='md',    txensemb='nve',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*10.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,
+  itest = 3,   ipart = 1,   iatom = 1,   iaver = 50,  ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec= 'dip',
+  npt   = 1,
+  txpt  = 'dip1   ',
+  nppt  =  1,
+  natpt =  1,
+  txat  = 'dip1 ',
+  massat= 23.0,
+  radat = 0.1,
+  zat(1)   = 0.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'dip1 ',
+  dipain(1,1,1) =  1.0000,  0.0000,  0.0000,
+ /
+ &nmlPotential
+  rcut = 5.0,
+  npot(1)   = 1,
+  ipot(1,1) = 1,
+  ucoff(1,1) = 0.0,
+  lewald  =.true., iewaldopt = 1, ualphared = 4.0,  ncutregion = 'cube',  lsurf =.false.,
+ /
+ &nmlPolarizationIter tpolit = 1.0e-5, mpolit = 15, npolit = 5 /
+ &nmlSetConfiguration
+   txsetconf(1) = 'pclattice',
+   nucell(1,1) =   1,    1     1,
+   roshift(1,1) = 0.5,  0.5,  0.5,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.001,    nvvite= 2,       lsetvel =.false.,
+  tvscl = 0.1,      tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlMC
+  dtran = 10.0,             10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

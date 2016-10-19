@@ -280,7 +280,7 @@ complex(8) function CCLM(l,m,theta,phi,norm)
    implicit none
    real(8), parameter :: zero = 0.0d0 , one = 1.0d0
    real(8), parameter :: pi = 3.1415926535897932d0 , facpi = 4.0d0*pi
-   integer(4), parameter :: lmax = 200, l2max = 2*lmax
+   integer(4), parameter :: lmax = 150, l2max = 2*lmax      !if lmax is larger there is a floating overflow
    integer(4), intent(in) :: l, m, norm
    real(8),    intent(in) :: theta, phi
    logical, save :: first=.true.
@@ -3594,4 +3594,34 @@ real(8) function BrentMod(ax,bx,cx,f,tol,xthr,xmin)
    BrentMod = fx
 
 end function BrentMod
+
+!************************************************************************
+!*                                                                      *
+!*     KnuthShuffle                                                     *
+!*                                                                      *
+!************************************************************************
+
+! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker 
+!     "The Art of Computer Programming" Second Edition Donald E. Knuth 1981
+!     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
+
+
+subroutine KnuthShuffle(a,asize)
+
+   use MolModule
+   implicit none
+
+   integer, intent(in) :: asize !size needed to cope with allocatable arrays
+   integer, intent(inout) :: a(asize)
+   integer :: i, randpos, itmp
+   real(8) :: Random
+
+   do i = size(a), 2, -1
+      randpos = int(Random(iseed) * i) + 1
+      itmp = a(randpos)
+      a(randpos) = a(i)
+      a(i) = itmp
+   end do
+
+end subroutine KnuthShuffle
 

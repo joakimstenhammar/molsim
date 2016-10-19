@@ -112,6 +112,11 @@ subroutine StaticDriver(iStage)
       allocate(var(nvar))
       var(1)%label = 'volume'
 
+      if(istatic > nstep2) then
+         call Stop(txroutine, 'istatic > nstep2', uout)
+      end if
+
+
       if (.not.lgroup) then
          if (lspdf    ) call Stop(txroutine, 'spdf is selected, but no group division', uout)
          if (lrdf     ) call Stop(txroutine, 'rdf is selected, but no group division', uout)
@@ -2113,7 +2118,9 @@ end subroutine SFPBC
 subroutine ScatIntens(nbin, q, sfpar)
 
    use MolModule
+   use, intrinsic :: IEEE_ARITHMETIC
    implicit none
+
    character(40), parameter :: txroutine ='ScatIntens'
    integer(4)   , parameter :: mnshell = 4
 
@@ -2178,7 +2185,13 @@ subroutine ScatIntens(nbin, q, sfpar)
          end do
          fazero(ipt) = fnorm(0,ipt)
       end do
-      fac = One/fazero(ipt)
+      if(fazero(ipt) .ne. 0.0d0) then
+         fac = One/fazero(ipt)
+      else
+         fac = IEEE_VALUE(fac,IEEE_QUIET_NAN)
+      end if
+
+
       fnorm(0:nbin,ipt) = fnorm(0:nbin,ipt)*fac
    end do
 
@@ -2258,7 +2271,12 @@ subroutine SFNoPBC(iStage)
    case (iReadInput)
 
       txkscale = 'lin'                              ! linear k scale
-      klow    = TwoPi/(10.0d0*sphrad)               ! lower k-vector (linear scale)
+      if(sphrad .ne. 0.0d0) then          !prevent division by zero
+         klow    = TwoPi/(10.0d0*sphrad)               ! lower k-vector (linear scale)
+      else
+         klow = 0.01
+      end if
+
       logklow =-Four                                ! lower k-vector (logarithmic scale)
       logkupp =+One                                 ! upper k-vector (logarithmic scale)
       nbin = 100
@@ -5873,7 +5891,7 @@ subroutine MultipoleDF(iStage)
          call WriteHead(2, txheading3, uout)
          call ScalarSample(iStage, 1, nlvar, lvar)
          call ScalarNorm(iStage, 1, nlvar, lvar, 0)
-         call ScalarWrite(iStage, 1, nvar, lvar, 1, '(a,t35,4es15.4,f15.0)', uout)
+         call ScalarWrite(iStage, 1, nlvar, lvar, 1, '(a,t35,4es15.4,f15.0)', uout)
 
          deallocate(var, svar, lvar, index, lindex, mpm)
       end if

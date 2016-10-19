@@ -1,0 +1,32 @@
+ &nmlSystem
+  txtitle ='asakura-oosawa potential: radat = 0.5, rphs=0.5 paticles at separation 1.5',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',   txstart ='setconf',
+  nstep1= 1,        nstep2= 10,
+  boxlen= 3*3.00,
+  temp  = 298,      prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f., limage = .f.
+  itest = 0,   ipart = 20,  iatom = 0,   iaver = 100,   ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'ao',
+  nppt  =  2,
+  natpt =  1,
+  txat  = 'cente',
+  radat = 0.5,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'cente',
+ /
+ &nmlPotential
+  txpot ='asakura-oosawa',
+  rcut = 3.0,
+  rad_dep= 0.5,
+  rho_dep = 1.0,
+  itestpot = 1,
+/
+ &nmlSetConfiguration txsetconf(1) ='pclattice', nucell(1,1) = 2, 1, 1 /
+ &nmlMC dtran = 1.0 /
+ &nmlIntList inlist = 0, drnlist = 1.5 /

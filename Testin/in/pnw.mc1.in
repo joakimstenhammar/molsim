@@ -1,0 +1,57 @@
+&nmlSystem
+  txtitle ='periodic network with homopolymer strands; diamond lattice',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',      txstart='setconf',
+  nstep1= 10,       nstep2= 10,
+  boxlen= 3*120.0,
+  temp  = 298.0,    prsr = -0.01,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.f.,  lstatic =.f.,limage =.f.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 0,    ishow = 1,   iplot = 1,  ilist = 1,
+  ltrace = .t.,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  lclink=.true.,
+  maxnbondcl= 4, 1,
+  nct   = 1,
+  txct  ='strand',
+  ncct  = 16,
+  npptct(2,1) = 10,
+  npt   = 2,
+  txpt  = 'node','strand',
+  nppt  =   8,     160,
+  natpt =   1,       1,
+  txat  = 'bead1','bead2',
+  radat = 2.0,     2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'bead1',
+  naatpt(1,2) =	1,
+  txaat(1,2) = 'bead2',
+  naatpt(1,3) =  1,
+ /
+ &nmlPotential
+  rcut = 30.0,
+  umaxtab = 300000,
+  fmaxtab = 300000,
+ /
+ &nmlPotentialChain bond = 2.4, 4, 5.0, angle = 0.0, clink = 2.4, 4, 5.0 /
+ &nmlSetConfiguration
+  txsetconf = 2*'periodicnetwork',
+  nucell(1,1) = 1, 1, 1,
+  nucell(1,2) = 1, 1, 1,
+  anglemin = 0.0,
+  iptnode = 1, ictstrand = 1,
+  itestcoordinate = 1,
+ /
+ &nmlMC
+  pspart   = 1.0, 1.0,    dtran        = 3.0, 5.0,
+  pnetwork = 0.0, 0.0,    dtrannetwork = 5.0, 0.0,
+  pspart   = 0.0, 1.0,    dtran        = 0.0, 5.0,
+  pnetwork = 1.0, 0.0,    dtrannetwork = 5.0, 0.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 20.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 60.0, 120, rcutdist = 60.0 /
+ &nmlGroup ref = 'type=1', field = 'type=1', lwref = .false. /
+ &nmlImage lvrml =.true. /
+ &nmlVRML blmax  = 	15.0, bondr =  	0.3 /

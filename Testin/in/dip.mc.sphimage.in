@@ -1,0 +1,71 @@
+ &nmlSystem
+  txtitle ='LJ-particles with embedded dipole moment',
+  txmethod='mc',    txensemb='nvt',     txbc ='sph',  txstart ='setconf',    txuser='md_dipole',
+  nstep1= 1,        nstep2= 1,
+  sphrad= 19.1915
+  temp  = 315.777,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  ldump = .f., lgroup = .true., lstatic = .true., limage = .true.,
+  itest = 0,   ipart = 1,  iatom = 0,   iaver = 100,  ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /			
+ &nmlParticle
+  txelec = 'dipsphimage',
+  npt   = 1,
+  txpt  = 'LJ',
+  nppt  =  100000,
+  nppt  =  60000,
+  nppt  =  1200,
+  natpt =  1,
+  txat  = 'LJ',
+  massat= 18.0,
+  radat = 0.5,
+  zat   = 0.0,
+  sigat = 2.88630,
+  epsat = 1.97023,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'LJ',
+  dipain(1,1,1) = 0.0000, 0.0000, 0.10584,
+  dipain(1,1,1) = 0.0000, 0.0000, 0.23813,
+  dipain(1,1,1) = 0.0000, 0.0000, 0.34397,
+ /
+ &nmlPotential
+  txpot = '(1,6,12)',
+  r2uminin = 1.0d-4,
+  epsimg = 100.0,
+  radimg = 20.3557,
+ /
+ &nmlPolarizationIter tpolit = 1.0e-5, mpolit = 15, npolit = 100000 /
+ &nmlSetConfiguration
+  txsetconf(1) = 'pclattice',
+   nucell(1,1) =  14,   13,    13,
+   roshift(1,1) = 3*0.1,
+ /
+ &nmlMD
+  integ ='velver',   tstep = 0.001,   nvvite= 2,
+  tvscl = 0.1,       tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlMC
+  dtran = 0.5, drot = 20.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 10.0, /  ! JOCKE kan tas bort
+ &nmlDist idist = 1, vtype(6) =.true., 0.0, 10.0, 200, rcutdist = 10.0 /
+ &nmlDump idump = 100, ldpos =.true., ldori =.true., ldumpuser =.true. /
+ &nmlGroup /
+ &nmlMolstat /
+ &nmlStatic
+  istatic = 1,
+  lspdf =.true.,
+  lmultipoledf = .true.,
+ /
+ &nmlSPDF vtype(1) =.true., 0.0, 20.0 /
+ &nmlMultipoleDF
+   lmax = 3,
+   vmin = -10.0,-10.0,-100.0,
+   vmax =  10.0, 10.0, 100.0,
+   nrad = 2,
+   radius = 7.5, 15.0
+ /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 1.5 /

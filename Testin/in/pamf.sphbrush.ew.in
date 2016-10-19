@@ -1,0 +1,65 @@
+ &nmlSystem
+  txtitle ='10 spheres with diblock brush',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',       txstart='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*600.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,   lstatic =.t., limage =.f.,
+  itest = 0,   ipart = 100, iatom = 0,   iaver = 0,    ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  = 'diblock',
+  ncct  = 200,
+  npptct(1,1) = 0, 10, 10, 0,
+  txcopolymer = 'block',
+  npt   = 4,
+  txpt  = 'sph',    'p+',        'p-',      'i+',
+  nppt  =  10,      2000,       2000,       1000,
+  natpt =  1,        1,         1,           1,
+  txat  = 'sph',    'p+',        'p-',      'i+',
+  radat =  25.0,    2.0,        2.0,        2.0,
+  zat   =  0.0,     0.0,       -0.5,        1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) =  'sph',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'p+',
+  naatpt(1,3) =  1,
+  txaat(1,3) =  'p-',
+  naatpt(1,4) =  1,
+  txaat(1,4) = 'i+',
+ /
+ &nmlPotential
+  rcut = 120.0,
+  relpermitt = 78.4,
+  lewald = .true., iewaldopt = 1,  ualphared = 3.0,  lsurf =.false.,
+ /
+ &nmlPotentialChain bond = 2.4088, 2, 5.0, angle = 0.0 /
+ &nmlSetConfiguration
+  txsetconf(1) = 'fcclattice',2*'sphbrushlattice','random',
+  nucell(1,1) = 2, 2, 2,
+ /
+ &nmlMC
+  pspart = 0.0, 1.0, 1.0, 1.0,   dtran      = 0.0, 5.0, 5.0,10.0,   drot = 0.0, 0.0, 0.0, 0.0,
+  pbrush = 1.0, 0.0, 0.0, 0.0,   dtranbrush =10.0, 0.0, 0.0, 0.0,   drotbrush = 10.0, 0.0, 0.0, 0.0,
+  ppivot = 0.0, 0.1, 0.1, 0.0,   drotpivot  = 0.0, 90.0, 90.0, 0.0, txpivot = '','upper','upper',''
+  lcl1brush = .true.,
+  radcl1   = 80.0,
+  pselectcl1 = 1.0,
+  lfixchainstartspart = .true.,
+ /
+ &nmlGroup /
+ &nmlIntList lvlistllist=.true., inlist = 0, drnlist = 40.0, facnneigh = 3.0 /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 300.0, 300, rcutdist=300 /
+ &nmlStatic
+    istatic = 1,
+    lsf     =.true.,
+    lcluster=.true.,
+ /
+ &nmlSF nbin = 51 /
+ &nmlCluster txobj = 'particle', iobjt = 1, rcluster = 100  /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 25.0, 2.0, 2.0, 2.0, blmax = 6.0, bondr = 0.5 /

@@ -1900,54 +1900,72 @@ subroutine SetHierarchical(txfirstseg)
 
    character(40), parameter :: txroutine ='SetHierarchical'
    real(8)    :: bondloc
-   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, isegmc, icmc, icmcloc, igen, icscloc, isidechain
+   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, igen
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
+   integer(4) :: iattempt
 
    if (.not.first) return                                           ! should be called only once
    first =.false.
    ntry = ntrydef
 
-   do igen = 0, ngen                                                ! loop over generations
-      ict = ictgen(igen)                                            ! chain type
-      bondloc = bondscl(ict)*bond(ict)%eq                           ! bond length to be used
-      do ic = icnct(ict), icnct(ict)+ncct(ict)-1                    ! loop over chains
-         do iseg = 1, npct(ict)                                     ! loop over segments
-            ip = ipnsegcn(iseg,ic)                                  ! particle to be set
-            ipt = iptpn(ip)                                         ! particle type
-
-            do itry = 1, ntry                                       ! loop over attempts to set the particle
-               if (iseg == 1) then                                  ! a first segment?
-                  if (igen == 0) then                               ! zeroth generation?
-                     call SetFirstSegment                           ! set first particle of a component
-                  else                                              ! generation 1 or higher
-                     jp = bondcl(1,ip)                              ! particle to which ip is crosslinked to
-                     call SetPartPosRandomN(ip, jp, bondloc)
-                  end if
-               else                                                 ! not a first segment
-                  jp = ipnsegcn(iseg-1,ic)                          ! id of particle to which jp will be a neigbor
-                  call SetPartPosRandomN(ip, jp, bondloc)
-               end if
-               if (CheckPartOutsideBox(ip)) cycle                   ! check if particle is outside the box
-               if (CheckTooFoldedChain(ip,bondloc)) cycle           ! check if a too folded chain
-               call SetPartOriRandom(iseed,ori(1,1,ip))             ! set random particle orientation
-               call SetAtomPos(ip,ip,.false.)                       ! set atom positions
-               if (lWarnHCOverlap(ip, radatset, .true.)) cycle      ! check if atom-atom hard-core overlap
-               lpset(ip) =.true.                                    ! configuration accepted
-               exit
+   attempt: do iattempt = 1, ntry                                      ! attempt multiple times to set the structure
+      !initialize all relevant lpset to .false.
+      do igen = 0, ngen                                                ! loop over generations
+         ict = ictgen(igen)                                            ! chain type
+         do ic = icnct(ict), icnct(ict)+ncct(ict)-1                    ! loop over chains
+            do iseg = 1, npct(ict)                                     ! loop over segments
+               ip = ipnsegcn(iseg,ic)                                  ! particle to be set
+               lpset(ip) = .false.
             end do
-
-            if (itry > ntry) then                                   ! number of attempts exceeds the maximal one?
-               if (master) then
-                  write(uout,'(5(a,i5,2x))') 'igen =', igen, 'ic =', ic, 'segment =', iseg, 'npct(ict) =', npct(ict)
-                  write(*,'(i5,3f10.3)') (jp, ro(1:3,jp), jp = 1, ip-1)
-                  call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
-               end if
-            end if
-
          end do
       end do
-   end do
+
+      do igen = 0, ngen                                                ! loop over generations
+         ict = ictgen(igen)                                            ! chain type
+         bondloc = bondscl(ict)*bond(ict)%eq                           ! bond length to be used
+         do ic = icnct(ict), icnct(ict)+ncct(ict)-1                    ! loop over chains
+            do iseg = 1, npct(ict)                                     ! loop over segments
+               ip = ipnsegcn(iseg,ic)                                  ! particle to be set
+               ipt = iptpn(ip)                                         ! particle type (needed for SetFirstSegment)
+
+               do itry = 1, ntry                                       ! loop over attempts to set the particle
+                  if (iseg == 1) then                                  ! a first segment?
+                     if (igen == 0) then                               ! zeroth generation?
+                        call SetFirstSegment                           ! set first particle of a component
+                     else                                              ! generation 1 or higher
+                        jp = bondcl(1,ip)                              ! particle to which ip is crosslinked to
+                        call SetPartPosRandomN(ip, jp, bondloc)
+                     end if
+                  else                                                 ! not a first segment
+                     jp = ipnsegcn(iseg-1,ic)                          ! id of particle to which jp will be a neigbor
+                     call SetPartPosRandomN(ip, jp, bondloc)
+                  end if
+                  if (CheckPartOutsideBox(ip)) cycle                   ! check if particle is outside the box
+                  if (CheckTooFoldedChain(ip,bondloc)) cycle           ! check if a too folded chain
+                  call SetPartOriRandom(iseed,ori(1,1,ip))             ! set random particle orientation
+                  call SetAtomPos(ip,ip,.false.)                       ! set atom positions
+                  if (lWarnHCOverlap(ip, radatset, .true.)) cycle      ! check if atom-atom hard-core overlap
+                  lpset(ip) =.true.                                    ! configuration accepted
+                  exit
+               end do
+
+               if (itry > ntry) then                                   ! number of attempts exceeds the maximal one?
+                  cycle attempt                                        ! have another attempt at setting the structure
+               end if
+            end do
+         end do
+      end do
+      exit                                                             ! if the attempt was successfull: accept configuration
+   end do attempt
+
+   if (iattempt > ntry) then                                   ! number of attempts exceeds the maximal one?
+      if (master) then
+         write(uout,'(5(a,i5,2x))') 'igen =', igen, 'ic =', ic, 'segment =', iseg, 'npct(ict) =', npct(ict)
+         write(*,'(i5,3f10.3)') (jp, ro(1:3,jp), jp = 1, ip-1)
+         call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
+      end if
+   end if
 
 contains
 

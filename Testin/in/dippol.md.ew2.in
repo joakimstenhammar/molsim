@@ -1,0 +1,55 @@
+ &nmlSystem
+  txtitle ='dipole test, with induction, development of ewald summation',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  txmethod='md',    txensemb='nve',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*10.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,
+  itest = 3,   ipart = 1,   iatom = 1,   iaver = 50,   ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec= 'pol',
+  npt   = 2,
+  txpt  = 'dip1   ','dip2   ',
+  nppt  =  1,        1,
+  natpt =  1,        1,
+  txat  = 'site1','site2',
+  massat= 23.0,    35.4,
+  radat = 0.1,      0.1,
+  zat(1)   = 1.0,     -1.0,
+  sigat(1) = 0.0,      0.0,
+  epsat(1) = 0.0,      0.0,
+  naatpt(1,1)   =  1,
+  txaat(1,1)    = 'site1',
+  dipain(1,1,1) =  1.000, 1.100, 1.300,
+  polain(1,1,1) =  0.100, 0.100, 0.100, 0.000, 0.000, 0.000,
+  naatpt(1,2)   =  1,
+  txaat(1,2)    = 'site2',
+  dipain(1,1,2) =  1.300, 1.000,-1.200,
+  polain(1,1,2) =  0.100, 0.200, 0.300, 0.000, 0.000, 0.000,
+ /
+ &nmlPotential
+  rcut = 5.0,
+  txpot     ='(1,6,12)','(1,6,12)','(1,6,12)',
+  lewald  =.true., iewaldopt = 1, ualphared = 4.0,  ncutregion = 'cube',  lsurf =.false.,
+ /
+ &nmlPolarizationIter tpolit = 1.0e-5, mpolit = 15, npolit = 5 /
+ &nmlSetConfiguration
+   txsetconf(1) = 'pclattice', 'pclattice',
+   nucell(1,1) =   1,    1,    1,
+   nucell(1,2) =   1,    1,    1,
+   roshift(1,1) =0.50, 0.50, 0.50,
+   roshift(1,2) =0.60, 0.65, 0.60,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.001,    nvvite= 2,       lsetvel =.false.,
+  tvscl = 0.1,      tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlMC
+  dtran = 10.0,             10.0,
+ /
+ &nmlIntList drnlist = 0.0 /
