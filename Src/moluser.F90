@@ -9664,7 +9664,7 @@ module ComplexationModule
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
          use MolModule, only: np
          implicit none
-         integer(4), intent(in)  :: iStage      ! event of SSO-Move
+         integer(4), intent(in)  :: iStage
          character(40), parameter :: txroutine ='ComplexationDriver'
          character(80), parameter :: txheading ='complexation Analysis'
          logical,       save :: lClusterDF, lComplexFraction
@@ -9739,7 +9739,7 @@ module ComplexationModule
       subroutine GetComplex(iStage)
          use MolModule, only: ltrace, ltime, uout, ro, np
          implicit none
-         integer(4), intent(in)  :: iStage      ! event of SSO-Move
+         integer(4), intent(in)  :: iStage
          character(40), parameter :: txroutine ='GetComplex'
 
          integer(4)  :: ip, jp
@@ -9900,7 +9900,7 @@ module ComplexationModule
          type(df_var),  allocatable, save              :: var(:,:)
          integer, allocatable, save              :: ivar_ptpt(:,:)
 
-         logical(4), allocatable, save :: linclstr(:)        !number of particles per cluster (clstr)
+         logical(4), allocatable, save :: linclstr(:)        !logical if a particle in a cluster
          integer(4)  :: nbead_clstr                    !number of clusters
 
          integer(4)  :: ip, ipt, jpt, ivar, ibin, imoment
@@ -9949,7 +9949,7 @@ module ComplexationModule
          case (iBeforeSimulation)
 
             do imoment = 1, nmoment
-               call distfuncsample(istage, nvar, var(:,imoment))
+               call DistFuncSample(iStage, nvar, var(:,imoment))
             end do
             if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
             if(.not. allocated(linclstr)) then
