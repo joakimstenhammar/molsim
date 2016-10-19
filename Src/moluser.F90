@@ -9739,7 +9739,7 @@ module ComplexationModule
       subroutine GetComplex(iStage)
          use MolModule, only: ltrace, ltime, uout, ro, np
          implicit none
-         integer(4), intent(in)  :: iStage      ! event of SSO-Move
+         integer(4), intent(in)  :: iStage
          character(40), parameter :: txroutine ='GetComplex'
 
          integer(4)  :: ip, jp
