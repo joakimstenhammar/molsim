@@ -34,6 +34,7 @@ module MolModule
 
 ! ... parameters
 
+   integer(4), parameter :: mnnwt  = 2                ! max number of network types (used for input variables)
    integer(4), parameter :: mngen  = 5                ! max number of generations
    integer(4), parameter :: mnapt = 64                ! max number of atoms belonging to one particle
    integer(4), parameter :: mnct  = 10                ! max number of chain types (used for input variables)
