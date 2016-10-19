@@ -119,6 +119,7 @@ subroutine StaticDriver(iStage)
          if (lnnhb    ) call Stop(txroutine, 'nnhb is selected, but no group division', uout)
          if (lnndf    ) call Stop(txroutine, 'nndf is selected, but no group division', uout)
          if (lenergydf) call Stop(txroutine, 'energydf is selected, but no group division', uout)
+         if (lsubstructuredf) call Stop(txroutine, 'substructuredf is selected, but no group division', uout)
       end if
 
       call StaticDriverSub
@@ -6519,7 +6520,7 @@ subroutine DUWidomx(nptset, iptset, iseedWidom, duwidom, lhsoverlap)
 
    integer(4), intent(in) :: nptset
    integer(4), intent(in) :: iptset(*)
-   integer(4), intent(in) :: iseedWidom
+   integer(4), intent(inout) :: iseedWidom
    real(8), intent(out)   :: duwidom(0:npt)
    logical, intent(out)   :: lhsoverlap
 
