@@ -9664,7 +9664,7 @@ module ComplexationModule
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
          use MolModule, only: np
          implicit none
-         integer(4), intent(in)  :: iStage      ! event of SSO-Move
+         integer(4), intent(in)  :: iStage
          character(40), parameter :: txroutine ='ComplexationDriver'
          character(80), parameter :: txheading ='complexation Analysis'
          logical,       save :: lClusterDF, lComplexFraction
