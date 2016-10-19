@@ -1,0 +1,91 @@
+ &nmlSystem
+  txtitle ='water',
+  txmode = 'analysis',
+  txmethod='md',    txensemb='nve',     txbc ='xyz',   txstart = 'setconf',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',   txstart = 'setconf',
+  nstep1= 2,        nstep2= 5,
+  boxlen= 3*15.656,
+  temp  = 308.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.t.,  lgroup=.t.,  lstatic =.t.
+  itest = 0,   ipart = 16,  iatom = 0,   iaver = 100, ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'water ',
+  nppt  =  128,
+  natpt =  3,
+  txat  = 'o      ','h     ','m     ',
+  massat= 16.0,      1.0018,  0.0,
+  zat   =  0.0,      0.52,   -1.04,
+  sigat =  3.15365,  0.0,     0.0,
+  epsat =  0.6488,   0.0,     0.0,
+  radat =  0.5,      0.5,     0.5,
+  naatpt(1,1) =  1,       2,       1,
+  txaat(1,1) = 'o     ','h     ','h     ','m     ',
+  rain(1,1,1) = 0.0,     0.0,     0.0,
+  rain(1,2,1) = 0.0,     0.7568,  0.5860,
+  rain(1,3,1) = 0.0     -0.7568,  0.5860,
+! rain(1,4,1) = 0.0      0.0,     0.15,
+  rain(1,4,1) = 0.0      0.0,     0.2677,
+ /
+ &nmlPotential
+  rcut = 8.0,
+  txpot = 'tip4p',
+  txpot = '(1,6,12)',
+  txpot = 'mcy',
+  npot(1)   = 3,
+  ipot(1,1) = 1,   6,          12,
+  ucoff(1,1) = 0.0, -2.5539e3,  2.5120e6,
+  npot(2)   = 1,
+  ipot(1,2) = 1,
+  ucoff(1,2) = 0.0,
+  npot(3)   = 1,
+  ipot(1,3) = 1,
+  ucoff(1,3) = 0.0,
+  npot(4)   = 1,
+  ipot(1,4) = 1,
+  ucoff(1,4) = 375.682,
+  npot(5)   = 1,
+  ipot(1,5) = 1,
+  ucoff(1,5) = -751.364,
+  npot(6)   = 1,
+  ipot(1,6) = 1,
+  ucoff(1,6) = 1502.273,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) ='h2olattice',
+  nucell(1,1) =  4,  4,  4,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.001,    nvvite= 2,       lsetvel =.true.,
+  tvscl = 0.1,      tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlMC
+  dtran = 0.6,
+  drot  = 15.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 0.6 /
+ &nmlDist
+  idist= 5,
+  vtype%l = .true., .true., .true., .true., .true., .true.,
+  vtype%min  =-40.0,   -40.0,   -150.0,  -25.0,     0.0,     0.0,
+  vtype%max  =-30.0,   -30.0,      0.0,   25.0,    10.0,    10.0,
+  vtype%nbin = 100, 100, 100, 100, 100, 100,
+ /
+ &nmlDump idump = 1, ldpos =.true., ldori =.true., ldliv =.true., ldanv =.true. /
+ &nmlGroup ref ='type=water', field='type=water' , lwref =.false. /
+ &nmlStatic
+  lrdf  =.true.,
+  langdf=.true.,
+  lnnhb =.true.,
+  lnndf =.true.,
+  lenergydf =.true.,
+ /
+ &nmlRDF vtype(1:3)%l = .true., .true., .true., rmax=10.0, func='rdf' /
+ &nmlAngDF vtype(1:7)%l = .true., .true., .true., .true., .true., .true., .true., rmax=3.5 /
+ &nmlNNHB  nthnn=2, thnn=3.0, 3.5, nthhb=2, thhb=-10.,-16., rmax=3.5 /
+ &nmlNNDF vtype(1)%l =.true. /
+ &nmlEnergyDF vtype(1:3)%l = .true., .true., .true., rmax=3.5 /

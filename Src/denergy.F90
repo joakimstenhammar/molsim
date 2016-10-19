@@ -2362,14 +2362,15 @@ subroutine DUDielDisPlane(lhsoverlap)
             call PBCr2(dx,dy,dz,r2)
             if (r2 < r2atat(iptjpt)) goto 400     ! hs overlap
             ri = one/sqrt(r2)
-            dx = rotemp(1)-ro(1,jp)
-            dy = rotemp(2)-ro(2,jp)
-            dz = rotemp(3)+ro(3,jp)               ! image location
-            call PBCr2(dx,dy,dz,r2)
-            rip = one/sqrt(r2)
             if ((rotemp(3) < Zero) .and. (ro(3,jp) < Zero)) then  ! ion--ion and ion--image interaction
+               dz = rotemp(3)+ro(3,jp)               ! image location
+               call PBCr2(dx,dy,dz,r2)
+               rip = one/sqrt(r2)
                du%twob(iptjpt) = du%twob(iptjpt) + signEpsi1FourPi*az(ip)*az(jp)*(ri - delta*rip)
             elseif ((rotemp(3) > Zero) .and. (ro(3,jp) > Zero)) then
+               dz = rotemp(3)+ro(3,jp)               ! image location
+               call PBCr2(dx,dy,dz,r2)
+               rip = one/sqrt(r2)
                du%twob(iptjpt) = du%twob(iptjpt) + signEpsi2FourPi*az(ip)*az(jp)*(ri + delta*rip)
             else
                du%twob(iptjpt) = du%twob(iptjpt) + signEpsi1FourPi*az(ip)*az(jp)*(ri - delta*ri)
@@ -2543,8 +2544,11 @@ subroutine DUBond
          if (.not.lptm(jp_m)) then                 ! lower neighbour is not moved
             call DUBondSub(ro(1,jp_m),ro(1,jp_m))
          else                                      ! lower neighbour is moved
- !!         call DUBondSub(rotm(1,iptmpn(jp_m)),ro(1,jp_m))     ! Jos
-            call DUBondSub(rotm(1,iploc-1),ro(1,jp_m))          ! orig
+            if(iploc > 1) then
+               call DUBondSub(rotm(1,iploc-1),ro(1,jp_m))          ! orig
+            else
+               call DUBondSub(rotm(1,iptmpn(jp_m)),ro(1,jp_m))     ! Jos
+            end if
          end if
       end if
       if (jp_p/= 0) then                           ! bond between moving segment and its upper neighbour
@@ -2617,16 +2621,25 @@ subroutine DUAngle
       if ((jp_m /= 0) .and. (jp_p /= 0)) then    ! segment has two neighbours
          if (lptm(jp_m)) then
             if (lptm(jp_p)) then
-               call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
-       !!        call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p))  ! Jos
+               if(( iploc > 1 ) .and. (iploc < nptm)) then
+                  call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+               else
+                  call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p))  ! Jos
+               end if
             else
-               call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
-       !!        call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))    ! Jos
+               if(iploc > 1) then
+                  call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+               else
+                  call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))    ! Jos
+               end if
             end if
          else
             if (lptm(jp_p)) then
-              call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
-       !!        call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p)) ! Jos
+               if(iploc < nptm) then
+                  call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+               else
+                  call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p)) ! Jos
+               endif
             else
                call DUAngleSub(ro(1,jp_m), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
             end if
@@ -3303,6 +3316,7 @@ subroutine DUExternalSphDielBoundary_p(str)
 ! ... calculate external energy
 
    sum = zero
+   ialoc = 0
    do ia = ianpn(ip), ianpn(ip)+napt(ipt)-1
       ialoc = ialoc+1
       r1new = sqrt(rtm(1,ialoc)**2+rtm(2,ialoc)**2+rtm(3,ialoc)**2)

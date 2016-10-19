@@ -1,0 +1,45 @@
+ &nmlSystem
+  txtitle ='ion(nemo): test of umbrella potential',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 2,        nstep2= 2000,
+  boxlen= 3*30.0,
+  temp  = 300.0,    prsr = 0.1013,
+  iseed = 987653,
+  lcont =.t.,  laver =.t.,  ldist =.f., ldump =.f.,  lgroup=.f.,  lstatic =.f.,
+  itest = 0,   ipart = 1,   iatom = 1,  iaver = 100, ishow = 1,   iplot = 0,   ilist = 0,
+  lenscl= 1.0000000,
+ /
+ &nmlScale
+ /
+ &nmlPolarizationIter tpolit = 1.0e-5, mpolit = 10, npolit = 5 /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'ion',
+  nppt  =  2,
+  natpt =  1,
+  txat  = 'ion    ',
+  massat= 16.0,
+  radat =  0.0,      0.0,
+  zat   = 0.00000,
+  naatpt        =  1,
+  txaat         = 'ion   ',
+ /
+ &nmlPotential
+  rcut = 26.0,
+  lewald =.f.,  ualphared = 3.0,  ncut = 5,  ncutregion ='cube',  lsurf =.true.,
+  txpot(1) = 'nemo:ion',
+ /
+ &nmlSetConfiguration
+  txsetconf   ='random',
+  nucell     =  4,  4,  4,
+ /
+ &nmlMC
+  dtran = 1.0, drot = 0.1,
+  lautumb =.true.,
+ /
+ &nmlUmbrella
+  typeumb = 'ppdist',
+  ipumb1 = 1, ipumb2 = 2,
+  rminumbrella = 1.0, delumb = 0.1, numbgrid = 140, cupdate='engb',
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

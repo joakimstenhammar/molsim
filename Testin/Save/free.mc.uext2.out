@@ -1,0 +1,485 @@
+**************************************************************************************************************
+**************************************************************************************************************
+**                                                                                                          **
+**                                                                                                          **
+**                                                  Molsim                                                  **
+**                                                                                                          **
+**                  integrated md/mc/bd simulation program belonging to the molsim package                  **
+**                                                                                                          **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                                                                                          **
+**                                                                                                          **
+**                                                Per Linse                                                 **
+**                                            Physical Chemistry                                            **
+**                                         Department of Chemistry                                          **
+**                                             Lund University                                              **
+**                                               P.O. Box 124                                               **
+**                                          S-221 00 Lund, SWEDEN                                           **
+**                                                                                                          **
+**                                                                                                          **
+**                                         with contributions from                                          **
+**                                                                                                          **
+**                  Anna Akinchina, Fredrik Carlsson, Samuel Edgecombe, Yoshikatsu Hayashi                  **
+**          Pascal Hebbeker, Cornelius Hofzumahaus, Niklas Källrot, Björn Linse, Vladimir Lobaskin          **
+**               Thomas M. Nymand, Alberto Pais, Jurij Rescic, Stefanie Schneider, Marie Skepö              **
+**          Joakim Stenhammar, Anders Wallqvist, Jos van Rijssel, Erik Wernersson, Per-Olof Åstrand         **
+**                                                                                                          **
+**                                                                                                          **
+**************************************************************************************************************
+**************************************************************************************************************
+ 
+2016-09-14     08:29:20
+
+**************************************************************************************************************
+*                                                                                                            *
+*                                            i n p u t   d a t a                                             *
+*                                                                                                            *
+**************************************************************************************************************
+
+
+**************************************************************************************************************
+*                                            general information                                             *
+**************************************************************************************************************
+
+
+title   : free translation and rotation                                                             
+
+key data: mode           : simulation
+          method         : mc   
+          ensemble       : nvt
+          boundary cond. : xy 
+          start          : setconf 
+
+
+number of time steps/passes           1  *      1000  =       1000
+
+temperature                    =     120.300
+pressure                       =       0.101
+box lengths (x,y,z)            =      10.000      10.000      10.000
+volume                         =   0.100E+04
+
+seed of random generator       =         999
+
+optional subroutine used
+------------------------
+   ControlAver
+   MainAver
+
+parameters controlling the output interval (0 = no)
+-------------------------------------------------
+   itest              0
+   ipart              1
+   iatom              1
+   iaver            100
+   ishow              0
+   iplot              0
+   ilist              0
+
+external units
+--------------
+number        generic name        file name
+------        ------------        ---------
+   1               fin            FIN       
+   2               fout           FOUT      
+   3               fcnf           FCNF      
+
+**************************************************************************************************************
+*                                                   units                                                    *
+**************************************************************************************************************
+
+quantity                unit
+--------                ----
+length              1.000E-10 m
+mass                1.000E-03 kg/mol
+temperature         1.000E+00 k
+time                1.000E-12 s
+energy              1.000E+03 j/mol
+heat capacity       1.000E+00 j/mol*k
+diff. coeff.        1.000E-09 m**2/s
+pressure            1.000E+06 pa
+volume              1.000E-30 m**3
+linear vel.         1.000E+02 m/s
+linear acc.         1.000E+14 m/s**2
+force               1.000E+11 n/mol
+moment of inertia   1.000E-23 kg*m**2/mol
+angle               1.745E-02 rad
+
+**************************************************************************************************************
+*                                               particle data                                                *
+**************************************************************************************************************
+
+charged atoms enabled
+
+number of particles            =       1
+number of atoms                =       2
+number of particle types       =       1     (     10 )
+number of atom types           =       1     (     10 )
+
+particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
+                                                 radius       charges      charge                              
+--------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
+mol1            1
+                         k1       2      1.000    1.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
+
+molecular input frame: mol1      
+---------------------- ----
+
+atom               coordinate (x,y,z)
+----               ------------------
+k1          -1.00000   0.00000   0.00000
+k1           1.00000   0.00000   0.00000
+
+principal axis frame: mol1      
+--------------------- ----
+
+atom               coordinate (x,y,z)
+----               ------------------
+k1          -1.00000   0.00000   0.00000
+k1           1.00000   0.00000   0.00000
+
+particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
+--------             ----           -------------------------        -------------------------
+mol1                2.000          0.000     2.000     2.000             1.000
+
+**************************************************************************************************************
+*                                          two-body potential data                                           *
+**************************************************************************************************************
+
+rcut                           =      12.247
+utoltab                        =   0.100E-04
+ftoltab                        =   0.100E-04
+umaxtab                        =   0.200E+05
+fmaxtab                        =   0.200E+05
+
+polyatomic energy and force routines
+
+particle pair              potential
+-------------              ---------
+mol1-mol1                    default             
+
+atom pair         energy coefficients (ipot and ucoff)
+---------         ------------------------------------
+k1-k1                  1  0.000000E+00
+
+specification of two-body potential tables
+------------------------------------------
+atom pair          no of grids         iubuflow       rumin     rumax
+---------          -----------         --------       -----     -----
+k1-k1                  2                   1          0.316    15.672
+
+nbuf (needed, allocated)        =         25      1000
+
+**************************************************************************************************************
+*                                          external potential data                                           *
+**************************************************************************************************************
+
+particle type                  =  mol1      
+lj wall at z = -wall_z_ext and hard wall at +wall_z_ext
+with the additional potential u_drift = u0_drift + u1_drift * z
+wall_z_ext                     =    5.00    
+sigma_ext       (atom type)    =    3.01    
+epsilon_ext     (atom type)    =    17.4    
+z3 coefficients (atom type)    =  -0.100E+04
+z9 coefficients (atom type)    =   0.100E+06
+u0_drift                       =    0.00    
+u1_drift                       =    0.00    
+
+**************************************************************************************************************
+*                                         initial configuration data                                         *
+**************************************************************************************************************
+
+start configuration from SetConfiguration
+-----------------------------------------
+part. type    routine          no of unit cells (x,y,z)     lower (x,y,z)      upper (x,y,z)      shift (x,y,z)
+----------    -------          ------------------------     -------------      -------------      -------------
+ 1  mol1      origin                  0    0    0        -5.000-5.000-5.000  5.000 5.000 5.000  0.000 0.000 0.000
+
+first macrostep                =      1
+
+**************************************************************************************************************
+*                                                coordinates                                                 *
+**************************************************************************************************************
+
+
+particle coordinates
+--------------------
+particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
+-----------   -------------       -----------              ---------------        ---------------        ---------------
+     1        mol1            0.000    0.000    0.000   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
+
+atom coordinates
+----------------
+atom no       atom type      particle no    particle type            coordinate (x,y,z)
+-------       ---------      -----------    -------------            ------------------
+     1        k1                  1         mol1               -1.00000     0.00000     0.00000
+     2        k1                  1         mol1                1.00000     0.00000     0.00000
+
+**************************************************************************************************************
+*                                                  mc data                                                   *
+**************************************************************************************************************
+
+uniform sampling, random
+cubic displacement volume
+
+single-particle move                   mol1      
+-------------------                    ----------
+probability                    =       1.000
+tran. displacement parameter   =            5.000
+rot. displacement parameter    =           10.000
+
+
+**************************************************************************************************************
+*                                               neighbour list                                               *
+**************************************************************************************************************
+
+verlet list
+automatic control of update frequency
+layer thickness                =         5.000
+factor used to calculate nneigh=         2.000
+maximal number of neighbours   =          2000
+
+**************************************************************************************************************
+*                                          thermodynamic quantities                                          *
+**************************************************************************************************************
+
+quantity                            initial value
+&-------                            -------------
+total potential energy         =        -15.89760
+ total two-body energy         =          0.00000
+  mol1-mol1                    =          0.00000
+ external potential            =        -15.89760
+enthalpy                       =        -14.89737
+temperature                    =        120.30000
+pressure (excl. cont. contr.)  =          1.66092
+number of particles            =          1.00000
+volume                         =      1.00000E+03
+
+total potential energy (NkT)   =        -15.89393
+pressure (NkT/V)(excl. contact)=          1.00000
+pressure (kT) (excl. contact)  =      1.00000E-03
+ 
+total cpu time since start (s)        0.01
+
+**************************************************************************************************************
+*                                                                                                            *
+*                              r e s u l t   o f   m a c r o s t e p         1                               *
+*                                                                                                            *
+**************************************************************************************************************
+
+ 
+  step/pass   pot. energy    temperature    pressure       volume
+   100        -74.407        120.300          1.661       1000.000
+   200        -75.074        120.300          1.661       1000.000
+   300        -75.485        120.300          1.661       1000.000
+   400        -75.732        120.300          1.661       1000.000
+   500        -75.908        120.300          1.661       1000.000
+   600        -75.927        120.300          1.661       1000.000
+   700        -75.942        120.300          1.661       1000.000
+   800        -75.831        120.300          1.661       1000.000
+   900        -75.652        120.300          1.661       1000.000
+  1000        -75.594        120.300          1.661       1000.000
+
+**************************************************************************************************************
+*                                               mc statistics                                                *
+**************************************************************************************************************
+
+single-particle move                             total          mol1      
+-------------------                              -----          ----------
+total number of conf.          =             1000 1.00           1000 1.00
+accepted number of conf.       =               45 0.04             45 0.04
+energy rejected conf.          =              952 0.95            952 0.95
+outside-box rejected conf.     =                2 0.00              2 0.00
+hard-ext.-pot. rejected conf.  =                1 0.00              1 0.00
+
+average no of displaced part.  =                                      1.00
+average no of net joining part.=                                      0.00
+
+**************************************************************************************************************
+*                                             control statistics                                             *
+**************************************************************************************************************
+
+quantity                                    mol1      
+--------                                    ----------
+
+<dr**2>/step (macrostep)       =            0.1614E+00
+precision                      =            0.0000E+00
+<dr**2>/step (from start)      =            0.1614E+00
+precision                      =            0.0000E+00
+
+orientation order, x'-axis     =                0.9845
+orientation order, y'-axis     =                0.9920
+orientation order, z'-axis     =                0.9857
+
+<ro> (x,y,z)                   =     0.576-0.455-2.394
+<x'> (x,y,z)                   =      1.00 -0.04  0.01
+<y'> (x,y,z)                   =      0.04  1.00  0.05
+<z'> (x,y,z)                   =     -0.01 -0.05  1.00
+
+**************************************************************************************************************
+*                                          thermodynamic quantities                                          *
+**************************************************************************************************************
+
+quantity                                  average    fluctuation          check
+&&------                                  -------    -----------          -----
+total potential energy         =        -75.59374        3.28243     -0.751E-15
+ total two-body energy         =          0.00000        0.00000      0.000E+00
+  mol1-mol1                    =          0.00000        0.00000      0.000E+00
+ external potential            =        -75.59374        3.28243     -0.751E-15
+enthalpy                       =        -74.59351        3.28243
+cv                             =         89.54177
+temperature                    =        120.30000        0.00000
+pressure (excl. cont. contr.)  =          1.66092        0.00000
+number of particles            =          1.00000        0.00000
+volume                         =      1.00000E+03    0.00000E+00
+
+total potential energy (NkT)   =        -75.57628
+pressure (NkT/V)(excl. contact)=          1.00000
+pressure (kT) (excl. contact)  =      1.00000E-03
+number density                 =      1.00000E-03
+
+**************************************************************************************************************
+*                                                                                                            *
+*                                          f i n a l   r e s u l t                                           *
+*                                                                                                            *
+**************************************************************************************************************
+
+2016-09-14     08:29:20
+
+title   : free translation and rotation                                                             
+
+key data: mode           : simulation
+          method         : mc   
+          ensemble       : nvt
+          boundary cond. : xy 
+          start          : setconf 
+
+
+number of time steps/passes           1  *      1000  =       1000
+
+temperature                    =     120.300
+pressure                       =       3.056
+box lengths (x,y,z)            =      10.000      10.000      10.000
+volume                         =   0.100E+04
+
+seed of random generator       =  1510576567
+
+
+**************************************************************************************************************
+*                                                coordinates                                                 *
+**************************************************************************************************************
+
+
+particle coordinates
+--------------------
+particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
+-----------   -------------       -----------              ---------------        ---------------        ---------------
+     1        mol1            2.356   -1.684   -2.432   0.995  0.057 -0.084   -0.053  0.997  0.050    0.087 -0.045  0.995
+
+atom coordinates
+----------------
+atom no       atom type      particle no    particle type            coordinate (x,y,z)
+-------       ---------      -----------    -------------            ------------------
+     1        k1                  1         mol1                1.36069    -1.74139    -2.34771
+     2        k1                  1         mol1                3.35035    -1.62684    -2.51544
+
+**************************************************************************************************************
+*                                               mc statistics                                                *
+**************************************************************************************************************
+
+single-particle move                             total          mol1      
+-------------------                              -----          ----------
+total number of conf.          =             1000 1.00           1000 1.00
+accepted number of conf.       =               45 0.04             45 0.04
+energy rejected conf.          =              952 0.95            952 0.95
+outside-box rejected conf.     =                2 0.00              2 0.00
+hard-ext.-pot. rejected conf.  =                1 0.00              1 0.00
+
+average no of displaced part.  =                                      1.00
+average no of net joining part.=                                      0.00
+
+**************************************************************************************************************
+*                                               neighbour list                                               *
+**************************************************************************************************************
+
+verlet list
+automatic control of update frequency
+layer thickness                =         5.000
+factor used to calculate nneigh=         2.000
+maximal number of neighbours   =          2000
+
+**************************************************************************************************************
+*                                           verlet list statistics                                           *
+**************************************************************************************************************
+
+no of neighbour list calls     =           8
+no of steps/passes per call    =       125.0
+
+           no of part per proc   no of neighbours per part and proc  load of proc   load(max)-load(aver)
+           -------------------   ----------------------------------  ------------   --------------------
+average              1.0                      0.0                           0.0            0.0
+one sd               0.0                      0.0                           0.0            0.0
+minimum              1.0                      0.0                           0.0            0.0
+maximum              1.0                      0.0                           0.0            0.0
+
+**************************************************************************************************************
+*                                             control statistics                                             *
+**************************************************************************************************************
+
+quantity                                    mol1      
+--------                                    ----------
+
+<dr**2>/step (from start)      =            0.1614E+00
+precision                      =            0.0000E+00
+sqrt(<dr**2>)(from start)      =               12.7046
+precision                      =                0.0000
+
+orientation order, x'-axis     =                0.9845
+orientation order, y'-axis     =                0.9920
+orientation order, z'-axis     =                0.9857
+
+<ro> (x,y,z)                   =     0.576-0.455-2.394
+<x'> (x,y,z)                   =      1.00 -0.04  0.01
+<y'> (x,y,z)                   =      0.04  1.00  0.05
+<z'> (x,y,z)                   =     -0.01 -0.05  1.00
+
+**************************************************************************************************************
+*                                          thermodynamic quantities                                          *
+**************************************************************************************************************
+
+quantity                                  average      precision    fluctuation      precision       stat eff
+&&&-----                                  -------      ---------    -----------      ---------       --------
+total potential energy         =        -75.59374        0.33862        4.36869        1.13510            11.
+ total two-body energy         =          0.00000        0.00000        0.00000        0.00000             0.
+  mol1-mol1                    =          0.00000        0.00000        0.00000        0.00000             0.
+ external potential            =        -75.59374        0.33862        4.36869        1.13510            11.
+enthalpy                       =        -74.59351        0.33862        4.36869        1.13510            11.
+cv                             =         89.54177
+temperature                    =        120.30000        0.00000        0.00000        0.00000             0.
+pressure (excl. cont. contr.)  =          1.66092        0.00000        0.00000        0.00000             0.
+number of particles            =          1.00000        0.00000        0.00000        0.00000             0.
+volume                         =      1.00000E+03    0.00000E+00    0.00000E+00    0.00000E+00             0.
+
+total potential energy (NkT)   =        -75.57628        0.00000
+pressure (NkT/V)(excl. contact)=          1.00000        0.00000
+pressure (kT) (excl. contact)  =      1.00000E-03    0.00000E+00
+number density                 =      1.00000E-03    0.00000E+00
+
+**************************************************************************************************************
+*                                             timing statistics                                              *
+**************************************************************************************************************
+
+ 
+         section         cpu time (s)     fraction
+         -------         ------------     --------
+         Coordinate            0.00         0.03 
+         ControlAver           0.00         0.06 
+         MainAver              0.01         0.19 
+         IOMolsim              0.00         0.12 
+         SetVList              0.00         0.00 
+         MCPass                0.02         0.60 
+          SPartMove            0.00         0.07  
+          DUTotal              0.01         0.29  
+           DUTwoBody           0.00         0.05   
+           DUExternal          0.00         0.06   
+ 
+total cpu time since start (s)        0.04

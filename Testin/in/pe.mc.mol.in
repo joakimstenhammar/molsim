@@ -1,0 +1,60 @@
+ &nmlSystem
+  txtitle ='1 pe where particles contain three atoms, counterions, coins (Jos)',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',       txstart='setconf',
+  nstep1= 2,        nstep2= 10,
+  boxlen= 3*500.,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,  lstatic =.t.,  limage=.f.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,   ishow = 1,     iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='25-mer',
+  ncct  = 1,
+  npptct(1,1) = 25,
+  npt   = 3,
+  txpt  = 'pe', 'ionp', 'ionm',
+  nppt  = 25, 150, 75,
+  natpt =  2, 1, 1,
+  txat  = 'bead', 'charge', 'ionp', 'ionm',
+  radat =  3.0,	1.4, 2.0,2.0,
+  zat =   0.0, -1.0, 1.0,-1.0,
+  naatpt(1,1) =  1, 3,
+  txaat(1,1) = 'pebead', 3*'peion',
+  rain(1,2,1) = 0, 	2.8, 	0,
+  rain(1,3,1) = -2.4, 	-1.4, 	0,
+  rain(1,4,1) = 2.4, 	-1.4, 	0, 
+  naatpt(1,2) = 1,
+  txaat(1,2) = 'ionp'
+  naatpt(1,3) = 1,
+  txaat(1,3) = 'ionm'
+ /
+ &nmlPotential
+  rcut = 0,
+  relpermitt = 78.4,
+ /
+ &nmlPotentialChain bond = 2.4088, 2, 10.0, angle = 0.00207 /
+ &nmlSetConfiguration
+  txsetconf(1) = 'chainrandomintori',
+  txsetconf(2) = 'random'
+  txsetconf(3) = 'random'
+  anglemin = 50.0,
+ /
+ &nmlMC
+  isamp = 0,
+  pspart   = 1.0,    dtran      = 5,5,5,
+  ppivot   = 0.01,   drotpivot  = 90.0,
+  pchain   = 0.01,   dtranchain = 5.0,
+  pslither = 0.01
+ /
+ &nmlGroup ref = 'type=all', field= 'type=all', lwref =.false. /
+ &nmlIntList inlist = 0, drnlist = 2.0,   facnneigh = 50.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlStatic istatic = 1, lspdf =.true. lsf =.true. /
+ &nmlSPDF vtype(1) =.true., 0.0, 100.0 /
+ &nmlSF nbin = 100 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML blmax = 0.1, bondr = 0.3 /

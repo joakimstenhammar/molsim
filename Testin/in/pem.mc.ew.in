@@ -1,0 +1,68 @@
+&nmlSystem
+  txtitle ='2 micelles, 2 pe''s, and their counterions',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',       txstart='zero',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',       txstart='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*150.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 987,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.f.,  lstatic =.t.,limage =.true.,
+  itest = 0,   ipart = 10,   iatom = 0,   iaver = 0, ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='40-mer',
+  ncct  = 2,
+  npptct(1,1) = 40,      0,              0,             0,
+  npt   = 4,
+  txpt  = 'pe',         'cionpe',       'micelle',      'cionm',
+  nppt  =  80,          80,             2,              40,
+  natpt =  1,		1,		1,		1,
+  txat  = 'bead',       'cionpe',       'micelle',      'cionm',
+  massat= 10.0,		10.0,		200.0,		10.0,
+  radat = 2.0, 		2.0,		15.0,		2.0,
+  zat = 0.112938488,	-0.112938488,	-2.258732320,	0.112938488,
+  zat = 1.0,            -1.0,           -20.0,          1.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'pebead',
+  naatpt(1,2) =	1,
+  txaat(1,2) = 'cionpe',
+  naatpt(1,3) =	1,
+  txaat(1,3) = 'micelle',
+  naatpt(1,4) =	1,
+  txaat(1,4) = 'cionm',
+ /
+ &nmlPotential
+  rcut = 75,
+  relpermitt = 78.40,
+  lewald = .true., iewaldopt = 1,  ualphared = 3.0,  lsurf =.false.,
+ /
+ &nmlPotentialChain bond = 2.4088, 2, 5.0, angle = 0.0 /
+ &nmlMD
+  integ ='velver',      tstep = 0.0055,         nvvite=2,        lsetvel =.true.,
+  tvscl= 0.03,          tlscl= 0.0,             compre= 5.0e-4,
+ /
+ &nmlMC
+ pspart = 0.8, dtran      = 2.0,  2.0,   0.0,   2.0
+ ppivot = 0.1, drotpivot  = 20.0,
+ pchain = 0.1, dtranchain = 5.0,
+ /
+ &nmlGroup ref = 'type=1', field = 'type=1', lwref = .false. /
+ &nmlIntList inlist = 0, drnlist = 10.0 /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 50.0, 100 /
+ &nmlSetConfiguration
+  txsetconf(1) =	'random',
+  txsetconf(2) =	'random',
+  txsetconf(3) =	'random',
+  txsetconf(4) =	'random',
+ /
+ &nmlStatic
+  istatic = 1,
+  lcbpc  =      .true.,
+ /
+ &nmlSF nbin=		10 /
+ &nmlCBPC iptpart = 3, rcontact= 50 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 2.0, 2.0, 15.0, 2.0, rgbcolor = 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0,1.0, 0.0,0.0,0.0, bondr = 0.3, blmax = 5.0 /

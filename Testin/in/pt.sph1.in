@@ -1,0 +1,38 @@
+ &nmlSystem
+  txtitle ='points in a sphere',
+  txmethod='mc',    txensemb='nvt',     txbc ='sph',  txstart ='setconf',
+  nstep1   = 1,     nstep2   = 1000,
+ 
+  sphrad= 50.0,
+ 
+  temp  = 298.,   prsr = 0.1013,
+ 
+  iseed = 9876543,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  ldump =.f.,  lgroup=.t.,  lstatic=.true.,limage =.f.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 10000, ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'pt',
+  nppt  =  100,
+  natpt =  1,
+  txat  = 'pt',
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'pt',
+ /
+ &nmlPotential
+ /
+ &nmlSetConfiguration txsetconf='random',
+ /
+ &nmlMC
+  dtran = 10,
+ /
+ &nmlIntList inlist = 0, drnlist = 200.0 /
+ &nmlGroup  /
+ &nmlStatic
+  istatic = 1,
+  lspdf  =.true.,
+ /
+ &nmlSPDF vtype(1) =.true., 0.0, 50.0, 100, vtype(8) =.true.,  /

@@ -1,0 +1,44 @@
+ &nmlSystem
+  txtitle ='dumbell fluid (Jos)',
+  txmethod ='mc',    	txensemb='nvt',		txbc='xyz',	txstart='setconf',
+  boxlen = 3*79.4,
+  temp  = 298.0,    	prsr = 0.1013,
+  nstep1 = 2,        	nstep2 = 10,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,  lstatic =.t.,  limage=.f.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,   ishow = 1,     iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt    = 1,
+  txpt   = 'dumbbell',
+  nppt   = 100,
+  natpt  = 2,
+  txat   = 'hs1','hs2',
+  radat  = 5, 	5,
+  zat    = 0.0, 0.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'hs1',
+  naatpt(2,1) = 1
+  txaat(2,1) = 'hs2',
+  rain(1,1,1) = 0, 0,-3,
+  rain(1,2,1) = 0, 0, 3,
+ /
+ &nmlPotential
+ /
+ &nmlSetConfiguration
+  txsetconf(1) = 'random',
+  nucell(:,1) = 6, 6, 3,
+ /
+ &nmlMC
+  isamp = 0,
+  pspart   = 1.0,   dtran      = 5.0, drot = 360,
+ /
+ &nmlGroup ref = 'type=all', field= 'type=all', lwref =.false. /
+ &nmlIntList inlist = 0, drnlist = 0.0, /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 11, 110 /
+ &nmlStatic istatic = 10, lrdf = .true. /
+ &nmlRDF vtype(3) =.true., 0.0, 11, 45, rmax = 110/
+ &nmlImage lvrml =.true. /
+ &nmlVRML blmax = 5.0, bondr = 0.3 /

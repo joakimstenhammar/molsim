@@ -2532,6 +2532,8 @@ subroutine StaticUser(iStage)
       if (txuser(1:6) == 'jasper') call BondOrder(iStage)
       if (txuser == 'anna') call ChainBeadCylContact(iStage)
 
+      if (txuser(1:4) == 'comp') call DoComplexation(iStage)
+
       if(txuser == 'ellipsoid') then     ! ellipsoid Erik W
 !        call Min(iStage)
           call S1(iStage)
@@ -2588,7 +2590,7 @@ subroutine StaticUser(iStage)
 
 ! ... place routines for parallel computation here
 
-   if (txuser(1:9) == 'md_dipole') then   ! Dipole project with Gunnar Karlström
+   if (txuser(1:9) == 'md_dipole') then   ! Dipole project with Gunnar KarlstrÃ¶m
        call DomainDriver(iStage)           ! domain analysis based on Kirkwoods gk-factor
    endif
 
@@ -4694,7 +4696,7 @@ subroutine MeanElFieldZCyl(iStage)
       call ScalarSample(iStage, 1, nvar, var)
       call ScalarSample(iStage, 1, nvar_2, var_2)
       call ScalarWrite(iStage, 1, nvar_2, var_2, 1, '(a,t35,4f15.5,f15.0)', uout)    ! write force
-      var_2(1:2)%label = var_2(1:2)%label//' (kT/Å)'
+      var_2(1:2)%label = var_2(1:2)%label//' (kT/Ã…)'
       var_2(1:2)%norm = EpsiFourPi*beta
       call ScalarNorm(iStage, 1, nvar_2, var_2, 0)                                   ! change normalization
       write(uout,*)
@@ -9605,7 +9607,7 @@ subroutine JosUser(iMode)
 
    character(40), parameter :: txroutine ='JosUser'
    real(8), parameter :: conc_salt = 0.001D0                 ! salt concentration in M
-   real(8), parameter :: rho_salt = conc_salt*AvNo*1d-27     ! salt concentration in Å**-3
+   real(8), parameter :: rho_salt = conc_salt*AvNo*1d-27     ! salt concentration in Ã…**-3
 
    write(*,'(2a,i4)') trim(txroutine), '  iMode = ', iMode
 
@@ -9628,4 +9630,435 @@ subroutine JosUser(iMode)
    end if
 
 end subroutine JosUser
+
+!************************************************************************
+!*                                                                      *
+!*     ComplexationModule                                               *
+!*                                                                      *
+!************************************************************************
+
+! ... Module for analysing the Complexation
+module ComplexationModule
+   implicit none
+   private
+   public  ComplexationDriver
+
+
+   real(8)  :: rcut_complexation
+   real(8)  :: r2cut_cmplx 
+
+   logical, allocatable :: lcmplx_ipjp(:,:)
+
+   contains
+
+      !************************************************************************
+      !*                                                                      *
+      !*     ComplexationDriver                                               *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Driver for the Complexation Analysis
+      
+      subroutine ComplexationDriver(iStage)
+         use MolModule, only: ltrace, ltime, uout, master, uin
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: np
+         implicit none
+         integer(4), intent(in)  :: iStage
+         character(40), parameter :: txroutine ='ComplexationDriver'
+         character(80), parameter :: txheading ='complexation Analysis'
+         logical,       save :: lClusterDF, lComplexFraction
+
+         namelist /nmlComplexation/ rcut_complexation, lClusterDF, lComplexFraction
+
+         if (ltrace) call WriteTrace(2, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 0, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            rcut_complexation = 0.0
+            lClusterDF = .false.
+            lComplexFraction = .false.
+            rewind(uin)
+            read(uin,nmlComplexation)
+
+            call ComplexationDriverSub
+
+         case (iWriteInput)
+            if(.not. allocated(lcmplx_ipjp)) then
+               allocate(lcmplx_ipjp(np,np))
+            end if
+            r2cut_cmplx = rcut_complexation**2
+            call ComplexationDriverSub
+
+         case (iBeforeSimulation)
+            call ComplexationDriverSub
+
+         case (iBeforeMacrostep)
+            call ComplexationDriverSub
+
+         case (iSimulationStep)
+            call GetComplex(iStage)
+            call ComplexationDriverSub
+
+         case (iAfterMacrostep)
+            call ComplexationDriverSub
+
+         case (iAfterSimulation)
+            if (master) then
+               call WriteHead(2, txheading, uout)
+               write(uout,'(a,t35,e13.6)')     'cutoff-distance                = ', rcut_complexation
+               write(uout,'(a)') 'static analysis routines used'
+               write(uout,'(a)') '-----------------------------'
+               if (lComplexFraction)  write(uout,'(a)') '   ComplexFraction'
+               if (lClusterDF)        write(uout,'(a)') '   ClusterDF      '
+            end if
+
+            call ComplexationDriverSub
+
+         end select
+
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+         contains
+            subroutine ComplexationDriverSub
+               if (lComplexFraction)  call ComplexFraction(iStage)
+               if (lClusterDF)        call ClusterDF(iStage)
+               continue
+            end subroutine ComplexationDriverSub
+      end subroutine
+
+      !************************************************************************
+      !*                                                                      *
+      !*     GetComplex                                                       *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Detect which particles form a Complex
+
+      subroutine GetComplex(iStage)
+         use MolModule, only: ltrace, ltime, uout, ro, np
+         implicit none
+         integer(4), intent(in)  :: iStage
+         character(40), parameter :: txroutine ='GetComplex'
+
+         integer(4)  :: ip, jp
+         real(8)  :: d(3), r2
+
+         if (ltrace) call WriteTrace(3, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 0, uout)
+
+         if(.not. allocated(lcmplx_ipjp)) then
+            call Stop(txroutine, 'lcmplx_ipjp is not allocated!', uout)
+         end if
+
+         lcmplx_ipjp = .false.
+        
+         do ip = 1, np-1
+            do jp = ip + 1, np
+               d(1:3) = ro(1:3,ip) - ro(1:3,jp)
+               call PBCr2(d(1), d(2), d(3), r2)
+               if (r2 .le. r2cut_cmplx) then
+                  lcmplx_ipjp(ip,jp) = .true.
+                  lcmplx_ipjp(jp,ip) = .true.
+               end if
+            end do
+         end do
+
+      end subroutine GetComplex
+
+      !************************************************************************
+      !*                                                                      *
+      !*     ComplexFraction
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... calculate how many particles are complexed
+
+      subroutine ComplexFraction(iStage)
+
+         use MolModule, only: ltrace, ltime, uout, master, lsim, txstart, ucnf
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: np, npt, txpt, nppt, ipnpt, iptpn
+         use StatisticsModule, only: scalar_var
+         implicit none
+
+         integer(4), intent(in) :: iStage
+
+         type cluster_var
+            integer(4), allocatable :: ip
+            integer(4), allocatable :: np
+         end type cluster_var
+
+         character(40), parameter :: txroutine ='ComplexFraction'
+         character(80), parameter :: txheading ='Fraction of Complexation'
+         integer(4), save         :: nvar
+         type(scalar_var), allocatable, save :: var(:)
+         
+         integer(4)  :: ipt, jpt, ivar, ip
+
+         if (ltrace) call WriteTrace(3, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            nvar = npt**2
+            if(.not. allocated(var)) then
+               allocate(var(nvar))
+            end if
+
+         case (iWriteInput)
+
+            do ipt = 1, npt
+               do jpt = 1, npt
+                  ivar = ivar_ptpt(ipt,jpt)
+                  var(ivar)%label = 'w(cmplx): '//trim(txpt(ipt))//' - '//trim(txpt(jpt))
+                  var(ivar)%norm = 1.0d0/nppt(ipt)
+               end do
+            end do
+
+         case (iBeforeSimulation)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+
+         case (iBeforeMacrostep)
+
+            call ScalarSample(iStage, 1, nvar, var)
+
+         case (iSimulationStep)
+
+            var%value = 0.0d0
+            do ip = 1, np
+               ipt = iptpn(ip)
+               do jpt = 1, npt
+                  if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed withparticle ip
+                     ivar = ivar_ptpt(ipt,jpt)
+                     var(ivar)%value = var(ivar)%value + 1.0d0
+                  end if
+               end do
+            end do
+
+            call ScalarSample(iStage, 1, nvar, var)
+
+
+         case (iAfterMacrostep)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            if (lsim .and. master) write(ucnf) var
+            call ScalarNorm(iStage, 1, nvar, var, 1)
+
+         case (iAfterSimulation)
+
+            call ScalarSample(iStage, 1, nvar, var)
+            call ScalarNorm(iStage, 1, nvar, var, 1)
+            if(master) then
+               call WriteHead(2, txheading, uout)
+               call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,4f15.5,f15.0)', uout)
+            endif
+            deallocate(var)
+
+         end select
+
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+      contains
+
+         pure function ivar_ptpt(ipt, jpt) result(ivar)
+            use MolModule, only: npt
+            implicit none
+            integer(4), intent(in)  :: ipt
+            integer(4), intent(in)  :: jpt
+            integer(4)  :: ivar
+            ivar = (ipt-1)*npt + jpt
+         end function ivar_ptpt
+
+      end subroutine ComplexFraction
+
+      !************************************************************************
+      !*                                                                      *
+      !*     ClusterDistribution
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Calculate clusters and their distribution (first and second moment)
+
+      subroutine ClusterDF(iStage)
+
+         use MolModule, only: ltrace, ltime, uout, lsim, master, txstart, ucnf, ulist, ishow, iplot, ilist
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: npt, iptpt, nptpt, txpt, nppt, ipnpt, iptpn, np
+         use StatisticsModule, only: df_var, mnbin_df
+         implicit none
+
+         integer(4), intent(in) :: iStage
+
+         character(40), parameter :: txroutine ='ClusterDF'
+         character(80), parameter :: txheading ='Size distribution of the binary clusters'
+         integer(4),    save :: nvar
+         integer(4)   , parameter :: nmoment = 2
+         type(df_var),  allocatable, save              :: var(:,:)
+         integer, allocatable, save              :: ivar_ptpt(:,:)
+
+         logical(4), allocatable, save :: linclstr(:)        !logical if a particle in a cluster
+         integer(4)  :: nbead_clstr                    !number of clusters
+
+         integer(4)  :: ip, ipt, jpt, ivar, ibin, imoment
+
+         if (ltrace) call WriteTrace(3, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            if(.not. allocated(ivar_ptpt)) then
+               allocate(ivar_ptpt(npt,npt))
+            end if
+            ivar = 0
+            do ipt = 1, npt
+               do jpt = ipt + 1, npt
+                  ivar = ivar + 1
+                  ivar_ptpt(ipt,jpt) = ivar
+               end do
+            end do
+
+            nvar = ivar_ptpt(npt-1, npt)
+            if(.not. allocated(var)) then
+               allocate(var(nvar,nmoment))
+            end if
+
+         case (iWriteInput)
+
+            do imoment = 1, nmoment
+               do ipt = 1, npt
+                  ivar = ivar_ptpt(ipt,ipt)
+                  do jpt = ipt + 1, npt
+                     ivar = ivar_ptpt(ipt,jpt)
+                     write(var(ivar,imoment)%label,'(4a,i1)') trim(txpt(ipt)), ' - ', trim(txpt(jpt)), '; Moment = ', imoment
+                     var(ivar,imoment)%min = -0.5d0
+                     var(ivar,imoment)%max = nppt(ipt) + nppt(jpt) + 0.5
+                     var(ivar,imoment)%nbin = min(mnbin_df,nppt(ipt) + nppt(jpt) + 1)
+                     var(ivar,imoment)%norm = 1.0d0
+                  end do
+               end do
+            end do
+
+            do imoment = 1, nmoment
+               call DistFuncSample(iStage, nvar, var(:,imoment))
+            end do
+
+         case (iBeforeSimulation)
+
+            do imoment = 1, nmoment
+               call DistFuncSample(iStage, nvar, var(:,imoment))
+            end do
+            if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+            if(.not. allocated(linclstr)) then
+               allocate(linclstr(np))
+               linclstr = .false.
+            endif
+
+         case (iBeforeMacrostep)
+
+            call DistFuncSample(iStage, nvar, var)
+            do imoment = 1, nmoment
+               call distfuncsample(istage, nvar, var(:,imoment))
+            end do
+
+         case (iSimulationStep)
+
+            var%nsamp2 = var%nsamp2 + 1
+            
+            do ipt = 1, npt
+               do jpt = ipt + 1, npt
+                  ivar = ivar_ptpt(ipt, jpt)
+
+                  !initialize linclstr
+                  linclstr = .true.
+                  linclstr((ipnpt(ipt)):(ipnpt(ipt)+nppt(ipt)-1)) = .false.
+                  linclstr(ipnpt(jpt):(ipnpt(jpt)+nppt(jpt)-1)) = .false.
+
+                  !count complexes (it is sufficient to count the ones where ipt is inside, the rest un in a cluster of size 1
+                  do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
+                     if(.not. linclstr(ip)) then
+                        nbead_clstr = 0
+                        call get_nbead_clstr(ip,ipt, jpt,nbead_clstr)
+                        if(nbead_clstr < 1) then
+                           call Stop(txroutine, 'found particle which has wrong cluster size', uout)
+                        endif
+                        do imoment = 1, nmoment
+                           ibin = max(-1,min(floor(var(ivar,imoment)%bini*(nbead_clstr-var(ivar,imoment)%min)),int(var(ivar,imoment)%nbin)))
+                           var(ivar,imoment)%avs2(ibin) = var(ivar,imoment)%avs2(ibin) + nbead_clstr**(imoment - 1)
+                        end do
+                     end if
+                  end do
+
+                  !all particles of jpt which are not in a cluster with particles of ipt are individial particles (ibin 1)
+                  var(ivar,:)%avs2(1) = var(ivar,:)%avs2(1) + count(.not. linclstr(ipnpt(jpt):(ipnpt(jpt)+nppt(jpt)-1)))
+
+               end do
+            end do
+
+         case (iAfterMacrostep)
+
+            do imoment = 1, nmoment
+               call DistFuncSample(iStage, nvar, var(:,imoment))
+            end do
+            if (lsim .and. master) write(ucnf) var
+
+         case (iAfterSimulation)
+
+            do imoment = 1, nmoment
+               call DistFuncSample(iStage, nvar, var(:,imoment))
+            end do
+            call WriteHead(2, txheading, uout)
+            do imoment = 1, nmoment
+               call DistFuncHead(nvar, var(:,imoment), uout)
+               call DistFuncWrite(txheading, nvar, var(:,imoment), uout, ulist, ishow, iplot, ilist)
+            end do
+
+            deallocate(var, linclstr)
+
+         end select
+
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+      contains
+
+         recursive subroutine get_nbead_clstr(ip, iptc, jptc, nbead)
+              
+            use MolModule ,only: np
+            implicit none
+
+            integer(4), intent(in)  :: ip
+            integer(4), intent(in)  :: iptc
+            integer(4), intent(in)  :: jptc
+            integer(4), intent(inout)  :: nbead
+
+            integer(4)  :: jp, ipt
+
+            if(linclstr(ip)) then
+               return
+            else
+               nbead = nbead + 1
+               linclstr(ip) = .true.
+               do jp = ipnpt(jptc), ipnpt(jptc) + nppt(jptc) - 1
+                  if( (.not. linclstr(jp)) .and. (lcmplx_ipjp(ip,jp))) then
+                        call get_nbead_clstr(jp, jptc, iptc, nbead)
+                  endif
+               end do
+            end if
+
+
+         end subroutine get_nbead_clstr
+
+      end subroutine ClusterDF
+
+end module ComplexationModule
+
+subroutine DoComplexation(iStage)
+   use ComplexationModule, only: ComplexationDriver
+   implicit none
+   integer(4), intent(in)  :: iStage      ! event of SSO-Move
+   call ComplexationDriver(iStage)
+end subroutine
 

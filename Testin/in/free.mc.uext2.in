@@ -1,0 +1,48 @@
+ &nmlSystem
+  txtitle ='free translation and rotation',
+  txmethod='md',    txensemb='nve',     txbc ='xy',   txstart ='setconf',
+  txmethod='mc',    txensemb='nvt',     txbc ='xy',   txstart ='setconf',
+  nstep1= 1,        nstep2= 1000,
+  boxlen= 3*10.0,
+  temp  = 120.3,    prsr = 0.1013,
+  iseed = 999,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic =.f.,limage =.f.,
+  itest = 0,   ipart = 1,   iatom = 1,   iaver = 100, ishow = 0,   iplot = 0,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'mol1',
+  nppt  =  1,
+  natpt =  1,
+  txat  = 'k1   ',
+  massat= 1.0,
+  radat = 1.0,
+  naatpt(1,1) =  2,
+  txaat(1,1) = 'k1   ','k1 ',
+  rain(1,1,1) =-1.0, 0.0, 0.0,
+  rain(1,2,1) = 1.0, 0.0, 0.0,
+ /
+ &nmlPotential
+  npot(1)   = 1,
+  ipot(1,1) = 1,
+  ucoff(1,1) = 0.0,
+  luext=.true.,
+ /
+ &nmlPotentialExternal txuext='lj_wall_zlow',z3coeff_ext = -1.0e3, z9coeff_ext = 1.0e5, wall_z_ext = 5.0 /
+ &nmlSetConfiguration
+  txsetconf='origin'
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.0001,    nvvite= 2,    lsetvel =.false.,
+  integ ='gear4 ',  tstep = 0.0001,    nvvite= 2,    lsetvel =.false.,
+ /
+ &nmlMC
+  dtran = 5.0,
+  drot  = 10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 1.0 /
+ 

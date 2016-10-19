@@ -27,8 +27,8 @@ contains
         end do
         call cpu_time(f)
         t = (f-s)/n
-        print*, d1, d2, real(k)/n, t
-        print*, 'dop', real(dopc)/n, 'tri', real(tric)/n
+        write(*,*) d1, d2, real(k)/n, t
+        write(*,*) 'dop', real(dopc)/n, 'tri', real(tric)/n
         !print*, 'dopac', real(dopac)/dopc
     end function
 
@@ -38,7 +38,7 @@ contains
         type(TriMesh) :: mesh
         do i=1,mlvl
             mesh = buildSuperBall(1.0d0,m,i,max_err,rms_err)
-            print*, i, max_err, rms_err
+            write(*,*) i, max_err, rms_err
         end do
     end subroutine
 
@@ -53,13 +53,13 @@ program TestMeshProgram
     logical :: d, q
     real(8) :: rad
 
-    print*, 'm = 2'
+    write(*,*) 'm = 2'
     call err_meas(5,2d0)
-    print*, 'm = 2.5'
+    write(*,*) 'm = 2.5'
     call err_meas(5,2.5d0)
-    print*, 'm = 3'
+    write(*,*) 'm = 3'
     call err_meas(5,3d0)
-    print*, 'm = 10'
+    write(*,*) 'm = 10'
     call err_meas(5,10d0)
 
     u(:,1) = [0,0,0]
@@ -68,7 +68,7 @@ program TestMeshProgram
     v(:,1) = [0.1,0.1,0.0]
     v(:,2) = [0.9,0.1,0.0]
     v(:,3) = [0.1,0.9,0.0]
-    print*, tritri(u,v)
+    write(*,*) tritri(u,v)
 
     m = buildSuperBall(1d0,2.5d0,4)
     do i=-1,13
@@ -80,8 +80,8 @@ program TestMeshProgram
     !print*, testOverlap(m,[pi/3,pi/2,0.0d0],[1.9d0,0.8d0,0.0d0])
     !print*, testOverlap(m,[pi/3,pi/2,0.0d0],[1.9d0,0.9d0,0.0d0])
     do i=1,5
-        print*, 'lvl', i
-        print*, benchmark(i,1.8d0,2.0d0,100000)
+        write(*,*) 'lvl', i
+        write(*,*) benchmark(i,1.8d0,2.0d0,100000)
     end do
 end program
 
