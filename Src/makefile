@@ -78,7 +78,7 @@ ifeq ($(ARCH), LOCAL_INTEL)
   LINK_SER = $(COMP_SER)
 
 
-  OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # repot on vecorization
+  OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # report on vecorization
   OPT_SER  = -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
   OPT_SER  = -O3 -ipo -fp-model strict                 # inter processoptimization
   OPT_SER  = -O3 -traceback -check all     	       # provide useful info at exceptions (gives many #406 warnings)
