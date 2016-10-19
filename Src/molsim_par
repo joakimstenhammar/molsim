@@ -84,7 +84,7 @@ then
    echo "syntax: molsim_par job cores"
    exit 1
 fi
-    mpiexec -np $2 EMOLSIM
+    mpiexec -np $2 EMOLSIM ; e=$?
 fi
 if test $ARCH = ALARIK_INTEL
 then
@@ -106,3 +106,4 @@ echo '   End of molsim_par, Project:' $Project
 echo '--------------------------------------'
 echo
  
+exit $e
