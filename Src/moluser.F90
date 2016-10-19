@@ -9949,7 +9949,7 @@ module ComplexationModule
          case (iBeforeSimulation)
 
             do imoment = 1, nmoment
-               call distfuncsample(istage, nvar, var(:,imoment))
+               call DistFuncSample(iStage, nvar, var(:,imoment))
             end do
             if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
             if(.not. allocated(linclstr)) then
