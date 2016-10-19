@@ -9900,7 +9900,7 @@ module ComplexationModule
          type(df_var),  allocatable, save              :: var(:,:)
          integer, allocatable, save              :: ivar_ptpt(:,:)
 
-         logical(4), allocatable, save :: linclstr(:)        !number of particles per cluster (clstr)
+         logical(4), allocatable, save :: linclstr(:)        !logical if a particle in a cluster
          integer(4)  :: nbead_clstr                    !number of clusters
 
          integer(4)  :: ip, ipt, jpt, ivar, ibin, imoment
