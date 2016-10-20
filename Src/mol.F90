@@ -316,31 +316,44 @@ module MolModule
                                            ! =1 system contains dipoles and no charges
                                            ! =-1 else
    real(8)                 :: q2sum        ! sum(q**2), where q is either atomic charge or dipole according to lq2sum
+   integer(4)              :: nnwt         !*number of network types
    integer(4)              :: nct          !*number of chain types
    integer(4)              :: npt          !*number of particle types
    integer(4)              :: nat          ! number of atom types
+   integer(4)              :: nnw          ! number of networks
    integer(4)              :: nc           ! number of chains
    integer(4)              :: np           ! number of particles
    integer(4)              :: na           ! number of atoms
    integer(4)              :: na_alloc     ! number of atoms (for memory allocation)
    integer(4)              :: np_alloc     ! number of particles (for memory allocation)
+   integer(4)              :: nc_alloc     ! number of chains (for memory allocation)
+   integer(4)              :: nnwnwt(mnnwt)!*number of networks of network type
    integer(4)              :: ncct(mnct)   !*number of chains of a chain type
    integer(4)              :: nppt(mnpt)   !*number of particles of a particle type
+   integer(4)              :: nctnwt(mnnwt)! number of chain types belonging to one network type   
    integer(4)              :: nptct(mnct)  ! number of particle types belonging to one chain type
+   integer(4)              :: ncnwt(mnnwt) ! number of chains belonging to a network type
+   integer(4)              :: npnwt(mnnwt) ! number of particles belonging to a network type
+   integer(4)              :: nclnwt(mnnwt)! number of cross-links belonging to a network type
    integer(4)              :: npct(mnct)   ! number of particles belonging to a chain type
    integer(4)              :: natpt(mnpt)  !*number of atom types belonging to a particle type
    integer(4), allocatable :: napt(:)      ! number of atoms belonging to a particle type
    integer(4), allocatable :: naat(:)      ! number of atoms of an atom type in one particle
+   integer(4)    :: ncctnwt(mnct,mnnwt)    !*number of chains of a chain type of network type
    integer(4)    :: npptct(mnpt,mnct)      !*number of particles of a particle type of chain type
    integer(4)    :: naatpt(mnat,mnpt)      !*number of atoms of an atom type of a particle type
+   integer(4)    :: nnwtnwt                ! number of different network type pairs
    integer(4)    :: nctct                  ! number of different chain type pairs
    integer(4)    :: nptpt                  ! number of different particle type pairs
    integer(4)    :: natat                  ! number of different atom type pairs
+   character(30) :: txtoponwt(mnnwt)       !*type of network
    character(30) :: txcopolymer(mnct)      !*type of copolymer
    logical       :: lspma                  !*control tacticity
+   character(10) :: txnwt(mnnwt)           !*name of network type
    character(10) :: txct(mnct)             !*name of chain type
    character(10) :: txpt(mnpt)             !*name of particle type
    character(10) :: txat(mnat)             !*name of atom type
+   character(20), allocatable :: txnwtnwt(:) ! name of network type-network type pair
    character(20), allocatable :: txctct(:) ! name of chain type-chain type pair
    character(20), allocatable :: txptpt(:) ! name of particle type-particle type pair
    character(20), allocatable :: txatat(:) ! name of atom type-atom type pair
@@ -348,7 +361,9 @@ module MolModule
    logical                :: lpolyatom     !
    real(8)                :: massat(mnat)  !*mass of atom type
    real(8), allocatable   :: masspt(:)     ! mass of particle type
+   real(8), allocatable   :: massnwt(:)    ! mass of network type
    real(8), allocatable   :: massipt(:)    ! inverse mass of particle type
+   real(8), allocatable   :: massinwt(:)   ! inverse mass of network type
    real(8), allocatable   :: mompt(:,:)    ! moments of inertia of particle type
    real(8), allocatable   :: momipt(:,:)   ! inverse moments of inertia of particle type
    real(8), allocatable   :: massp(:)      ! mass of particle
@@ -378,18 +393,18 @@ module MolModule
    logical, allocatable   :: lpset(:)      ! logical valiable being .true. for setted paricles
    logical                :: lradatbox     ! use atom and atom radius when checking if particle inside box
 
-   integer(4)             :: nnwt          !number of network types
-   integer(4)             :: nnwnwt        !number of networks of network types
-
                                            ! equivalences:
-                                           ! nc         = sum(ncct(1:nct))
-                                           ! np         = sum(nppt(1:npt))
-                                           ! na         = sum(napt(1:npt)*nppt(1:npt))
-                                           ! nat        = sum(natpt(1:npt))
-                                           ! nptct(ict) = count(npptct(1:npt,ict) > 0)
-                                           ! npct(ict)  = sum(npptct(1:npt,ict))
-                                           ! napt(ipt)  = sum(naatpt(1:natpt(ipt),ipt)))
-                                           ! naat(iat)  = naatpt(ka,iptat(iat))
+                                           ! nnw          = sum(nnwnwt(1:nnwt))
+                                           ! nc           = sum(ncct(1:nct))
+                                           ! np           = sum(nppt(1:npt))
+                                           ! na           = sum(napt(1:npt)*nppt(1:npt))
+                                           ! nat          = sum(natpt(1:npt))
+                                           ! nctnwt(inwt) = count(ncctnwt(1:nct,inwt) > 0)
+                                           ! nptct(ict)   = count(npptct(1:npt,ict) > 0)
+                                           ! ncnwt(inwt)  = sum(ncctnwt(1:nct,inwt))
+                                           ! npct(ict)    = sum(npptct(1:npt,ict))
+                                           ! napt(ipt)    = sum(naatpt(1:natpt(ipt),ipt)))
+                                           ! naat(iat)    = naatpt(ka,iptat(iat))
 
 ! ... chain bond
 
