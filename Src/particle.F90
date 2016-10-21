@@ -65,7 +65,7 @@ subroutine Particle(iStage)
 
    character(40), parameter :: txroutine ='Particle'
    character(80), parameter :: txheading ='particle data'
-   integer(4) :: igen, ialoc, ict, ipt, iat, iatloc, m
+   integer(4) :: igen, ialoc, inwt, ict, ipt, iat, iatloc, m
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
@@ -598,6 +598,28 @@ subroutine SetObjectParam1
    call Set_isegpn        ! particle number    -> segment number
    call Set_bondnn        ! bond and particle  -> bonded particle
 
+   if (lnetwork) then
+      call Set_lptnwt     ! particle type ipt used for network type inwt?
+      call Set_nnw        ! number of networks                          
+      call Set_nclnwt     ! number of cross-links of network type
+      call Set_nctnwt     ! number of chain types of network type inwt   
+      call Set_ncnwt      ! number of chains of network type inwt        
+      call Set_npnwt      ! number of particles of network type inwt
+      call Set_nnwtnwt    ! number of network type pairs           
+      call Set_npweakchargenwt ! number of titratable particles in network type inwt
+
+      call Set_inwtnwn    ! network                                      -> its network type                             
+      call Set_inwtct     ! chain type (1:nct)                           -> its network type (1:nnwt)
+      call Set_icnclocnwn ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)   
+      call Set_inwtcn     ! chain (1:nc)                                 -> its network type (1:nnwt)
+      call Set_inwncn     ! chain (1:nc)                                 -> its network (1:nnw)
+      call Set_inwnnwt    ! network type (1:nnwt)                        -> its first network (1:nnw)
+      call Set_inwtnwt    ! two network types (1:nnwt)                   -> network type pair (1:nnwt)
+      call Set_ipncllocnwn! cross-link (1:nclnwt) and network (1:nnw)    -> its particle (1:np)
+      call Set_ipnplocnwn ! local particle (1:npnwt) and network (1:nnw) -> its particle (1:np)
+      call Set_lpnnwn     ! particle (1:np) part of network (1:nnw)?
+   end if
+
    if (lhierarchical) then
        call Set_ipnhn  ! hierarchical strcture -> its first particle
        call Set_genic  ! chain number -> generation number
@@ -619,6 +641,7 @@ subroutine SetObjectParam1
 
    if (master .and. itestpart == 10) then
       call TestChainPointer(uout)
+      if (lnetwork) call TestNetworkPointer(uout)
       if (lhierarchical) call TestCrosslinkPointer(uout)
    end if
 
@@ -1318,6 +1341,273 @@ end subroutine Set_bondnn
 
 !........................................................................
 
+subroutine Set_nnw ! number of networks
+   nnw = sum(nnwnwt(1:nnwt))
+end subroutine Set_nnw
+
+!........................................................................
+
+subroutine Set_nclnwt ! number of cross-links per network of network type inwt
+   do inwt = 1, nnwt
+      nclnwt(inwt) = nppt(iptclnwt(inwt))/nnwnwt(inwt)
+   end do
+end subroutine Set_nclnwt
+
+!........................................................................
+
+subroutine Set_lptnwt ! particle type ipt used for network type inwt?
+   do ipt = 1, npt
+      do inwt = 1, nnwt
+         lptnwt(ipt,inwt) =.false.
+         if ((ncctnwt(ictpt(ipt),inwt) > 0) .or. (ipt == iptclnwt(inwt))) lptnwt(ipt,inwt) =.true.
+      end do
+   end do
+end subroutine Set_lptnwt
+
+!........................................................................
+
+subroutine Set_nctnwt ! number of chain types of network type inwt
+   do inwt = 1, nnwt
+      nctnwt(inwt) = count(ncctnwt(1:nct,inwt) > 0)
+   end do
+end subroutine Set_nctnwt
+
+!........................................................................
+
+subroutine Set_ncnwt ! number of chains of network type inwt
+   do inwt = 1, nnwt
+      ncnwt(inwt) = sum(ncctnwt(1:nct,inwt))
+   end do
+end subroutine Set_ncnwt
+
+!........................................................................
+
+subroutine Set_npnwt ! number of particles of network type inwt
+   do inwt = 1, nnwt
+      npnwt(inwt) = nclnwt(inwt)
+      do ict = 1, nct
+         npnwt(inwt) = npnwt(inwt) + npct(ict)*ncctnwt(ict,inwt)
+      end do
+   end do
+end subroutine Set_npnwt
+
+!........................................................................
+
+subroutine Set_nnwtnwt ! number of network type pairs
+   nnwtnwt = (nnwt*(nnwt+1))/2
+end subroutine Set_nnwtnwt
+
+!........................................................................
+
+subroutine Set_npweakchargenwt ! number of titratable particles in networks of type inwt
+   if (lweakcharge) then
+      do inwt = 1, nnwt
+         npweakchargenwt(inwt) = Zero
+         do ipt = 1, npt
+            if ((.not. lptnwt(ipt,inwt)) .or. (.not. latweakcharge(iatpt(ipt)))) cycle
+            npweakchargenwt(inwt) = npweakchargenwt(inwt) + nppt(ipt)/nnwnwt(inwt)
+         end do
+      end do
+   end if
+end subroutine Set_npweakchargenwt
+
+!........................................................................
+
+subroutine Set_inwtnwn ! network -> its network type
+   if (.not.allocated(inwtnwn)) then 
+      allocate(inwtnwn(nnw))
+      inwtnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         inwtnwn(inw) = inwt
+      end do 
+   end do
+end subroutine Set_inwtnwn
+
+!........................................................................
+
+subroutine Set_inwtct  ! chain type -> its network type
+   if (.not.allocated(inwtct)) then 
+      allocate(inwtct(nct))
+      inwtct = 0
+   end if
+   inwtct(1:nct) = 0
+   do inwt = 1, nnwt
+      where (ncctnwt(1:nct,inwt) > 0) inwtct(1:nct) = inwt
+   end do
+end subroutine Set_inwtct
+
+!........................................................................
+
+subroutine Set_icnclocnwn ! local chain and network -> its chain
+   character(40), parameter :: txroutine = 'Set_icnclocnwn'
+   if (.not.allocated(icnclocnwn)) then 
+      allocate(icnclocnwn(maxval(ncnwt(1:nnwt)),nnw))
+      icnclocnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      if (txtoponwt(inwt) == 'default') then   ! currently only txtoponwt = 'default' is supported 
+         do inwloc = 1, nnwnwt(inwt)
+            inw = inw+1
+            icloc = 0
+            do ict = 1, nct
+               iclow = sum(ncct(1:ict-1)) + sum(nnwnwt(1:inwt-1)*ncctnwt(ict,1:inwt-1)) + (inwloc-1)*ncctnwt(ict,inwt)
+               do icctloc = 1, ncctnwt(ict,inwt)
+                  icloc = icloc+1
+                  icnclocnwn(icloc,inw) = iclow + icctloc
+               end do
+            end do
+         end do
+      else
+         call Stop(txroutine, 'txtoponwt /= "default"', uout)
+      end if
+   end do
+end subroutine Set_icnclocnwn
+
+!........................................................................
+
+subroutine Set_inwtcn  ! chain -> its network type
+   if (.not.allocated(inwtcn)) then 
+      allocate(inwtcn(nc_alloc))
+      inwtcn = 0
+   end if
+   inwtcn(1:nc) = 0
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         do icloc = 1, ncnwt(inwt)
+            inwtcn(icnclocnwn(icloc,inw)) = inwt
+         end do
+      end do
+   end do
+end subroutine Set_inwtcn
+
+!........................................................................
+
+subroutine Set_inwncn ! chain -> its network
+   if (.not.allocated(inwncn)) then 
+      allocate(inwncn(nc_alloc))
+      inwncn = 0
+   end if
+   inwncn(1:nc) = 0
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         do icloc = 1, ncnwt(inwt)
+            inwncn(icnclocnwn(icloc,inw)) = inw
+         end do
+      end do
+   end do
+end subroutine Set_inwncn
+
+!........................................................................
+
+subroutine Set_inwnnwt ! network type -> its first network
+   if (.not.allocated(inwnnwt)) then 
+      allocate(inwnnwt(nnwt)) 
+      inwnnwt = 0
+   end if
+   inw = 1
+   do inwt = 1, nnwt
+      inwnnwt(inwt) = inw
+      inw = inw + nnwnwt(inwt) 
+   end do
+end subroutine Set_inwnnwt
+
+!........................................................................
+
+subroutine Set_inwtnwt  ! two network types -> network type pair
+   if (.not.allocated(inwtnwt)) then 
+      allocate(inwtnwt(nnwt,nnwt))
+      inwtnwt = 0
+   end if
+   inwtjnwt = 0
+   do inwt = 1, nnwt
+      do jnwt = inwt, nnwt
+         inwtjnwt = inwtjnwt+1
+         inwtnwt(inwt,jnwt) = inwtjnwt
+         inwtnwt(jnwt,inwt) = inwtjnwt
+      end do
+   end do
+end subroutine Set_inwtnwt
+
+!........................................................................
+
+subroutine Set_ipncllocnwn ! cross-link and network -> its particle
+   if (.not.allocated(ipncllocnwn)) then 
+      allocate(ipncllocnwn(maxval(nclnwt(1:nnwt)),nnw))
+      ipncllocnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      ip = ipnpt(iptclnwt(inwt))-1
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         do iclloc = 1, nclnwt(inwt)
+            ip = ip+1
+            ipncllocnwn(iclloc,inw) = ip
+         end do
+      end do
+   end do
+end subroutine Set_ipncllocnwn
+
+!........................................................................
+
+subroutine Set_ipnplocnwn ! local particle and network -> its particle
+   if (.not.allocated(ipnplocnwn)) then 
+      allocate(ipnplocnwn(maxval(npnwt(1:nnwt)),nnw))
+      ipnplocnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         iploc = 0
+         do iclloc = 1, nclnwt(inwt)
+            iploc = iploc+1
+            ip = ipncllocnwn(iclloc,inw)
+            ipnplocnwn(iploc,inw) = ip
+         end do
+         do icloc = 1, ncnwt(inwt)
+            ic = icnclocnwn(icloc,inw)
+            do iseg = 1, npct(ictcn(ic))
+               iploc = iploc+1
+               ip = ipnsegcn(iseg,ic)
+               ipnplocnwn(iploc,inw) = ip
+            end do
+         end do
+      end do
+   end do
+end subroutine Set_ipnplocnwn
+
+!........................................................................
+
+subroutine Set_lpnnwn ! particle part of network?
+   if (.not.allocated(lpnnwn)) then 
+      allocate(lpnnwn(np,nnw))
+      lpnnwn = .false.
+   end if
+   do inw = 1, nnw
+      do ip = 1, np
+         lpnnwn(ip,inw) =.false.
+         if (inwncn(icnpn(ip)) == inw) lpnnwn(ip,inw) =.true.
+      end do
+      inwt = inwtnwn(inw)
+      do iclloc = 1, nclnwt(inwt)
+         ip = ipncllocnwn(iclloc,inw)
+         lpnnwn(ip,inw) =.true.
+      end do
+   end do
+end subroutine Set_lpnnwn
+
+!........................................................................
+
 subroutine Set_ipnhn  ! hierarchical strcture -> its first particle
    ! get particle with lowest number in hierarchical strucutre
    ipnhn = minval(ipnsegcn(1,icnct(ictgen(0:ngen))))
@@ -1415,6 +1705,35 @@ subroutine Set_bondcl   ! crosslink and particle -> crosslinked particle
    end do
 
 end subroutine Set_bondcl
+
+!........................................................................
+
+subroutine TestNetworkPointer(unit)
+   integer(4),   intent(in) :: unit
+   integer(4)               :: inw, inwt, icloc, ic, iclloc
+   call WriteHead(3, 'Test'//trim(txroutine)//' network', unit)
+   write(unit,'(a,10i5)') 'inwtnwt(1:nnwt,1:nnwt)', inwtnwt(1:nnwt,1:nnwt)
+   write(unit,'(a,10i5)') 'inwnnwt(1:nnwt)', inwnnwt(1:nnwt)
+   write(unit,'(a,10i5)') 'inwtct(1:nct)', inwtct(1:nct)
+   write(unit,'()')
+   write(unit,'(a)') '        inw, inwtnwn(inw),      icloc,   icnclocnwn(icloc,inw) = i'
+   write(unit,'(4i11)') ((inw,inwtnwn(inw),icloc,icnclocnwn(icloc,inw),icloc = 1,ncnwt(inwtnwn(inw))),inw = 1,nnw)
+   write(unit,'()')
+   write(unit,'(a)') '        ic, ictcn(ic), inwtcn(ic), inwncn(ic)'
+   write(unit,'(4i11)') (ic, ictcn(ic), inwtcn(ic), inwncn(ic),ic = 1,nc)
+   write(unit,'()')
+   write(unit,'(a)') '       iclloc,          inw,    iptclnwt, ipncllocnwn(iclloc,inw)'
+   write(unit,'(4i13)') ((iclloc, inw, iptclnwt(inwtnwn(inw)), ipncllocnwn(iclloc,inw), iclloc = 1,nclnwt(inwtnwn(inw))), inw = 1, nnw)
+   write(unit,'()')
+   write(unit,'(a)') '        ipt,       inwt,       lptnwt(ipt,inwt)'
+   write(unit,'(2i11,12x,l)') ((ipt, inwt, lptnwt(ipt,inwt), ipt = 1,npt), inwt = 1, nnwt)
+   write(unit,'()')
+   write(unit,'(a)') '       ip,      inw,       lpnnwn(ip,inw)'
+   write(unit,'(2i11,12x,l)') ((ip, inw, lpnnwn(ip,inw), ip = 1,np), inw = 1, nnw)
+   write(unit,'()')
+   write(unit,'(a)') '       iploc,         inw,        inwt,  ipnplocnwn'
+   write(unit,'(4i12)') ((iploc, inw, inwtnwn(inw), ipnplocnwn(iploc,inw), iploc = 1, npnwt(inwtnwn(inw))), inw = 1, nnw)
+end subroutine TestNetworkPointer
 
 !........................................................................
 
