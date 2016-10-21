@@ -106,6 +106,7 @@ subroutine Particle(iStage)
       txcopolymer     = 'block'
       lspma           = .false.
       nblockict       = 0
+      massat          = One
       zat             = Zero
       zatalpha        = Zero
       sigat           = Zero
