@@ -69,6 +69,7 @@ subroutine Particle(iStage)
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
+                          nnwt, nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt,            &
                           ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,              &
                           nct, txct, ncct, npptct, txcopolymer, lspma,                  &
                           nblockict,                                                    &
