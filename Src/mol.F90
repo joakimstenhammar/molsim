@@ -477,9 +477,20 @@ module MolModule
 !     ibranchpbeg(0)  = 1, 5,
 !     ibranchpinc(0)  = 0, 0,
 
+! ... finite network structures
+
+   logical                 :: lnetwork                ! flag for networks
+   logical                 :: lptnwt(mnpt,mnnwt)      ! true, if particle type ipt is part of network type inwt
+   logical,    allocatable :: lpnnwn(:,:)             ! true if particle number ip is part of network number inw
+   integer(4)              :: npweakchargenwt(mnnwt)  ! number of titratable beads in network type inwt
+
 ! ... pointers
 
+   integer(4), allocatable :: inwtnwn(:)   ! network (1:nnw)               -> its network type (1:nnwt) 
+   integer(4), allocatable :: inwtct(:)    ! chain type (1:nct)            -> its network type (1:nnwt) 
+   integer(4), allocatable :: inwtcn(:)    ! chain (1:nc)                  -> its network type (1:nnwt) 
    integer(4), allocatable :: ictcn(:)     ! chain (1:nc)                  -> its chain type (1:nct)
+   integer(4), allocatable :: inwncn(:)    ! chain (1:nc)                  -> its network (1:nnw)       
    integer(4), allocatable :: ictpt(:)     ! particle type (1:npt)         -> its chain type (1:nct)
    integer(4), allocatable :: ihnpn(:)     ! particle (1:np)               -> its hierarchical structure (1:nh)
    integer(4), allocatable :: ictpn(:)     ! particle (1:np)               -> its chain type (1:nct)
@@ -489,18 +500,24 @@ module MolModule
    integer(4), allocatable :: iptan(:)     ! atom (1:na)                   -> its particle type (1:npt)
    integer(4), allocatable :: ipnan(:)     ! atom (1:na)                   -> its particle (1:np)
    integer(4), allocatable :: iatan(:)     ! atom (1:na)                   -> its atom type (1:na)
+
+   integer(4), allocatable :: inwnnwt(:)   ! network type (1:nnwt)         -> its first network (1:nnw) 
    integer(4)              :: ipnhn        ! hierarchical structure        -> its first particle
    integer(4), allocatable :: icnct(:)     ! chain type (1:nct)            -> its first chain (1:nc)
    integer(4), allocatable :: ipnpt(:)     ! particle type (1:npt)         -> its first particle (1:np)
    integer(4), allocatable :: iatpt(:)     ! particle type (1:npt)         -> its first atom type (1:nat)
    integer(4), allocatable :: ianpn(:)     ! particle (1:np)               -> its first atom (1:na)
    integer(4), allocatable :: ianat(:)     ! atom type (1:nat)             -> its first atom (1:na)
+   integer(4), allocatable :: inwtnwt(:,:) ! two network types (1:nnwt)    -> network type pair (1:nnwt)
    integer(4), allocatable :: ictct(:,:)   ! two chain types (1:nct)       -> chain type pair (1:nctct)
    integer(4), allocatable :: iptpt(:,:)   ! two particle types (1:npt)    -> particle type pair (1:nptpt)
    integer(4), allocatable :: iatat(:,:)   ! two atom types (1:nat)        -> atom type pair (1:natat)
    integer(4), allocatable :: isegpn(:)    ! particle (1:np)               -> segment number
    integer(4), allocatable :: ipnsegcn(:,:)! seg (1:npct) and chain (1:nc) -> particle (1:np)
    integer(4), allocatable :: icihigen(:,:)! hier (1:nh) and gen (0:ngen)  -> its first chain
+   integer(4), allocatable :: icnclocnwn(:,:)  ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)          
+   integer(4), allocatable :: ipncllocnwn(:,:) ! cross-link (1:nclnwt) and network (1:nnw)    -> its particle (1:np)       
+   integer(4), allocatable :: ipnplocnwn(:,:)  ! local particle (1:npnwt) and network (1:nnw) -> its particle (1:np)       
 
 ! ... md
 
