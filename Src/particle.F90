@@ -577,26 +577,26 @@ subroutine SetObjectParam1
    call Set_nptpt         ! number of particle type pairs
    call Set_natat         ! number of atom type pairs
 
-   call Set_ipnsegcn      ! chain and segment -> particle
-   call Set_ictcn         ! chain -> its chain type
-   call Set_ictpt         ! partcle type -> its chain type
-   call Set_ictpn         ! particle -> its chain type
-   call Set_icnpn         ! particle -> its chain
-   call Set_iptpn         ! particle -> its particle type
-   call Set_iptat         ! atom type -> its particle type
-   call Set_iptan         ! atom -> its particle type
-   call Set_ipnan         ! atom -> its particle
-   call Set_iatan         ! atom -> its atom type
-   call Set_icnct         ! chain type -> its first chain
-   call Set_ipnpt         ! particle type -> its first particle
-   call Set_iatpt         ! particle type -> its first atom type
-   call Set_ianpn         ! particle -> its first atom
-   call Set_ianat         ! atom type -> its first atom
-   call Set_ictct         ! two chain types -> chain type pair
+   call Set_ipnsegcn      ! chain and segment  -> particle
+   call Set_ictcn         ! chain              -> its chain type
+   call Set_ictpt         ! partcle type       -> its chain type
+   call Set_ictpn         ! particle           -> its chain type
+   call Set_icnpn         ! particle           -> its chain
+   call Set_iptpn         ! particle           -> its particle type
+   call Set_iptat         ! atom type          -> its particle type
+   call Set_iptan         ! atom               -> its particle type
+   call Set_ipnan         ! atom               -> its particle
+   call Set_iatan         ! atom               -> its atom type
+   call Set_icnct         ! chain type         -> its first chain
+   call Set_ipnpt         ! particle type      -> its first particle
+   call Set_iatpt         ! particle type      -> its first atom type
+   call Set_ianpn         ! particle           -> its first atom
+   call Set_ianat         ! atom type          -> its first atom
+   call Set_ictct         ! two chain types    -> chain type pair
    call Set_iptpt         ! two particle types -> particle type pair
-   call Set_iatat         ! two atom types -> atom type pair
-   call Set_isegpn        ! particle number -> segment number
-   call Set_bondnn        ! bond and particle -> bonded particle
+   call Set_iatat         ! two atom types     -> atom type pair
+   call Set_isegpn        ! particle number    -> segment number
+   call Set_bondnn        ! bond and particle  -> bonded particle
 
    if (lhierarchical) then
        call Set_ipnhn  ! hierarchical strcture -> its first particle
