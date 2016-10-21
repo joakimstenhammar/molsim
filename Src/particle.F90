@@ -555,6 +555,7 @@ subroutine SetObjectParam1
       end if
    end do
 
+   call Set_lnetwork      ! flag for network structures
    call Set_nh            ! number of hierarchical structures
    call Set_lhierarchical ! flag for hierarchical structures
    call Set_lchain        ! flag for chains
@@ -621,6 +622,13 @@ subroutine SetObjectParam1
    end if
 
 contains
+
+!........................................................................
+
+subroutine Set_lnetwork ! flag for network structures
+   lnetwork =.false.
+   if (nnwt > 0) lnetwork =.true.
+end subroutine Set_lnetwork
 
 !........................................................................
 
