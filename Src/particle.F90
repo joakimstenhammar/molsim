@@ -304,150 +304,170 @@ subroutine Particle(iStage)
    case (iWriteInput)
 
       if (master) then
-      do igen = 0, ngen-1
-         ipt = ipnsegcn(1,icnct(ictgen(igen)))
-         if (ibranchpbeg(igen) + ibranchpinc(igen)*(nbranch(igen)-1) > npct(ictgen(igen))) call Stop(txroutine,'chain too short', uout)
-         if (nbranch(igen) * ncct(ictgen(igen)) /= ncct(ictgen(igen+1))) call Stop(txroutine, 'no matching of number of chains',uout)
-      end do
-
-! ... particle data
-
-      call WriteHead(2, txheading, uout)
-      if (txelec == 'charge') then
-         write(uout,'(a)') 'charged atoms enabled'
-      else if (txelec == 'dip') then
-         write(uout,'(a)') 'charged and dipolar atoms enabled'
-      else if (txelec == 'pol') then
-         write(uout,'(a)') 'charged, dipolar, and polarizable atoms enabled'
-      end if
-      write(uout,'()')
-
-      if (lhierarchical) &
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of hierarchical struc.  = ', nh
-      if (lchain) then
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains               = ', nc
-      end if
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particles            = ', np
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atoms                = ', na
-      if (lchain) then
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains types         = ', nct, '(',mnct,')'
-      end if
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particle types       = ', npt, '(',mnpt,')'
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atom types           = ', nat, '(',mnat,')'
-
-      if (lmultigraft) then
-         write(uout,'()')
-         write(uout,'(a,t55,l8)')  'multigrafted chain                                  = ', lmultigraft
-      end if
-
-      if (lhierarchical) then
-         write(uout,'()')
-         write(uout,'(a)')         'hierarchical data'
-         write(uout,'(a)')         '-----------------'
-         write(uout,'(a,t55,i8)')  'maximum number of crosslinks of a particle          = ', maxval(maxnbondcl(1:npt))
-         write(uout,'(a,t55,i8)')  'number of generations                               = ', ngen
-         write(uout,'(a,t55,8i8)') 'chain type of the generations                       = ', ictgen(0:ngen)
-         write(uout,'(a,t55,8i8)') 'number of branches                                  = ', nbranch(0:ngen-1)
-         write(uout,'(a,t55,8i8)') 'particle number of chain for first branch point     = ', ibranchpbeg(0:ngen-1)
-         write(uout,'(a,t55,8i8)') 'particle increment of chain between branch points   = ', ibranchpinc(0:ngen-1)
-         write(uout,'(a,t55,5i8)') 'number of crosslinks                                = ', ncl
-      end if
-
-      if (lchain) then
-         write(uout,'()')
-         write(uout,'(a,t20,a,t45,a,t55,a)') 'chain type', 'no of chains', 'topology', 'no of particles of the different types'
-         write(uout,'(a,t20,a,t45,a,t55,a)') '----------', '------------', '--------', '--------------------------------------'
-         do ict = 1, nct
-            write(uout,'(a,t20,i5,t45,a,t55,10i5)') txct(ict), ncct(ict), txcopolymer(ict), npptct(1:npt,ict)
+         do igen = 0, ngen-1
+            ipt = ipnsegcn(1,icnct(ictgen(igen)))
+            if (ibranchpbeg(igen) + ibranchpinc(igen)*(nbranch(igen)-1) > npct(ictgen(igen))) call Stop(txroutine,'chain too short', uout)
+            if (nbranch(igen) * ncct(ictgen(igen)) /= ncct(ictgen(igen+1))) call Stop(txroutine, 'no matching of number of chains',uout)
          end do
-         if (lspma) write(uout,'(a)')
-         if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
-      end if
 
-      write(uout,'()')
-      write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
-      'particle', 'no', 'atom', 'no', 'mass', 'hard core', 'no of unit', 'weak  ', 'pK', 'sigma', 'epsilon', 'zatalpha'
-      write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
-      '        ', '  ', '    ', '  ', '    ', 'radius   ', 'charges   ', 'charge', '      ','     ', '       '
-      write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
-      '--------', '--', '----', '--', '----', '---------', '----------', '------', '--', '-----', '-------', '--------'
+   ! ... particle data
 
-      iat = 0
-      do ipt = 1, npt
-         write(uout,'(a,t12,i6)') txpt(ipt), nppt(ipt)
-         do iatloc = 1, natpt(ipt)
-            iat = iat+1
-            write(uout,'(t26,a,t32,i4,t39,f8.3,t48,f8.3,t60,f10.4,t72,l7,t81,f10.4,t92,f10.4,t102,f10.4,t112,f10.4)') &
-               txat(iat), naat(iat), massat(iat), radat(iat), zat(iat), latweakcharge(iat), pK(iat), sigat(iat), epsat(iat), zatalpha(iat)
+         call WriteHead(2, txheading, uout)
+         if (txelec == 'charge') then
+            write(uout,'(a)') 'charged atoms enabled'
+         else if (txelec == 'dip') then
+            write(uout,'(a)') 'charged and dipolar atoms enabled'
+         else if (txelec == 'pol') then
+            write(uout,'(a)') 'charged, dipolar, and polarizable atoms enabled'
+         end if
+         write(uout,'()')
+
+         if (lnetwork) then
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of networks             = ', nnw
+         end if
+         if (lhierarchical) then
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of hierarchical struc.  = ', nh
+         end if
+         if (lchain) then
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains               = ', nc
+         end if
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particles            = ', np
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atoms                = ', na
+         if (lnetwork) then
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of network types        = ', nnwt, '(',mnnwt,')'
+         end if
+         if (lchain) then
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains types         = ', nct, '(',mnct,')'
+         end if
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particle types       = ', npt, '(',mnpt,')'
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atom types           = ', nat, '(',mnat,')'
+
+         if (lmultigraft) then
+            write(uout,'()')
+            write(uout,'(a,t55,l8)')  'multigrafted chain                                  = ', lmultigraft
+         end if
+
+         if (lnetwork) then
+            write(uout,'()')
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,a)') ' network  ',' type ', ' no ', ' topology ', 'no of chains of the different types'
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,a)') '----------','------', '----', '----------', '------------------------------------'
+            do inwt = 1, nnwt
+               write(uout,'(1x,a,t14,1x,i2,t24,i2,t32,a,t46,10i5)') txnwt(inwt), inwt, nnwnwt(inwt), txtoponwt(inwt), ncctnwt(1:nct,inwt)
+            end do
+            write(uout,'()')
+         end if
+
+         if (lhierarchical) then
+            write(uout,'()')
+            write(uout,'(a)')         'hierarchical data'
+            write(uout,'(a)')         '-----------------'
+            write(uout,'(a,t55,i8)')  'maximum number of crosslinks of a particle          = ', maxval(maxnbondcl(1:npt))
+            write(uout,'(a,t55,i8)')  'number of generations                               = ', ngen
+            write(uout,'(a,t55,8i8)') 'chain type of the generations                       = ', ictgen(0:ngen)
+            write(uout,'(a,t55,8i8)') 'number of branches                                  = ', nbranch(0:ngen-1)
+            write(uout,'(a,t55,8i8)') 'particle number of chain for first branch point     = ', ibranchpbeg(0:ngen-1)
+            write(uout,'(a,t55,8i8)') 'particle increment of chain between branch points   = ', ibranchpinc(0:ngen-1)
+            write(uout,'(a,t55,5i8)') 'number of crosslinks                                = ', ncl
+            write(uout,'()')
+         end if
+
+         if (lchain) then
+            write(uout,'()')
+            write(uout,'(a,t20,a,t45,a,t55,a)') 'chain type', 'no of chains', 'topology', 'no of particles of the different types'
+            write(uout,'(a,t20,a,t45,a,t55,a)') '----------', '------------', '--------', '--------------------------------------'
+            do ict = 1, nct
+               write(uout,'(a,t20,i5,t45,a,t55,10i5)') txct(ict), ncct(ict), txcopolymer(ict), npptct(1:npt,ict)
+            end do
+            if (lspma) write(uout,'(a)')
+            if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
+            write(uout,'()')
+         end if
+
+         write(uout,'()')
+         write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
+         'particle', 'no', 'atom', 'no', 'mass', 'hard core', 'no of unit', 'weak  ', 'pK', 'sigma', 'epsilon', 'zatalpha'
+         write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
+         '        ', '  ', '    ', '  ', '    ', 'radius   ', 'charges   ', 'charge', '      ','     ', '       '
+         write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
+         '--------', '--', '----', '--', '----', '---------', '----------', '------', '--', '-----', '-------', '--------'
+
+         iat = 0
+         do ipt = 1, npt
+            write(uout,'(a,t12,i6)') txpt(ipt), nppt(ipt)
+            do iatloc = 1, natpt(ipt)
+               iat = iat+1
+               write(uout,'(t26,a,t32,i4,t39,f8.3,t48,f8.3,t60,f10.4,t72,l7,t81,f10.4,t92,f10.4,t102,f10.4,t112,f10.4)') &
+                  txat(iat), naat(iat), massat(iat), radat(iat), zat(iat), latweakcharge(iat), pK(iat), sigat(iat), epsat(iat), zatalpha(iat)
+            end do
          end do
-      end do
-
-      if (count(latweakcharge(1:nat)) > 0) then
          write(uout,'()')
-         write(uout,'(a,t6,f8.3)') 'pH = ', pH
-         if (jatweakcharge /= 0) write(uout,'(a,i8)') 'type of monoatomic particle carring counter charge to titratable charge = ', jatweakcharge
-         pHmpK = pH - pK
-      end if
 
-      if (lradatbox) then
-         write(uout,'()')
-         write(uout,'(a)') 'atoms and atom radii are used to examine if particles are inside the box'
-         write(uout,'()')
-      end if
-
-      do ipt = 1, npt
-
-         write(uout,'()')
-         write(uout,'(a,a)') 'molecular input frame: ', txpt(ipt)
-         write(uout,'(a,40a)') '---------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
-         write(uout,'()')
-         write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
-         write(uout,'(a,t20,a)') '----', '------------------'
-         write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), rain(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
-
-         if (ldipole .or. ldipolesph) then
+         if (count(latweakcharge(1:nat)) > 0) then
             write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
-            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), ialoc = 1, napt(ipt))
+            write(uout,'(a,t6,f8.3)') 'pH = ', pH
+            if (jatweakcharge /= 0) write(uout,'(a,i8)') 'type of monoatomic particle carring counter charge to titratable charge = ', jatweakcharge
+            pHmpK = pH - pK
          end if
 
-         if (lpolarization) then
+         if (lradatbox) then
             write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
-             write(uout,'(a,3f10.5,5x,6f10.5)')                                            &
-             (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), polain(1:6,ialoc,ipt), ialoc = 1, napt(ipt))
+            write(uout,'(a)') 'atoms and atom radii are used to examine if particles are inside the box'
+            write(uout,'()')
          end if
+
+         do ipt = 1, npt
+
+            write(uout,'()')
+            write(uout,'(a,a)') 'molecular input frame: ', txpt(ipt)
+            write(uout,'(a,40a)') '---------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
+            write(uout,'()')
+            write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
+            write(uout,'(a,t20,a)') '----', '------------------'
+            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), rain(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
+
+            if (ldipole .or. ldipolesph) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
+               write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), ialoc = 1, napt(ipt))
+            end if
+
+            if (lpolarization) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
+                write(uout,'(a,3f10.5,5x,6f10.5)')                                            &
+                (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), polain(1:6,ialoc,ipt), ialoc = 1, napt(ipt))
+            end if
+
+            write(uout,'()')
+            write(uout,'(a,a)') 'principal axis frame: ', txpt(ipt)
+            write(uout,'(a,40a)') '--------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
+            write(uout,'()')
+            write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
+            write(uout,'(a,t20,a)') '----', '------------------'
+            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), ra(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
+
+            if (ldipole .or. ldipolesph) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
+               write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
+            end if
+
+            if (lpolarization) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
+               write(uout,'(a,3f10.5,5x,6f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), poltensa(1:6,ialoc,ipt), ialoc = 1,napt(ipt))
+            end if
+
+         end do
 
          write(uout,'()')
-         write(uout,'(a,a)') 'principal axis frame: ', txpt(ipt)
-         write(uout,'(a,40a)') '--------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
-         write(uout,'()')
-         write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
-         write(uout,'(a,t20,a)') '----', '------------------'
-         write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), ra(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
-
-         if (ldipole .or. ldipolesph) then
-            write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
-            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
-         end if
-
-         if (lpolarization) then
-            write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
-            write(uout,'(a,3f10.5,5x,6f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), poltensa(1:6,ialoc,ipt), ialoc = 1,napt(ipt))
-         end if
-
-      end do
-
-      write(uout,'()')
-      write(uout,'(a,t22,a,t37,a,t70,a)') 'particle', 'mass', 'moment of inertia (x,y,z)', 'maximal atom-com distance'
-      write(uout,'(a,t22,a,t37,a,t70,a)') '--------', '----', '-------------------------', '-------------------------'
-      write(uout,'(a,5x,f10.3,5x,3f10.3,10x,f8.3)') (txpt(ipt), masspt(ipt), mompt(1:3,ipt), racom(ipt), ipt = 1,npt)
+         write(uout,'(a,t22,a,t37,a,t70,a)') 'particle', 'mass', 'moment of inertia (x,y,z)', 'maximal atom-com distance'
+         write(uout,'(a,t22,a,t37,a,t70,a)') '--------', '----', '-------------------------', '-------------------------'
+         write(uout,'(a,5x,f10.3,5x,3f10.3,10x,f8.3)') (txpt(ipt), masspt(ipt), mompt(1:3,ipt), racom(ipt), ipt = 1,npt)
       end if
 
    end select
