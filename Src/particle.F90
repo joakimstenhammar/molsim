@@ -520,9 +520,11 @@ subroutine SetObjectParam1
    integer(4) :: igen, iseg, ic, icloc, ict, jct, ictjct, ip, iplow, iploc, ipt, jpt, iptjpt
    integer(4) :: ia, ialoc, ia0, ia1, ia2, iat, iatloc, iaat, jat, iatjat
    integer(4) :: nptemp
+   integer(4) :: inw, inwt, jnwt, inwloc, nctemp, inwtjnwt, iclow, icctloc, iclloc
 
 ! ... check some input variables
 
+   if (nnwt > mnnwt)                   call Stop(txroutine, 'nnwt > mnnwt', uout)
    if (ngen > mngen)                   call Stop(txroutine, 'ngen > mngen', uout)
    if (count(natpt(1:npt) > mnat) > 0) call Stop(txroutine, 'natpt > mnat', uout)
    if (nct > mnct)                     call Stop(txroutine, 'nct > mnct', uout)
@@ -538,6 +540,18 @@ subroutine SetObjectParam1
          write(uout,'(a,i5)') 'sum(ncct(1:nct)*npptct(ipt,1:nct)) = ', sum(ncct(1:nct)*npptct(ipt,1:nct))
          write(uout,'(a,i5)') 'nppt(ipt) = ', nppt(ipt)
          call Stop(txroutine, 'inconsistency among ncct, npptct, and nppt', uout)
+      end if
+   end do
+
+! ... check consistence among nnwnwt, npptnwt, and ncct
+
+   do ict = 1, nct
+      nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+      if (nctemp > 0 .and. (nctemp/= ncct(ict))) then
+         write(uout,'(a,i5)') 'ict = ', ict
+         write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+         write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
+         call Stop(txroutine, 'inconsistency among nnwnwt, ncctnwt, and ncct', uout)
       end if
    end do
 
