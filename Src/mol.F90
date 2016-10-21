@@ -483,6 +483,7 @@ module MolModule
    logical                 :: lptnwt(mnpt,mnnwt)      ! true, if particle type ipt is part of network type inwt
    logical,    allocatable :: lpnnwn(:,:)             ! true if particle number ip is part of network number inw
    integer(4)              :: npweakchargenwt(mnnwt)  ! number of titratable beads in network type inwt
+   integer(4)              :: iptclnwt(mnnwt)         ! particle type of nodes of different network types
 
 ! ... pointers
 
