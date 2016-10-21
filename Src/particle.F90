@@ -90,6 +90,11 @@ subroutine Particle(iStage)
       txelec                ='charge'
       lclink                =.false.
       lmultigraft           =.false.
+      nnwt                    = 0        
+      nnwnwt(1:mnnwt)         = 0        
+      ncctnwt(1:mnct,1:mnnwt) = 0        
+      iptclnwt(1:mnnwt)       = 0                               
+      txtoponwt(1:mnnwt)      ='default' 
       maxnbondcl            = 1
       ngen                  =-1
       ictgen(0:mngen)       = 1
