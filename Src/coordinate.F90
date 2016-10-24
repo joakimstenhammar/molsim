@@ -96,7 +96,7 @@ subroutine Coordinate(iStage)
 
       if (txstart == 'setconf') then                    ! configuration from SetConfiguration
 
-         if (lweakcharge) call SetChargeWeakCargeCase
+         if (lweakcharge) call SetChargeWeakChargeCase
          call SetConfiguration
 
          if (lmd) then
@@ -116,7 +116,7 @@ subroutine Coordinate(iStage)
 
       else if (txstart == 'readfin') then               ! coordinates from fin
 
-         if (lweakcharge) call SetChargeWeakCargeCase
+         if (lweakcharge) call SetChargeWeakChargeCase
 
          rewind(uin)
          read(uin,*) (ro(1:3,ip),ori(1:3,1:3,ip),ip = 1,np)
@@ -286,13 +286,13 @@ end subroutine Coordinate
 
 !************************************************************************
 !*                                                                      *
-!*     SetChargeWeakCargeCase                                           *
+!*     SetChargeWeakChargeCase                                          *
 !*                                                                      *
 !************************************************************************
 
 ! ... initiate charge of for the weak-charge case
 
-subroutine SetChargeWeakCargeCase
+subroutine SetChargeWeakChargeCase
    use CoordinateModule
    implicit none
    where (abs(az(1:na)) > 1d-10)
@@ -300,7 +300,7 @@ subroutine SetChargeWeakCargeCase
    elsewhere
       laz(1:na) = .false. !
    endwhere
-end subroutine SetChargeWeakCargeCase
+end subroutine SetChargeWeakChargeCase
 
 !************************************************************************
 !*                                                                      *
