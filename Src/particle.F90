@@ -579,7 +579,7 @@ subroutine SetObjectParam1
 
    call Set_ipnsegcn      ! chain and segment  -> particle
    call Set_ictcn         ! chain              -> its chain type
-   call Set_ictpt         ! partcle type       -> its chain type
+   call Set_ictpt         ! particle type      -> its chain type
    call Set_ictpn         ! particle           -> its chain type
    call Set_icnpn         ! particle           -> its chain
    call Set_iptpn         ! particle           -> its particle type
