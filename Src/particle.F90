@@ -1790,11 +1790,15 @@ subroutine SetObjectParam2
    implicit none
 
    character(40), parameter :: txroutine ='SetObjectParam2'
-   integer(4) :: ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ja
+   integer(4) :: inwt, jnwt, ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ja
    real(8)    :: r2
 
-! ... set txctct, txptpt, and txatat
+! ... set txnwtnwt, txctct, txptpt, and txatat
 
+   if (.not.allocated(txnwtnwt)) then 
+      allocate(txnwtnwt(nnwtnwt))
+      txnwtnwt = ""
+   end if
    if (.not.allocated(txctct)) then 
       allocate(txctct(nctct))
       txctct = ""
@@ -1808,6 +1812,11 @@ subroutine SetObjectParam2
       txatat = ""
    end if
 
+   do inwt = 1, nnwt
+      do jnwt = inwt, nnwt
+         txnwtnwt(inwtnwt(inwt,jnwt)) = trim(txnwt(inwt))//'-'//trim(txnwt(jnwt))
+      end do
+   end do
    do ict = 1, nct
        do jct = ict, nct
           txctct(ictct(ict,jct)) = trim(txct(ict))//'-'//trim(txct(jct))
@@ -1842,8 +1851,8 @@ subroutine SetObjectParam2
          allocate(laz(na_alloc)) ! allocate memory for laz
          laz = .false.
       end if
-      if (jatweakcharge ==0) then   ! no explicit counterions
-      elseif (jatweakcharge > 0) then   ! explcit countersions
+      if (jatweakcharge == 0) then       ! no explicit counterions
+      else if (jatweakcharge > 0) then   ! explicit counterions
          if (count(latweakcharge(1:nat)) /= 1) call Stop(txroutine,'count(latweakcharge(1:nat)) /= 1', uout)
          iatweakcharge = 0
          do iat = 1, nat
@@ -1891,6 +1900,20 @@ subroutine SetObjectParam2
        end do
        if (masspt(ipt) > Zero) massipt(ipt) = One/masspt(ipt)
     end do
+
+! ... calculate network mass massnwt and inverse mass massinwt
+
+   if (lnetwork) then
+      if (.not.allocated(massnwt)) then 
+         allocate(massnwt(nnwt), massinwt(nnwt))
+         massnwt = 0.0E+00
+         massinwt = 0.0E+00
+      end if
+      do inwt = 1, nnwt
+         massnwt(inwt)  = sum(masspt(iptpn(1:np)), MASK=lpnnwn(1:np,inwnnwt(inwt)))
+         if (massnwt(inwt) > Zero) massinwt(inwt) = One/massnwt(inwt)
+      end do      
+   end if
 
 ! ... calculate atom coordinates in the principal axes system and mompt and momipt
 
