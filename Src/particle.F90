@@ -1708,6 +1708,23 @@ end subroutine Set_bondcl
 
 !........................................................................
 
+subroutine TestChainPointer(unit)
+   integer(4) :: ic, iseg, ip
+   integer(4),   intent(in) :: unit
+   call WriteHead(3, 'Test'//trim(txroutine)//' chain', unit)
+   write(unit,'(a,100i5)') 'ictcn(1:nc)', ictcn(1:nc)
+   write(unit,'(a,100i5)') 'ictct(1:nct,nct)', ictct(1:nct,1:nct)
+   write(unit,'()')
+   write(unit,'(a)') '        ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i'
+   write(unit,'(4i11)') ((ic,ictcn(ic),iseg,ipnsegcn(iseg,ic),iseg = 1,npct(ictcn(ic))),ic = 1,nc)
+   write(unit,'()')
+   write(unit,'(a)') '        ip, iptpn(ip), ictpn(ip), icnpn(ip), bondnn(1,ip), bondnn(2,ip), isegpn(ip)'
+   write(unit,'(7i11)') (ip, iptpn(ip), ictpn(ip), icnpn(ip), bondnn(1,ip), bondnn(2,ip), isegpn(ip) ,ip = 1,np)
+
+end subroutine TestChainPointer
+
+!........................................................................
+
 subroutine TestNetworkPointer(unit)
    integer(4),   intent(in) :: unit
    integer(4)               :: inw, inwt, icloc, ic, iclloc
@@ -1734,23 +1751,6 @@ subroutine TestNetworkPointer(unit)
    write(unit,'(a)') '       iploc,         inw,        inwt,  ipnplocnwn'
    write(unit,'(4i12)') ((iploc, inw, inwtnwn(inw), ipnplocnwn(iploc,inw), iploc = 1, npnwt(inwtnwn(inw))), inw = 1, nnw)
 end subroutine TestNetworkPointer
-
-!........................................................................
-
-subroutine TestChainPointer(unit)
-   integer(4) :: ic, iseg, ip
-   integer(4),   intent(in) :: unit
-   call WriteHead(3, 'Test'//trim(txroutine)//' chain', unit)
-   write(unit,'(a,100i5)') 'ictcn(1:nc)', ictcn(1:nc)
-   write(unit,'(a,100i5)') 'ictct(1:nct,nct)', ictct(1:nct,1:nct)
-   write(unit,'()')
-   write(unit,'(a)') '        ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i'
-   write(unit,'(4i11)') ((ic,ictcn(ic),iseg,ipnsegcn(iseg,ic),iseg = 1,npct(ictcn(ic))),ic = 1,nc)
-   write(unit,'()')
-   write(unit,'(a)') '        ip, iptpn(ip), ictpn(ip), icnpn(ip), bondnn(1,ip), bondnn(2,ip), isegpn(ip)'
-   write(unit,'(7i11)') (ip, iptpn(ip), ictpn(ip), icnpn(ip), bondnn(1,ip), bondnn(2,ip), isegpn(ip) ,ip = 1,np)
-
-end subroutine TestChainPointer
 
 !........................................................................
 
