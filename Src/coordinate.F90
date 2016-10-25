@@ -314,7 +314,7 @@ subroutine SetConfiguration
    character(40), parameter :: txroutine ='SetConfiguration'
    character     :: charfmt*1
    logical       :: lsetconf
-   integer(4)    :: ipt, ict, iptgen0, igen, isign, imagn, inetworkt
+   integer(4)    :: ipt, ict, iptgen0, igen, isign, imagn, inwt
 
    external SetOrigin, SetSq2D, SetHex2D, SetPC, SetBCC, SetFCC, SetSM2, SetDiamond, SetH2O, SetN2, SetBenzene
 
@@ -2181,7 +2181,6 @@ subroutine SetNetwork(ipt)
 
    if ((txorigin(inwt) == 'origin') .and. (nnwnwt(inwt) > One)) call Stop(txroutine, 'txorigin == origin .and. nnwnwt(inwt) > One', uout)
 
-
 ! ... allocate memory
 
    allocate(ronode(3,np_alloc), rostrand(3,np_alloc))
@@ -2190,7 +2189,7 @@ subroutine SetNetwork(ipt)
 
 ! ... determine nnode, ronode, nstrand, rostrand, nclnode
 
-   call SetNetworkPos(rnetwork(inetworkt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
+   call SetNetworkPos(inwt, rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
 
    if(nnode*nnetwork(inetworkt) /= nppt(ipt) .or. nstrand*nnetwork(inetworkt) /= ncct(ict)) then ! stop of particle number to not fit
       write(*,*) "failed to set network with nodes of type" , ipt
@@ -2243,8 +2242,8 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
             call PBC(ro(1,ip),ro(2,ip),ro(3,ip))
             call SetPartOriRandom(iseed,ori(1,1,ip))              ! set random particle orientation
             call SetAtomPos(ip, ip, .false.)                      ! set atom positions
-            if (lWarnHCOverlap(ip, radatset, .true.)) exit try    ! check for hard-core overlap
-            if (CheckPartOutsideBox(ip)) exit try                 ! check that particle is inside box
+            if (lWarnHCOverlap(ip, radatset, .true.)) cycle try   ! check for hard-core overlap
+            if (CheckPartOutsideBox(ip)) cycle try                ! check that particle is inside box
             lpset(ip) =.true.                                     ! position accepted
             ipclbeg(iploc) = ip
          end do
@@ -2261,8 +2260,8 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
                call PBC(ro(1,ip),ro(2,ip),ro(3,ip))
                call SetPartOriRandom(iseed,ori(1,1,ip))              ! set random particle orientation
                call SetAtomPos(ip, ip, .false.)                      ! set atom positions
-               if (lWarnHCOverlap(ip, radatset, .true.)) exit try    ! check for hard-core overlap
-               if (CheckPartOutsideBox(ip)) exit try                 ! check that particle is inside bo
+               if (lWarnHCOverlap(ip, radatset, .true.)) cycle try   ! check for hard-core overlap
+               if (CheckPartOutsideBox(ip)) cycle try                ! check that particle is inside bo
                lpset(ip) =.true.                                     ! position accepted
                if((iseg == 1) .or. (iseg == npct(ict))) then
                   npclend = npclend + 1
