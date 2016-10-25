@@ -322,13 +322,13 @@ subroutine SetConfiguration
                                   radatset, lranori,  bondscl, anglemin,                             &
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
-                                  nnetworkt, nnetwork, rnetwork, iptnodenwt, ictstrandnwt, txorigin, &
+                                  rnwt, txorigin,                                                    &
                                   radlimit,                                                          &
                                   itestcoordinate
 
     if (.not.allocated(txsetconf)) then 
-       allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt), &
-     roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
+       allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt),     &
+       roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
        txsetconf = ""
        nucell = 0
        rclow = 0.0E+00
@@ -386,21 +386,17 @@ subroutine SetConfiguration
       rcupp(2,1:npt) = +ellrad(2)
       rcupp(3,1:npt) = +ellrad(3)
    end if
-   roshift                     = Zero
-   radatset                    = radat
-   lranori                     =.false.
-   lfixedori                   =.false.
-   bondscl                     = One
-   anglemin                    = Zero
-   iptnode                     = 0
-   ictstrand                   = 0
-   nnetworkt                   = 0
-   nnetwork(1:mnnetworkt)      = 0
-   rnetwork (1:mnnetworkt)     = 10.0
-   iptnodenwt (1:mnnetworkt)   = 0
-   ictstrandnwt (1:mnnetworkt) = 0
-   txorigin (1:mnnetworkt)     = 'origin'
-   itestcoordinate             = 0
+   roshift           = Zero
+   radatset          = radat
+   lranori           =.false.
+   lfixedori         =.false.
+   bondscl           = One
+   anglemin          = Zero
+   iptnode           = 0
+   ictstrand         = 0
+   rnwt(1:mnnwt)     = 10.0
+   txorigin(1:mnnwt) = 'origin'
+   itestcoordinate   = 0
 
    rewind(uin)
    read(uin,nmlSetConfiguration)
@@ -408,8 +404,8 @@ subroutine SetConfiguration
    do ipt = 1, npt
      call LowerCase(txsetconf(ipt))
    end do
-   do inetworkt = 1, nnetworkt
-      call LowerCase(txorigin(inetworkt))
+   do inwt = 1, nnwt
+      call LowerCase(txorigin(inwt))
    end do
 
    anglemin = anglemin*sclang
