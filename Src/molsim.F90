@@ -732,8 +732,8 @@ subroutine IOCnf(str)
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
       if (lclink) then
-         call par_bc_ints(nbondcl  , np         )
-         call par_bc_ints(bondcl   , maxvalnbondcl*np)
+         call par_bc_ints(nbondcl ,   np)
+         call par_bc_ints(bondcl  , maxvalnbondcl*np)
       end if
       if (lmd .and. .not.GetlSetVel()) then
          call par_bc_reals(rod    , 3*np)
