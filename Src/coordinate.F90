@@ -2191,11 +2191,18 @@ subroutine SetNetwork(ipt)
 
    call SetNetworkPos(inwt, rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
 
-   if(nnode*nnetwork(inetworkt) /= nppt(ipt) .or. nstrand*nnetwork(inetworkt) /= ncct(ict)) then ! stop of particle number to not fit
-      write(*,*) "failed to set network with nodes of type" , ipt
-      write(*,*) "required number of node particles: ", nnode*nnetwork(inetworkt)
-      write(*,*) "required number chains of strand",   nstrand*nnetwork(inetworkt)
-      write(*,*) "required total number particles beloging to strand",   nstrand*nnetwork(inetworkt)*npct(ict)
+   if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then ! when particle and chain number don't accord to the neccesary ones: stop excecution and write numbers
+      call FileOpen(922, 'topo.dat', 'form/noread')      ! Cornelius Hofzumahaus 
+      write(922,'(a10,i)') 'nchain'  , nstrand           !
+      write(922,'(a10,i)') 'nnode'   , nnode             !
+      write(922,'(a10,i)') 'npchain' , nstrand*npct(ict) !
+      close(922)                                         ! 
+
+      write(*,'(a50,i)') "failed to set network of network type:"     , inwt
+      write(*,'(a50,i)') "required number of chains:"                   , nstrand*nnwnwt(inwt)
+      write(*,'(a50,i)') "required number of node particles:"          , nnode*nnwnwt(inwt)
+      write(*,'(a50,i)') "required (total) number of strand particles:" , nstrand*nnwnwt(inwt)*npct(ict)
+
       call Stop (txroutine, 'Please adjust nppt(node) and ncct(strand)', uout)
    end if
 
