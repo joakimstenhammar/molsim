@@ -2126,7 +2126,7 @@ end subroutine SetPeriodicNetwork
 ! ... generate a nonperiodic network
 
 !  unit cell: diamond-like containing 8 nodes and 16 strands
-!  input variables: nnetworkt, nnetwork, rnetwork, iptnodenwt, ictstrandnwt, txorigin
+!  input variables: nnwt (nmlParticle), nnwnwt (nmlParticle), ncctnwt (nmlParticle), rnwt, iptclnwt (nmlParticle), txorigin
 !  boundary condition: txbc == 'xyz' or txbc == 'sph'
 
 subroutine SetNetwork(ipt)
@@ -2144,8 +2144,8 @@ subroutine SetNetwork(ipt)
    integer(4)     :: ip                  ! particle counter
    integer(4)     :: npclend             ! counter crosslinkable strand particles
    integer(4)     :: ict                 ! chain type of strand
-   integer(4)     :: inetworkt           ! network type counter
-   integer(4)     :: inetwork            ! network counter
+   integer(4)     :: inwt                ! network type counter
+   integer(4)     :: inw                 ! network counter
    integer(4)     :: ntry, itry          ! counter attempts to set gel
    integer(4)     :: nclmade             ! number of crossliks formed
    integer(4), allocatable :: ipclbeg(:) ! id of particles that begin crosslinks
@@ -2164,14 +2164,23 @@ subroutine SetNetwork(ipt)
 
    ntry = ntrydef
 
-   if (count(ipt == iptnodenwt(1:nnetworkt)) == 0) return   ! ipt is not a node
-   do inetworkt = 1, nnetworkt                                   ! determine network type
-      if (ipt == iptnodenwt(inetworkt)) exit                ! ipt is a node
+! ... determine network type
+
+   if (count(ipt == iptclnwt(1:nnwt)) == 0) return   ! ipt is not a node
+   do inwt = 1, nnwt                                 ! determine network type
+      if (ipt == iptclnwt(inwt)) exit                ! ipt is a node of network type inwt
    end do
 
 ! ... determine chain type of strand
 
-   ict = ictstrandnwt(inetworkt)
+   do ict = 1, nct   ! Currently only one chain type per network is allowed 
+      if (ncctnwt(ict,inwt) > 0) exit
+   end do
+
+! ... check condition
+
+   if ((txorigin(inwt) == 'origin') .and. (nnwnwt(inwt) > One)) call Stop(txroutine, 'txorigin == origin .and. nnwnwt(inwt) > One', uout)
+
 
 ! ... allocate memory
 
@@ -2201,12 +2210,12 @@ subroutine SetNetwork(ipt)
 
    maxnbondcl(ipt) = nclnode
 
-   do inetwork = 1, nnetwork(inetworkt)! loop over all networks of network type inetworkt
+   do inw = 1, nnwnwt(inwt)! loop over all networks of network type inwt
 try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
 !  ... set network origin
 
-         if (txorigin(inetworkt) == 'origin') then
+         if (txorigin(inwt) == 'origin') then
             rorigin = Zero
          else
             if (lbcsph) then
@@ -2229,7 +2238,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 ! ... set node particles
 
          do iploc = 1 , nnode
-            ip = ipnpt(ipt) + iploc - 1 + (inetwork - 1)*nnode
+            ip = ipnpt(ipt) + iploc - 1 + (inw - 1)*nnode
             ro(1:3,ip) = rorigin(1:3) + ronode(1:3,iploc)
             call PBC(ro(1,ip),ro(2,ip),ro(3,ip))
             call SetPartOriRandom(iseed,ori(1,1,ip))              ! set random particle orientation
@@ -2244,7 +2253,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
          jploc = 0
          npclend = 0
-         do ic = icnct(ict) + (inetwork - 1)*nstrand, icnct(ict) + (inetwork)*nstrand - 1
+         do ic = icnct(ict) + (inw - 1)*nstrand, icnct(ict) + (inw)*nstrand - 1
             do iseg = 1, npct(ict)
                jploc = jploc + 1
                ip = ipnsegcn(iseg,ic)
@@ -2281,7 +2290,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
       end do try
 
       if (itry > ntry) then                         ! number of  attempts exceeds the maximal one ?
-         if (master) write(uout,'(2(a,i5,2x))') 'particle type =', ipt,'inetwork =', inetwork
+         if (master) write(uout,'(2(a,i5,2x))') 'network type =', inwt,'network number =', inw
          call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
       end if
 
@@ -2294,11 +2303,12 @@ end subroutine SetNetwork
 
 !........................................................................
 
-subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rostrand, nclnode)
+subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronode, nstrand, rostrand, nclnode)
 
    use CoordinateModule
    implicit none
 
+   integer(4), intent(in)  :: inwt                    ! network type
    real(8),    intent(in)  :: radgel         ! radius of gel
    real(8),    intent(in)  :: bondlen        ! length of strand bond-length
    integer(4), intent(in)  :: npstrand       ! number of particles in strand
@@ -2345,7 +2355,7 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rost
    celllen = Four*sqrt(Third)*bondlen*(npstrand+1) ! length of one cubic unit cell
    xbondlen = sqrt(Third) * bondlen                ! bond length projected on an external axis
    ncell = int(Two*radgel*InvFlt(celllen)) + 1     ! number of required unit cells
-   if(modulo(ncell,2) == 1) ncell = ncell + 1      ! odd nucell -> even nucell in order to guarantee particle at ( 0 0 0 )
+   if(modulo(ncell,2) == 1) ncell = ncell + 1      ! odd ncell -> even ncell in order to guarantee particle at ( 0 0 0 )
 
    nnode = 0
    nstrand = 0
@@ -2394,7 +2404,6 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rost
                      if(iseg == npstrand) nstrand = nstrand + 1 ! update nstrand
                   end do segment
                end do
-
             end do
          end do
       end do
