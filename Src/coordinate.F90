@@ -2309,20 +2309,22 @@ end subroutine SetNetwork
 
 !........................................................................
 
-subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronode, nstrand, rostrand, nclnode)
+subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
 
    use CoordinateModule
    implicit none
 
    integer(4), intent(in)  :: inwt                    ! network type
-   real(8),    intent(in)  :: radgel         ! radius of gel
-   real(8),    intent(in)  :: bondlen        ! length of strand bond-length
-   integer(4), intent(in)  :: npstrand       ! number of particles in strand
-   integer(4), intent(out) :: nnode          ! number of nodes
-   real(8),    intent(out) :: ronode(3,np)   ! coordinates of nodes
-   integer(4), intent(out) :: nstrand        ! number of stand chains
-   real(8),    intent(out) :: rostrand(3,np) ! coordiantes of strand particles
-   integer(4), intent(out) :: nclnode        ! number of crosslinks of a node (diamond: nclnode = 4)
+   real(8),    intent(in)  :: radgel                  ! radius of gel
+   real(8),    intent(in)  :: bondlen                 ! length of strand bond-length
+   integer(4), intent(in)  :: npstrand                ! number of particles in strand
+   integer(4), intent(out) :: nnode                   ! number of nodes
+   real(8),    allocatable :: ronode(:,:)             ! coordinates of nodes
+   real(8),    intent(out) :: ronodeout(3,np_alloc)   ! coordinates of nodes for output
+   integer(4), intent(out) :: nstrand                 ! number of stand chains
+   real(8),    allocatable :: rostrand(:,:)           ! coordinates of strand particles
+   real(8),    intent(out) :: rostrandout(3,np_alloc) ! coordinates of strand particles for output
+   integer(4), intent(out) :: nclnode                 ! number of crosslinks of a node (diamond: nclnode = 4)
 
    character(40), parameter :: txroutine ='SetNetworkPos'
 
@@ -2366,6 +2368,15 @@ subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronode, nstrand
    nnode = 0
    nstrand = 0
    npart_strand = 0
+   if(.not.allocated(rostrand)) then 
+      allocate(rostrand(3,np_alloc), ronode(3,np_alloc))
+      rostrand = 0.0E+00
+      ronode = 0.0E+00
+   end if
+   rostrand = 0.00E+00
+   ronode   = 0.00E+00
+   ronodeout   = 0.00E+00
+   rostrandout   = 0.00E+00
 
 ! ... loop over all lattice points and try to set particles at those
 
@@ -2377,11 +2388,20 @@ subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronode, nstrand
 ! ... set node particles
 
                iploc = nnode+1
-               if(iploc >= np) call Stop (txroutine, 'number of nodes in network > number of particles', uout)
+               if(iploc > size(ronode,2)) then
+                  if (allocated(vhelp)) deallocate(vhelp)
+                  allocate(vhelp(3,size(ronode,2)))
+                  vhelp = 0.0E+00
+                  vhelp = ronode
+                  deallocate(ronode)
+                  allocate(ronode(3,2*size(vhelp,2)))
+                  ronode = 0.0E+00
+                  ronode = vhelp
+               end if
                ronode(1,iploc) = (ix - Half*ncell + rol(1,ilp))*celllen
                ronode(2,iploc) = (iy - Half*ncell + rol(2,ilp))*celllen
                ronode(3,iploc) = (iz - Half*ncell + rol(3,ilp))*celllen
-               if(sum(ronode(1:3,iploc)**2) > radgel2) cycle    ! restric to inside radgel
+               if(sum(ronode(1:3,iploc)**2) > radgel2) cycle    ! restrict to inside radgel
                nnode = nnode + 1                                ! update nnode
 
 ! ... set strand particles
@@ -2389,7 +2409,16 @@ subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronode, nstrand
                do idir = 1, 4                                   ! loop over all four directions from each node particle
      segment:     do iseg = 1, npstrand                         ! loop over all particles of each chain
                   jploc = npart_strand+1
-                  if(jploc > np) call Stop (txroutine, 'number of strand particles in network > number of particles', uout)
+                  if(jploc > size(rostrand,2)) then
+                     if (allocated(vhelp)) deallocate(vhelp)
+                     allocate(vhelp(3,size(rostrand,2)))
+                     vhelp = 0.0E+00
+                     vhelp = rostrand
+                     deallocate(rostrand)
+                     allocate(rostrand(3,2*size(vhelp,2)))
+                     rostrand = 0.0E+00
+                     rostrand = vhelp
+                  end if 
                   if(ilp >= 5) then                             ! distinguish between node symmetry
                         if((idir == 1) .or. (idir == 3)) then   ! chains starting at node
                            rostrand(1:3,jploc) = ronode(1:3,iploc) + iseg*signgel(1:3,idir)*xbondlen
