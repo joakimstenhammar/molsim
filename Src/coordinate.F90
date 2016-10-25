@@ -2344,6 +2344,8 @@ subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronodeout, nstr
    integer(4)     :: ilp, ix, iy, iz, idir, iseg, jp, iploc, jploc, npart_strand
    real(8)        :: InvFlt
 
+   real(8), allocatable :: vhelp(:,:)
+
    real(8), parameter   :: ddelta = 1.0d-5
 
    real(8), parameter   :: signgel(1:3,1:4) = RESHAPE([ -One, -One, -One,    &   ! corresponds to symmetry of node particles on octahedral positions
