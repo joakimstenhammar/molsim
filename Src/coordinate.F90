@@ -47,13 +47,8 @@ module CoordinateModule
    integer(4)    :: iptnode                   ! particle type of nodes (for SetPeriodicNetwork)
    integer(4)    :: ictstrand                 ! chain type of strands
 
-   integer(4), parameter :: mnnetworkt  = 2   ! maximum number of network types (for SetNetwork)
-   integer(4)    :: nnetworkt                 ! number of network types
-   integer(4)    :: nnetwork(mnnetworkt)      ! number of networks of network type inetworkt
-   real(8)       :: rnetwork(mnnetworkt)      ! radius of network type inetworkt
-   integer(4)    :: iptnodenwt(mnnetworkt)    ! particle type of nodes of different network types
-   integer(4)    :: ictstrandnwt(mnnetworkt)  ! chain type of strands of different network types
-   character(8)  :: txorigin(mnnetworkt)      ! network center of net type inetworkt ("origin" and "random")
+   real(8)       :: rnwt(mnnwt)               ! radius of network type inwt
+   character(8)  :: txorigin(mnnwt)           ! network center of networktype inwt ("origin" and "random")
 
    real(8)       :: radlimit(2)               ! lower and upper radial limit of particles (for SetCoreCell)
 
@@ -276,6 +271,7 @@ subroutine CrossLink_Steffi    ! Steffi
        do i=1,nbondcl(ip)
           jp=bondcl(i,ip)
           if (jp==0) cycle
+          ncl = ncl + 1
           nbondcl(jp)=nbondcl(jp)+1
           bondcl(nbondcl(jp),jp)=ip
        end do
