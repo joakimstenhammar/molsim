@@ -1297,7 +1297,7 @@ end subroutine SetRandomFixOri
 !*                                                                      *
 !************************************************************************
 
-! ... generate a linar configuration for chain particles (only for one chain)
+! ... generate a linear configuration for chain particles (only for one chain)
 !     along the x-axis, lab orientation
 
 subroutine SetChainLine(iptset)
