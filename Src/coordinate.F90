@@ -425,7 +425,7 @@ subroutine SetConfiguration
 
   if (lclink) then
      if (count(txsetconf == 'periodicnetwork') + count(txsetconf(:)(1:12) == 'hierarchical') + count(txsetconf == 'network') == 0) &
-        call Stop(txroutine, 'lclink: no call of SetPeriodicNetwork or SetHierarchical', uout)
+        call Stop(txroutine, 'lclink: no call of SetPeriodicNetwork, SetNetwork or SetHierarchical', uout)
      if (count(txsetconf == 'periodicnetwork') > 0) ncl = 4*nppt(iptnode)
   end if
 
@@ -481,17 +481,16 @@ subroutine SetConfiguration
          end if
          if (count(txsetconf == 'network') > 0) then
             write(uout,'()')
-            write(uout,'(a,t45,5i8)') 'number of network types                     = ', nnetworkt
-            write(uout,'(a,t45,5i8)') 'number of networks of the network types     = ', nnetwork(1:nnetworkt)
-            write(uout,'(a,t45,5f8.2)') 'radius of networks of the network types     = ', rnetwork(1:nnetworkt)
-            write(uout,'(a,t45,5i8)') 'particle type of nodes of the network types = ', iptnodenwt(1:nnetworkt)
-            write(uout,'(a,t45,5i8)') 'chain type of strands of the network types  = ', ictstrandnwt(1:nnetworkt)
-            write(uout,'(a,t45,5a)')  'gel center of the diferenty network types   = ', txorigin(1:nnetworkt)
+            write(uout,'(a,t60,2i8)')    'number of network types                                 = ', nnwt
+            write(uout,'(a,t60,2i8)')    'number of networks of the network types                 = ', nnwnwt(1:nnwt)
+            write(uout,'(a,t60,2f8.2)')  'radius of networks of the network types                 = ', rnwt(1:nnwt)
+            write(uout,'(a,t60,2i8)')    'particle type of nodes of the network types             = ', iptclnwt(1:nnwt)
+            write(uout,'(a,t60,2x,2a8)') 'position of gel center of the different network types   = ', txorigin(1:nnwt)
             do ipt = 1, npt   ! one particle type can only be used in one network type
-               if (count(ipt == iptnodenwt(1:nnetworkt)) > 1) call stop(txroutine, 'error in iptnodenwt', uout)
+               if (count(ipt == iptclnwt(1:nnwt)) > 1) call stop(txroutine, 'error in iptclnwt', uout)
             end do
             do ict = 1, nct   ! one chain type can only be used in one network type
-               if (count(ict == ictstrandnwt(1:nnetworkt)) > 1) call stop(txroutine, 'error in ictstrandnwt', uout)
+               if (count(ncctnwt(ict,1:nnwt) > 0) > 1) call stop(txroutine, 'chain type used for more than one network type', uout)   ! Cornelius Hofzumahaus 
             end do
          end if
       end if
@@ -566,12 +565,14 @@ subroutine SetConfiguration
       end if
    end do
 
-   if (lclink) then
-      if (count(txsetconf == 'periodicnetwork') > 0) then
-         write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
-      end if
-      if (count(txsetconf == 'network') > 0) then
-         write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
+   if (master) then
+      if (lclink) then
+         if (count(txsetconf == 'periodicnetwork') > 0) then
+            write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
+         end if
+         if (count(txsetconf == 'network') > 0) then
+            write(uout,'(a,t60,i8)') 'number of crosslinks                     = ', ncl
+         end if
       end if
    end if
 
