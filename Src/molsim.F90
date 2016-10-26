@@ -2140,7 +2140,6 @@ subroutine NetworkAver(iStage)
       do inw = 1, nnw
          inwt = inwtnwn(inw)
          ioffset = ntype*(inwt-1)
-         call UndoPBCNetwork(ro(1,ipnsegcn(1,icnclocnwn(1,inw))), inw, vaux) ! CHZA: TODO
          call CalcNetworkProperty(inw, vaux, NetworkProperty)
          var(1+ioffset)%value = var(1+ioffset)%value + NetworkProperty%rg2
          var(2+ioffset)%value = var(2+ioffset)%value + NetworkProperty%rg2s
