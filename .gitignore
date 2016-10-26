@@ -2,6 +2,7 @@
 *.mod
 *.i90
 *.swp
+*__genmod*
 Bin/
 version.conf
 Src/make.arch
