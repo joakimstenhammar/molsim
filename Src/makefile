@@ -38,6 +38,7 @@ ARCH = LOCAL_INTEL
 #ARCH = ALARIK_INTEL
 #ARCH = ALARIK_GFORTRAN
 #ARCH = MAC_GFORTRAN
+include make.arch
 
 #*****************************************************************
 #* Use F03 c-bindings - typically dependend on library selection *

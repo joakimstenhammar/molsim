@@ -4,6 +4,7 @@
 *.swp
 Bin/
 version.conf
+Src/make.arch
 Testin/out/
 Testin/diff.out
 .nfs*
