@@ -1196,7 +1196,15 @@ end subroutine MCPass
 
 subroutine SPartMove(iStage, loptsso)
 
-   use MCModule
+   use MolModule
+   use MCModule, only: imovetype, ispart
+   use MCModule, only: ispartmove, ipmove, iptmove
+   use MCModule, only: ievent, imcaccept
+   use MCModule, only: itestmc, lautumb, lfixchainstartspart, lmcpmf
+   use MCModule, only: npclnew, npclold, radcl1
+   use MCModule, only: lcl1spart, pselectcl1, dtran, curdtranpt
+   use MCModule, only: lfixzcoord, lfixxycoord, drot, lshiftzcom
+
    implicit none
 
    integer(4), intent(in) :: iStage
