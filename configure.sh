@@ -14,7 +14,7 @@
 #        AUTHOR: YOUR NAME (), 
 #  ORGANIZATION: 
 #       CREATED: 28/07/2016 09:09
-#      REVISION: 2016-10-26 12:53
+#      REVISION: 2016-10-26 16:39
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
@@ -89,6 +89,9 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
       make
       make install
       cd $curdir
+      echo ""
+      echo "FFTW installed"
+      echo ""
       ;;
       * )
          echo "Error: FFTW Required for MOLSIM"

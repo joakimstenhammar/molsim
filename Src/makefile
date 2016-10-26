@@ -40,7 +40,7 @@ ARCH = LOCAL_INTEL
 #ARCH = MAC_GFORTRAN
 ARCHFILE = make.arch
 ifneq ("$(wildcard $(ARCHFILE))","")
-   ARCH=$(shell cat ${ARCHFILE} )
+   include $(ARCHFILE)
 endif
 
 #*****************************************************************
