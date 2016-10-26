@@ -1543,6 +1543,108 @@ end function PerLengthRg
 
 !************************************************************************
 !*                                                                      *
+!*    CalcNetworkProperty                                               *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate properties of network number inw
+! ... no prior undoing of the periodic boundary conditions necessary
+
+subroutine CalcNetworkProperty(inw, NetworkProperty)
+
+   use MolModule
+   use MolauxModule, only CalcCOM
+   implicit none
+
+   integer(4),            intent(in)  :: inw             ! network number
+   type(networkprop_var), intent(out) :: NetworkProperty ! network properties
+
+! ... properties
+   real(8)     :: rcom(3)                    ! center of mass
+   real(8)     :: l2_small, l2_mid, l2_large ! small, middle and large extension along principal axes
+   real(8)     :: eivr(3,3)                  ! eigenvectors of the principal frame
+   real(8)     :: Asphericity                ! asphericity
+   real(8)     :: alpha                      ! degree of ionization
+
+! ... processing variables
+   real(8)     :: dr(3)
+   real(8)     :: r2
+   real(8)     :: vsumr
+   real(8)     :: mimat(3,3)
+   real(8)     :: diagonal(3)
+   integer(4)  :: nrot
+   integer(4)  :: npcharged
+
+! ... counter
+   integer(4)  :: inwt, ipt, ip, iploc
+
+! ... determine network type
+
+   inwt = inwtnwn(inw)
+
+! ... center of mass
+
+   rcom(1:3) = CalcCOM(ro(1:3,1:np),MASK=lpnnwn(1:np,inw),MASS=masspt(iptpn(1:np)))
+   NetworkProperty%ro(1:3) = rcom(1:3)
+
+! ... radius of gyration squared and projections on the prinicpal axes
+
+   ! rg**2 = l2_small**2 + l2_mid**2 + l2_large**2
+
+   vsumr          = Zero
+   mimat(1:3,1:3) = Zero
+   do iploc = 1, npnwt(inwt)
+      ip = ipnplocnwn(iploc,inw)
+      dr(1:3) = ro(1:3,ip)-rcom(1:3)
+      call PBCr2(dr(1),dr(2),dr(3),r2)
+      vsumr = vsumr + r2
+      mimat(1,1) = mimat(1,1)+dr(1)**2    ! +dy**2+dz**2
+      mimat(1,2) = mimat(1,2)+dr(1)*dr(2) ! -dx*dy
+      mimat(1,3) = mimat(1,3)+dr(1)*dr(3) ! -dx*dz
+      mimat(2,2) = mimat(2,2)+dr(2)**2    ! +dx**2+dz**2
+      mimat(2,3) = mimat(2,3)+dr(2)*dr(3) ! -dy*dz
+      mimat(3,3) = mimat(3,3)+dr(3)**2    ! +dx**2+dy**2
+   end do
+   NetworkProperty%rg2 = vsumr*massinwt(inwt)
+
+   mimat(2,1) = mimat(1,2)
+   mimat(3,1) = mimat(1,3)
+   mimat(3,2) = mimat(2,3)
+
+   call Diag(3,mimat,diagonal,eivr,nrot)
+
+! ... normalized eigenvectors of the principal frame
+
+   NetworkProperty%eivr(1:3,1:3) = eivr(1:3,1:3)
+
+! ... small, middle and large square extension along principal axes and eigenvectors of the principal frame
+
+   l2_small = min(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
+   l2_large = max(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
+   l2_mid  = (diagonal(1)+diagonal(2)+diagonal(3))/massnwt(inwt)-(l2_small+l2_large)
+
+   NetworkProperty%rg2s = max(Zero,l2_small)
+   NetworkProperty%rg2m = max(Zero,l2_mid  )
+   NetworkProperty%rg2l = max(Zero,l2_large)
+
+! ... asphericity  ( = 0 for sphere, 0.526 for gaussian chain, and 1 for a rod)
+
+   NetworkProperty%asph = Asphericity(l2_small,l2_mid,l2_large)
+
+! ... degree of ionization
+
+   if (lweakcharge) then
+      npcharged = sum(az(1:np),MASK=lpnnwn(1:np,inw))
+      alpha     = real(npcharge)/npweakchargenwt(inwt)
+      NetworkProperty%alpha = alpha
+   else
+      NetworkProperty%alpha = Zero
+   end if
+
+end subroutine CalcNetworkProperty
+
+!************************************************************************
+!*                                                                      *
 !*     Asphericity                                                      *
 !*                                                                      *
 !************************************************************************
