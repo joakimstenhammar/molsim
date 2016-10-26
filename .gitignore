@@ -2,8 +2,10 @@
 *.mod
 *.i90
 *.swp
+*__genmod*
 Bin/
 version.conf
+Src/make.arch
 Testin/out/
 Testin/diff.out
 .nfs*
