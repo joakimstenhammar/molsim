@@ -2446,6 +2446,11 @@ subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronodeout, nstr
       end do
    end do
 
+   if (allocated(vhelp)) deallocate(vhelp)
+
+   rostrandout = rostrand(1:3,1:np_alloc)
+   ronodeout   = ronode(1:3,1:np_alloc)
+   
 end subroutine SetNetworkPos
 
 !***********************************************************************
