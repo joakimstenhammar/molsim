@@ -1553,7 +1553,7 @@ end function PerLengthRg
 subroutine CalcNetworkProperty(inw, NetworkProperty)
 
    use MolModule
-   use MolauxModule, only CalcCOM
+   use MolauxModule, only: CalcCOM
    implicit none
 
    integer(4),            intent(in)  :: inw             ! network number
@@ -1635,7 +1635,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
    if (lweakcharge) then
       npcharged = sum(az(1:np),MASK=lpnnwn(1:np,inw))
-      alpha     = real(npcharge)/npweakchargenwt(inwt)
+      alpha     = real(npcharged)/npweakchargenwt(inwt)
       NetworkProperty%alpha = alpha
    else
       NetworkProperty%alpha = Zero
