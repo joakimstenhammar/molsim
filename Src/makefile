@@ -38,7 +38,10 @@ ARCH = LOCAL_INTEL
 #ARCH = ALARIK_INTEL
 #ARCH = ALARIK_GFORTRAN
 #ARCH = MAC_GFORTRAN
-include make.arch
+ARCHFILE = make.arch
+ifneq ("$(wildcard $(ARCHFILE))","")
+   ARCH=$(shell cat ${ARCHFILE} )
+endif
 
 #*****************************************************************
 #* Use F03 c-bindings - typically dependend on library selection *
@@ -432,7 +435,7 @@ tidy 	:
 #*****************************************************************
 
 clean 	:
-	rm -f *.o *.mod *.i90 ../bin/*.exe
+	rm -f *.o *.mod *.i90 ../bin/*.exe *__genmod*
  
 #*****************************************************************
 #*                         Print                                 *
