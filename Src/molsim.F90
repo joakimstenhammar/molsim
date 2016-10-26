@@ -732,8 +732,8 @@ subroutine IOCnf(str)
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
       if (lclink) then
-         call par_bc_ints(nbondcl  , np         )
-         call par_bc_ints(bondcl   , maxvalnbondcl*np)
+         call par_bc_ints(nbondcl ,   np)
+         call par_bc_ints(bondcl  , maxvalnbondcl*np)
       end if
       if (lmd .and. .not.GetlSetVel()) then
          call par_bc_reals(rod    , 3*np)
@@ -1319,6 +1319,7 @@ subroutine MainAver(iStage)
    if (lweakcharge)   call ChargeAver(iStage)
    if (lpolarization) call IndDipMomAver(iStage)
    if (lchain)        call ChainAver(iStage)
+   if (lnetwork)      call NetworkAver(iStage)
    if (lhierarchical) call HierarichalAver(iStage)
    if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
@@ -2078,6 +2079,124 @@ subroutine ChainAver(iStage)
    end select
 
 end subroutine ChainAver
+
+!************************************************************************
+!*                                                                      *
+!*     NetworkAver                                                      *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate averages of network quantities  
+
+subroutine NetworkAver(iStage)
+
+   use MolModule
+   implicit none
+
+   integer(4), intent(in) :: iStage
+
+   character(40), parameter :: txroutine ='NetworkAver'
+   character(80), parameter :: txheading ='network quantities'
+   integer(4)   , parameter :: ntype = 6          ! number of types of properties
+   integer(4)   , save      :: nvar
+   type(scalar_var), allocatable, save :: var(:)
+   type(networkprop_var) :: NetworkProperty
+   integer(4) :: inw, inwt, ioffset, itype
+   real(8) :: Asphericity
+
+   if (slave) return   ! master only
+
+   if (ltrace) call WriteTrace(2, txroutine, iStage)
+
+   select case (iStage)
+   case (iReadInput)
+
+      nvar = nnwt*ntype
+      allocate(var(nvar))
+
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         var(1+ioffset)%label = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
+         var(2+ioffset)%label = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
+         var(3+ioffset)%label = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
+         var(4+ioffset)%label = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
+         var(5+ioffset)%label = '<asphericity>                  = ' ! asphericity
+         var(6+ioffset)%label = '<alpha>                        = ' ! degree of ionization
+         var(1+ioffset:6+ioffset)%norm = One/nnwnwt(inwt)
+     end do
+
+   case (iBeforeSimulation)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      if (lsim .and. master .and. txstart == 'continue') read(ucnf) var
+
+   case (iBeforeMacrostep)
+
+      call ScalarSample(iStage, 1, nvar, var)
+
+   case (iSimulationStep)
+
+      var%value = Zero
+      do inw = 1, nnw
+         inwt = inwtnwn(inw)
+         ioffset = ntype*(inwt-1)
+         call UndoPBCNetwork(ro(1,ipnsegcn(1,icnclocnwn(1,inw))), inw, vaux) ! CHZA: TODO
+         call CalcNetworkProperty(inw, vaux, NetworkProperty)
+         var(1+ioffset)%value = var(1+ioffset)%value + NetworkProperty%rg2
+         var(2+ioffset)%value = var(2+ioffset)%value + NetworkProperty%rg2s
+         var(3+ioffset)%value = var(3+ioffset)%value + NetworkProperty%rg2m
+         var(4+ioffset)%value = var(4+ioffset)%value + NetworkProperty%rg2l
+         var(5+ioffset)%value = var(5+ioffset)%value + NetworkProperty%asph
+         var(6+ioffset)%value = var(6+ioffset)%value + NetworkProperty%alpha
+      end do
+      call ScalarSample(iStage, 1, nvar, var)
+
+   case (iAfterMacrostep)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      if (lsim .and. master) write(ucnf) var
+      call WriteHead(2, txheading, uout)
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
+         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
+         if (nnwt > 1) write(uout,'(a)')  '------------------'
+         call ScalarWrite(iStage, 1+ioffset, 5+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
+         if (lweakcharge) then
+            call ScalarWrite(iStage, 6+ioffset, 6+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) ! ... degree of ionization
+         end if
+         write(uout,'()')
+         write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
+           Asphericity(var(2+ioffset)%avs2**2,var(3+ioffset)%avs2**2,var(4+ioffset)%avs2**2) 
+         write(uout,'()')
+      end do
+
+   case (iAfterSimulation)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      call WriteHead(2, txheading, uout)
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
+         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
+         if (nnwt > 1) write(uout,'(a)')  '------------------'
+         call ScalarWrite(iStage, 1+ioffset, 5+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
+         if (lweakcharge) then
+            call ScalarWrite(iStage, 6+ioffset, 6+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) ! ... degree of ionization
+         end if
+         write(uout,'()')
+         write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
+           Asphericity(var(2+ioffset)%avs1**2,var(3+ioffset)%avs1**2,var(4+ioffset)%avs1**2)
+         write(uout,'()')
+      end do
+
+      deallocate(var)
+
+   end select
+
+end subroutine NetworkAver
 
 !***********************************************************************
 !*                                                                      *

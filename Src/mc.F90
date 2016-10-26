@@ -698,7 +698,7 @@ subroutine IOMC(iStage)
             lzero = .true.
             do iatloc = 1, natpt(ipt)
                iat = iat +1
-               if (latweakcharge(iat) == .true. .and. naatpt(iatloc,ipt) > 0) lzero = .false.  ! at least one weak charge
+               if (latweakcharge(iat) .eqv. .true. .and. naatpt(iatloc,ipt) > 0) lzero = .false.  ! at least one weak charge
             end do
             if (lzero) pcharge(ipt) = Zero
          end do
