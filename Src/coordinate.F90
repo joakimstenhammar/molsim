@@ -1308,9 +1308,8 @@ subroutine SetChainLine(iptset)
    integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainLine'
-   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, jseg
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc
-   real(8)    :: Random
+   integer(4) :: ntry, itry, iseg, ic, ict, ip, jp, jseg
+   real(8)    :: bondloc
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -1391,11 +1390,11 @@ subroutine SetChainCircle(iptset)
    integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainCircle'
-   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, jseg
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc
+   integer(4) :: ntry, itry, iseg, ic, ict, ip, jseg
+   real(8)    :: bondloc
    real(8)    :: radcir, angle0
    logical    :: first =.true.
-   logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
+   logical    :: CheckPartOutsideBox, lWarnHCOverlap
 
    if (lclink) call Stop(txroutine, 'lclink is true', uout)
    ntry = 1
@@ -1511,8 +1510,7 @@ subroutine SetChainRandom(iptset)
 
    character(40), parameter :: txroutine ='SetChainRandom'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc
-   real(8)    :: Random
+   real(8)    :: bondloc
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -1578,8 +1576,7 @@ subroutine SetChainRandomIntOri(iptset)
 
    character(40), parameter :: txroutine ='SetChainRandomIntOri'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, ipprev
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc, r21(3), r23(3)
-   real(8)    :: Random
+   real(8)    :: bondloc, r21(3), r23(3)
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -2024,7 +2021,7 @@ subroutine SetPeriodicNetwork(ipt)
                                                       +One, +One, -One ], &
                                                 [ 3, 4 ])
 
-   integer(4) :: ip, ic, ict, idir, inode, iseg, ix, iy, iz, nnode, nstrand, nclmade
+   integer(4) :: ip, ic, idir, inode, iseg, ix, iy, iz, nnode, nstrand, nclmade
    real(8)    :: rlen(3), rorigin(3), nnsep(0:3), nnsepreq
    real(8), allocatable :: rbond(:,:), r2bond(:)
    integer(4) :: npclend                  ! number of particles that ends a crosslink
@@ -2138,7 +2135,7 @@ subroutine SetNetwork(ipt)
 
    integer(4), intent(in)  :: ipt        ! particle type
 
-   integer(4)     :: iipt, iict, iploc, jploc
+   integer(4)     :: iploc, jploc
    integer(4)     :: ic                  ! chain counter
    integer(4)     :: iseg                ! segment counter
    integer(4)     :: ip                  ! particle counter
@@ -2189,7 +2186,7 @@ subroutine SetNetwork(ipt)
 
 ! ... determine nnode, ronode, nstrand, rostrand, nclnode
 
-   call SetNetworkPos(inwt, rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
+   call SetNetworkPos(rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
 
    if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then ! when particle and chain number don't accord to the neccesary ones: stop excecution and write numbers
       call FileOpen(922, 'topo.dat', 'form/noread')      ! Cornelius Hofzumahaus 
@@ -2309,12 +2306,11 @@ end subroutine SetNetwork
 
 !........................................................................
 
-subroutine SetNetworkPos(inwt, radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
+subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in)  :: inwt                    ! network type
    real(8),    intent(in)  :: radgel                  ! radius of gel
    real(8),    intent(in)  :: bondlen                 ! length of strand bond-length
    integer(4), intent(in)  :: npstrand                ! number of particles in strand
