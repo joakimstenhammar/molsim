@@ -182,7 +182,6 @@ subroutine IOMolsim(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='IOMolsim'
-   integer(4) :: i
    character(4) :: txistep1
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -1775,7 +1774,7 @@ subroutine ChargeAver(iStage)
    character(80), parameter :: txheading ='charge averages'
    integer(4),       save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ip, ipt, ia, iat, ivar
+   integer(4) :: ia, iat, ivar
    real(8) :: InvFlt
 
    if (slave) return   ! master only
@@ -1954,7 +1953,7 @@ subroutine ChainAver(iStage)
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
    type(chainprop_var) :: ChainProperty
-   integer(4) :: ic, ict, ioffset, itype
+   integer(4) :: ic, ict, ioffset
    real(8) :: PerLengthRg, Asphericity, InvFlt
 
    if (slave) return   ! master only
@@ -2101,7 +2100,7 @@ subroutine NetworkAver(iStage)
    integer(4)   , save      :: nvar
    type(scalar_var), allocatable, save :: var(:)
    type(networkprop_var) :: NetworkProperty
-   integer(4) :: inw, inwt, ioffset, itype
+   integer(4) :: inw, inwt, ioffset
    real(8) :: Asphericity
 
    if (slave) return   ! master only
@@ -2216,7 +2215,6 @@ subroutine HierarichalAver(iStage)
    character(80), parameter :: txheading ='hierarchical quantities'
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ic, ict, iht, ioffset, itype, ivar
    real(8) :: rg
 
    if (slave) return   ! master only
@@ -2334,7 +2332,6 @@ subroutine ThermoInteg(iStage)
    real(8),          save :: powerkangle
    integer(4),       save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ict, iat, ia
    real(8) :: data(9)
 
    namelist /nmlThermoInteg/ lambda, powercharge, powerkbond, powerkangle
@@ -2473,7 +2470,7 @@ subroutine DistFunc(iStage)
    integer(4) :: ip, ipt, jp, jpt, iptjpt, ia, ialoc, ialow, iat, iatloc, ja, jaloc, jalow, jat, iatjat
    integer(4) :: iatx, natx, iatjatx, natatx
    real(8), allocatable, save :: ubind(:), gcont(:)
-   real(8)    :: dx, dy, dz, rr, dropbc(3), d, usum, fsum, virtwob, virmolecule
+   real(8)    :: dx, dy, dz, dropbc(3), d, usum, fsum, virtwob, virmolecule
    real(8)    :: raa2, raa1, rpp2, rpp1, dipm, norm, dvol, vols2, utobdypp
 
    integer(4), parameter :: nvar_s = 2
@@ -3146,7 +3143,7 @@ subroutine PressureContact(ipnt, var, vols2, prsrhs)
    real(8),      intent(in)  :: vols2
    real(8),      intent(out) :: prsrhs
 
-   integer(4) :: ipt, jpt, iptjpt, ivar, ihs
+   integer(4) :: ipt, jpt, iptjpt, ivar
    real(8)    :: denst, densipt, densjpt, rcont, gcont, term
 
    prsrhs = Zero
