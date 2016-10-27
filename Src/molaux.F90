@@ -1044,7 +1044,7 @@ subroutine WarnHCOverlap(iplow, ipupp)
 
    logical    :: loverlap, ltext, SuperballOverlap, ltemp
    integer(4) :: ip, jp, ia, ialow, iaupp, iat, ja, jat, iatjat
-   real(8)    :: dxx, dyy, dzz, dx, dy, dz, dxpbc, dypbc, dzpbc, r2, dum
+   real(8)    :: dxx, dyy, dzz, dx, dy, dz, dxpbc, dypbc, dzpbc, r2
 
    if (sum(r2atat(1:natat)) > Zero) then
 
@@ -1359,7 +1359,8 @@ subroutine CalcChainProperty(ic, rotemp, ChainProperty)
 
    real(8) :: vsum, vsum2, vsumr, vsumz, vsumxy, dx, dy, dz, r2, xcom, ycom, zcom, norm, angle_deg, rbb
    real(8) :: dxm, dym, dzm, dxp, dyp, dzp, theta, mimat(3,3), diagonal(3), eivr(3,3)
-   real(8) :: l2_small, l2_mid, l2_large, i_small, i_mid, i_large, term, toroidparam
+   real(8) :: l2_small, l2_mid, l2_large, toroidparam
+   !real(8) :: i_small, i_mid, i_large ! used in older code snippet below - currently not needed
    integer(4) :: iseg, ip, jp, jp_m, jp_p, ict, nrot
    real(8) :: hx, hy, hz, hxsum, hysum, hzsum
    real(8) :: InvInt, InvFlt, PerLengthRg, Asphericity
@@ -1576,7 +1577,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    integer(4)  :: npcharged
 
 ! ... counter
-   integer(4)  :: inwt, ipt, ip, iploc
+   integer(4)  :: inwt, ip, iploc
 
 ! ... determine network type
 
@@ -2026,7 +2027,7 @@ logical function Perculation(nobjtot, iclusteriobj, npair, n1, n2,  r, boxlen, l
    integer(4)              :: idnn(mnn,mnobj) ! id of neighbour
    integer(4)              :: objloc(mnobjtot)! local id of object
 
-   integer(4) :: pathlength, pathobj(0:mpathlength), i, icluster, iobj, jobj, iobjloc, jobjloc, in, istep, ipair
+   integer(4) :: pathlength, pathobj(0:mpathlength), i, icluster, iobj, jobj, iobjloc, jobjloc, istep, ipair
    real(8) :: dr(1:3), boxlen2(3), dx, dy, dz
    logical :: loop
    integer(4) :: itemp(1:1)
@@ -2198,7 +2199,7 @@ subroutine updatenn(iobj, nn, idnn)  ! update nn and idnn
    integer(4), intent(in) :: iobj
    integer(4), intent(inout) :: nn
    integer(4), intent(inout) :: idnn(*)
-   integer(4) :: i, j
+   integer(4) :: i
    logical :: hit
    hit = .false.
    do i = 1, nn
@@ -2619,7 +2620,6 @@ real(8) function Ellipsoidfunc2(lam)
    real(8), intent(in) :: lam
 
    real(8),    parameter :: one = 1.0d0, two = 2.0d0
-   integer :: i
    real(8) :: mat(3,3), matinv(3,3)
 
    mat(1:3,1:3) = (one-lam)*a(1:3,1:3,1) + lam*a(1:3,1:3,2)
@@ -2747,7 +2747,7 @@ logical function SuperballOverlap_NR(r21, ori1, ori2, of) result(loverlap)
    real(8), intent(in) :: ori1(3,3)     ! orientation matrix of superball 1
    real(8), intent(in) :: ori2(3,3)     ! orientation matrix of superball 2
    real(8), intent(out) :: of           ! overlap function
-   integer(4) :: i, j, k, iter
+   integer(4) :: k, iter
    real(8) :: lambda, lambda0, ori1i(3,3), ori2i(3,3), orihelp(3,3,2), rc(3), rc0(3), rsb(3,2), dr(3), dll, dg(3), dl, vtemp(3)
    real(8) :: sf(2), sfd(3,2), sfdd(3,3,2), ofd(3), ofdd(3,3), minv(3,3)
    real(8) :: r1help, r2help, r3help, gp, gpp, fac1, fac1help, gradsftilde(3), grad2sftilde(3)
@@ -3097,7 +3097,7 @@ subroutine SuperballDF(iStage, rr, loverlap, time)
    type(df_var),  allocatable, save :: var(:)
    integer(4),    allocatable, save :: ipnt(:,:)
    real(8), save :: radmin, radmax, radbin, radbini
-   integer(4), save :: nrad, nbin
+   integer(4), save :: nrad
    integer(4) :: itype, ivar, ibin, irad
    real(8)    :: r1
    character(1) :: str
