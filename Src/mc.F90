@@ -800,7 +800,7 @@ subroutine IOMC(iStage)
       if (lpspartcl2) call Stop(txroutine, 'pspartcl2(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpbrush) call Stop(txroutine, 'pbrush(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpbrushcl2) call Stop(txroutine, 'pbrushcl2(ipt) > 0 .and. _PAR_ not supported', uout)
-      if (lphierarchical) call Stop(txroutine, 'phierarchical(ipt) > 0 .and. _PAR_ not supported', uout)
+      !if (lphierarchical) call Stop(txroutine, 'phierarchical(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpnetwork) call Stop(txroutine, 'pnetwork(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpcharge) call Stop(txroutine, 'pcharge(ipt) > 0 .and. _PAR_ not supported', uout)
 #endif
@@ -1117,7 +1117,7 @@ subroutine MCPass(iStage)
             end if
          end do
 
-         drnlist = 4*rchain + drnold !set drnlist to four times contour length + drnlist (old)
+         drnlist = max(4*rchain, nphn*maxval(dtranhierarchical(:))) + drnold !set drnlist to four times contour length + drnlist (old)
          ! four times as 1 particle can move at max 2 times contour length using pivot move, and therefore two particles can approach each at max 4 times the contour length
          ! added drnold to reflect any possible local moves
 
