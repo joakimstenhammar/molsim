@@ -698,7 +698,7 @@ subroutine IOMC(iStage)
             lzero = .true.
             do iatloc = 1, natpt(ipt)
                iat = iat +1
-               if (latweakcharge(iat) == .true. .and. naatpt(iatloc,ipt) > 0) lzero = .false.  ! at least one weak charge
+               if ((latweakcharge(iat) .eqv. .true.) .and. (naatpt(iatloc,ipt) > 0)) lzero = .false.  ! at least one weak charge
             end do
             if (lzero) pcharge(ipt) = Zero
          end do
@@ -800,7 +800,7 @@ subroutine IOMC(iStage)
       if (lpspartcl2) call Stop(txroutine, 'pspartcl2(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpbrush) call Stop(txroutine, 'pbrush(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpbrushcl2) call Stop(txroutine, 'pbrushcl2(ipt) > 0 .and. _PAR_ not supported', uout)
-      if (lphierarchical) call Stop(txroutine, 'phierarchical(ipt) > 0 .and. _PAR_ not supported', uout)
+      !if (lphierarchical) call Stop(txroutine, 'phierarchical(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpnetwork) call Stop(txroutine, 'pnetwork(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpcharge) call Stop(txroutine, 'pcharge(ipt) > 0 .and. _PAR_ not supported', uout)
 #endif
@@ -1117,7 +1117,7 @@ subroutine MCPass(iStage)
             end if
          end do
 
-         drnlist = 4*rchain + drnold !set drnlist to four times contour length + drnlist (old)
+         drnlist = max(4*rchain, nphn*maxval(dtranhierarchical(:))) + drnold !set drnlist to four times contour length + drnlist (old)
          ! four times as 1 particle can move at max 2 times contour length using pivot move, and therefore two particles can approach each at max 4 times the contour length
          ! added drnold to reflect any possible local moves
 
@@ -1196,7 +1196,15 @@ end subroutine MCPass
 
 subroutine SPartMove(iStage, loptsso)
 
-   use MCModule
+   use MolModule
+   use MCModule, only: imovetype, ispart
+   use MCModule, only: ispartmove, ipmove, iptmove
+   use MCModule, only: ievent, imcaccept
+   use MCModule, only: itestmc, lautumb, lfixchainstartspart, lmcpmf
+   use MCModule, only: npclnew, npclold, radcl1
+   use MCModule, only: lcl1spart, pselectcl1, dtran, curdtranpt
+   use MCModule, only: lfixzcoord, lfixxycoord, drot, lshiftzcom
+
    implicit none
 
    integer(4), intent(in) :: iStage

@@ -899,7 +899,7 @@ subroutine ImageVTF(iStage, iimage)
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
    real(8),       save :: rgbweakcharge(3), blmax, bondr, bondres, sphres
    character(20), save :: tximage(4)
-   character(19), save :: txwrap(3) =['# Start of image ','timestep ordered   ','# End Image        ' ]
+   character(19), save :: txwrap(3) =['# Start of image   ','timestep ordered   ','# End Image        ' ]
    integer(4),    save :: iframe
    logical,       save :: lgr, lrendwc
    logical, allocatable, save :: lptinnw(:)
@@ -931,7 +931,7 @@ subroutine ImageVTF(iStage, iimage)
 
       txwhen        = 'after_run'                        ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
       atsize(1:nat) = radat(1:nat)
-      tximage       = ['frame','     ','     ','      '] ! define here which kind of options shall be applied
+      tximage       = ['frame','     ','     ','     '] ! define here which kind of options shall be applied
       do iat = 1, 3
          if (iat > nat) exit
          rgbcolor(1:3,iat) = [ Zero, Zero, Zero ]
@@ -1424,13 +1424,13 @@ subroutine DrawWeakChargesTCL(iCall,vmdname,rgbweakcharge,lrendwc,icolor,unit)
    case (4)
 
       write(unit,'(a)')     '   display update off'
-      write(unit,'(a16,i)') '   animate goto ', jframe
+      write(unit,'(a16,i0)') '   animate goto ', jframe
       write(unit,'(a)')     '   $selection set name $txuncharged'
       write(unit,'(a)')     '   set selection [atomselect $molID "index\'
       do ia = 1, na
          ipt = iptpn(ipnan(ia))
          if((.not. latweakcharge(iatan(ia))) .or. (.not. ipt == 1)) cycle
-         if(laz(ia)) write(unit,'(a3,i,a2)') '   ', ia, ' \'
+         if(laz(ia)) write(unit,'(a3,i0,a2)') '   ', ia, ' \'
       end do
       write(unit,'(a)')     '   "]'
       write(unit,'(a)')     '   $selection set name $txcharged'

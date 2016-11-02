@@ -14,18 +14,41 @@
 #        AUTHOR: YOUR NAME (), 
 #  ORGANIZATION: 
 #       CREATED: 28/07/2016 09:09
-#      REVISION: 2016-08-16 11:18
+#      REVISION: 2016-10-26 16:39
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
 set -e
 
-progs=(ifort)
-for i in "${progs[@]}"; do
-   echo -n "Checking $i ..."
-   command -v $i >/dev/null 2>&1 || { echo >&2 "I require $i but it's not installed.  Aborting."; exit 1; }
+i=ifort
+echo -n "Checking ifort ..."
+command -v ifort >/dev/null 2>&1 || {
+   echo "no";
+   echo -n "Checking gfortran ..."
+   command -v gfortran >/dev/null 2>&1 || {
+      echo "Error: fortran compiler required for MOLSIM"
+      exit 1;
+   }
    echo "yes"
-done
+   read -e -p "Use gfortran instead? " -i "y" dogfortran
+   case ${dogfortran:0:1} in
+          y|Y )
+            echo -n "Enabling gfortran in the makefile ..."
+            echo "ARCH = LOCAL_GFORTRAN" >> Src/make.arch
+         ;;
+         * )
+            echo "Error: fortran compiler required for MOLSIM"
+            exit 1;
+      esac
+}
+echo "yes"
+
+#progs=("")
+#for i in "${progs[@]}"; do
+   #echo -n "Checking $i ..."
+   #command -v $i >/dev/null 2>&1 || { echo >&2 "I require $i but it's not installed.  Aborting."; exit 1; }
+   #echo "yes"
+#done
 
 echo -n "checking FFTW3 .."
 if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
@@ -36,7 +59,7 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
 
       FILE="fftw-3.3.4.tar.gz"
 
-      if [! -f $FILE ];
+      if [ ! -f $FILE ];
       then
          read -e -p "$FILE not found. Download from fftw.org? (requires wget) " -i "n" dnfftw
          case ${dnfftw:0:1} in
@@ -48,7 +71,7 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
          esac
       fi
 
-      if [! -f $FILE ];
+      if [ ! -f $FILE ];
       then
          echo "ERROR: $FILE not found."
          exit 1
@@ -66,6 +89,9 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
       make
       make install
       cd $curdir
+      echo ""
+      echo "FFTW installed"
+      echo ""
       ;;
       * )
          echo "Error: FFTW Required for MOLSIM"
