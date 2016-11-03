@@ -303,7 +303,7 @@ module MCModule
          else if (prandom < pbrushcl2(iptmove)) then
             call BrushCl2Move(iStage)                          ! brush + cluster2 trial move
          else if (prandom < phierarchical(iptmove)) then
-            call HierarichalMove(iStage)                       ! hierarchical trial move
+            call HierarchicalMove(iStage)                       ! hierarchical trial move
          else if (prandom < pnetwork(iptmove)) then
             call NetworkMove(iStage)                           ! network trial move
          else if (prandom < pvol(iptmove)) then
@@ -2750,14 +2750,14 @@ end subroutine BrushCl2Move
 
 ! ... perform one hierarchical trial move
 
-subroutine HierarichalMove(iStage)
+subroutine HierarchicalMove(iStage)
 
    use MCModule
    implicit none
 
    integer(4), intent(in) :: iStage
 
-   character(40), parameter :: txroutine ='HierarichalMove'
+   character(40), parameter :: txroutine ='HierarchicalMove'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
    integer(4) :: igen, iseg, ic, ict, ip, iploc, iptm, ih, iclow, icupp
    real(8)    :: Random, dx, dy, dz, weight
@@ -2824,7 +2824,7 @@ subroutine HierarichalMove(iStage)
 
    if (ievent == imcaccept) call MCUpdate       ! update energies and coordinates
 
-end subroutine HierarichalMove
+end subroutine HierarchicalMove
 
 !************************************************************************
 !*                                                                      *
