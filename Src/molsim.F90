@@ -1319,7 +1319,7 @@ subroutine MainAver(iStage)
    if (lweakcharge)   call ChargeAver(iStage)
    if (lpolarization) call IndDipMomAver(iStage)
    if (lchain)        call ChainAver(iStage)
-   if (lhierarchical) call HierarichalAver(iStage)
+   if (lhierarchical) call HierarchicalAver(iStage)
    if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine MainAver
@@ -2081,20 +2081,20 @@ end subroutine ChainAver
 
 !***********************************************************************
 !*                                                                      *
-!*     HierarichalAver                                                  *
+!*     HierarchicalAver                                                 *
 !*                                                                      *
 !************************************************************************
 
 ! ... calculate averages of chain quantities
 
-subroutine HierarichalAver(iStage)
+subroutine HierarchicalAver(iStage)
 
    use MolModule
    implicit none
 
    integer(4), intent(in) :: iStage
 
-   character(40), parameter :: txroutine ='HierarichalAver'
+   character(40), parameter :: txroutine ='HierarchicalAver'
    character(80), parameter :: txheading ='hierarchical quantities'
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
@@ -2191,7 +2191,7 @@ end subroutine HierarchicalRg
 
 !........................................................................
 
-end subroutine HierarichalAver
+end subroutine HierarchicalAver
 
 !************************************************************************
 !*                                                                      *
