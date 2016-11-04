@@ -940,7 +940,7 @@ subroutine ImageVTF(iStage, iimage)
       do iat = 4, 6
          if (iat > nat) exit
          rgbcolor(1:3,iat) = [ One, One, One ]
-         rgbcolor(iat,iat) = Zero
+         rgbcolor(iat-3,iat) = Zero
       end do
       do iat = 7, nat
          if (iat > nat) exit

@@ -34,7 +34,6 @@ module MolModule
 
 ! ... parameters
 
-   integer(4), parameter :: mnnwt  = 2                ! max number of network types (used for input variables)
    integer(4), parameter :: mngen  = 5                ! max number of generations
    integer(4), parameter :: mnapt = 64                ! max number of atoms belonging to one particle
    integer(4), parameter :: mnct  = 10                ! max number of chain types (used for input variables)
@@ -327,29 +326,29 @@ module MolModule
    integer(4)              :: na_alloc     ! number of atoms (for memory allocation)
    integer(4)              :: np_alloc     ! number of particles (for memory allocation)
    integer(4)              :: nc_alloc     ! number of chains (for memory allocation)
-   integer(4)              :: nnwnwt(mnnwt)!*number of networks of network type
+   integer(4), allocatable :: nnwnwt(:)    !*number of networks of network type [allocate with nnwt]
    integer(4)              :: ncct(mnct)   !*number of chains of a chain type
    integer(4)              :: nppt(mnpt)   !*number of particles of a particle type
-   integer(4)              :: nctnwt(mnnwt)! number of chain types belonging to one network type   
+   integer(4), allocatable :: nctnwt(:)    ! number of chain types belonging to one network type [allocate with nnwt]
    integer(4)              :: nptct(mnct)  ! number of particle types belonging to one chain type
-   integer(4)              :: ncnwt(mnnwt) ! number of chains belonging to a network type
-   integer(4)              :: npnwt(mnnwt) ! number of particles belonging to a network type
-   integer(4)              :: nclnwt(mnnwt)! number of cross-links belonging to a network type
+   integer(4), allocatable :: ncnwt(:)     ! number of chains belonging to a network type [allocate with nnwt]
+   integer(4), allocatable :: npnwt(:)     ! number of particles belonging to a network type [allocate with nwwt]
+   integer(4), allocatable :: nclnwt(:)    ! number of cross-links belonging to a network type [allocate with nnwt]
    integer(4)              :: npct(mnct)   ! number of particles belonging to a chain type
    integer(4)              :: natpt(mnpt)  !*number of atom types belonging to a particle type
    integer(4), allocatable :: napt(:)      ! number of atoms belonging to a particle type
    integer(4), allocatable :: naat(:)      ! number of atoms of an atom type in one particle
-   integer(4)    :: ncctnwt(mnct,mnnwt)    !*number of chains of a chain type of network type
+   integer(4), allocatable :: ncctnwt(:,:) !*number of chains of a chain type of network type [allocate with nct,nnwt]
    integer(4)    :: npptct(mnpt,mnct)      !*number of particles of a particle type of chain type
    integer(4)    :: naatpt(mnat,mnpt)      !*number of atoms of an atom type of a particle type
    integer(4)    :: nnwtnwt                ! number of different network type pairs
    integer(4)    :: nctct                  ! number of different chain type pairs
    integer(4)    :: nptpt                  ! number of different particle type pairs
    integer(4)    :: natat                  ! number of different atom type pairs
-   character(30) :: txtoponwt(mnnwt)       !*type of network
+   character(30), allocatable :: txtoponwt(:) !*type of network [allocate with nnwt]
    character(30) :: txcopolymer(mnct)      !*type of copolymer
    logical       :: lspma                  !*control tacticity
-   character(10) :: txnwt(mnnwt)           !*name of network type
+   character(10), allocatable :: txnwt(:)     !*name of network type [allocate with nnwt]
    character(10) :: txct(mnct)             !*name of chain type
    character(10) :: txpt(mnpt)             !*name of particle type
    character(10) :: txat(mnat)             !*name of atom type
@@ -479,11 +478,11 @@ module MolModule
 
 ! ... finite network structures
 
-   logical                 :: lnetwork                ! flag for networks
-   logical                 :: lptnwt(mnpt,mnnwt)      ! true, if particle type ipt is part of network type inwt
-   logical,    allocatable :: lpnnwn(:,:)             ! true if particle number ip is part of network number inw
-   integer(4)              :: npweakchargenwt(mnnwt)  ! number of titratable beads in network type inwt
-   integer(4)              :: iptclnwt(mnnwt)         !*particle type of nodes of different network types
+   logical                 :: lnetwork           ! flag for networks
+   logical   , allocatable :: lptnwt(:,:)        ! true, if particle type ipt is part of network type inwt [allocate with npt,nnwt]
+   logical   , allocatable :: lpnnwn(:,:)        ! true if particle number ip is part of network number inw
+   integer(4), allocatable :: npweakchargenwt(:) ! number of titratable beads in network type inwt [allocate with nnwt]
+   integer(4), allocatable :: iptclnwt(:)        !*particle type of nodes of different network types [allocate with nnwt]
 
 ! ... pointers
 

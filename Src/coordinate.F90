@@ -47,8 +47,8 @@ module CoordinateModule
    integer(4)    :: iptnode                   ! particle type of nodes (for SetPeriodicNetwork)
    integer(4)    :: ictstrand                 ! chain type of strands
 
-   real(8)       :: rnwt(mnnwt)               ! radius of network type inwt
-   character(8)  :: txorigin(mnnwt)           ! network center of network type inwt ("origin" and "random")
+   real(8),      allocatable :: rnwt(:)       ! radius of network type inwt [Allocate with nnwt]
+   character(8), allocatable :: txoriginnwt(:)! network center of network type inwt ("origin" and "random") [Allocate with nnwt]
 
    real(8)       :: radlimit(2)               ! lower and upper radial limit of particles (for SetCoreCell)
 
@@ -322,27 +322,36 @@ subroutine SetConfiguration
                                   radatset, lranori,  bondscl, anglemin,                             &
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
-                                  rnwt, txorigin,                                                    &
+                                  rnwt, txoriginnwt,                                                 &
                                   radlimit,                                                          &
                                   itestcoordinate
 
-    if (.not.allocated(txsetconf)) then 
-       allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt),     &
-       roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
-       txsetconf = ""
-       nucell = 0
-       rclow = 0.0E+00
-       rcupp = 0.0E+00
-       roshift = 0.0E+00
-       radatset = 0.0E+00
-       lranori = .false.
-       bondscl = 0.0E+00
-       anglemin = 0.0E+00
-    end if
-    if (.not.allocated(radatset)) then 
-       allocate(radatset(nat))
-       radatset = 0.0E+00
-    end if
+   if (.not.allocated(txsetconf)) then 
+      allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt),       &
+      roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
+      txsetconf   = ""
+      nucell      = 0
+      rclow       = 0.0E+00
+      rcupp       = 0.0E+00
+      roshift     = 0.0E+00
+      radatset    = 0.0E+00
+      lranori     = .false.
+      bondscl     = 0.0E+00
+      anglemin    = 0.0E+00
+   end if
+   if (.not.allocated(radatset)) then 
+      allocate(radatset(nat))
+      radatset = 0.0E+00
+   end if
+
+   if (lnetwork) then
+      if(.not.allocated(rnwt)) then
+         allocate(rnwt(nnwt))
+      end if
+      if(.not.allocated(txoriginnwt)) then
+         allocate(txoriginnwt(nnwt))
+      end if
+   end if
 
 ! ... read input data
 
@@ -394,9 +403,12 @@ subroutine SetConfiguration
    anglemin          = Zero
    iptnode           = 0
    ictstrand         = 0
-   rnwt(1:mnnwt)     = 10.0
-   txorigin(1:mnnwt) = 'origin'
    itestcoordinate   = 0
+
+   if (lnetwork) then
+      rnwt(1:nnwt)        = 10.0
+      txoriginnwt(1:nnwt) = 'origin'
+   end if
 
    rewind(uin)
    read(uin,nmlSetConfiguration)
@@ -405,7 +417,7 @@ subroutine SetConfiguration
      call LowerCase(txsetconf(ipt))
    end do
    do inwt = 1, nnwt
-      call LowerCase(txorigin(inwt))
+      call LowerCase(txoriginnwt(inwt))
    end do
 
    anglemin = anglemin*sclang
@@ -485,7 +497,7 @@ subroutine SetConfiguration
             write(uout,'(a,t60,2i8)')    'number of networks of the network types                 = ', nnwnwt(1:nnwt)
             write(uout,'(a,t60,2f8.2)')  'radius of networks of the network types                 = ', rnwt(1:nnwt)
             write(uout,'(a,t60,2i8)')    'particle type of nodes of the network types             = ', iptclnwt(1:nnwt)
-            write(uout,'(a,t60,2x,2a8)') 'position of gel center of the different network types   = ', txorigin(1:nnwt)
+            write(uout,'(a,t60,2x,2a8)') 'position of gel center of the different network types   = ', txoriginnwt(1:nnwt)
             do ipt = 1, npt   ! one particle type can only be used in one network type
                if (count(ipt == iptclnwt(1:nnwt)) > 1) call stop(txroutine, 'error in iptclnwt', uout)
             end do
@@ -2123,7 +2135,7 @@ end subroutine SetPeriodicNetwork
 ! ... generate a nonperiodic network
 
 !  unit cell: diamond-like containing 8 nodes and 16 strands
-!  input variables: nnwt (nmlParticle), nnwnwt (nmlParticle), ncctnwt (nmlParticle), rnwt, iptclnwt (nmlParticle), txorigin
+!  input variables: nnwt (nmlParticle), nnwnwt (nmlParticle), ncctnwt (nmlParticle), rnwt, iptclnwt (nmlParticle), txoriginnwt
 !  boundary condition: txbc == 'xyz' or txbc == 'sph'
 
 subroutine SetNetwork(ipt)
@@ -2176,7 +2188,7 @@ subroutine SetNetwork(ipt)
 
 ! ... check condition
 
-   if ((txorigin(inwt) == 'origin') .and. (nnwnwt(inwt) > One)) call Stop(txroutine, 'txorigin == origin .and. nnwnwt(inwt) > One', uout)
+   if ((txoriginnwt(inwt) == 'origin') .and. (nnwnwt(inwt) > One)) call Stop(txroutine, 'txoriginnwt == origin .and. nnwnwt(inwt) > One', uout)
 
 ! ... allocate memory
 
@@ -2218,7 +2230,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
 !  ... set network origin
 
-         if (txorigin(inwt) == 'origin') then
+         if (txoriginnwt(inwt) == 'origin') then
             rorigin = Zero
          else
             if (lbcsph) then

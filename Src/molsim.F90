@@ -2039,7 +2039,7 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs2**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs2))+Half*(var(1+ioffset)%avs2)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs2**2, (npct(ict)-1)*(var(1+ioffset)%avs2))
-         write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+         if (var(10+ioffset)%avs2 /= One) write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', & ! if condition: Avoid division by zero
            (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs2**2*InvFlt(var(3+ioffset)%avs2**2)
@@ -2064,7 +2064,7 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs1**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs1))+Half*(var(1+ioffset)%avs1)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs1**2, (npct(ict)-1)*(var(1+ioffset)%avs1))
-         write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+         if (var(10+ioffset)%avs1 /= One) write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', & ! if condition: Avoid division by zero
            (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs1**2*InvFlt(var(3+ioffset)%avs1**2)
@@ -2139,7 +2139,7 @@ subroutine NetworkAver(iStage)
       do inw = 1, nnw
          inwt = inwtnwn(inw)
          ioffset = ntype*(inwt-1)
-         call CalcNetworkProperty(inw, vaux, NetworkProperty)
+         call CalcNetworkProperty(inw, NetworkProperty)
          var(1+ioffset)%value = var(1+ioffset)%value + NetworkProperty%rg2
          var(2+ioffset)%value = var(2+ioffset)%value + NetworkProperty%rg2s
          var(3+ioffset)%value = var(3+ioffset)%value + NetworkProperty%rg2m

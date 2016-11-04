@@ -69,7 +69,7 @@ subroutine Particle(iStage)
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
-                          nnwt, nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt,            &
+                          nnwt,                                                         &
                           ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,              &
                           nct, txct, ncct, npptct, txcopolymer, lspma,                  &
                           nblockict,                                                    &
@@ -79,6 +79,8 @@ subroutine Particle(iStage)
                           lradatbox, itestpart
 
    namelist /nmlRepeating/  rep_iblock_ict
+
+   namelist /nmlNetworkConfiguration/ nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -90,11 +92,7 @@ subroutine Particle(iStage)
       txelec                ='charge'
       lclink                =.false.
       lmultigraft           =.false.
-      nnwt                    = 0        
-      nnwnwt(1:mnnwt)         = 0        
-      ncctnwt(1:mnct,1:mnnwt) = 0        
-      iptclnwt(1:mnnwt)       = 0                               
-      txtoponwt(1:mnnwt)      ='default' 
+      nnwt                  = 0        
       maxnbondcl            = 1
       ngen                  =-1
       ictgen(0:mngen)       = 1
@@ -123,7 +121,7 @@ subroutine Particle(iStage)
       lradatbox       =.false.
       itestpart       = 0
 
-! ... read input data
+! ... read input data (nmlParticle)
 
       rewind(uin)
       read(uin,nmlParticle)
@@ -133,6 +131,8 @@ subroutine Particle(iStage)
          call LowerCase(txcopolymer(ict))
       end do
 
+! ... read input data (nmlRepeating)
+
       if(any(txcopolymer(1:nct) == 'repeating')) then
          if(.not. allocated(rep_iblock_ict)) then
             allocate(rep_iblock_ict(maxval(nblockict(1:nct)),nct))
@@ -141,6 +141,61 @@ subroutine Particle(iStage)
          rep_iblock_ict = block_type(0,0)
          rewind(uin)
          read(uin,nmlRepeating)
+      end if
+
+! ... read input data (nmlNetworkConfiguration)
+
+      if (nnwt > 0) then
+         if (.not.allocated(nnwnwt)) then
+            allocate(nnwnwt(nnwt)) ! default value given below
+         end if
+         if (.not.allocated(ncctnwt)) then
+            allocate(ncctnwt(nct,nnwt)) ! default value given below
+         end if
+         if (.not.allocated(iptclnwt)) then
+            allocate(iptclnwt(nnwt)) ! default value given below
+         end if
+         if (.not.allocated(txtoponwt)) then
+            allocate(txtoponwt(nnwt)) ! default value given below
+         end if
+         if (.not.allocated(txnwt)) then
+            allocate(txnwt(nnwt)) ! default value given below
+         end if
+         if (.not.allocated(nctnwt)) then
+            allocate(nctnwt(nnwt))
+            nctnwt = 0
+         end if
+         if (.not.allocated(ncnwt)) then
+            allocate(ncnwt(nnwt))
+            ncnwt = 0
+         end if
+         if (.not.allocated(npnwt)) then
+            allocate(npnwt(nnwt))
+            npnwt = 0
+         end if
+         if (.not.allocated(nclnwt)) then
+            allocate(nclnwt(nnwt))
+            nclnwt = 0
+         end if
+         if (.not.allocated(npweakchargenwt)) then
+            allocate(npweakchargenwt(nnwt))
+            npweakchargenwt = 0
+         end if
+         if (.not.allocated(lptnwt)) then
+            allocate(lptnwt(npt,nnwt))
+            lptnwt = .false.
+         end if
+
+         ! ... default values of input variables
+         nnwnwt(1:nnwt)        = 0        
+         ncctnwt(1:nct,1:nnwt) = 0        
+         iptclnwt(1:nnwt)      = 0                               
+         txtoponwt(1:nnwt)     = 'default' 
+         txnwt(1:nnwt)         = 'network'
+
+         ! ... read input
+         rewind(uin)
+         read(uin,nmlNetworkConfiguration)
       end if
 
 ! ... determine types of atoms
@@ -334,7 +389,7 @@ subroutine Particle(iStage)
          write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particles            = ', np
          write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atoms                = ', na
          if (lnetwork) then
-         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of network types        = ', nnwt, '(',mnnwt,')'
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of network types        = ', nnwt
          end if
          if (lchain) then
          write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains types         = ', nct, '(',mnct,')'
@@ -524,7 +579,6 @@ subroutine SetObjectParam1
 
 ! ... check some input variables
 
-   if (nnwt > mnnwt)                   call Stop(txroutine, 'nnwt > mnnwt', uout)
    if (ngen > mngen)                   call Stop(txroutine, 'ngen > mngen', uout)
    if (count(natpt(1:npt) > mnat) > 0) call Stop(txroutine, 'natpt > mnat', uout)
    if (nct > mnct)                     call Stop(txroutine, 'nct > mnct', uout)
@@ -1356,10 +1410,15 @@ end subroutine Set_nclnwt
 !........................................................................
 
 subroutine Set_lptnwt ! particle type ipt used for network type inwt?
+   lptnwt = .false.
    do ipt = 1, npt
       do inwt = 1, nnwt
-         lptnwt(ipt,inwt) =.false.
-         if ((ncctnwt(ictpt(ipt),inwt) > 0) .or. (ipt == iptclnwt(inwt))) lptnwt(ipt,inwt) =.true.
+         if (ipt == iptclnwt(inwt)) then ! ... ipt forms the nodes of networks of type inwt
+            lptnwt(ipt,inwt) = .true. 
+            exit
+         else if (ictpt(ipt) > 0) then ! ... ipt forms chains ... 
+            if (ncctnwt(ictpt(ipt),inwt) > 0) lptnwt(ipt,inwt) = .true. ! ... and is part of networks of type inwt
+         end if
       end do
    end do
 end subroutine Set_lptnwt
@@ -1595,8 +1654,9 @@ subroutine Set_lpnnwn ! particle part of network?
    end if
    do inw = 1, nnw
       do ip = 1, np
-         lpnnwn(ip,inw) =.false.
-         if (inwncn(icnpn(ip)) == inw) lpnnwn(ip,inw) =.true.
+         if (icnpn(ip) > 0) then
+            if (inwncn(icnpn(ip)) == inw) lpnnwn(ip,inw) =.true.
+         end if
       end do
       inwt = inwtnwn(inw)
       do iclloc = 1, nclnwt(inwt)
