@@ -325,7 +325,6 @@ module MolModule
    integer(4)              :: na           ! number of atoms
    integer(4)              :: na_alloc     ! number of atoms (for memory allocation)
    integer(4)              :: np_alloc     ! number of particles (for memory allocation)
-   integer(4)              :: nc_alloc     ! number of chains (for memory allocation)
    integer(4), allocatable :: nnwnwt(:)    !*number of networks of network type [allocate with nnwt]
    integer(4)              :: ncct(mnct)   !*number of chains of a chain type
    integer(4)              :: nppt(mnpt)   !*number of particles of a particle type

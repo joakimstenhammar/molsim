@@ -615,7 +615,6 @@ subroutine SetObjectParam1
    call Set_lchain        ! flag for chains
    call Set_ncl           ! number of cross-links
    call Set_nc            ! number of chains
-   call Set_nc_alloc      ! number of chains for memory allocation
    call Set_nptct         ! number of particle types of a chain type
    call Set_npct          ! number of particles a chain type
    call Set_nphn          ! number of particles of the hierarchical structure
@@ -741,21 +740,6 @@ end subroutine Set_ncl
 subroutine Set_nc ! number of chains
    nc = sum(ncct(1:nct))
 end subroutine Set_nc
-
-!........................................................................
-
-subroutine Set_nc_alloc ! number of chains for memory allocation
-   logical :: first = .true.
-   if (lmvt) then
-      if (first) then
-        nc_alloc = facmvt*nc
-        first = .false.
-      end if
-   else
-      nc_alloc = nc
-   end if
-   if (nc > nc_alloc) call Stop(txroutine, 'nc > nc_alloc', uout)
-end subroutine Set_nc_alloc
 
 !........................................................................
 
@@ -1531,7 +1515,7 @@ end subroutine Set_icnclocnwn
 
 subroutine Set_inwtcn  ! chain -> its network type
    if (.not.allocated(inwtcn)) then 
-      allocate(inwtcn(nc_alloc))
+      allocate(inwtcn(nc))
       inwtcn = 0
    end if
    inwtcn(1:nc) = 0
@@ -1550,7 +1534,7 @@ end subroutine Set_inwtcn
 
 subroutine Set_inwncn ! chain -> its network
    if (.not.allocated(inwncn)) then 
-      allocate(inwncn(nc_alloc))
+      allocate(inwncn(nc))
       inwncn = 0
    end if
    inwncn(1:nc) = 0
