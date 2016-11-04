@@ -147,43 +147,15 @@ subroutine Particle(iStage)
 
       if (nnwt > 0) then
          if (.not.allocated(nnwnwt)) then
-            allocate(nnwnwt(nnwt)) ! default value given below
-         end if
-         if (.not.allocated(ncctnwt)) then
-            allocate(ncctnwt(nct,nnwt)) ! default value given below
-         end if
-         if (.not.allocated(iptclnwt)) then
-            allocate(iptclnwt(nnwt)) ! default value given below
-         end if
-         if (.not.allocated(txtoponwt)) then
-            allocate(txtoponwt(nnwt)) ! default value given below
-         end if
-         if (.not.allocated(txnwt)) then
-            allocate(txnwt(nnwt)) ! default value given below
-         end if
-         if (.not.allocated(nctnwt)) then
-            allocate(nctnwt(nnwt))
-            nctnwt = 0
-         end if
-         if (.not.allocated(ncnwt)) then
-            allocate(ncnwt(nnwt))
-            ncnwt = 0
-         end if
-         if (.not.allocated(npnwt)) then
-            allocate(npnwt(nnwt))
-            npnwt = 0
-         end if
-         if (.not.allocated(nclnwt)) then
-            allocate(nclnwt(nnwt))
-            nclnwt = 0
-         end if
-         if (.not.allocated(npweakchargenwt)) then
-            allocate(npweakchargenwt(nnwt))
+            allocate(nnwnwt(nnwt),ncctnwt(nct,nnwt),iptclnwt(nnwt),txtoponwt(nnwt), &
+                     txnwt(nnwt),nctnwt(nnwt),ncnwt(nnwt),npnwt(nnwt),nclnwt(nnwt), &
+                     npweakchargenwt(nnwt),lptnwt(npt,nnwt))
+            nctnwt          = 0
+            ncnwt           = 0
+            npnwt           = 0
+            nclnwt          = 0
             npweakchargenwt = 0
-         end if
-         if (.not.allocated(lptnwt)) then
-            allocate(lptnwt(npt,nnwt))
-            lptnwt = .false.
+            lptnwt          = .false.
          end if
 
          ! ... default values of input variables
