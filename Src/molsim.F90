@@ -1943,6 +1943,7 @@ end subroutine IndDipMomAver
 subroutine ChainAver(iStage)
 
    use MolModule
+   use, intrinsic :: IEEE_ARITHMETIC
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -2039,8 +2040,13 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs2**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs2))+Half*(var(1+ioffset)%avs2)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs2**2, (npct(ict)-1)*(var(1+ioffset)%avs2))
-         if (var(10+ioffset)%avs2 /= One) write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', & ! if condition: Avoid division by zero
-           (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
+         if (var(10+ioffset)%avs2 == One) then 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            IEEE_VALUE((var(10+ioffset)%avs2),IEEE_QUIET_NAN)
+         else 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
+         end if
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs2**2*InvFlt(var(3+ioffset)%avs2**2)
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
@@ -2064,8 +2070,13 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs1**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs1))+Half*(var(1+ioffset)%avs1)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs1**2, (npct(ict)-1)*(var(1+ioffset)%avs1))
-         if (var(10+ioffset)%avs1 /= One) write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', & ! if condition: Avoid division by zero
-           (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
+         if (var(10+ioffset)%avs1 == One) then 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            IEEE_VALUE((var(10+ioffset)%avs1),IEEE_QUIET_NAN)
+         else 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
+         end if
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs1**2*InvFlt(var(3+ioffset)%avs1**2)
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
