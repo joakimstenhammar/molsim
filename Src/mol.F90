@@ -132,7 +132,7 @@ module MolModule
       real(8)    :: lpree                   ! persistence length based on end-to-end separation
       real(8)    :: lprg                    ! persistence length based on radius of gyration
       real(8)    :: shape                   ! square end-to-end distance / square of radius of gyration
-      real(8)    :: asph                    ! asphericity (JCP 100, 636(1994))
+      real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
       real(8)    :: torp                    ! toroidicity
    end type chainprop_var
    
@@ -144,7 +144,7 @@ module MolModule
       real(8)    :: rg2s                    ! square extention along principal axes (smallest)
       real(8)    :: rg2m                    ! square extention along principal axes (middle)
       real(8)    :: rg2l                    ! square extention along principal axes (largest)
-      real(8)    :: asph                    ! asphericity (JCP 100, 636(1994))
+      real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
       real(8)    :: alpha                   ! degree of ionization (for titrating systems)
       real(8)    :: eivr(3,3)               ! normalized eigenvectors of the principal frame
    end type networkprop_var
