@@ -2548,7 +2548,7 @@ subroutine RotTranBrush
 ! ... get rotation displacement
 
    call SphRandom(iseed, rotaxis(1), rotaxis(2), rotaxis(3))
-   alpha = drotbrush(iptmove)*(Random(iseed-0.5))
+   alpha = drotbrush(iptmove)*(Random(iseed)-0.5)
 
 ! ... get translational displacement
 
