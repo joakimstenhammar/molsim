@@ -3331,16 +3331,18 @@ end subroutine SubStr
 !*                                                                      *
 !************************************************************************
 
-! ... get sign and magnitude of a real number as well as normalize it to 1-10
+! ... get sign and magnitude of a real number
 
-subroutine SignMagn(x, isign, imagn)
+subroutine SignMagn(xin, isign, imagn)
    implicit none
    real(8), parameter :: zero = 0.0d0 , one = 1.0d0 , ten = 10.0d0
-   real(8), intent(inout)  :: x      ! real number
+   real(8), intent(in)  :: xin      ! real number
    integer(4), intent(out) :: isign  ! sign
    integer(4), intent(out) :: imagn  ! magnitude	
+   real(8) :: x
    isign = 1                         ! initialize
    imagn = 0                         ! initialize
+   x = xin
    if (x < zero) then                ! x < 0 (invert x)
       isign = -1
       x = -x
