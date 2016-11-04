@@ -2655,12 +2655,19 @@ end subroutine SphRandom
 
 ! ... return the inverse of an integer
 
-real(8) function InvInt(i)
+elemental real(8) function InvInt(i)
    implicit none
    integer(4), intent(in) :: i
    InvInt = 0.0d0
    if (i > 0) InvInt = 1.0d0/real(i)
 end function InvInt
+
+elemental real(8) function InvInt_dbl(i)
+   implicit none
+   integer(8), intent(in) :: i
+   InvInt_dbl = 0.0d0
+   if (i > 0) InvInt_dbl = 1.0d0/real(i)
+end function InvInt_dbl
 
 !************************************************************************
 !*                                                                      *
