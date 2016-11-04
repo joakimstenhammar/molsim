@@ -4105,7 +4105,7 @@ subroutine GetRandomTrialPos(dtran, iseed, nptm, ipnptm, ro, rotm, drotm)
    implicit none
    real(8),    intent(in)  :: dtran       ! translational displacement
                                           ! > 0 square region, < 0 spherical region
-   integer(4), intent(in)  :: iseed       ! random number seed
+   integer(4), intent(inout)  :: iseed       ! random number seed
    integer(4), intent(in)  :: nptm        ! number of moving particles
    integer(4), intent(in)  :: ipnptm(*)  ! moving particles
    real(8),    intent(in)  :: ro(3,*)     ! particle position
@@ -4163,7 +4163,7 @@ subroutine GetRandomTrialOri(drot, iseed, ori, oritm)
 
    real(8),    intent(in)  :: drot         ! rotational displacement
                                            ! > 0 rotation around a box axis, < 0 rotation around a particle axis
-   integer(4), intent(in)  :: iseed        ! random number seed
+   integer(4), intent(inout)  :: iseed        ! random number seed
    real(8),    intent(in)  :: ori(3,3)     ! particle orientation
    real(8),    intent(out) :: oritm(3,3)   ! particle orientation, for trial configuration
 
