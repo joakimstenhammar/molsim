@@ -378,18 +378,18 @@ subroutine Particle(iStage)
          write(uout,'()')
 
          if (lnetwork) then
-         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of networks             = ', nnw
+         write(uout,'(a,i7)')             'number of networks             = ', nnw
          end if
          if (lhierarchical) then
-         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of hierarchical struc.  = ', nh
+         write(uout,'(a,i7)')             'number of hierarchical struc.  = ', nh
          end if
          if (lchain) then
-         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains               = ', nc
+         write(uout,'(a,i7)')             'number of chains               = ', nc
          end if
-         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particles            = ', np
-         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atoms                = ', na
+         write(uout,'(a,i7)')             'number of particles            = ', np
+         write(uout,'(a,i7)')             'number of atoms                = ', na
          if (lnetwork) then
-         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of network types        = ', nnwt
+         write(uout,'(a,i7)')             'number of network types        = ', nnwt
          end if
          if (lchain) then
          write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains types         = ', nct, '(',mnct,')'
