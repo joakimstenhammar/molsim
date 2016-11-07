@@ -251,7 +251,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
          do ibl = 1, mnblocklen                                                 ! loop over block lenghts
             var(i)%av_s2(ibl) = var(i)%av_s2(ibl) + var(i)%value                ! add data to av_s2
             var(i)%fl_s2(ibl) = var(i)%fl_s2(ibl) + var(i)%value**2             ! add data to fl_s2
-            if (mod(var(i)%nsamp,blocklen(ibl)) == 0) then                      ! check for end of block lenght
+            if (mod(var(i)%nsamp,blocklen(ibl)) == 0) then                      ! check for end of block length
                var(i)%nblock(ibl) = var(i)%nblock(ibl) + 1                      ! update number of blocks
                var(i)%av_s2(ibl) = var(i)%av_s2(ibl) * blockleni(ibl)           ! get average of the block
                var(i)%av_s1(ibl) = var(i)%av_s1(ibl) + var(i)%av_s2(ibl)        ! sum up av_sd for run average
@@ -287,7 +287,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
             call PolFit(1, nblocklen, xfit, yfit_av, wfit, 0, 6, afit_av, dum1, dum2)                 ! fit
             call PolFit(1, nblocklen, xfit, yfit_fl, wfit, 0, 6, afit_fl, dum1, dum2)                 ! fit
             var(i)%av_sd_extrap = max(Zero,PolVal(1,afit_av,0.0d0))                                   ! extrapolated sd of average
-            var(i)%fl_sd_extrap = max(Zero,PolVal(1,afit_fl,0.0d0))                                   ! extrapolated sd of fuctuation
+            var(i)%fl_sd_extrap = max(Zero,PolVal(1,afit_fl,0.0d0))                                   ! extrapolated sd of fluctuation
             var(i)%av_sd_stateff = (var(i)%nblock(1)*InvInt(var(i)%nblock(1)-1))*(var(i)%av_sd_extrap*InvFlt(var(i)%av_sd(1)))**2
             var(i)%fl_sd_stateff = (var(i)%nblock(1)*InvInt(var(i)%nblock(1)-1))*(var(i)%fl_sd_extrap*InvFlt(var(i)%fl_sd(1)))**2
          else
@@ -338,7 +338,7 @@ subroutine ScalarSampleWrite(iStage)
       write(unit,'(a,t35,g12.5,t90,g12.5)') 'fluctuation              = ', var(i)%av_sd(1)*sqrt(real(var(i)%nblock(1)-1))*norm, var(i)%fl_sd(1)*sqrt(real(var(i)%nblock(1)-1))*norm
       write(unit,'(a,t35,g12.5,t90,g12.5)') 'extrapolated uncertainty = ', var(i)%av_sd_extrap*norm,                            var(i)%fl_sd_extrap*norm
       write(unit,'(a,t35,g12.5,t90,g12.5)') 'statistical inefficiency = ', var(i)%av_sd_stateff,                                var(i)%fl_sd_stateff
-   case (3)                          ! before simulation
+   case (3)
       close(unit)
    end select
 
@@ -455,6 +455,7 @@ subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
           do i = ilow, iupp
              var(i)%av_s1 = sqrt(var(i)%av_s1*var(i)%norm)  ! sqrt(...)
              var(i)%av_sd = sqrt(var(i)%av_s1**2+var(i)%av_sd*var(i)%norm) - var(i)%av_s1  ! sd of sqrt of average
+             !var(i)%av_sd_extrap = sqrt(var(i)%av_s1**2+var(i)%av_sd_extrap*var(i)%norm) - var(i)%av_s1  ! sd of sqrt of average
              var(i)%fl_s1 = sqrt(var(i)%fl_s1*var(i)%norm)  ! sqrt(...)
              var(i)%fl_sd = sqrt(var(i)%fl_s1**2+var(i)%fl_sd*var(i)%norm) - var(i)%fl_s1  ! sd of sqrt of flucutation
           end do
