@@ -219,6 +219,12 @@ subroutine Particle(iStage)
 
       call SetObjectParam1
 
+! ... check condition
+
+      if (lweakcharge .and. lnetwork .and. lpolyatom) then
+         call Stop(txroutine,'(lweakcharge .and. lnetwork) not adapted for monoatomic systems',uout)
+      end if
+
 ! ... allocate memory
 
       if (.not.allocated(ro)) then 
