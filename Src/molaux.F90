@@ -1578,6 +1578,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
 ! ... counter
    integer(4)  :: inwt, ip, iploc
+   integer(4)  :: irow
 
 ! ... determine network type
 
@@ -1599,18 +1600,11 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
       dr(1:3) = ro(1:3,ip)-rcom(1:3)
       call PBCr2(dr(1),dr(2),dr(3),r2)
       vsumr = vsumr + r2
-      mimat(1,1) = mimat(1,1)+dr(1)**2    ! +dy**2+dz**2
-      mimat(1,2) = mimat(1,2)+dr(1)*dr(2) ! -dx*dy
-      mimat(1,3) = mimat(1,3)+dr(1)*dr(3) ! -dx*dz
-      mimat(2,2) = mimat(2,2)+dr(2)**2    ! +dx**2+dz**2
-      mimat(2,3) = mimat(2,3)+dr(2)*dr(3) ! -dy*dz
-      mimat(3,3) = mimat(3,3)+dr(3)**2    ! +dx**2+dy**2
+      do irow = 1, 3
+         mimat(irow,1:3) = mimat(irow,1:3) + dr(irow)*dr(1:3)
+      end do
    end do
    NetworkProperty%rg2 = vsumr*massinwt(inwt)
-
-   mimat(2,1) = mimat(1,2)
-   mimat(3,1) = mimat(1,3)
-   mimat(3,2) = mimat(2,3)
 
    call Diag(3,mimat,diagonal,eivr,nrot)
 
