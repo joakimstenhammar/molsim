@@ -1585,7 +1585,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
 ! ... center of mass
 
-   rcom(1:3) = CalcCOM(ro(1:3,1:np),MASK=lpnnwn(1:np,inw),MASS=masspt(iptpn(1:np)))
+   rcom(1:3) = CalcCOM(ro(1:3,1:np),MASK=lpnnwn(1:np,inw),MASS=massp(1:np))
    NetworkProperty%ro(1:3) = rcom(1:3)
 
 ! ... radius of gyration squared and projections on the prinicpal axes
