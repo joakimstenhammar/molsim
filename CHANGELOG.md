@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [1.3.4] - 2016-11-04 Porygon
+### Fixed
+- fixed some errors occuring when compiling with `mode=warn`
+
+## [1.3.3] - 2016-11-01 Porygon
+### Changed
+- allow `Hierarchical Move` to be used in par
+
+## [1.3.2] - 2016-11-01 Porygon
+### Fixed
+- updated faulty `Testin` file
+
+## [1.3.1] - 2016-10-26 - Porygon
+### Fixed
+- added support for `gfortran`
+
+## [1.3.0] - 2016-10-17 - Porygon
+- Changes described in [complexation-analysis](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/complexation-analysis)
+
+## [1.2.1] - 2016-10-17 - Ditto
+### Changed
+- `molsim_par` also passes on exit code of Molsim
+
+## [1.2.0] - 2016-10-12 - Ditto
+- Changes described in [SSO](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/sso)
+
+## [1.1.3] - 2016-09-07 - Smettbo
+### Fixed
+- Added requirement for group devision of `SubstructureDF`
+
+## [1.1.2] - 2016-09-06 - Smettbo
+- Changes described in [Bugfixes](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/bugfixes)
+
+
 ## [1.0.0] - 2016-08-15 - Raupy
 ### Changed
 - The Makefile was adapted to work on the RWTH Cluster
