@@ -455,9 +455,10 @@ subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
           do i = ilow, iupp
              var(i)%av_s1 = sqrt(var(i)%av_s1*var(i)%norm)  ! sqrt(...)
              var(i)%av_sd = sqrt(var(i)%av_s1**2+var(i)%av_sd*var(i)%norm) - var(i)%av_s1  ! sd of sqrt of average
-             !var(i)%av_sd_extrap = sqrt(var(i)%av_s1**2+var(i)%av_sd_extrap*var(i)%norm) - var(i)%av_s1  ! sd of sqrt of average
+             var(i)%av_sd_extrap = sqrt(var(i)%av_s1(1)**2+var(i)%av_sd_extrap*var(i)%norm) - var(i)%av_s1(1)  ! sd of sqrt of average (extrapolated value)
              var(i)%fl_s1 = sqrt(var(i)%fl_s1*var(i)%norm)  ! sqrt(...)
              var(i)%fl_sd = sqrt(var(i)%fl_s1**2+var(i)%fl_sd*var(i)%norm) - var(i)%fl_s1  ! sd of sqrt of flucutation
+             var(i)%fl_sd_extrap = sqrt(var(i)%fl_s1(nblocklen)**2+var(i)%fl_sd_extrap*var(i)%norm) - var(i)%fl_s1(nblocklen)  ! sd of sqrt of flucutation (extrapolated value)
           end do
        end if
 
