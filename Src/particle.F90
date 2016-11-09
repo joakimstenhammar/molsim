@@ -556,10 +556,11 @@ subroutine SetObjectParam1
    implicit none
 
    character(40), parameter :: txroutine ='SetObjectParam1'
-   integer(4) :: igen, iseg, ic, icloc, ict, jct, ictjct, ip, iplow, iploc, ipt, jpt, iptjpt
-   integer(4) :: ia, ialoc, ia0, ia1, ia2, iat, iatloc, iaat, jat, iatjat
-   integer(4) :: nptemp
-   integer(4) :: inw, inwt, jnwt, inwloc, nctemp, inwtjnwt, iclow, icctloc, iclloc
+   integer(4) :: ia, ialoc, iat, iatloc         ! atoms
+   integer(4) :: ip, iploc, ipt, nptemp         ! particles
+   integer(4) :: iseg, ic, icloc, ict, nctemp   ! chains
+   integer(4) :: igen                           ! hierarchical
+   integer(4) :: inw, inwt, inwloc, iclloc      ! network
 
 ! ... check some input variables
 
@@ -876,6 +877,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    character(40), parameter :: txroutine ='Set_ipnsegcn'
    integer(4) :: nrep, irep, nreplen
    integer(4) :: iblock
+   integer(4) :: iplow
    integer(4), allocatable :: npset(:)
    integer(4), allocatable :: ipstart(:)
    integer(4), allocatable :: iptiseg(:)
@@ -1156,6 +1158,10 @@ end subroutine Set_ipnan
 !........................................................................
 
 subroutine Set_iatan  ! atom -> its atom type
+   integer(4)  :: ia0
+   integer(4)  :: ia1
+   integer(4)  :: ia2
+   integer(4)  :: iaat
    if (.not.allocated(iatan)) then 
       allocate(iatan(na_alloc))
       iatan = 0
@@ -1277,6 +1283,8 @@ end subroutine Set_ianat
 !........................................................................
 
 subroutine Set_ictct  ! two chain types -> chain type pair
+   integer(4)  :: jct
+   integer(4)  :: ictjct
    if (.not.allocated(ictct)) then 
       allocate(ictct(nct,nct))
       ictct = 0
@@ -1294,6 +1302,8 @@ end subroutine Set_ictct
 !........................................................................
 
 subroutine Set_iptpt  ! two particle types -> particle type pair
+   integer(4)  :: jpt
+   integer(4)  :: iptjpt
    if (.not.allocated(iptpt)) then 
       allocate(iptpt(npt,npt))
       iptpt = 0
@@ -1311,6 +1321,8 @@ end subroutine Set_iptpt
 !........................................................................
 
 subroutine Set_iatat  ! two atom types -> atom type pair
+   integer(4)  :: jat
+   integer(4)  :: iatjat
    if (.not.allocated(iatat)) then 
       allocate(iatat(nat,nat))
       iatat = 0
@@ -1482,6 +1494,8 @@ end subroutine Set_inwtct
 
 subroutine Set_icnclocnwn ! local chain and network -> its chain
    character(40), parameter :: txroutine = 'Set_icnclocnwn'
+   integer(4)               :: iclow
+   integer(4)               :: icctloc
    if (.not.allocated(icnclocnwn)) then 
       allocate(icnclocnwn(maxval(ncnwt(1:nnwt)),nnw))
       icnclocnwn = 0
@@ -1561,6 +1575,8 @@ end subroutine Set_inwnnwt
 !........................................................................
 
 subroutine Set_inwtnwt  ! two network types -> network type pair
+   integer(4)  :: inwtjnwt
+   integer(4)  :: jnwt
    if (.not.allocated(inwtnwt)) then 
       allocate(inwtnwt(nnwt,nnwt))
       inwtnwt = 0
