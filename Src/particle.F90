@@ -573,7 +573,7 @@ subroutine SetObjectParam1
 
    do ipt = 1, npt
       nptemp = sum(ncct(1:nct)*npptct(ipt,1:nct))
-      if (nptemp > 0 .and. (nptemp/= nppt(ipt))) then
+      if ( .not.((nptemp == 0).or.(nptemp == nppt(ipt)))) then
          write(uout,'(a,i5)') 'ipt = ', ipt
          write(uout,'(a,i5)') 'sum(ncct(1:nct)*npptct(ipt,1:nct)) = ', sum(ncct(1:nct)*npptct(ipt,1:nct))
          write(uout,'(a,i5)') 'nppt(ipt) = ', nppt(ipt)
@@ -585,7 +585,7 @@ subroutine SetObjectParam1
 
    do ict = 1, nct
       nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
-      if (nctemp > 0 .and. (nctemp/= ncct(ict))) then
+      if (.not.((nctemp == 0).or.(nctemp == ncct(ict)))) then
          write(uout,'(a,i5)') 'ict = ', ict
          write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
          write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
