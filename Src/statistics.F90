@@ -369,7 +369,7 @@ subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
                                                 ! = 1, fluctuation quantities are normalized with sqrt(norm)
                                                 ! = 2, for rms quantities
 
-   integer(4) :: i
+   integer(4) :: i, nblocklen
 
    select case (iStage)
    case (6)  ! after a macrostep
@@ -453,6 +453,7 @@ subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
           end do
        else if (iopt == 2) then
           do i = ilow, iupp
+             nblocklen = var(i)%nblocklen
              var(i)%av_s1 = sqrt(var(i)%av_s1*var(i)%norm)  ! sqrt(...)
              var(i)%av_sd = sqrt(var(i)%av_s1**2+var(i)%av_sd*var(i)%norm) - var(i)%av_s1  ! sd of sqrt of average
              var(i)%av_sd_extrap = sqrt(var(i)%av_s1(1)**2+var(i)%av_sd_extrap*var(i)%norm) - var(i)%av_s1(1)  ! sd of sqrt of average (extrapolated value)
