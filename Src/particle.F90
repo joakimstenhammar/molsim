@@ -581,7 +581,7 @@ subroutine SetObjectParam1
       end if
    end do
 
-! ... check consistence among nnwnwt, npptnwt, and ncct
+! ... check consistence among nnwnwt and ncct
 
    do ict = 1, nct
       nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
@@ -590,6 +590,17 @@ subroutine SetObjectParam1
          write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
          write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
          call Stop(txroutine, 'inconsistency among nnwnwt, ncctnwt, and ncct', uout)
+      end if
+   end do
+
+! ... check whether nppt(iptclnwt(inwt)) is a multiple of nnwnwt(inwt)
+
+   do inwt = 1, nnwt
+      if (.not.(modulo(nppt(iptclnwt(inwt)),nnwnwt(inwt)) == 0)) then
+         write(uout,'(a,i5)') 'inwt = ', inwt
+         write(uout,'(a,i5)') 'nppt(iptclnwt(inwt) = ', nppt(iptclnwt(inwt))
+         write(uout,'(a,i5)') 'nnwnwt(inwt) = ', nnwnwt(inwt)
+         call Stop(txroutine, 'number of node particles no multiple of number of corresponding network', uout)
       end if
    end do
 
