@@ -406,7 +406,6 @@ subroutine Particle(iStage)
             write(uout,'(a,t55,8i8)') 'particle number of chain for first branch point     = ', ibranchpbeg(0:ngen-1)
             write(uout,'(a,t55,8i8)') 'particle increment of chain between branch points   = ', ibranchpinc(0:ngen-1)
             write(uout,'(a,t55,5i8)') 'number of crosslinks                                = ', ncl
-            write(uout,'()')
          end if
 
          if (lchain) then
@@ -422,7 +421,6 @@ subroutine Particle(iStage)
             end do
             if (lspma) write(uout,'(a)')
             if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
-            write(uout,'()')
          end if
 
          write(uout,'()')
@@ -442,7 +440,6 @@ subroutine Particle(iStage)
                   txat(iat), naat(iat), massat(iat), radat(iat), zat(iat), latweakcharge(iat), pK(iat), sigat(iat), epsat(iat), zatalpha(iat)
             end do
          end do
-         write(uout,'()')
 
          if (count(latweakcharge(1:nat)) > 0) then
             write(uout,'()')
