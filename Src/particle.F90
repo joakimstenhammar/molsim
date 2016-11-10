@@ -1966,6 +1966,9 @@ subroutine SetObjectParam2
       end if
       do inwt = 1, nnwt
          massnwt(inwt)  = sum(masspt(iptpn(1:np)), MASK=lpnnwn(1:np,inwnnwt(inwt)))
+         if (massnwt(iwnt) == Zero) then
+            call Warn(txroutine,'NetworkProperties flawed for massnwt(inwt) == Zero',uout)
+         end if
          if (massnwt(inwt) > Zero) massinwt(inwt) = One/massnwt(inwt)
       end do      
    end if
