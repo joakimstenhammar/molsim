@@ -508,14 +508,6 @@ subroutine SetConfiguration
       end if
    end if
 
-! ... initialize for crosslinked structures made by MakeCrossLink
-
-    if (lclink .and. .not.lhierarchical) then
-       ncl = 0
-       nbondcl = 0
-       bondcl = 0
-    end if
-
 ! ... set particles
 
    do ipt = 1, npt
