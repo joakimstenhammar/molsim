@@ -1787,10 +1787,14 @@ end subroutine TestChainPointer
 subroutine TestNetworkPointer(unit)
    integer(4),   intent(in) :: unit
    integer(4)               :: inw, inwt, icloc, ic, iclloc
+   character(len=3)         :: txfmt
    call WriteHead(3, 'Test'//trim(txroutine)//' network', unit)
-   write(unit,'(a,10i5)') 'inwtnwt(1:nnwt,1:nnwt)', inwtnwt(1:nnwt,1:nnwt)
-   write(unit,'(a,10i5)') 'inwnnwt(1:nnwt)', inwnnwt(1:nnwt)
-   write(unit,'(a,10i5)') 'inwtct(1:nct)', inwtct(1:nct)
+   write(txfmt,'(i3)') nnwtnwt
+   write(unit,'(a,'//trim(adjustl(txfmt))//'i5)') 'inwtnwt(1:nnwt,1:nnwt)', inwtnwt(1:nnwt,1:nnwt)
+   write(txfmt,'(i3)') nnwt
+   write(unit,'(a,'//trim(adjustl(txfmt))//'i5)') 'inwnnwt(1:nnwt)', inwnnwt(1:nnwt)
+   write(txfmt,'(i3)') nct
+   write(unit,'(a,'//trim(adjustl(txfmt))//'i5)') 'inwtct(1:nct)', inwtct(1:nct)
    write(unit,'()')
    write(unit,'(a)') '        inw, inwtnwn(inw),      icloc,   icnclocnwn(icloc,inw) = i'
    write(unit,'(4i11)') ((inw,inwtnwn(inw),icloc,icnclocnwn(icloc,inw),icloc = 1,ncnwt(inwtnwn(inw))),inw = 1,nnw)
@@ -1970,7 +1974,7 @@ subroutine SetObjectParam2
       end if
       do inwt = 1, nnwt
          massnwt(inwt)  = sum(masspt(iptpn(1:np)), MASK=lpnnwn(1:np,inwnnwt(inwt)))
-         if (massnwt(iwnt) == Zero) then
+         if (massnwt(inwt) == Zero) then
             call Warn(txroutine,'NetworkProperties flawed for massnwt(inwt) == Zero',uout)
          end if
          if (massnwt(inwt) > Zero) massinwt(inwt) = One/massnwt(inwt)
