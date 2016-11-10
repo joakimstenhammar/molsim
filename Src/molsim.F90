@@ -2107,7 +2107,7 @@ subroutine NetworkAver(iStage)
 
    character(40), parameter :: txroutine ='NetworkAver'
    character(80), parameter :: txheading ='network quantities'
-   integer(4)   , parameter :: ntype = 6          ! number of types of properties
+   integer(4)   , save      :: ntype ! number of types of properties is being set below
    integer(4)   , save      :: nvar
    type(scalar_var), allocatable, save :: var(:)
    type(networkprop_var) :: NetworkProperty
@@ -2121,6 +2121,11 @@ subroutine NetworkAver(iStage)
    select case (iStage)
    case (iReadInput)
 
+      if (lweakcharge) then
+         ntype = 6
+      else
+         ntype = 5
+      end if
       nvar = nnwt*ntype
       allocate(var(nvar))
 
@@ -2131,8 +2136,9 @@ subroutine NetworkAver(iStage)
          var(3+ioffset)%label = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
          var(4+ioffset)%label = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
          var(5+ioffset)%label = '<asphericity>                  = ' ! asphericity
+         if (lweakcharge) &
          var(6+ioffset)%label = '<alpha>                        = ' ! degree of ionization
-         var(1+ioffset:6+ioffset)%norm = One/nnwnwt(inwt)
+         var(1+ioffset:ntype+ioffset)%norm = One/nnwnwt(inwt)
      end do
 
    case (iBeforeSimulation)
@@ -2156,6 +2162,7 @@ subroutine NetworkAver(iStage)
          var(3+ioffset)%value = var(3+ioffset)%value + NetworkProperty%rg2m
          var(4+ioffset)%value = var(4+ioffset)%value + NetworkProperty%rg2l
          var(5+ioffset)%value = var(5+ioffset)%value + NetworkProperty%asph
+         if (lweakcharge) &
          var(6+ioffset)%value = var(6+ioffset)%value + NetworkProperty%alpha
       end do
       call ScalarSample(iStage, 1, nvar, var)
@@ -2171,10 +2178,7 @@ subroutine NetworkAver(iStage)
          call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
-         call ScalarWrite(iStage, 1+ioffset, 5+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
-         if (lweakcharge) then
-            call ScalarWrite(iStage, 6+ioffset, 6+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) ! ... degree of ionization
-         end if
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
          write(uout,'()')
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
            Asphericity(var(2+ioffset)%avs2**2,var(3+ioffset)%avs2**2,var(4+ioffset)%avs2**2) 
@@ -2191,10 +2195,7 @@ subroutine NetworkAver(iStage)
          call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
-         call ScalarWrite(iStage, 1+ioffset, 5+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
-         if (lweakcharge) then
-            call ScalarWrite(iStage, 6+ioffset, 6+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) ! ... degree of ionization
-         end if
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
          write(uout,'()')
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
            Asphericity(var(2+ioffset)%avs1**2,var(3+ioffset)%avs1**2,var(4+ioffset)%avs1**2)
