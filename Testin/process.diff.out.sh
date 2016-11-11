@@ -73,7 +73,7 @@ do
          ;;
          "c"|"save")
             cp $d_sav/$txfile $d_bak/${txfile}.bak
-            #cp $d_out/$txfile $d_sav/$txfile
+            cp $d_out/$txfile $d_sav/$txfile
             echo -e "\nBackup and overwrite $txfile in $d_sav"
             echo $txfile >> $f_don
             fracdone=$( cat $f_don | wc -l | awk -v nline_awk=$nline '{ printf "%f5.1, $1/nline_awk }')
