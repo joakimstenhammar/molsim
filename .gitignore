@@ -8,4 +8,6 @@ version.conf
 Src/make.arch
 Testin/out/
 Testin/diff.out
+Testin/bak/
+Testin/process.done.txt
 .nfs*
