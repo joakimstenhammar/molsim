@@ -76,7 +76,7 @@ do
             cp $d_out/$txfile $d_sav/$txfile
             echo -e "\nBackup and overwrite $txfile in $d_sav"
             echo $txfile >> $f_don
-            fracdone=$( cat $f_don | wc -l | awk -v nline_awk=$nline '{ printf "%f5.1, $1/nline_awk }')
+            fracdone=$( cat $f_don | wc -l | awk -v nfile_awk=$nfile '{ printf "%f5.1, $1/nline_awk }')
             echo -e "$fracdone % of changed files have been reviewed.\n"
             lmenu=false
          ;;
