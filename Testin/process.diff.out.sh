@@ -28,11 +28,12 @@ d_bak="./bak"
 f_dif="./diff.out"
 f_don="./process.done.txt"
 
-nopt=4
+nopt=5
 txopt[1]="diff of differing files"
 txopt[2]="vimdiff of differing files"
 txopt[3]="copy output file to Save"
-txopt[4]="interrupt execution"
+txopt[4]="skip this instance"
+txopt[5]="interrupt execution"
 
 sedc='/total cpu time since start/d; /\*\* *version/d; /cpu time/q; /^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}[ ]\{5\}[0-9]\{2\}:[0-9]\{2\}:[0-9]\{2\}$/d'
 diffhead=$( for i in {1..110}; do echo -ne "-"; done )
@@ -93,11 +94,15 @@ do
             lmenu=false
          ;;
          4)
-            echo "Interrupt script! You can continue from this point at any time."
+            echo -e "\nThis instance is being skipped. Proceding with the next instance ...\n"
+            lmenu=false
+         ;;
+         5)
+            echo -e "\nInterrupt script! You can continue from this point at any time.\n"
             exit
          ;;
          *)
-            echo "No valid choice. Please enter a valid choice"
+            echo -e "\nNo valid choice. Please enter a valid choice\n"
          ;;
       esac
    done
