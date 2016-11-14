@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:32
+2016-11-14     12:23:17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -117,8 +117,8 @@ number of chains types         =       1     (     10 )
 number of particle types       =       1     (     10 )
 number of atom types           =       1     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
+chain type         no of chains             topology  npptct(1,ict)
+----------         ------------             --------  -------------
 20-mer                 2                    block        20               
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
@@ -443,7 +443,7 @@ asphericity (<2:nd moments>)   =          0.40438
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:33
+2016-11-14     12:23:17
 
 title   : testchain: 20-mer                                                                         
 
@@ -649,12 +649,12 @@ number density                 =      4.00000E-05    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.00000        0.00000        0.00000        0.00000             0.
-<r(ee)**2>**0.5                =         34.36596        0.00001        0.00000        0.00000             0.
-<r(g)**2>**0.5                 =         17.47407        0.00000        0.00306        0.00000             0.
-smallest rms mom. p.a.         =          2.87447        0.00000        0.00054        0.00000             0.
-intermediate rms mom. p.a.     =          8.42781        0.00000        0.00129        0.00000             0.
-largest rms mom. p.a.          =         15.03505        0.00000        0.00000        0.00000             0.
+<r(bb)**2>**0.5                =          5.00000        0.00000        0.00000        0.00021             0.
+<r(ee)**2>**0.5                =         34.36596        0.00000        0.00000        0.00114             0.
+<r(g)**2>**0.5                 =         17.47407        0.00000        0.00306        0.00014             0.
+smallest rms mom. p.a.         =          2.87447        0.00000        0.00054        0.00004             0.
+intermediate rms mom. p.a.     =          8.42781        0.00000        0.00129        0.00007             0.
+largest rms mom. p.a.          =         15.03505        0.00000        0.00000        0.00039             0.
 <persist. l.>  (r(ee))         =          8.71589        0.00000        0.00000        0.00000             0.
 <persist. l.>  (r(g))          =         15.97456        0.00000        0.00000        0.00000             0.
 <angle>                        =        139.08108        0.00000        0.00000        0.00000             0.
@@ -680,13 +680,13 @@ asphericity (<2:nd moments>)   =          0.40438
          Coordinate            0.00         0.01 
          ControlAver           0.00         0.00 
          MainAver              0.00         0.01 
-         IOMolsim              0.00         0.01 
+         IOMolsim              0.00         0.00 
          SetVList              0.00         0.00 
-         MCPass                0.24         0.98 
-          ChainMove            0.01         0.03  
-          DUTotal              0.21         0.87  
-           DUTwoBody           0.15         0.64   
-           DUBond              0.01         0.05   
-           DUAngle             0.02         0.09   
+         MCPass                0.23         0.97 
+          ChainMove            0.01         0.04  
+          DUTotal              0.20         0.85  
+           DUTwoBody           0.14         0.60   
+           DUBond              0.01         0.04   
+           DUAngle             0.03         0.11   
  
-total cpu time since start (s)        0.25
+total cpu time since start (s)        0.24

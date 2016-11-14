@@ -213,7 +213,7 @@ ictct(1:nct,nct)    1    2    2    3
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -235,7 +235,7 @@ ictct(1:nct,nct)    1    2    2    3
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:45
+2016-11-14     12:24:20
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -329,20 +329,20 @@ number of chains types         =       2     (     10 )
 number of particle types       =       3     (     10 )
 number of atom types           =       3     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-repeating              2                    repeating     4    5   10     
-random                 2                    random       10   10   10     
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
+----------         ------------             --------  -------------  -------------  -------------
+repeating              2                    repeating     4             5            10
+random                 2                    random       10            10            10
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
 --------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
 A              28
-                         aA       1      0.000    0.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
+                         aA       1      1.000    0.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
 B              30
-                         aB       1      0.000    0.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
+                         aB       1      1.000    0.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
 C              40
-                         aC       1      0.000    0.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
+                         aC       1      1.000    0.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
 
 molecular input frame: A         
 ---------------------- -
@@ -388,9 +388,9 @@ site1        0.00000   0.00000   0.00000
 
 particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
 --------             ----           -------------------------        -------------------------
-A                   0.000          0.000     0.000     0.000             0.000
-B                   0.000          0.000     0.000     0.000             0.000
-C                   0.000          0.000     0.000     0.000             0.000
+A                   1.000          0.000     0.000     0.000             0.000
+B                   1.000          0.000     0.000     0.000             0.000
+C                   1.000          0.000     0.000     0.000             0.000
 
 **************************************************************************************************************
 *                                          two-body potential data                                           *
@@ -660,7 +660,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:45
+2016-11-14     12:24:20
 
 title   : 1 pe and their counterions confined to a sphere of radius 100                             
 
@@ -777,7 +777,7 @@ chain: repeating
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
 <r(bb)**2>**0.5                =          5.00000        0.00000        0.00000        0.00000             0.
-<r(ee)**2>**0.5                =         55.41240        0.00001        0.00657        0.00000             0.
+<r(ee)**2>**0.5                =         55.41240        0.00000        0.00657        0.00000             0.
 <r(g)**2>**0.5                 =         19.43705        0.00000        0.00000        0.00000             0.
 smallest rms mom. p.a.         =          2.53580        0.00000        0.00045        0.00000             0.
 intermediate rms mom. p.a.     =          7.04212        0.00000        0.00182        0.00000             0.
@@ -1432,18 +1432,18 @@ distribution functions of a substructure
          section            cpu time (s)     fraction
          -------            ------------     --------
          Coordinate               0.00         0.00
-         ControlAver              0.00         0.01
-         MainAver                 0.01         0.02
+         ControlAver              0.00         0.00
+         MainAver                 0.00         0.01
          Group                    0.00         0.00
-         StaticDriver             0.01         0.02
+         StaticDriver             0.01         0.03
           SubStructureDF          0.01         0.02
          IOMolsim                 0.00         0.00
          SetVList                 0.00         0.00
-         MCPass                   0.36         0.94
-          SPartMove               0.02         0.05
-          DUTotal                 0.19         0.50
-           DUTwoBody              0.07         0.18
+         MCPass                   0.37         0.95
+          SPartMove               0.02         0.06
+          DUTotal                 0.19         0.48
+           DUTwoBody              0.07         0.19
            DUBond                 0.02         0.05
            DUAngle                0.02         0.06
  
-total cpu time since start (s)        0.39
+total cpu time since start (s)        0.40

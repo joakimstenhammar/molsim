@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:07
+2016-11-14     12:23:49
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -122,17 +122,17 @@ number of chains types         =       1     (     10 )
 number of particle types       =       2     (     10 )
 number of atom types           =       2     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-100-mer                1                    block       100    0          
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
+----------         ------------             --------  -------------  -------------
+100-mer                1                    block       100             0 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
 --------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
 pe-           100
-                         bead     1      0.000    2.000       -1.0000        T      0.0000     0.0000    0.0000    0.0000
+                         bead     1      1.000    2.000       -1.0000        T      0.0000     0.0000    0.0000    0.0000
 cion+         100
-                         cion+    1      0.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
+                         cion+    1      1.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
 
 pH =    1.000
 type of monoatomic particle carring counter charge to titratable charge =        2
@@ -167,8 +167,8 @@ cion+        0.00000   0.00000   0.00000
 
 particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
 --------             ----           -------------------------        -------------------------
-pe-                 0.000          0.000     0.000     0.000             0.000
-cion+               0.000          0.000     0.000     0.000             0.000
+pe-                 1.000          0.000     0.000     0.000             0.000
+cion+               1.000          0.000     0.000     0.000             0.000
 
 **************************************************************************************************************
 *                                          two-body potential data                                           *
@@ -866,7 +866,7 @@ asphericity (<2:nd moments>)   =          0.67717
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:07
+2016-11-14     12:23:49
 
 title   : Carnal et al. (Macromolecules, 2010, 43, 2544)                                            
 
@@ -1433,12 +1433,12 @@ fractional charge: cion+       =            0.382          0.053          1.427 
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.29852        0.42104        1.01129        0.02089             1.
-<r(ee)**2>**0.5                =        244.03053     2206.04915      123.87052     1229.27126             0.
-<r(g)**2>**0.5                 =         80.51884       76.93350       25.21309       67.56351             0.
-smallest rms mom. p.a.         =         11.30386        5.97218        6.53278       10.88886             0.
-intermediate rms mom. p.a.     =         25.50470       60.13291       18.84494       32.03168             0.
-largest rms mom. p.a.          =         75.53156      150.04959       30.45720      149.64934             0.
+<r(bb)**2>**0.5                =          5.29852        0.03958        1.01129        0.01028             1.
+<r(ee)**2>**0.5                =        244.03053        4.47892      123.87052        4.86633             0.
+<r(g)**2>**0.5                 =         80.51884        0.47633       25.21309        1.30602             0.
+smallest rms mom. p.a.         =         11.30386        0.26115        6.53278        0.78610             0.
+intermediate rms mom. p.a.     =         25.50470        1.15281       18.84494        0.83153             0.
+largest rms mom. p.a.          =         75.53156        0.98684       30.45720        2.36490             0.
 <persist. l.>  (r(ee))         =         59.37437        1.75853       14.57656        1.25607             0.
 <persist. l.>  (r(g))          =         48.30027        0.26325        6.26919        0.99588             0.
 <angle>                        =        131.38427        1.51615        3.55191        0.20149             1.
@@ -2049,15 +2049,15 @@ number of images made          =    1
          StaticDriver           0.00         0.01
           ChainTypeDF           0.00         0.01 
          ImageDriver            0.00         0.01
-         IOMolsim               0.00         0.01
+         IOMolsim               0.00         0.00
          SetVList               0.00         0.00
-         MCPass                 0.29         0.94
+         MCPass                 0.28         0.95
           ChainMove             0.00         0.00 
-          DUTotal               0.28         0.90 
-           DUTwoBody            0.26         0.85  
-           DUBond               0.00         0.01  
-          SPartMove             0.00         0.01 
+          DUTotal               0.26         0.90 
+           DUTwoBody            0.24         0.83  
+           DUBond               0.01         0.02  
+          SPartMove             0.01         0.02 
           PivotMove             0.00         0.00 
-          ChargeChange          0.00         0.01 
+          ChargeChange          0.00         0.00 
  
-total cpu time since start (s)        0.32
+total cpu time since start (s)        0.30

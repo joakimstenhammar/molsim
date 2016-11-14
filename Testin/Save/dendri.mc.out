@@ -255,7 +255,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -277,7 +277,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:36
+2016-11-14     12:24:11
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -381,12 +381,12 @@ particle number of chain for first branch point     =        1       4       4
 particle increment of chain between branch points   =        0       0       0
 number of crosslinks                                =       14
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-1-mer1                 1                    block         1    0    0    0
-4-mer2                 2                    block         0    4    0    0
-4-mer3                 4                    block         0    0    4    0
-4-mer4                 8                    block         0    0    0    4
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
+----------         ------------             --------  -------------  -------------  -------------  -------------
+1-mer1                 1                    block         1             0             0             0
+4-mer2                 2                    block         0             4             0             0
+4-mer3                 4                    block         0             0             4             0
+4-mer4                 8                    block         0             0             0             4
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -948,7 +948,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:36
+2016-11-14     12:24:11
 
 title   : third generation dendrimer                                                                
 
@@ -1234,12 +1234,12 @@ chain: 4-mer2
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          6.19251        4.19618        2.69716        2.56005             9.
-<r(ee)**2>**0.5                =         11.44870       14.88981        5.90072        6.42574             5.
-<r(g)**2>**0.5                 =          5.02661        1.37075        1.84896        0.76597             3.
-smallest rms mom. p.a.         =          0.90464        0.44412        0.80492        0.10417            14.
-intermediate rms mom. p.a.     =          2.10479        0.62528        1.14634        0.25647             6.
-largest rms mom. p.a.          =          4.47418        1.73598        1.97635        0.63180             5.
+<r(bb)**2>**0.5                =          6.19251        0.16715        2.69716        0.22768             9.
+<r(ee)**2>**0.5                =         11.44870        0.32065        5.90072        0.26624             5.
+<r(g)**2>**0.5                 =          5.02661        0.06772        1.84896        0.10082             3.
+smallest rms mom. p.a.         =          0.90464        0.11538        0.80492        0.03173            14.
+intermediate rms mom. p.a.     =          2.10479        0.07300        1.14634        0.05463             6.
+largest rms mom. p.a.          =          4.47418        0.09597        1.97635        0.07837             5.
 <persist. l.>  (r(ee))         =          6.69864        0.19956        0.93552        0.16166             5.
 <persist. l.>  (r(g))          =        149.88855       49.59395      199.09104       83.90303             8.
 <angle>                        =         98.22488        5.29434       17.72217        5.11275            11.
@@ -1258,12 +1258,12 @@ chain: 4-mer3
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.00000        0.00000        0.00058        0.00000             0.
-<r(ee)**2>**0.5                =         14.05452        0.00000        0.00000        0.00000             0.
-<r(g)**2>**0.5                 =          5.35912        0.00000        0.00131        0.00000             0.
-smallest rms mom. p.a.         =          0.30750        0.00000        0.00000        0.00000             0.
-intermediate rms mom. p.a.     =          0.97112        0.00000        0.00000        0.00000             0.
-largest rms mom. p.a.          =          5.26142        0.00000        0.00076        0.00000             0.
+<r(bb)**2>**0.5                =          5.00000        0.00000        0.00058        0.00007             0.
+<r(ee)**2>**0.5                =         14.05452        0.00000        0.00000        0.00088             0.
+<r(g)**2>**0.5                 =          5.35912        0.00000        0.00131        0.00002             0.
+smallest rms mom. p.a.         =          0.30750        0.00000        0.00000        0.00002             0.
+intermediate rms mom. p.a.     =          0.97112        0.00000        0.00000        0.00006             0.
+largest rms mom. p.a.          =          5.26142        0.00000        0.00076        0.00003             0.
 <persist. l.>  (r(ee))         =          9.08432        0.00000        0.00000        0.00000             0.
 <persist. l.>  (r(g))          =       1025.63955        0.00001        0.00000        0.00003             0.
 <angle>                        =        152.48322        0.00000        0.00000        0.00000             0.
@@ -1282,12 +1282,12 @@ chain: 4-mer4
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.00000        0.00000        0.00000        0.00000             0.
-<r(ee)**2>**0.5                =         13.44206        0.00001        0.00000        0.00000             0.
-<r(g)**2>**0.5                 =          5.19955        0.00000        0.00000        0.00000             0.
-smallest rms mom. p.a.         =          0.45649        0.00000        0.00009        0.00000             0.
-intermediate rms mom. p.a.     =          1.18054        0.00000        0.00015        0.00000             0.
-largest rms mom. p.a.          =          5.04314        0.00000        0.00000        0.00000             0.
+<r(bb)**2>**0.5                =          5.00000        0.00000        0.00000        0.00036             0.
+<r(ee)**2>**0.5                =         13.44206        0.00000        0.00000        0.00056             0.
+<r(g)**2>**0.5                 =          5.19955        0.00000        0.00000        0.00028             0.
+smallest rms mom. p.a.         =          0.45649        0.00000        0.00009        0.00001             0.
+intermediate rms mom. p.a.     =          1.18054        0.00000        0.00015        0.00003             0.
+largest rms mom. p.a.          =          5.04314        0.00000        0.00000        0.00016             0.
 <persist. l.>  (r(ee))         =          8.52296        0.00000        0.00000        0.00000             1.
 <persist. l.>  (r(g))          =        860.89477        0.00001        0.00000        0.00002             0.
 <angle>                        =        142.64558        0.00000        0.00000        0.00001             0.
@@ -1351,16 +1351,16 @@ number of images made          =    1
          -------         ------------     --------
          Coordinate            0.00         0.01 
          ControlAver           0.00         0.00 
-         MainAver              0.05         0.26 
+         MainAver              0.05         0.28 
          ImageDriver           0.00         0.01 
          IOMolsim              0.00         0.00 
          SetVList              0.00         0.00 
-         MCPass                0.12         0.67 
+         MCPass                0.12         0.64 
           SPartMove            0.01         0.05  
           DUTotal              0.09         0.49  
-           DUTwoBody           0.03         0.17   
+           DUTwoBody           0.03         0.18   
            DUBond              0.01         0.07   
-         DUCrossLink           0.01         0.04 
+         DUCrossLink           0.01         0.05 
           PivotMove            0.00         0.00  
  
-total cpu time since start (s)        0.19
+total cpu time since start (s)        0.18

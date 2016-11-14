@@ -1375,7 +1375,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -1397,7 +1397,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:45
+2016-11-14     12:24:20
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1501,12 +1501,12 @@ particle number of chain for first branch point     =        1       4       4
 particle increment of chain between branch points   =        0       0       0
 number of crosslinks                                =       84
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-1-mer1                 1                    block         1    0    0    0
-4-mer2                 4                    block         0    4    0    0
-4-mer3                16                    block         0    0    4    0
-4-mer4                64                    block         0    0    0    4
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
+----------         ------------             --------  -------------  -------------  -------------  -------------
+1-mer1                 1                    block         1             0             0             0
+4-mer2                 4                    block         0             4             0             0
+4-mer3                16                    block         0             0             4             0
+4-mer4                64                    block         0             0             0             4
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -2627,7 +2627,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:45
+2016-11-14     12:24:20
 
 title   : third generation dendrimer                                                                
 
@@ -3473,12 +3473,12 @@ chain: 4-mer2
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.26984        1.57690        1.15698        1.37075             1.
-<r(ee)**2>**0.5                =         14.34029       19.79666        3.21561        2.29209             2.
-<r(g)**2>**0.5                 =          5.46432        2.36641        1.12958        0.49772             2.
-smallest rms mom. p.a.         =          0.45719        0.13036        0.31482        0.07050             1.
-intermediate rms mom. p.a.     =          1.02311        0.07607        0.38628        0.08752             0.
-largest rms mom. p.a.          =          5.34818        2.60203        1.16132        0.20103             2.
+<r(bb)**2>**0.5                =          5.26984        0.03727        1.15698        0.13967             1.
+<r(ee)**2>**0.5                =         14.34029        0.17154        3.21561        0.08790             2.
+<r(g)**2>**0.5                 =          5.46432        0.05387        1.12958        0.05380             2.
+smallest rms mom. p.a.         =          0.45719        0.03435        0.31482        0.02685             1.
+intermediate rms mom. p.a.     =          1.02311        0.00925        0.38628        0.02735             0.
+largest rms mom. p.a.          =          5.34818        0.06047        1.16132        0.02144             2.
 <persist. l.>  (r(ee))         =          9.14310        0.12752        0.26235        0.02895             2.
 <persist. l.>  (r(g))          =        895.22344       18.86983       64.49942       35.80563             1.
 <angle>                        =        138.32373        1.22989        4.71509        3.87889             1.
@@ -3588,18 +3588,18 @@ number of images made          =    1
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.01         0.04 
+         Coordinate            0.01         0.05 
          ControlAver           0.00         0.00 
-         MainAver              0.04         0.17 
+         MainAver              0.03         0.17 
          ImageDriver           0.01         0.03 
          IOMolsim              0.00         0.02 
          SetVList              0.00         0.01 
-         MCPass                0.15         0.68 
+         MCPass                0.13         0.69 
           SPartMove            0.01         0.03  
-          DUTotal              0.13         0.59  
-           DUTwoBody           0.08         0.38   
-           DUBond              0.01         0.03   
-         DUCrossLink           0.01         0.04 
+          DUTotal              0.12         0.60  
+           DUTwoBody           0.08         0.40   
+           DUBond              0.01         0.05   
+         DUCrossLink           0.01         0.03 
           PivotMove            0.00         0.00  
  
-total cpu time since start (s)        0.22
+total cpu time since start (s)        0.20

@@ -73,7 +73,7 @@ ictct(1:nct,nct)    1
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -95,7 +95,7 @@ ictct(1:nct,nct)    1
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:30
+2016-11-14     12:23:15
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -184,19 +184,19 @@ number of chains types         =       1     (     10 )
 number of particle types       =       3     (     10 )
 number of atom types           =       3     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-triblock               2                    regular       2    8    4     
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
+----------         ------------             --------  -------------  -------------  -------------
+triblock               2                    regular       2             8             4
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
 --------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
 a               4
-                         a        1      0.000    2.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
+                         a        1      1.000    2.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
 b              16
-                         b        1      0.000    2.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
+                         b        1      1.000    2.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
 c               8
-                         c        1      0.000    2.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
+                         c        1      1.000    2.000        0.0000        F      0.0000     0.0000    0.0000    0.0000
 
 molecular input frame: a         
 ---------------------- -
@@ -242,9 +242,9 @@ c            0.00000   0.00000   0.00000
 
 particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
 --------             ----           -------------------------        -------------------------
-a                   0.000          0.000     0.000     0.000             0.000
-b                   0.000          0.000     0.000     0.000             0.000
-c                   0.000          0.000     0.000     0.000             0.000
+a                   1.000          0.000     0.000     0.000             0.000
+b                   1.000          0.000     0.000     0.000             0.000
+c                   1.000          0.000     0.000     0.000             0.000
 
 **************************************************************************************************************
 *                                          two-body potential data                                           *
@@ -547,7 +547,7 @@ asphericity (<2:nd moments>)   =          0.29618
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:30
+2016-11-14     12:23:15
 
 title   : testchain: tricopolymer (abbbbccabbbbcc)                                                  
 
@@ -762,16 +762,16 @@ asphericity (<2:nd moments>)   =          0.29618
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.38 
-         ControlAver           0.00         0.13 
-         MainAver              0.00         0.21 
-         IOMolsim              0.00         0.08 
+         Coordinate            0.00         0.45 
+         ControlAver           0.00         0.00 
+         MainAver              0.00         0.32 
+         IOMolsim              0.00         0.23 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.20 
-          SPartMove            0.00         0.14  
-          DUTotal              0.00         0.05  
-           DUTwoBody           0.00         0.02   
-           DUBond              0.00         0.01   
-           DUAngle             0.00         0.01   
+         MCPass                0.00         0.00 
+          SPartMove            0.00         0.00  
+          DUTotal              0.00         0.00  
+           DUTwoBody           0.00         0.00   
+           DUBond              0.00         0.00   
+           DUAngle             0.00         0.00   
  
 total cpu time since start (s)        0.01
