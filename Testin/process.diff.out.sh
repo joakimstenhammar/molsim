@@ -35,6 +35,7 @@ txopt[3]="copy output file to Save"
 txopt[4]="interrupt execution"
 
 sedc='/total cpu time since start/d; /\*\* *version/d; /cpu time/q; /^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}[ ]\{5\}[0-9]\{2\}:[0-9]\{2\}:[0-9]\{2\}$/d'
+diffhead=$( for i in {1..110}; do echo -ne "-"; done )
 
 # ... Has ./goall.sh been executed?
 if [ ! -d $d_out ]; then 
@@ -75,7 +76,9 @@ do
       read -n 1 -r choice
       case $choice in
          1) # 'sedc' and diff-command adapted from Pascal
+            echo $diffhead
             diff --ignore-space-change --ignore-blank-lines <(sed -e "$sedc" $d_out/$txfile) <( sed -e "$sedc" $d_sav/$txfile)
+            echo $diffhead
          ;;
          2)
             vimdiff $d_out/$txfile $d_sav/$txfile
