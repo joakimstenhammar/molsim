@@ -28,6 +28,14 @@ d_bak="./bak"
 f_dif="./diff.out"
 f_don="./process.done.txt"
 
+nopt=4
+txopt[1]="diff of differing files"
+txopt[2]="vimdiff of differing files"
+txopt[3]="copy output file to Save"
+txopt[4]="interrupt execution"
+
+sedc='/total cpu time since start/d; /\*\* *version/d; /cpu time/q; /^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}[ ]\{5\}[0-9]\{2\}:[0-9]\{2\}:[0-9]\{2\}$/d'
+
 # ... Has ./goall.sh been executed?
 if [ ! -d $d_out ]; then 
    echo -e "\n You have to run ./goall.sh first! \n\tExiting ..."
@@ -60,27 +68,27 @@ do
    while $lmenu
    do 
       echo -e "\n! ! ! ! $txfile differs ! ! ! !\n"
-      echo -e "How would you like to procede? Choose from\n\ta) vimdiff\n\tb) diff\n\tc) save file\n\td) interrupt\n"
+      echo -e "How would you like to procede? Choose from"
+      for iopt in `seq 1 1 $nopt`; do echo -e "\t${iopt}) ${txoption[iopt]}\n"; done
       echo "ENTER CHOICE: ..."
       read -n 1 -r choice
       case $choice in
-         "a"|"vimdiff")
-            vimdiff $d_out/$txfile $d_sav/$txfile
-         ;;
-         "b"|"diff") # 'sedc' and diff-command adapted from Pascal
-            sedc='/total cpu time since start/d; /\*\* *version/d; /cpu time/q; /^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}[ ]\{5\}[0-9]\{2\}:[0-9]\{2\}:[0-9]\{2\}$/d'
+         1) # 'sedc' and diff-command adapted from Pascal
             diff --ignore-space-change --ignore-blank-lines <(sed -e "$sedc" $d_out/$txfile) <( sed -e "$sedc" $d_sav/$txfile)
          ;;
-         "c"|"save")
+         2)
+            vimdiff $d_out/$txfile $d_sav/$txfile
+         ;;
+         3)
             cp $d_sav/$txfile $d_bak/${txfile}.bak
             cp $d_out/$txfile $d_sav/$txfile
             echo -e "\nBackup and overwrite $txfile in $d_sav"
             echo $txfile >> $f_don
-            fracdone=$( cat $f_don | wc -l | awk -v nfile_awk=$nfile '{ printf "%f5.1, $1/nline_awk }')
+            fracdone=$( cat $f_don | wc -l | awk -v nfile_awk=$nfile '{ printf "%5.1f", $1*100/nfile_awk }')
             echo -e "$fracdone % of changed files have been reviewed.\n"
             lmenu=false
          ;;
-         "d"|"interrupt")
+         4)
             echo "Interrupt script! You can continue from this point at any time."
             exit
          ;;
