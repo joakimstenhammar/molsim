@@ -69,7 +69,8 @@ do
    do 
       echo -e "\n! ! ! ! $txfile differs ! ! ! !\n"
       echo -e "How would you like to procede? Choose from"
-      for iopt in `seq 1 1 $nopt`; do echo -e "\t${iopt}) ${txopt[iopt]}\n"; done
+      for iopt in `seq 1 1 $nopt`; do echo -e "\t${iopt}) ${txopt[iopt]}"; done
+      echo
       echo "ENTER CHOICE: ..."
       read -n 1 -r choice
       case $choice in
