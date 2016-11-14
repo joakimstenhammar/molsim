@@ -676,7 +676,7 @@ subroutine SetObjectParam1
        call Set_ihnpn  ! particle -> its hierarchical structure
    end if
 
-   if (lnetwork) then
+   if (lclink .and. .not.lhierarchical) then
       maxvalnbondcl = maxval(maxnbondcl(1:npt))
       if (.not.allocated(nbondcl)) then 
          allocate(nbondcl(np_alloc))
