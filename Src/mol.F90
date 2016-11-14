@@ -347,10 +347,10 @@ module MolModule
    character(30), allocatable :: txtoponwt(:) !*type of network [allocate with nnwt]
    character(30) :: txcopolymer(mnct)      !*type of copolymer
    logical       :: lspma                  !*control tacticity
-   character(9), allocatable :: txnwt(:)     !*name of network type [allocate with nnwt]
-   character(9) :: txct(mnct)             !*name of chain type
-   character(9) :: txpt(mnpt)             !*name of particle type
-   character(9) :: txat(mnat)             !*name of atom type
+   character(10), allocatable :: txnwt(:)     !*name of network type [allocate with nnwt]
+   character(10) :: txct(mnct)             !*name of chain type
+   character(10) :: txpt(mnpt)             !*name of particle type
+   character(10) :: txat(mnat)             !*name of atom type
    character(20), allocatable :: txnwtnwt(:) ! name of network type-network type pair
    character(20), allocatable :: txctct(:) ! name of chain type-chain type pair
    character(20), allocatable :: txptpt(:) ! name of particle type-particle type pair
