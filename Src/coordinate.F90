@@ -92,6 +92,7 @@ subroutine Coordinate(iStage)
       if (txstart == 'setconf') then                    ! configuration from SetConfiguration
 
          if (lweakcharge) call SetChargeWeakChargeCase
+
          call SetConfiguration
 
          if (lmd) then
@@ -438,7 +439,6 @@ subroutine SetConfiguration
   if (lclink) then
      if (count(txsetconf == 'periodicnetwork') + count(txsetconf(:)(1:12) == 'hierarchical') + count(txsetconf == 'network') == 0) &
         call Stop(txroutine, 'lclink: no call of SetPeriodicNetwork, SetNetwork or SetHierarchical', uout)
-     if (count(txsetconf == 'periodicnetwork') > 0) ncl = 4*nppt(iptnode)
   end if
 
 ! ... if hierarchical structures, copy particle type data from generation zero
