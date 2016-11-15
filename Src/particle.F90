@@ -730,8 +730,6 @@ subroutine Set_ncl ! number of cross-links
    ncl = 0
    if(ngen > -1) then
       ncl = sum(nbranch(0:ngen-1)*ncct(ictgen(0:ngen-1)))
-   else if (lnetwork) then
-      ncl = 0 ! In order to initialize ncl. ncl will be determined later.
    end if
 end subroutine Set_ncl
 
