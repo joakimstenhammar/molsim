@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:19
+2016-11-15     12:20:23
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -119,19 +119,19 @@ number of chains types         =       1     (     10 )
 number of particle types       =       3     (     10 )
 number of atom types           =       3     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-strand                16                    block         0   10    0     
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
+----------         ------------             --------  -------------  -------------  -------------
+strand                16                    block         0            10             0
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
 --------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
 node            8
-                         bead1    1      0.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
+                         bead1    1      1.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
 strand        160
-                         bead2    1      0.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
+                         bead2    1      1.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
 countion      168
-                         counti   1      0.000    2.000       -1.0000        F      0.0000     0.0000    0.0000    0.0000
+                         counti   1      1.000    2.000       -1.0000        F      0.0000     0.0000    0.0000    0.0000
 
 molecular input frame: node      
 ---------------------- ----
@@ -177,9 +177,9 @@ countion     0.00000   0.00000   0.00000
 
 particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
 --------             ----           -------------------------        -------------------------
-node                0.000          0.000     0.000     0.000             0.000
-strand              0.000          0.000     0.000     0.000             0.000
-countion            0.000          0.000     0.000     0.000             0.000
+node                1.000          0.000     0.000     0.000             0.000
+strand              1.000          0.000     0.000     0.000             0.000
+countion            1.000          0.000     0.000     0.000             0.000
 
 **************************************************************************************************************
 *                                          two-body potential data                                           *
@@ -335,7 +335,7 @@ total potential energy (NkT)   =          1.17116
 pressure (NkT/V)(excl. contact)=          1.60462
 pressure (kT) (excl. contact)  =      3.12010E-04
  
-total cpu time since start (s)        0.02
+total cpu time since start (s)        0.03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -442,7 +442,7 @@ asphericity (<2:nd moments>)   =          0.95357
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:20
+2016-11-15     12:20:23
 
 title   : charged periodic network + counterions                                                    
 
@@ -560,12 +560,12 @@ number density                 =      1.94444E-04    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.48098       20.15000        1.64615        3.28078             2.
-<r(ee)**2>**0.5                =         42.34340       49.49162        2.62682       11.63466             1.
-<r(g)**2>**0.5                 =         13.64586        7.82292        1.07794        0.85667             2.
-smallest rms mom. p.a.         =          0.92663        2.53127        0.57348        0.49814             2.
-intermediate rms mom. p.a.     =          1.43518        5.32488        0.85020        0.25326             2.
-largest rms mom. p.a.          =         13.53850        0.00000        0.60110        1.20230             0.
+<r(bb)**2>**0.5                =          5.48098        0.11371        1.64615        0.06115             2.
+<r(ee)**2>**0.5                =         42.34340        0.03651        2.62682        0.13495             1.
+<r(g)**2>**0.5                 =         13.64586        0.01790        1.07794        0.02456             2.
+smallest rms mom. p.a.         =          0.92663        0.08176        0.57348        0.02653             2.
+intermediate rms mom. p.a.     =          1.43518        0.11161        0.85020        0.00926             2.
+largest rms mom. p.a.          =         13.53850        0.00000        0.60110        0.05955             0.
 <persist. l.>  (r(ee))         =         21.01885        0.37542        0.81426        1.58853             2.
 <persist. l.>  (r(g))          =        254.72430       99.86898      247.71892      958.30742             2.
 <angle>                        =        134.44868        4.14011        9.51682       27.12493             2.
@@ -1153,16 +1153,16 @@ distribution functions
          Coordinate               0.00         0.01
          ControlAver              0.00         0.00
          MainAver                 0.01         0.02
-         DistFunc                 0.01         0.04
+         DistFunc                 0.01         0.03
          IOMolsim                 0.01         0.02
-         SetVList                 0.02         0.08
-         MCPass                   0.25         0.82
-          SPartMove               0.01         0.02
-          DUTotal                 0.23         0.75
-           DUTwoBody              0.09         0.31
-           DUTwoBodyEwald         0.09         0.29
-            UEwaldRecStd          0.07         0.24 
+         SetVList                 0.03         0.08
+         MCPass                   0.27         0.82
+          SPartMove               0.01         0.03
+          DUTotal                 0.24         0.75
+           DUTwoBody              0.10         0.32
+           DUTwoBodyEwald         0.10         0.30
+            UEwaldRecStd          0.09         0.26 
            DUBond                 0.01         0.02
-         DUCrossLink              0.01         0.02
+         DUCrossLink              0.00         0.01
  
-total cpu time since start (s)        0.32
+total cpu time since start (s)        0.35
