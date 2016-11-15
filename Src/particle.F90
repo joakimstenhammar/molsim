@@ -1766,11 +1766,11 @@ end subroutine Set_bondcl
 !........................................................................
 
 subroutine TestChainPointer(unit)
-   integer(4) :: ic, iseg, ip
+   integer(4) :: ic, iseg, ip, ict, jct
    integer(4),   intent(in) :: unit
    call WriteHead(3, 'Test'//trim(txroutine)//' chain', unit)
-   write(unit,'(a,100i5)') 'ictcn(1:nc)', ictcn(1:nc)
-   write(unit,'(a,100i5)') 'ictct(1:nct,nct)', ictct(1:nct,1:nct)
+   write(unit,'(a)') 'ict, jct, ictct'
+   write(unit,'(3i5)') ((ict, jct, ictct(ict, jct), jct = ict, nct), ict = 1, nct)
    write(unit,'()')
    write(unit,'(a)') '        ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i'
    write(unit,'(4i11)') ((ic,ictcn(ic),iseg,ipnsegcn(iseg,ic),iseg = 1,npct(ictcn(ic))),ic = 1,nc)
@@ -1784,11 +1784,11 @@ end subroutine TestChainPointer
 
 subroutine TestNetworkPointer(unit)
    integer(4),   intent(in) :: unit
-   integer(4)               :: inw, inwt, icloc, ic, iclloc
+   integer(4)               :: inw, inwt, jnwt, icloc, ic, iclloc
    character(len=3)         :: txfmt
    call WriteHead(3, 'Test'//trim(txroutine)//' network', unit)
-   write(txfmt,'(i3)') nnwtnwt
-   write(unit,'(a,'//trim(adjustl(txfmt))//'i5)') 'inwtnwt(1:nnwt,1:nnwt)', inwtnwt(1:nnwt,1:nnwt)
+   write(unit,'(a)') 'inwt, jnwt, inwtnwt'
+   write(unit,'(3i5)') ((inwt, jnwt, inwtnwt(inwt, jnwt), jnwt = inwt, nnwt), inwt = 1, nnwt)
    write(txfmt,'(i3)') nnwt
    write(unit,'(a,'//trim(adjustl(txfmt))//'i5)') 'inwnnwt(1:nnwt)', inwnnwt(1:nnwt)
    write(txfmt,'(i3)') nct
