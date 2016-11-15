@@ -3,8 +3,10 @@
 .                                         TestSetObjectParam1 chain                                          .
 ..............................................................................................................
 
-ictcn(1:nc)    1    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-ictct(1:nct,nct)    1    2    2    3
+ict, jct, ictct
+    1    1    1
+    1    2    2
+    2    2    3
 
         ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i
           1          1          1          1
@@ -4249,7 +4251,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:11
+2016-11-15     13:30:17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -6657,7 +6659,7 @@ total potential energy (NkT)   =      32665.32015
 pressure (NkT/V)(excl. contact)=         -1.68825
 pressure (kT) (excl. contact)  =     -4.61631E-05
  
-total cpu time since start (s)        0.08
+total cpu time since start (s)        0.10
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -6809,7 +6811,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:11
+2016-11-15     13:30:17
 
 title   : bottle-brush: large, adsorbed                                                             
 
@@ -9446,21 +9448,21 @@ number of images made          =    1
          section          cpu time (s)     fraction
          -------          ------------     --------
          Coordinate             0.04         0.19
-         ControlAver            0.00         0.01
+         ControlAver            0.00         0.00
          MainAver               0.00         0.01
-         Group                  0.00         0.00
+         Group                  0.00         0.01
          StaticDriver           0.00         0.01
           SPDF                  0.00         0.01 
          ImageDriver            0.02         0.08
-         IOMolsim               0.03         0.15
-         SetVList               0.02         0.12
-         MCPass                 0.09         0.42
+         IOMolsim               0.03         0.16
+         SetVList               0.03         0.13
+         MCPass                 0.09         0.41
           PivotMove             0.00         0.01 
-          DUTotal               0.08         0.40 
-           DUTwoBody            0.07         0.35  
-          SPartMove             0.00         0.01 
+          DUTotal               0.08         0.38 
+           DUTwoBody            0.07         0.32  
+          SPartMove             0.00         0.00 
            DUBond               0.00         0.01  
          DUCrossLink            0.00         0.01
            DUExternal           0.00         0.01  
  
-total cpu time since start (s)        0.24
+total cpu time since start (s)        0.26

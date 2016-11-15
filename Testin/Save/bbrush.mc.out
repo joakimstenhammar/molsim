@@ -3,8 +3,10 @@
 .                                         TestSetObjectParam1 chain                                          .
 ..............................................................................................................
 
-ictcn(1:nc)    1    1    2    2    2    2    2    2    2    2    2    2
-ictct(1:nct,nct)    1    2    2    3
+ict, jct, ictct
+    1    1    1
+    1    2    2
+    2    2    3
 
         ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i
           1          1          1          1
@@ -329,7 +331,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:10
+2016-11-15     13:30:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -897,7 +899,7 @@ asphericity (<2:nd moments>)   =          0.48127
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:10
+2016-11-15     13:30:17
 
 title   : bottle-brush: small, 2 molecules, uneven side-chain distribution                          
 
@@ -1260,17 +1262,17 @@ number of images made          =    1
          section         cpu time (s)     fraction
          -------         ------------     --------
          Coordinate            0.00         0.01 
-         ControlAver           0.00         0.00 
-         MainAver              0.01         0.07 
+         ControlAver           0.00         0.01 
+         MainAver              0.01         0.08 
          ImageDriver           0.00         0.01 
          IOMolsim              0.00         0.01 
          SetVList              0.00         0.00 
-         MCPass                0.14         0.85 
-          SPartMove            0.01         0.06  
-          DUTotal              0.11         0.65  
-           DUTwoBody           0.05         0.33   
+         MCPass                0.14         0.83 
+          SPartMove            0.01         0.04  
+          DUTotal              0.11         0.64  
+           DUTwoBody           0.05         0.31   
            DUBond              0.01         0.05   
          DUCrossLink           0.01         0.05 
-          PivotMove            0.00         0.02  
+          PivotMove            0.00         0.03  
  
-total cpu time since start (s)        0.16
+total cpu time since start (s)        0.17
