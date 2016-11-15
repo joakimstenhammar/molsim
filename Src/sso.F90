@@ -331,8 +331,8 @@
                   write(uout,'(a,I4)')  'displacement parameters of',ipt
                   write(uout,'(3(a15,9x),a20)')  'sso-part' , 'used dran' , 'optimal dtran' , 'error on opt. dtran'
                   write(uout,'(3(a15,9x),a20)')  '---------------' , '---------------' , '---------------' , '--------------------'
-                  write(uout,'(i15,2(9x,g15.5),9x,g20.5)') &
-                  (ipart, char(9), SSOParameters(ipt,ipart)%used, char(9),SSOParameters(ipt,ipart)%opt, char(9), SSOParameters(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
+                  write(uout,'((i15,2(9x,g15.5),9x,g20.5))') &
+                  (ipart, SSOParameters(ipt,ipart)%used, SSOParameters(ipt,ipart)%opt, SSOParameters(ipt,ipart)%err, ipart = 1 ,SSOPart%n)
                   write(uout,'(a)') ''
                   write(uout,'(a)') ''
                end do
