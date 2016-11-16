@@ -117,8 +117,8 @@ number of chains types         =       1     (     10 )
 number of particle types       =       1     (     10 )
 number of atom types           =       1     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
+chain type         no of chains             topology  npptct(1,ict)
+----------         ------------             --------  -------------
 chain                  1                    block        10               
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
@@ -589,12 +589,12 @@ number density                 =      1.92467E-09    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.97636        0.00000        0.34196        0.02624             0.
-<r(ee)**2>**0.5                =         53.63239        2.95777        3.59910        3.91659             1.
-<r(g)**2>**0.5                 =         17.16765        0.20948        0.91829        0.26074             1.
-smallest rms mom. p.a.         =          0.15451        0.00414        0.10269        0.00122             1.
-intermediate rms mom. p.a.     =          0.20970        0.00617        0.12432        0.00249             2.
-largest rms mom. p.a.          =         17.16568        0.22019        0.92825        0.26503             1.
+<r(bb)**2>**0.5                =          5.97636        0.00000        0.34196        0.03643             0.
+<r(ee)**2>**0.5                =         53.63239        0.02757        3.59910        0.50822             1.
+<r(g)**2>**0.5                 =         17.16765        0.00610        0.91829        0.13242             1.
+smallest rms mom. p.a.         =          0.15451        0.01285        0.10269        0.00576             1.
+intermediate rms mom. p.a.     =          0.20970        0.01424        0.12432        0.00965             2.
+largest rms mom. p.a.          =         17.16568        0.00641        0.92825        0.13320             1.
 <persist. l.>  (r(ee))         =         29.72714        0.02776        0.08948        0.02653             1.
 <persist. l.>  (r(g))          =       1663.12827        5.46454       14.38855        2.89185             1.
 <angle>                        =        174.53951        0.69890        1.67681        0.18853             2.

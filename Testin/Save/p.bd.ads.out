@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:45
+2016-11-14     12:23:28
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -120,8 +120,8 @@ number of chains types         =       1     (     10 )
 number of particle types       =       1     (     10 )
 number of atom types           =       1     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
+chain type         no of chains             topology  npptct(1,ict)
+----------         ------------             --------  -------------
 20-mer               264                    block        20               
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
@@ -263,7 +263,7 @@ total potential energy (NkT)   =         -0.02260
 pressure (NkT/V)(excl. contact)=          1.11529
 pressure (kT) (excl. contact)  =      2.45364E-03
  
-total cpu time since start (s)        1.57
+total cpu time since start (s)        1.45
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -387,7 +387,7 @@ asphericity (<2:nd moments>)   =          0.41059
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:50
+2016-11-14     12:23:33
 
 title   : hd 20-mer adsorption                                                                      
 
@@ -465,12 +465,12 @@ number density                 =      2.20000E-03    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.18992      106.88987        0.86500       16.28739             4.
-<r(ee)**2>**0.5                =         26.16568      172.78509        1.24531       34.89525             2.
-<r(g)**2>**0.5                 =         10.75600       65.27405        0.66294        4.18008             4.
-smallest rms mom. p.a.         =          2.72030       16.38645        0.33526        1.39206             4.
-intermediate rms mom. p.a.     =          4.55999       16.24523        0.35001        3.70788             3.
-largest rms mom. p.a.          =          9.35403       32.66664        0.46151        2.66468             3.
+<r(bb)**2>**0.5                =          5.18992        0.03886        0.86500        0.03496             4.
+<r(ee)**2>**0.5                =         26.16568        0.01250        1.24531        0.05199             2.
+<r(g)**2>**0.5                 =         10.75600        0.01149        0.66294        0.01184             4.
+smallest rms mom. p.a.         =          2.72030        0.01138        0.33526        0.00777             4.
+intermediate rms mom. p.a.     =          4.55999        0.00674        0.35001        0.01952             3.
+largest rms mom. p.a.          =          9.35403        0.00661        0.46151        0.01081             3.
 <persist. l.>  (r(ee))         =          6.06699        0.00327        0.00724        0.15612             4.
 <persist. l.>  (r(g))          =          4.04663        0.02972        0.05694        1.85480             5.
 <angle>                        =         98.19293        0.33978        0.62697       12.23194             4.
@@ -2088,20 +2088,20 @@ adsorption length dist. function; ads. start separated
  
          section           cpu time (s)     fraction
          -------           ------------     --------
-         Coordinate              0.74         0.15
+         Coordinate              0.68         0.15
          MainAver                0.03         0.01
          Group                   0.02         0.00
-         StaticDriver            0.07         0.01
+         StaticDriver            0.06         0.01
           SPDF                   0.00         0.00
           LoopTailTrain          0.00         0.00
-          AdsPropDyn             0.05         0.01
+          AdsPropDyn             0.04         0.01
           AdsEventDyn            0.00         0.00
-         IOMolsim                1.42         0.29
-         SetVList                0.61         0.13
-         BDDriver                1.97         0.41
-          UTotal                 1.82         0.38
-           UTwoBodyA             1.70         0.35 
+         IOMolsim                1.34         0.30
+         SetVList                0.58         0.13
+         BDDriver                1.81         0.40
+          UTotal                 1.67         0.37
+           UTwoBodyA             1.56         0.35 
            UBond                 0.05         0.01 
            UExternal             0.02         0.00 
  
-total cpu time since start (s)        4.92
+total cpu time since start (s)        4.56

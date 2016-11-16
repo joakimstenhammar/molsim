@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [2.0.0] - 2016-11-11 - Tangela
+- Changes described in [Netzwerke](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/networks)
+
 ## [1.3.4] - 2016-11-04 Porygon
 ### Fixed
 - fixed some errors occuring when compiling with `mode=warn`

@@ -283,6 +283,9 @@ $molsim  hierarchical.mc          $core
 $molsim  copoly-seq.mc            $core
 $molsim  complexation.mc          $core
 
+#finite networks (fnw)
+$molsim fnw.nwt2.mc               $core
+
 echo
 echo "Remove group and dump files"
 echo

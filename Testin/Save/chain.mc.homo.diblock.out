@@ -3,8 +3,10 @@
 .                                         TestSetObjectParam1 chain                                          .
 ..............................................................................................................
 
-ictcn(1:nc)    1    1    2    2
-ictct(1:nct,nct)    1    2    2    3
+ict, jct, ictct
+    1    1    1
+    1    2    2
+    2    2    3
 
         ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i
           1          1          1          1
@@ -41,7 +43,7 @@ ictct(1:nct,nct)    1    2    2    3
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -63,7 +65,7 @@ ictct(1:nct,nct)    1    2    2    3
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:30
+2016-11-15     13:29:06
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -152,10 +154,10 @@ number of chains types         =       2     (     10 )
 number of particle types       =       3     (     10 )
 number of atom types           =       3     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-hompolymer             2                    block         2    0    0     
-diblock                2                    block         0    2    2     
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
+----------         ------------             --------  -------------  -------------  -------------
+hompolymer             2                    block         2             0             0
+diblock                2                    block         0             2             2
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -510,7 +512,7 @@ asphericity (<2:nd moments>)   =          0.37573
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:30
+2016-11-15     13:29:06
 
 title   : testchain: homopolymer + diblock                                                          
 
@@ -719,16 +721,16 @@ asphericity (<2:nd moments>)   =          0.37573
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.25 
-         ControlAver           0.00         0.07 
-         MainAver              0.00         0.47 
-         IOMolsim              0.00         0.16 
+         Coordinate            0.00         0.20 
+         ControlAver           0.00         0.10 
+         MainAver              0.00         0.26 
+         IOMolsim              0.00         0.23 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.05 
-          SPartMove            0.00         0.00  
-          DUTotal              0.00         0.05  
-           DUTwoBody           0.00         0.00   
-           DUBond              0.00         0.00   
+         MCPass                0.00         0.22 
+          SPartMove            0.00         0.01  
+          DUTotal              0.00         0.21  
+           DUTwoBody           0.00         0.01   
+           DUBond              0.00         0.19   
            DUAngle             0.00         0.00   
  
 total cpu time since start (s)        0.01

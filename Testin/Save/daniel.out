@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:05
+2016-11-14     12:23:47
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -138,11 +138,11 @@ particle number of chain for first branch point     =        2
 particle increment of chain between branch points   =       16
 number of crosslinks                                =        7
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-99-mer1                1                    block        99    0    0    0    0
-6-mer2                 7                    block         0    6    0    0    0
-99-mer6                1                    block         0    0   99    0    0
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)  npptct(5,ict)
+----------         ------------             --------  -------------  -------------  -------------  -------------  -------------
+99-mer1                1                    block        99             0             0             0             0
+6-mer2                 7                    block         0             6             0             0             0
+99-mer6                1                    block         0             0            99             0             0
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -874,7 +874,7 @@ total potential energy (NkT)   =          0.24306
 pressure (NkT/V)(excl. contact)=          0.44044
 pressure (kT) (excl. contact)  =      1.15950E-06
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1317,7 +1317,7 @@ quantity                                  average
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:07
+2016-11-14     12:23:48
 
 title   : comb polymer: single-graft chain PLUS linear chain PLUS counterions                       
 
@@ -1931,12 +1931,12 @@ chain: 99-mer1
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.75768        0.40404        0.88627        0.09593             6.
-<r(ee)**2>**0.5                =         83.79122      905.44432       39.66583      158.81598             4.
-<r(g)**2>**0.5                 =         32.55984       72.73051       11.52671       17.43760             4.
-smallest rms mom. p.a.         =          6.99234        2.22657        2.79968        2.27885             2.
-intermediate rms mom. p.a.     =         11.34637        9.86137        3.85000        0.58391             3.
-largest rms mom. p.a.          =         29.70708       80.13153       11.90097       16.40323             4.
+<r(bb)**2>**0.5                =          5.75768        0.03498        0.88627        0.05256             6.
+<r(ee)**2>**0.5                =         83.79122        5.23918       39.66583        1.95381             4.
+<r(g)**2>**0.5                 =         32.55984        1.09835       11.52671        0.73309             4.
+smallest rms mom. p.a.         =          6.99234        0.15744        2.79968        0.38105             2.
+intermediate rms mom. p.a.     =         11.34637        0.42654        3.85000        0.07510             3.
+largest rms mom. p.a.          =         29.70708        1.31939       11.90097        0.67028             4.
 <persist. l.>  (r(ee))         =          9.11465        0.82800        1.44053        0.14831             4.
 <persist. l.>  (r(g))          =          5.82664        0.45342        0.82917        0.11095             4.
 <angle>                        =        113.87303        0.48351        1.13991        0.13790             4.
@@ -1955,12 +1955,12 @@ chain: 6-mer2
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.53095        1.21822        1.10427        0.89200             0.
-<r(ee)**2>**0.5                =         14.63831       26.57461        3.10567        2.51044             2.
-<r(g)**2>**0.5                 =          6.28366        4.19993        1.14671        0.65807             2.
-smallest rms mom. p.a.         =          1.25917        0.59968        0.51743        0.31320             2.
-intermediate rms mom. p.a.     =          2.52216        1.29691        0.71594        0.56442             2.
-largest rms mom. p.a.          =          5.61584        3.41499        1.06712        1.09837             2.
+<r(bb)**2>**0.5                =          5.53095        0.01571        1.10427        0.05626             0.
+<r(ee)**2>**0.5                =         14.63831        0.12910        3.10567        0.05721             2.
+<r(g)**2>**0.5                 =          6.28366        0.04756        1.14671        0.04028             2.
+smallest rms mom. p.a.         =          1.25917        0.03357        0.51743        0.04157             2.
+intermediate rms mom. p.a.     =          2.52216        0.03647        0.71594        0.05426             2.
+largest rms mom. p.a.          =          5.61584        0.04327        1.06712        0.07115             2.
 <persist. l.>  (r(ee))         =          6.65864        0.05250        0.15035        0.05384             1.
 <persist. l.>  (r(g))          =         30.29878        4.15445       24.13188       12.93214             1.
 <angle>                        =        105.47264        0.73660        2.00426        2.38178             1.
@@ -1979,12 +1979,12 @@ chain: 99-mer6
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.65345        0.36517        0.89584        0.10219             5.
-<r(ee)**2>**0.5                =         93.67428      930.80974       40.25373      116.18037             4.
-<r(g)**2>**0.5                 =         32.22439       81.22001       12.08756       17.58568             4.
-smallest rms mom. p.a.         =          7.40486        3.13507        3.18378        2.90500             2.
-intermediate rms mom. p.a.     =         10.64153        7.28812        3.32749        1.14471             2.
-largest rms mom. p.a.          =         29.50148       85.45979       12.22930       16.05213             4.
+<r(bb)**2>**0.5                =          5.65345        0.03220        0.89584        0.05533             5.
+<r(ee)**2>**0.5                =         93.67428        4.84313       40.25373        1.41812             4.
+<r(g)**2>**0.5                 =         32.22439        1.23650       12.08756        0.70677             4.
+smallest rms mom. p.a.         =          7.40486        0.20875        3.18378        0.42752             2.
+intermediate rms mom. p.a.     =         10.64153        0.33710        3.32749        0.16778             2.
+largest rms mom. p.a.          =         29.50148        1.41449       12.22930        0.63957             4.
 <persist. l.>  (r(ee))         =         10.73614        0.80806        1.39247        0.09353             4.
 <persist. l.>  (r(g))          =          5.80141        0.43380        0.77058        0.08793             4.
 <angle>                        =        114.38566        0.47188        1.10201        0.13236             2.
@@ -8729,27 +8729,27 @@ number of images made          =    1
          ControlAver                    0.00         0.00
          MainAver                       0.01         0.00
          Group                          0.00         0.00
-         StaticDriver                   0.08         0.04
+         StaticDriver                   0.07         0.04
           ChainTypeDF                   0.01         0.01
           SPDF_COMB                     0.01         0.01
-          COMB_DF                       0.00         0.00
-          OCF                           0.01         0.00
+          COMB_DF                       0.01         0.00
+          OCF                           0.00         0.00
           OCF_DF                        0.01         0.00
           ChainBeadBeadContact          0.00         0.00
           SFPBC_COMB                    0.03         0.02
          ImageDriver                    0.00         0.00
          IOMolsim                       0.01         0.01
          SetVList                       0.01         0.00
-         MCPass                         1.88         0.93
-          SPartMove                     0.02         0.01
-          DUTotal                       1.74         0.86
-           DUTwoBody                    1.62         0.80
+         MCPass                         1.73         0.93
+          SPartMove                     0.01         0.01
+          DUTotal                       1.60         0.86
+           DUTwoBody                    1.49         0.80
            DUBond                       0.01         0.01
            DUAngle                      0.02         0.01
          DUCrossLink                    0.02         0.01
           PivotMove                     0.07         0.04
           ChainMove                     0.00         0.00
           SlitherMove                   0.00         0.00
-          HierarichalMove               0.00         0.00
+          HierarchicalMove              0.00         0.00
  
-total cpu time since start (s)        2.05
+total cpu time since start (s)        1.88

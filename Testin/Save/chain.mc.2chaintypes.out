@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:33
+2016-11-14     12:23:17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -117,10 +117,10 @@ number of chains types         =       2     (     10 )
 number of particle types       =       2     (     10 )
 number of atom types           =       2     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-20-mer1                1                    block        20    0          
-20-mer2                1                    block         0   20          
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
+----------         ------------             --------  -------------  -------------
+20-mer1                1                    block        20             0 
+20-mer2                1                    block         0            20 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -2309,7 +2309,7 @@ total potential energy (NkT)   =         17.91148
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      4.00000E-05
  
-total cpu time since start (s)        0.07
+total cpu time since start (s)        0.06
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -2548,7 +2548,7 @@ asphericity (<2:nd moments>)   =          0.71874
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:33
+2016-11-14     12:23:17
 
 title   : testchain: 20-mer                                                                         
 
@@ -2767,12 +2767,12 @@ chain: 20-mer1
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          6.20602        0.83582        1.75690        0.31765             7.
-<r(ee)**2>**0.5                =         44.95437      162.15520       38.83798      175.36323             1.
-<r(g)**2>**0.5                 =         17.51435       15.47765       10.98712       12.92173             2.
-smallest rms mom. p.a.         =          3.70505        0.31414        2.70338        0.85145             0.
-intermediate rms mom. p.a.     =          6.96082        2.27691        3.99794        1.44085             2.
-largest rms mom. p.a.          =         15.63880       15.03520       11.29809       13.04628             2.
+<r(bb)**2>**0.5                =          6.20602        0.06698        1.75690        0.08819             7.
+<r(ee)**2>**0.5                =         44.95437        1.76876       38.83798        2.19557             1.
+<r(g)**2>**0.5                 =         17.51435        0.43642       10.98712        0.57309             2.
+smallest rms mom. p.a.         =          3.70505        0.04215        2.70338        0.15314             0.
+intermediate rms mom. p.a.     =          6.96082        0.16167        3.99794        0.17631             2.
+largest rms mom. p.a.          =         15.63880        0.47353       11.29809        0.56332             2.
 <persist. l.>  (r(ee))         =         11.77328        0.76355        6.64272        0.82902             2.
 <persist. l.>  (r(g))          =         10.89117        1.04272        7.17306        1.24130             3.
 <angle>                        =        124.46538        1.43031        3.71030        0.74136             8.
@@ -2791,12 +2791,12 @@ chain: 20-mer2
 ------------------
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.01028        0.19135        0.82786        0.10877             8.
-<r(ee)**2>**0.5                =         66.93420      608.60609       43.11564      205.77019            10.
-<r(g)**2>**0.5                 =         22.47845       37.81068       10.71200       13.83656            11.
-smallest rms mom. p.a.         =          2.38298        0.76410        2.19333        0.73098             3.
-intermediate rms mom. p.a.     =          6.82442        2.98074        5.32231        2.90127             1.
-largest rms mom. p.a.          =         21.28448       39.34669       11.61212       15.02236             8.
+<r(bb)**2>**0.5                =          5.01028        0.01906        0.82786        0.06328             8.
+<r(ee)**2>**0.5                =         66.93420        4.40158       43.11564        2.32364            10.
+<r(g)**2>**0.5                 =         22.47845        0.82587       10.71200        0.62747            11.
+smallest rms mom. p.a.         =          2.38298        0.15527        2.19333        0.16075             3.
+intermediate rms mom. p.a.     =          6.82442        0.21500        5.32231        0.26591             1.
+largest rms mom. p.a.          =         21.28448        0.90506       11.61212        0.62976             8.
 <persist. l.>  (r(ee))         =         26.04415        3.15276        9.78667        1.06059            10.
 <persist. l.>  (r(g))          =         54.79047       10.22747       26.13248        4.43361             8.
 <angle>                        =        155.85230        2.76576        5.57232        0.67853            21.
@@ -2819,17 +2819,17 @@ asphericity (<2:nd moments>)   =          0.71874
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.02 
+         Coordinate            0.00         0.01 
          ControlAver           0.00         0.00 
          MainAver              0.00         0.04 
-         IOMolsim              0.00         0.01 
+         IOMolsim              0.00         0.02 
          SetVList              0.00         0.00 
-         MCPass                0.09         0.93 
-          SPartMove            0.00         0.05  
-          DUTotal              0.07         0.66  
-           DUTwoBody           0.03         0.30   
-           DUBond              0.01         0.07   
-           DUAngle             0.01         0.06   
-          PivotMove            0.00         0.04  
+         MCPass                0.09         0.92 
+          SPartMove            0.00         0.03  
+          DUTotal              0.07         0.71  
+           DUTwoBody           0.03         0.27   
+           DUBond              0.01         0.10   
+           DUAngle             0.01         0.09   
+          PivotMove            0.00         0.02  
  
-total cpu time since start (s)        0.17
+total cpu time since start (s)        0.15

@@ -19,6 +19,70 @@
 !************************************************************************
 !************************************************************************
 
+module MolauxModule
+
+   implicit none
+   private
+   public CalcCOM
+
+   contains
+
+      !************************************************************************
+      !*                                                                      *
+      !*     CalcCOM                                                              *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Calculate the Center of Mass of given coordinates.
+      !     If MASK is given, use only the coordinates for which MASK is true
+
+      function CalcCOM(r,MASK, MASS) result(com)
+         implicit none
+         real(8), intent(in), dimension (:,:)   :: r
+         logical, intent(in), optional, dimension (:)   :: MASK
+         real(8), intent(in), optional, dimension (:)   :: MASS
+         real(8)   :: com(3)
+
+         logical, dimension (size(r,DIM=2))   :: l
+         real(8), dimension (size(r,DIM=2))   :: m
+
+         integer(4)  :: i, n, first
+         real(8)  :: d(3)
+
+         if(present(MASK)) then
+            l = MASK
+         else
+            l = .true.
+         end if
+         if(present(MASS)) then
+            m = MASS
+         else
+            m = 1.0d0
+         end if
+         n = size(l)
+         com = 0.0d0
+
+         do i = 1, n   ! locate first particle which is to be used
+            if(l(i)) then
+               first = i
+               exit
+            end if
+         end do
+
+         do i = 1, n
+            if (.not. l(i)) cycle
+            d(1:3) = r(1:3,i) - r(1:3,first)
+            call PBC(d(1),d(2),d(3))
+            com(1:3) = com(1:3) + m(i)*d(1:3)
+         end do
+         com(1:3) = com(1:3)/(sum(m,MASK=l)) + r(1:3,first)
+
+         call PBC(com(1),com(2),com(3))
+
+      end function CalcCOM
+
+end module MolauxModule
+
 !************************************************************************
 !*                                                                      *
 !*     PBC                                                              *
@@ -980,7 +1044,7 @@ subroutine WarnHCOverlap(iplow, ipupp)
 
    logical    :: loverlap, ltext, SuperballOverlap, ltemp
    integer(4) :: ip, jp, ia, ialow, iaupp, iat, ja, jat, iatjat
-   real(8)    :: dxx, dyy, dzz, dx, dy, dz, dxpbc, dypbc, dzpbc, r2, dum
+   real(8)    :: dxx, dyy, dzz, dx, dy, dz, dxpbc, dypbc, dzpbc, r2
 
    if (sum(r2atat(1:natat)) > Zero) then
 
@@ -1295,7 +1359,8 @@ subroutine CalcChainProperty(ic, rotemp, ChainProperty)
 
    real(8) :: vsum, vsum2, vsumr, vsumz, vsumxy, dx, dy, dz, r2, xcom, ycom, zcom, norm, angle_deg, rbb
    real(8) :: dxm, dym, dzm, dxp, dyp, dzp, theta, mimat(3,3), diagonal(3), eivr(3,3)
-   real(8) :: l2_small, l2_mid, l2_large, i_small, i_mid, i_large, term, toroidparam
+   real(8) :: l2_small, l2_mid, l2_large, toroidparam
+   !real(8) :: i_small, i_mid, i_large ! used in older code snippet below - currently not needed
    integer(4) :: iseg, ip, jp, jp_m, jp_p, ict, nrot
    real(8) :: hx, hy, hz, hxsum, hysum, hzsum
    real(8) :: InvInt, InvFlt, PerLengthRg, Asphericity
@@ -1476,6 +1541,102 @@ real(8) function PerLengthRg(rg2, l)
       if (abs(PerLengthRg-PerLengthRgOld)/PerLengthRg < 1e-3) return
    end do
 end function PerLengthRg
+
+!************************************************************************
+!*                                                                      *
+!*    CalcNetworkProperty                                               *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate properties of network number inw
+! ... no prior undoing of the periodic boundary conditions necessary
+
+subroutine CalcNetworkProperty(inw, NetworkProperty)
+
+   use MolModule
+   use MolauxModule, only: CalcCOM
+   implicit none
+
+   integer(4),            intent(in)  :: inw             ! network number
+   type(networkprop_var), intent(out) :: NetworkProperty ! network properties
+
+! ... properties
+   real(8)     :: rcom(3)                    ! center of mass
+   real(8)     :: l2_small, l2_mid, l2_large ! small, middle and large extension along principal axes
+   real(8)     :: eivr(3,3)                  ! eigenvectors of the principal frame
+   real(8)     :: Asphericity                ! asphericity
+   real(8)     :: alpha                      ! degree of ionization
+
+! ... processing variables
+   real(8)     :: dr(3)
+   real(8)     :: r2
+   real(8)     :: vsumr
+   real(8)     :: mimat(3,3)
+   real(8)     :: diagonal(3)
+   integer(4)  :: nrot
+   integer(4)  :: npcharged
+
+! ... counter
+   integer(4)  :: inwt, ip, iploc
+   integer(4)  :: irow
+
+! ... determine network type
+
+   inwt = inwtnwn(inw)
+
+! ... center of mass
+
+   rcom(1:3) = CalcCOM(ro(1:3,1:np),MASK=lpnnwn(1:np,inw),MASS=massp(1:np))
+   NetworkProperty%ro(1:3) = rcom(1:3)
+
+! ... radius of gyration squared and projections on the prinicpal axes
+
+   ! rg**2 = l2_small**2 + l2_mid**2 + l2_large**2
+
+   vsumr          = Zero
+   mimat(1:3,1:3) = Zero
+   do iploc = 1, npnwt(inwt)
+      ip = ipnplocnwn(iploc,inw)
+      dr(1:3) = ro(1:3,ip)-rcom(1:3)
+      call PBCr2(dr(1),dr(2),dr(3),r2)
+      vsumr = vsumr + r2
+      do irow = 1, 3
+         mimat(irow,1:3) = mimat(irow,1:3) + dr(irow)*dr(1:3)
+      end do
+   end do
+   NetworkProperty%rg2 = vsumr*massinwt(inwt)
+
+   call Diag(3,mimat,diagonal,eivr,nrot)
+
+! ... normalized eigenvectors of the principal frame
+
+   NetworkProperty%eivr(1:3,1:3) = eivr(1:3,1:3)
+
+! ... small, middle and large square extension along principal axes and eigenvectors of the principal frame
+
+   l2_small = min(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
+   l2_large = max(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
+   l2_mid  = (diagonal(1)+diagonal(2)+diagonal(3))/massnwt(inwt)-(l2_small+l2_large)
+
+   NetworkProperty%rg2s = max(Zero,l2_small)
+   NetworkProperty%rg2m = max(Zero,l2_mid  )
+   NetworkProperty%rg2l = max(Zero,l2_large)
+
+! ... asphericity  ( = 0 for sphere, 0.526 for gaussian chain, and 1 for a rod)
+
+   NetworkProperty%asph = Asphericity(l2_small,l2_mid,l2_large)
+
+! ... degree of ionization
+
+   if (lweakcharge) then
+      npcharged = count(laz(1:np).and.lpnnwn(1:np,inw))
+      alpha     = real(npcharged)/npweakchargenwt(inwt)
+      NetworkProperty%alpha = alpha
+   else
+      NetworkProperty%alpha = Zero
+   end if
+
+end subroutine CalcNetworkProperty
 
 !************************************************************************
 !*                                                                      *
@@ -1860,7 +2021,7 @@ logical function Perculation(nobjtot, iclusteriobj, npair, n1, n2,  r, boxlen, l
    integer(4)              :: idnn(mnn,mnobj) ! id of neighbour
    integer(4)              :: objloc(mnobjtot)! local id of object
 
-   integer(4) :: pathlength, pathobj(0:mpathlength), i, icluster, iobj, jobj, iobjloc, jobjloc, in, istep, ipair
+   integer(4) :: pathlength, pathobj(0:mpathlength), i, icluster, iobj, jobj, iobjloc, jobjloc, istep, ipair
    real(8) :: dr(1:3), boxlen2(3), dx, dy, dz
    logical :: loop
    integer(4) :: itemp(1:1)
@@ -2032,7 +2193,7 @@ subroutine updatenn(iobj, nn, idnn)  ! update nn and idnn
    integer(4), intent(in) :: iobj
    integer(4), intent(inout) :: nn
    integer(4), intent(inout) :: idnn(*)
-   integer(4) :: i, j
+   integer(4) :: i
    logical :: hit
    hit = .false.
    do i = 1, nn
@@ -2453,7 +2614,6 @@ real(8) function Ellipsoidfunc2(lam)
    real(8), intent(in) :: lam
 
    real(8),    parameter :: one = 1.0d0, two = 2.0d0
-   integer :: i
    real(8) :: mat(3,3), matinv(3,3)
 
    mat(1:3,1:3) = (one-lam)*a(1:3,1:3,1) + lam*a(1:3,1:3,2)
@@ -2581,7 +2741,7 @@ logical function SuperballOverlap_NR(r21, ori1, ori2, of) result(loverlap)
    real(8), intent(in) :: ori1(3,3)     ! orientation matrix of superball 1
    real(8), intent(in) :: ori2(3,3)     ! orientation matrix of superball 2
    real(8), intent(out) :: of           ! overlap function
-   integer(4) :: i, j, k, iter
+   integer(4) :: k, iter
    real(8) :: lambda, lambda0, ori1i(3,3), ori2i(3,3), orihelp(3,3,2), rc(3), rc0(3), rsb(3,2), dr(3), dll, dg(3), dl, vtemp(3)
    real(8) :: sf(2), sfd(3,2), sfdd(3,3,2), ofd(3), ofdd(3,3), minv(3,3)
    real(8) :: r1help, r2help, r3help, gp, gpp, fac1, fac1help, gradsftilde(3), grad2sftilde(3)
@@ -2931,7 +3091,7 @@ subroutine SuperballDF(iStage, rr, loverlap, time)
    type(df_var),  allocatable, save :: var(:)
    integer(4),    allocatable, save :: ipnt(:,:)
    real(8), save :: radmin, radmax, radbin, radbini
-   integer(4), save :: nrad, nbin
+   integer(4), save :: nrad
    integer(4) :: itype, ivar, ibin, irad
    real(8)    :: r1
    character(1) :: str
@@ -3051,67 +3211,3 @@ subroutine SuperballDF(iStage, rr, loverlap, time)
    end select
 
 end subroutine SuperballDF
-
-module MolauxModule
-
-   implicit none
-   private
-   public CalcCOM
-
-   contains
-
-      !************************************************************************
-      !*                                                                      *
-      !*     CalcCOM                                                              *
-      !*                                                                      *
-      !************************************************************************
-
-      ! ... Calculate the Center of Mass of given coordinates.
-      !     If MASK is given, use only the coordinates for which MASK is true
-
-      function CalcCOM(r,MASK, MASS) result(com)
-         implicit none
-         real(8), intent(in), dimension (:,:)   :: r
-         logical, intent(in), optional, dimension (:)   :: MASK
-         real(8), intent(in), optional, dimension (:)   :: MASS
-         real(8)   :: com(3)
-
-         logical, dimension (size(r,DIM=2))   :: l
-         real(8), dimension (size(r,DIM=2))   :: m
-
-         integer(4)  :: i, n, first
-         real(8)  :: d(3)
-
-         if(present(MASK)) then
-            l = MASK
-         else
-            l = .true.
-         end if
-         if(present(MASS)) then
-            m = MASS
-         else
-            m = 1.0d0
-         end if
-         n = size(l)
-         com = 0.0d0
-
-         do i = 1, n   ! locate first particle which is to be used
-            if(l(i)) then
-               first = i
-               exit
-            end if
-         end do
-
-         do i = 1, n
-            if (.not. l(i)) cycle
-            d(1:3) = r(1:3,i) - r(1:3,first)
-            call PBC(d(1),d(2),d(3))
-            com(1:3) = com(1:3) + m(i)*d(1:3)
-         end do
-         com(1:3) = com(1:3)/(sum(m,MASK=l)) + r(1:3,first)
-
-         call PBC(com(1),com(2),com(3))
-
-      end function CalcCOM
-
-end module MolauxModule

@@ -1434,13 +1434,12 @@ subroutine SPartCl2Move(iStage)
 
    character(40), parameter :: txroutine ='SPartCl2Move'
    integer(4) :: mnpair = 10000
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, done
-   integer(4) :: iploc, iplow, ipupp, ipt, jp, jploc, jpt, iptjpt
+   logical    :: lboxoverlap, lhsoverlap, lhepoverlap
+   integer(4) :: iploc, iplow, ipupp, jp
    integer(4) :: npair, dnpcl, npcl
    integer(4), allocatable :: n1(:), n2(:), iobjcluster(:), icllis(:)
    real(8)    :: weight, r2, dx, dy, dz
    integer(4) :: ipshift
-   integer(4) :: ip
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -2149,8 +2148,8 @@ subroutine ChainMove(iStage)
 
    character(40), parameter :: txroutine ='ChainMove'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-   integer(4) :: iseg, ic, ict, ip, iploc, dnpcl
-   real(8)    :: Random, dx, dy, dz, weight
+   integer(4) :: iseg, ic, ict, ip, dnpcl
+   real(8)    :: weight
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -2542,7 +2541,7 @@ contains
 subroutine RotTranBrush
 
    real(8) :: dx, dy, dz, dxpbc, dypbc, dzpbc, dxtran, dytran, dztran, alpha, rotaxis(3)
-   integer(4) :: ic, iseg, ip
+   integer(4) :: ic, ip
    real(8) :: Random
 
 ! ... get rotation displacement
@@ -2759,8 +2758,8 @@ subroutine HierarchicalMove(iStage)
 
    character(40), parameter :: txroutine ='HierarchicalMove'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-   integer(4) :: igen, iseg, ic, ict, ip, iploc, iptm, ih, iclow, icupp
-   real(8)    :: Random, dx, dy, dz, weight
+   integer(4) :: igen, iseg, ic, ict, ip, ih
+   real(8)    :: weight
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -2843,7 +2842,7 @@ subroutine NetworkMove(iStage)
 
    character(40), parameter :: txroutine ='NetworkMove'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-   integer(4) :: iploc, ic, ip, dnpcl
+   integer(4) :: iploc
    real(8)    :: weight
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
@@ -2915,7 +2914,6 @@ subroutine TranNetwork
 
    real(8) :: dx, dy, dz, dxtran, dytran, dztran, fac, term
    integer(4) :: ic, ip, ip1, ip2, icl, nseg
-   real(8) :: Random
 
 ! ... get translational displacement of node
 
@@ -3083,8 +3081,8 @@ subroutine NPartChange(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='NPartChange'
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lWarnHCOverlap, lDelete
-   integer(4) :: ip, ipt, jp, jpt, iptjpt, iploc
+   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lDelete
+   integer(4) :: jp, jpt, iptjpt
    real(8) :: prandom, uuu, fforce(3), weight, Random
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
@@ -3259,9 +3257,9 @@ subroutine ChargeChange(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='ChargeChange'
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lWarnHCOverlap
+   logical    :: lboxoverlap, lhsoverlap, lhepoverlap
    real(8) ::  random,  weight, xsign
-   integer(4) :: ip, ipt, iploc, ia, ialoc, ianmove, iatmove
+   integer(4) :: ip, ipt, ia, ialoc, ianmove, iatmove
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -3602,9 +3600,9 @@ subroutine MCAllPass(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='MCallPass'
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lmetropolis
-   integer(4) :: ip, ipt, iptjpt
-   real(8)    :: dx, dy, dz
+   logical    :: lboxoverlap, lmetropolis
+   !logical    :: lhsoverlap, lhepoverlap
+   integer(4) :: ip, ipt
    real(8)    :: weight, UmbrellaWeight,  Random
    type(potenergy_var) :: usave
    real(8)             :: prsrsave
@@ -3926,7 +3924,7 @@ subroutine ClusterMemberLList(str, lonlyipmove, lnoselftype, radcl, pselectcl)
    real(8), intent(in) :: pselectcl(*)     ! probability of acceptance
 
    integer(4), save :: naux
-   integer(4) :: ip, iploc, ipt, jp, jploc, icell, Getncellllist
+   integer(4) :: ip, iploc, ipt, jp, icell, Getncellllist
    real(8)    :: dx, dy, dz, r2
    real(8)    :: Random
 
@@ -4114,7 +4112,7 @@ subroutine GetRandomTrialPos(dtran, iseed, nptm, ipnptm, ro, rotm, drotm)
 
    real(8), parameter :: Zero = 0.0d0, Half = 0.5d0, One = 1.0d0, Two = 2.0d0
    integer(4) :: iploc, ip
-   real(8) :: dx, dy, dz, norm
+   real(8) :: dx, dy, dz
    real(8) :: Random
 
 ! ... get translational displacement
@@ -4167,7 +4165,7 @@ subroutine GetRandomTrialOri(drot, iseed, ori, oritm)
    real(8),    intent(in)  :: ori(3,3)     ! particle orientation
    real(8),    intent(out) :: oritm(3,3)   ! particle orientation, for trial configuration
 
-   integer(4) :: iaxis, m, m1, m2, m3
+   integer(4) :: iaxis, m1, m2, m3
    real(8)    :: drottemp, cr, sr
    real(8)    :: Random
 
@@ -4208,7 +4206,7 @@ subroutine GetFixedTrialOri(nptm, ipnptm, ori, oritm)
    real(8),    intent(in)  :: ori(3,3,*)   ! particle orientation
    real(8),    intent(out) :: oritm(3,3,*) ! particle orientation, for trial configuration
 
-   integer(4) :: iploc, ip, m
+   integer(4) :: iploc, ip
 
    do iploc = 1, nptm
       ip = ipnptm(iploc)
@@ -4375,7 +4373,6 @@ subroutine ShiftZDirection
    use MCModule
    implicit none
    character(40), parameter :: txroutine ='ShiftZDirection'
-   integer(4) :: ip
    real(8) :: zcom, dist, dz
    if (.not.lbccyl) call Stop(txroutine, '.not.lbccyl''', uout)
    zcom = Half*(ro(3,1)+ro(3,2))                         ! center-of-mass in the z-direction of particle 1 and 2
@@ -4509,8 +4506,8 @@ subroutine UpdateOri()
    implicit none
 
    integer(4)     :: iploc, ip, ipn, ict, icn, isn
-   real(8)        :: r1(3), r2(3), r3(3), r12(3), r32(3), dropbc(3)
-   character(20)  :: format = '(2I3, 4F7.2)'
+   real(8)        :: r1(3), r2(3), r3(3), r12(3), r32(3)
+   !character(20)  :: format = '(2I3, 4F7.2)'
 
    do iploc = 1, nptm
       ip = ipnptm(iploc)
@@ -4796,7 +4793,7 @@ subroutine MCUpdate
    use MCModule
    implicit none
 
-   integer(4) :: ip, iploc, m
+   integer(4) :: ip, iploc
 
                               u%tot            = u%tot            + du%tot
                               u%twob(0:nptpt)  = u%twob(0:nptpt)  + du%twob(0:nptpt)
@@ -4866,7 +4863,7 @@ subroutine MCAver(iStage)
    integer(8), allocatable, save :: npcl2s1(:,:), npcl2s2(:,:)      ! for cluster2 move
    integer(4), allocatable, save :: nprimpartclmax(:)               ! for cluster2 move
    integer(8), allocatable, save :: nazs1(:), nazs2(:)              ! for charge move
-   integer(4) :: ipt, ip, iploc
+   integer(4) :: ipt
 
    if (slave) return
 
@@ -4958,7 +4955,7 @@ subroutine MCAverWrite(ny, npcl, nprimpartcl)
    integer(8), intent(in) :: npcl(2,npt,1:nmovetype)
    integer(8), intent(in) :: nprimpartcl(2,npt)
 
-   integer(4) :: ipt, i
+   integer(4) :: ipt
    real(8)    :: any(0:nevent,0:npt), ancl1(2,npt), ancl2(2,npt)
    real(8)    :: InvInt_dbl
 

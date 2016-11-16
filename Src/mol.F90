@@ -132,9 +132,22 @@ module MolModule
       real(8)    :: lpree                   ! persistence length based on end-to-end separation
       real(8)    :: lprg                    ! persistence length based on radius of gyration
       real(8)    :: shape                   ! square end-to-end distance / square of radius of gyration
-      real(8)    :: asph                    ! asphericity (JCP 100, 636(1994))
+      real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
       real(8)    :: torp                    ! toroidicity
    end type chainprop_var
+   
+! ... data structure for network (finite) properties
+
+   type networkprop_var  
+      real(8)    :: ro(3)                   ! center of mass
+      real(8)    :: rg2                     ! radius of gyration squared
+      real(8)    :: rg2s                    ! square extention along principal axes (smallest)
+      real(8)    :: rg2m                    ! square extention along principal axes (middle)
+      real(8)    :: rg2l                    ! square extention along principal axes (largest)
+      real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
+      real(8)    :: alpha                   ! degree of ionization (for titrating systems)
+      real(8)    :: eivr(3,3)               ! normalized eigenvectors of the principal frame
+   end type networkprop_var
 
 ! ... data structure for simple averaging
 
@@ -169,7 +182,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v1.3.5'
+   character(29) :: txVersionDate = 'version 6.4.7, v2.0.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -302,31 +315,43 @@ module MolModule
                                            ! =1 system contains dipoles and no charges
                                            ! =-1 else
    real(8)                 :: q2sum        ! sum(q**2), where q is either atomic charge or dipole according to lq2sum
+   integer(4)              :: nnwt         !*number of network types
    integer(4)              :: nct          !*number of chain types
    integer(4)              :: npt          !*number of particle types
    integer(4)              :: nat          ! number of atom types
+   integer(4)              :: nnw          ! number of networks
    integer(4)              :: nc           ! number of chains
    integer(4)              :: np           ! number of particles
    integer(4)              :: na           ! number of atoms
    integer(4)              :: na_alloc     ! number of atoms (for memory allocation)
    integer(4)              :: np_alloc     ! number of particles (for memory allocation)
+   integer(4), allocatable :: nnwnwt(:)    !*number of networks of network type [allocate with nnwt]
    integer(4)              :: ncct(mnct)   !*number of chains of a chain type
    integer(4)              :: nppt(mnpt)   !*number of particles of a particle type
+   integer(4), allocatable :: nctnwt(:)    ! number of chain types belonging to one network type [allocate with nnwt]
    integer(4)              :: nptct(mnct)  ! number of particle types belonging to one chain type
+   integer(4), allocatable :: ncnwt(:)     ! number of chains belonging to a network type [allocate with nnwt]
+   integer(4), allocatable :: npnwt(:)     ! number of particles belonging to a network type [allocate with nwwt]
+   integer(4), allocatable :: nclnwt(:)    ! number of cross-links belonging to a network type [allocate with nnwt]
    integer(4)              :: npct(mnct)   ! number of particles belonging to a chain type
    integer(4)              :: natpt(mnpt)  !*number of atom types belonging to a particle type
    integer(4), allocatable :: napt(:)      ! number of atoms belonging to a particle type
    integer(4), allocatable :: naat(:)      ! number of atoms of an atom type in one particle
+   integer(4), allocatable :: ncctnwt(:,:) !*number of chains of a chain type of network type [allocate with nct,nnwt]
    integer(4)    :: npptct(mnpt,mnct)      !*number of particles of a particle type of chain type
    integer(4)    :: naatpt(mnat,mnpt)      !*number of atoms of an atom type of a particle type
+   integer(4)    :: nnwtnwt                ! number of different network type pairs
    integer(4)    :: nctct                  ! number of different chain type pairs
    integer(4)    :: nptpt                  ! number of different particle type pairs
    integer(4)    :: natat                  ! number of different atom type pairs
+   character(30), allocatable :: txtoponwt(:) !*type of network [allocate with nnwt]
    character(30) :: txcopolymer(mnct)      !*type of copolymer
    logical       :: lspma                  !*control tacticity
+   character(10), allocatable :: txnwt(:)     !*name of network type [allocate with nnwt]
    character(10) :: txct(mnct)             !*name of chain type
    character(10) :: txpt(mnpt)             !*name of particle type
    character(10) :: txat(mnat)             !*name of atom type
+   character(20), allocatable :: txnwtnwt(:) ! name of network type-network type pair
    character(20), allocatable :: txctct(:) ! name of chain type-chain type pair
    character(20), allocatable :: txptpt(:) ! name of particle type-particle type pair
    character(20), allocatable :: txatat(:) ! name of atom type-atom type pair
@@ -334,7 +359,9 @@ module MolModule
    logical                :: lpolyatom     !
    real(8)                :: massat(mnat)  !*mass of atom type
    real(8), allocatable   :: masspt(:)     ! mass of particle type
+   real(8), allocatable   :: massnwt(:)    ! mass of network type
    real(8), allocatable   :: massipt(:)    ! inverse mass of particle type
+   real(8), allocatable   :: massinwt(:)   ! inverse mass of network type
    real(8), allocatable   :: mompt(:,:)    ! moments of inertia of particle type
    real(8), allocatable   :: momipt(:,:)   ! inverse moments of inertia of particle type
    real(8), allocatable   :: massp(:)      ! mass of particle
@@ -365,14 +392,17 @@ module MolModule
    logical                :: lradatbox     ! use atom and atom radius when checking if particle inside box
 
                                            ! equivalences:
-                                           ! nc         = sum(ncct(1:nct))
-                                           ! np         = sum(nppt(1:npt))
-                                           ! na         = sum(napt(1:npt)*nppt(1:npt))
-                                           ! nat        = sum(natpt(1:npt))
-                                           ! nptct(ict) = count(npptct(1:npt,ict) > 0)
-                                           ! npct(ict)  = sum(npptct(1:npt,ict))
-                                           ! napt(ipt)  = sum(naatpt(1:natpt(ipt),ipt)))
-                                           ! naat(iat)  = naatpt(ka,iptat(iat))
+                                           ! nnw          = sum(nnwnwt(1:nnwt))
+                                           ! nc           = sum(ncct(1:nct))
+                                           ! np           = sum(nppt(1:npt))
+                                           ! na           = sum(napt(1:npt)*nppt(1:npt))
+                                           ! nat          = sum(natpt(1:npt))
+                                           ! nctnwt(inwt) = count(ncctnwt(1:nct,inwt) > 0)
+                                           ! nptct(ict)   = count(npptct(1:npt,ict) > 0)
+                                           ! ncnwt(inwt)  = sum(ncctnwt(1:nct,inwt))
+                                           ! npct(ict)    = sum(npptct(1:npt,ict))
+                                           ! napt(ipt)    = sum(naatpt(1:natpt(ipt),ipt)))
+                                           ! naat(iat)    = naatpt(ka,iptat(iat))
 
 ! ... chain bond
 
@@ -445,9 +475,21 @@ module MolModule
 !     ibranchpbeg(0)  = 1, 5,
 !     ibranchpinc(0)  = 0, 0,
 
+! ... finite network structures
+
+   logical                 :: lnetwork           ! flag for networks
+   logical   , allocatable :: lptnwt(:,:)        ! true, if particle type ipt is part of network type inwt [allocate with npt,nnwt]
+   logical   , allocatable :: lpnnwn(:,:)        ! true if particle number ip is part of network number inw
+   integer(4), allocatable :: npweakchargenwt(:) ! number of titratable beads in network type inwt [allocate with nnwt]
+   integer(4), allocatable :: iptclnwt(:)        !*particle type of nodes of different network types [allocate with nnwt]
+
 ! ... pointers
 
+   integer(4), allocatable :: inwtnwn(:)   ! network (1:nnw)               -> its network type (1:nnwt) 
+   integer(4), allocatable :: inwtct(:)    ! chain type (1:nct)            -> its network type (1:nnwt) 
+   integer(4), allocatable :: inwtcn(:)    ! chain (1:nc)                  -> its network type (1:nnwt) 
    integer(4), allocatable :: ictcn(:)     ! chain (1:nc)                  -> its chain type (1:nct)
+   integer(4), allocatable :: inwncn(:)    ! chain (1:nc)                  -> its network (1:nnw)       
    integer(4), allocatable :: ictpt(:)     ! particle type (1:npt)         -> its chain type (1:nct)
    integer(4), allocatable :: ihnpn(:)     ! particle (1:np)               -> its hierarchical structure (1:nh)
    integer(4), allocatable :: ictpn(:)     ! particle (1:np)               -> its chain type (1:nct)
@@ -457,18 +499,24 @@ module MolModule
    integer(4), allocatable :: iptan(:)     ! atom (1:na)                   -> its particle type (1:npt)
    integer(4), allocatable :: ipnan(:)     ! atom (1:na)                   -> its particle (1:np)
    integer(4), allocatable :: iatan(:)     ! atom (1:na)                   -> its atom type (1:na)
+
+   integer(4), allocatable :: inwnnwt(:)   ! network type (1:nnwt)         -> its first network (1:nnw) 
    integer(4)              :: ipnhn        ! hierarchical structure        -> its first particle
    integer(4), allocatable :: icnct(:)     ! chain type (1:nct)            -> its first chain (1:nc)
    integer(4), allocatable :: ipnpt(:)     ! particle type (1:npt)         -> its first particle (1:np)
    integer(4), allocatable :: iatpt(:)     ! particle type (1:npt)         -> its first atom type (1:nat)
    integer(4), allocatable :: ianpn(:)     ! particle (1:np)               -> its first atom (1:na)
    integer(4), allocatable :: ianat(:)     ! atom type (1:nat)             -> its first atom (1:na)
+   integer(4), allocatable :: inwtnwt(:,:) ! two network types (1:nnwt)    -> network type pair (1:nnwt)
    integer(4), allocatable :: ictct(:,:)   ! two chain types (1:nct)       -> chain type pair (1:nctct)
    integer(4), allocatable :: iptpt(:,:)   ! two particle types (1:npt)    -> particle type pair (1:nptpt)
    integer(4), allocatable :: iatat(:,:)   ! two atom types (1:nat)        -> atom type pair (1:natat)
    integer(4), allocatable :: isegpn(:)    ! particle (1:np)               -> segment number
    integer(4), allocatable :: ipnsegcn(:,:)! seg (1:npct) and chain (1:nc) -> particle (1:np)
    integer(4), allocatable :: icihigen(:,:)! hier (1:nh) and gen (0:ngen)  -> its first chain
+   integer(4), allocatable :: icnclocnwn(:,:)  ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)          
+   integer(4), allocatable :: ipncllocnwn(:,:) ! cross-link (1:nclnwt) and network (1:nnw)    -> its particle (1:np)       
+   integer(4), allocatable :: ipnplocnwn(:,:)  ! local particle (1:npnwt) and network (1:nnw) -> its particle (1:np)       
 
 ! ... md
 

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:04
+2016-11-14     12:23:45
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -123,9 +123,9 @@ number of chains types         =       1     (     10 )
 number of particle types       =       2     (     10 )
 number of atom types           =       6     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-60-mer                 1                    block        60    0          
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
+----------         ------------             --------  -------------  -------------
+60-mer                 1                    block        60             0 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -543,7 +543,7 @@ asphericity (<2:nd moments>)   =          0.52885
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:04
+2016-11-14     12:23:45
 
 title   : 1 lysozyme (ph7)  and 1 chain (60 segments), no counterions                               
 
@@ -674,12 +674,12 @@ number density                 =      9.53125E-07    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          4.76396        0.00566        0.56279        0.07279             0.
-<r(ee)**2>**0.5                =         69.15736      628.54533       44.55387      439.17909             1.
-<r(g)**2>**0.5                 =         24.50159       74.67294       12.53037        7.28180             2.
-smallest rms mom. p.a.         =          4.81925        0.20390        2.20678        1.01401             0.
-intermediate rms mom. p.a.     =          9.40142        3.89486        3.52652        2.39393             1.
-largest rms mom. p.a.          =         22.10693       78.36093       12.64794        9.92960             2.
+<r(bb)**2>**0.5                =          4.76396        0.00059        0.56279        0.06133             0.
+<r(ee)**2>**0.5                =         69.15736        4.40408       44.55387        4.68256             1.
+<r(g)**2>**0.5                 =         24.50159        1.47919       12.53037        0.28727             2.
+smallest rms mom. p.a.         =          4.81925        0.02111        2.20678        0.21889             0.
+intermediate rms mom. p.a.     =          9.40142        0.20491        3.52652        0.32449             1.
+largest rms mom. p.a.          =         22.10693        1.70645       12.64794        0.38663             2.
 <persist. l.>  (r(ee))         =         10.88005        1.12307        3.53719        0.78884             1.
 <persist. l.>  (r(g))          =          6.93858        0.91672        1.92598        0.12106             2.
 <angle>                        =        104.00235        0.95693        2.01579        0.12955             2.
@@ -1822,24 +1822,24 @@ number of images made          =    1
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.00         0.01
-         ControlAver                    0.00         0.00
-         MainAver                       0.00         0.04
-         Group                          0.00         0.00
-         StaticDriver                   0.01         0.29
-          RDF                           0.01         0.26
+         Coordinate                     0.00         0.02
+         ControlAver                    0.00         0.01
+         MainAver                       0.00         0.01
+         Group                          0.00         0.02
+         StaticDriver                   0.01         0.30
+          RDF                           0.01         0.27
           ChainBeadPartContact          0.00         0.02
           LoopTailTrain                 0.00         0.01
          ImageDriver                    0.00         0.05
-         IOMolsim                       0.00         0.04
+         IOMolsim                       0.00         0.03
          SetVList                       0.00         0.00
          MCPass                         0.02         0.57
-          ChainMove                     0.00         0.01
-          DUTotal                       0.02         0.42
-           DUTwoBody                    0.01         0.28
-           DUBond                       0.00         0.01
+          ChainMove                     0.00         0.00
+          DUTotal                       0.02         0.46
+           DUTwoBody                    0.01         0.26
+           DUBond                       0.00         0.02
            DUAngle                      0.00         0.04
           SPartMove                     0.00         0.03
-          PivotMove                     0.00         0.01
+          PivotMove                     0.00         0.00
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.04

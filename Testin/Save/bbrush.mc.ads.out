@@ -3,8 +3,10 @@
 .                                         TestSetObjectParam1 chain                                          .
 ..............................................................................................................
 
-ictcn(1:nc)    1    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2    2
-ictct(1:nct,nct)    1    2    2    3
+ict, jct, ictct
+    1    1    1
+    1    2    2
+    2    2    3
 
         ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i
           1          1          1          1
@@ -4227,7 +4229,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v1.3.0                                           **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -4249,7 +4251,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-22     08:10:24
+2016-11-15     13:30:17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -4355,10 +4357,10 @@ particle number of chain for first branch point     =        1
 particle increment of chain between branch points   =        1
 number of crosslinks                                =       50
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-50-mer1                1                    block        50    0          
-20-mer2               50                    block         0   20          
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
+----------         ------------             --------  -------------  -------------
+50-mer1                1                    block        50             0 
+20-mer2               50                    block         0            20 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -6657,7 +6659,7 @@ total potential energy (NkT)   =      32665.32015
 pressure (NkT/V)(excl. contact)=         -1.68825
 pressure (kT) (excl. contact)  =     -4.61631E-05
  
-total cpu time since start (s)        0.09
+total cpu time since start (s)        0.10
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -6809,7 +6811,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-22     08:10:24
+2016-11-15     13:30:17
 
 title   : bottle-brush: large, adsorbed                                                             
 
@@ -9448,19 +9450,19 @@ number of images made          =    1
          Coordinate             0.04         0.19
          ControlAver            0.00         0.00
          MainAver               0.00         0.01
-         Group                  0.00         0.00
+         Group                  0.00         0.01
          StaticDriver           0.00         0.01
           SPDF                  0.00         0.01 
-         ImageDriver            0.02         0.09
-         IOMolsim               0.03         0.17
-         SetVList               0.02         0.11
-         MCPass                 0.08         0.42
+         ImageDriver            0.02         0.08
+         IOMolsim               0.03         0.16
+         SetVList               0.03         0.13
+         MCPass                 0.09         0.41
           PivotMove             0.00         0.01 
-          DUTotal               0.08         0.39 
-           DUTwoBody            0.07         0.34  
+          DUTotal               0.08         0.38 
+           DUTwoBody            0.07         0.32  
           SPartMove             0.00         0.00 
-           DUBond               0.00         0.00  
+           DUBond               0.00         0.01  
          DUCrossLink            0.00         0.01
            DUExternal           0.00         0.01  
  
-total cpu time since start (s)        0.25
+total cpu time since start (s)        0.26

@@ -99,7 +99,7 @@ ifeq ($(ARCH), LOCAL_INTEL)
   OPT_debug := -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
   OPT_warn := -warn     				       # provides many warnings
 
-  mode = normal 
+  mode = default
   ifeq ($(mode),normal)
      	OPT_SER = $(OPT_normal)
   endif

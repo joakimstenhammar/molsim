@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:31
+2016-11-14     12:23:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -117,8 +117,8 @@ number of chains types         =       1     (     10 )
 number of particle types       =       1     (     10 )
 number of atom types           =       1     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
+chain type         no of chains             topology  npptct(1,ict)
+----------         ------------             --------  -------------
 20-mer                 1                    block        20               
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
@@ -315,7 +315,7 @@ total potential energy (NkT)   =          0.00000
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      2.00000E-05
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.00
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -427,7 +427,7 @@ asphericity (<2:nd moments>)   =          0.64964
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:31
+2016-11-14     12:23:16
 
 title   : testchain: 20-mer                                                                         
 
@@ -602,12 +602,12 @@ number density                 =      2.00000E-05    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.53065        1.08190        1.43130        0.19455            19.
-<r(ee)**2>**0.5                =         58.30715      817.46248       51.19303      284.82148            12.
-<r(g)**2>**0.5                 =         20.68454       63.78196       14.12073       22.08187            12.
-smallest rms mom. p.a.         =          3.05648        1.35169        2.45843        0.51485             5.
-intermediate rms mom. p.a.     =          6.85743        7.79217        4.87947        3.71028             7.
-largest rms mom. p.a.          =         19.27391       71.52973       14.76609       22.92882            13.
+<r(bb)**2>**0.5                =          5.53065        0.09696        1.43130        0.06642            19.
+<r(ee)**2>**0.5                =         58.30715        6.63272       51.19303        2.71010            12.
+<r(g)**2>**0.5                 =         20.68454        1.48824       14.12073        0.76137            12.
+smallest rms mom. p.a.         =          3.05648        0.21365        2.45843        0.10257             5.
+intermediate rms mom. p.a.     =          6.85743        0.54639        4.87947        0.36643             7.
+largest rms mom. p.a.          =         19.27391        1.77397       14.76609        0.75700            13.
 <persist. l.>  (r(ee))         =         19.28258        4.29386       13.43348        1.47403            13.
 <persist. l.>  (r(g))          =         97.05129       81.13446      287.32706       73.67718            12.
 <angle>                        =        137.29243        4.80848       13.48651        2.09040            17.
@@ -630,17 +630,17 @@ asphericity (<2:nd moments>)   =          0.64964
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.01 
-         ControlAver           0.00         0.02 
-         MainAver              0.00         0.02 
-         IOMolsim              0.00         0.02 
+         Coordinate            0.00         0.03 
+         ControlAver           0.00         0.03 
+         MainAver              0.00         0.04 
+         IOMolsim              0.00         0.04 
          SetVList              0.00         0.00 
-         MCPass                0.04         0.92 
-          SPartMove            0.00         0.04  
-          DUTotal              0.03         0.59  
-           DUTwoBody           0.01         0.18   
-           DUBond              0.00         0.05   
-           DUAngle             0.00         0.08   
-          PivotMove            0.00         0.04  
+         MCPass                0.04         0.86 
+          SPartMove            0.00         0.03  
+          DUTotal              0.03         0.62  
+           DUTwoBody           0.01         0.17   
+           DUBond              0.00         0.09   
+           DUAngle             0.01         0.13   
+          PivotMove            0.00         0.05  
  
 total cpu time since start (s)        0.05

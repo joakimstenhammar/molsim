@@ -13,7 +13,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -35,7 +35,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:24
+2016-11-14     12:24:01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -134,9 +134,9 @@ particle       no        atom     no     mass    hard core    no of unit   weak 
                                                  radius       charges      charge                              
 --------       --        ----     --     ----    ---------    ----------   ------    --        -----    -------  --------
 ion           500
-                         ion      1      0.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
+                         ion      1      1.000    2.000        1.0000        F      0.0000     0.0000    0.0000    0.0000
 counterion    500
-                         counte   1      0.000    2.000       -1.0000        F      0.0000     0.0000    0.0000    0.0000
+                         counte   1      1.000    2.000       -1.0000        F      0.0000     0.0000    0.0000    0.0000
 
 molecular input frame: ion       
 ---------------------- ---
@@ -168,8 +168,8 @@ counterion   0.00000   0.00000   0.00000
 
 particle             mass           moment of inertia (x,y,z)        maximal atom-com distance
 --------             ----           -------------------------        -------------------------
-ion                 0.000          0.000     0.000     0.000             0.000
-counterion          0.000          0.000     0.000     0.000             0.000
+ion                 1.000          0.000     0.000     0.000             0.000
+counterion          1.000          0.000     0.000     0.000             0.000
 
 **************************************************************************************************************
 *                                          two-body potential data                                           *
@@ -281,7 +281,7 @@ total potential energy (NkT)   =          2.31390
 pressure (NkT/V)(excl. contact)=          1.77129
 pressure (kT) (excl. contact)  =      4.22865E-07
  
-total cpu time since start (s)        0.40
+total cpu time since start (s)        0.39
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -357,7 +357,7 @@ number density                 =      2.38732E-07
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:26
+2016-11-14     12:24:02
 
 title   : ions and counterions spherically confined                                                 
 
@@ -1419,7 +1419,7 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.33         0.21
+         Coordinate             0.31         0.21
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
          DistFunc               0.01         0.01
@@ -1428,11 +1428,11 @@ number of images made          =    1
           SPDF                  0.01         0.00 
          ImageDriver            0.01         0.00
          IOMolsim               0.03         0.02
-         SetVList               0.17         0.11
-         MCPass                 1.03         0.64
-          SPartMove             0.02         0.01 
-          DUTotal               0.97         0.61 
-           DUTwoBody            0.92         0.58  
+         SetVList               0.14         0.10
+         MCPass                 0.99         0.66
+          SPartMove             0.01         0.01 
+          DUTotal               0.94         0.63 
+           DUTwoBody            0.90         0.60  
            DUExternal           0.01         0.01  
  
-total cpu time since start (s)        1.68
+total cpu time since start (s)        1.58

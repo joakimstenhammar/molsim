@@ -182,7 +182,6 @@ subroutine IOMolsim(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='IOMolsim'
-   integer(4) :: i
    character(4) :: txistep1
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -732,8 +731,8 @@ subroutine IOCnf(str)
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
       if (lclink) then
-         call par_bc_ints(nbondcl  , np         )
-         call par_bc_ints(bondcl   , maxvalnbondcl*np)
+         call par_bc_ints(nbondcl ,   np)
+         call par_bc_ints(bondcl  , maxvalnbondcl*np)
       end if
       if (lmd .and. .not.GetlSetVel()) then
          call par_bc_reals(rod    , 3*np)
@@ -1319,6 +1318,7 @@ subroutine MainAver(iStage)
    if (lweakcharge)   call ChargeAver(iStage)
    if (lpolarization) call IndDipMomAver(iStage)
    if (lchain)        call ChainAver(iStage)
+   if (lnetwork)      call NetworkAver(iStage)
    if (lhierarchical) call HierarchicalAver(iStage)
    if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
@@ -1774,7 +1774,7 @@ subroutine ChargeAver(iStage)
    character(80), parameter :: txheading ='charge averages'
    integer(4),       save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ip, ipt, ia, iat, ivar
+   integer(4) :: ia, iat, ivar
    real(8) :: InvFlt
 
    if (slave) return   ! master only
@@ -1943,6 +1943,7 @@ end subroutine IndDipMomAver
 subroutine ChainAver(iStage)
 
    use MolModule
+   use, intrinsic :: IEEE_ARITHMETIC
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1953,7 +1954,7 @@ subroutine ChainAver(iStage)
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
    type(chainprop_var) :: ChainProperty
-   integer(4) :: ic, ict, ioffset, itype
+   integer(4) :: ic, ict, ioffset
    real(8) :: PerLengthRg, Asphericity, InvFlt
 
    if (slave) return   ! master only
@@ -2039,8 +2040,13 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs2**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs2))+Half*(var(1+ioffset)%avs2)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs2**2, (npct(ict)-1)*(var(1+ioffset)%avs2))
-         write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
-           (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
+         if (var(10+ioffset)%avs2 == One) then 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            IEEE_VALUE((var(10+ioffset)%avs2),IEEE_QUIET_NAN)
+         else 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
+         end if
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs2**2*InvFlt(var(3+ioffset)%avs2**2)
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
@@ -2064,8 +2070,13 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs1**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs1))+Half*(var(1+ioffset)%avs1)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs1**2, (npct(ict)-1)*(var(1+ioffset)%avs1))
-         write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
-           (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
+         if (var(10+ioffset)%avs1 == One) then 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            IEEE_VALUE((var(10+ioffset)%avs1),IEEE_QUIET_NAN)
+         else 
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
+         end if
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs1**2*InvFlt(var(3+ioffset)%avs1**2)
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
@@ -2078,6 +2089,124 @@ subroutine ChainAver(iStage)
    end select
 
 end subroutine ChainAver
+
+!************************************************************************
+!*                                                                      *
+!*     NetworkAver                                                      *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate averages of network quantities  
+
+subroutine NetworkAver(iStage)
+
+   use MolModule
+   implicit none
+
+   integer(4), intent(in) :: iStage
+
+   character(40), parameter :: txroutine ='NetworkAver'
+   character(80), parameter :: txheading ='network quantities'
+   integer(4)   , save      :: ntype ! number of types of properties is being set below
+   integer(4)   , save      :: nvar
+   type(scalar_var), allocatable, save :: var(:)
+   type(networkprop_var) :: NetworkProperty
+   integer(4) :: inw, inwt, ioffset
+   real(8) :: Asphericity
+
+   if (slave) return   ! master only
+
+   if (ltrace) call WriteTrace(2, txroutine, iStage)
+
+   select case (iStage)
+   case (iReadInput)
+
+      if (lweakcharge) then
+         ntype = 6
+      else
+         ntype = 5
+      end if
+      nvar = nnwt*ntype
+      allocate(var(nvar))
+
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         var(1+ioffset)%label = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
+         var(2+ioffset)%label = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
+         var(3+ioffset)%label = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
+         var(4+ioffset)%label = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
+         var(5+ioffset)%label = '<asphericity>                  = ' ! asphericity
+         if (lweakcharge) &
+         var(6+ioffset)%label = '<alpha>                        = ' ! degree of ionization
+         var(1+ioffset:ntype+ioffset)%norm = One/nnwnwt(inwt)
+     end do
+
+   case (iBeforeSimulation)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      if (lsim .and. master .and. txstart == 'continue') read(ucnf) var
+
+   case (iBeforeMacrostep)
+
+      call ScalarSample(iStage, 1, nvar, var)
+
+   case (iSimulationStep)
+
+      var%value = Zero
+      do inw = 1, nnw
+         inwt = inwtnwn(inw)
+         ioffset = ntype*(inwt-1)
+         call CalcNetworkProperty(inw, NetworkProperty)
+         var(1+ioffset)%value = var(1+ioffset)%value + NetworkProperty%rg2
+         var(2+ioffset)%value = var(2+ioffset)%value + NetworkProperty%rg2s
+         var(3+ioffset)%value = var(3+ioffset)%value + NetworkProperty%rg2m
+         var(4+ioffset)%value = var(4+ioffset)%value + NetworkProperty%rg2l
+         var(5+ioffset)%value = var(5+ioffset)%value + NetworkProperty%asph
+         if (lweakcharge) &
+         var(6+ioffset)%value = var(6+ioffset)%value + NetworkProperty%alpha
+      end do
+      call ScalarSample(iStage, 1, nvar, var)
+
+   case (iAfterMacrostep)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      if (lsim .and. master) write(ucnf) var
+      call WriteHead(2, txheading, uout)
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
+         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
+         if (nnwt > 1) write(uout,'(a)')  '------------------'
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
+         write(uout,'()')
+         write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
+           Asphericity(var(2+ioffset)%avs2**2,var(3+ioffset)%avs2**2,var(4+ioffset)%avs2**2) 
+         write(uout,'()')
+      end do
+
+   case (iAfterSimulation)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      call WriteHead(2, txheading, uout)
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
+         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
+         if (nnwt > 1) write(uout,'(a)')  '------------------'
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
+         write(uout,'()')
+         write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
+           Asphericity(var(2+ioffset)%avs1**2,var(3+ioffset)%avs1**2,var(4+ioffset)%avs1**2)
+         write(uout,'()')
+      end do
+
+      deallocate(var)
+
+   end select
+
+end subroutine NetworkAver
 
 !***********************************************************************
 !*                                                                      *
@@ -2098,7 +2227,6 @@ subroutine HierarchicalAver(iStage)
    character(80), parameter :: txheading ='hierarchical quantities'
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ic, ict, iht, ioffset, itype, ivar
    real(8) :: rg
 
    if (slave) return   ! master only
@@ -2216,7 +2344,6 @@ subroutine ThermoInteg(iStage)
    real(8),          save :: powerkangle
    integer(4),       save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ict, iat, ia
    real(8) :: data(9)
 
    namelist /nmlThermoInteg/ lambda, powercharge, powerkbond, powerkangle
@@ -2355,7 +2482,7 @@ subroutine DistFunc(iStage)
    integer(4) :: ip, ipt, jp, jpt, iptjpt, ia, ialoc, ialow, iat, iatloc, ja, jaloc, jalow, jat, iatjat
    integer(4) :: iatx, natx, iatjatx, natatx
    real(8), allocatable, save :: ubind(:), gcont(:)
-   real(8)    :: dx, dy, dz, rr, dropbc(3), d, usum, fsum, virtwob, virmolecule
+   real(8)    :: dx, dy, dz, dropbc(3), d, usum, fsum, virtwob, virmolecule
    real(8)    :: raa2, raa1, rpp2, rpp1, dipm, norm, dvol, vols2, utobdypp
 
    integer(4), parameter :: nvar_s = 2
@@ -3028,7 +3155,7 @@ subroutine PressureContact(ipnt, var, vols2, prsrhs)
    real(8),      intent(in)  :: vols2
    real(8),      intent(out) :: prsrhs
 
-   integer(4) :: ipt, jpt, iptjpt, ivar, ihs
+   integer(4) :: ipt, jpt, iptjpt, ivar
    real(8)    :: denst, densipt, densjpt, rcont, gcont, term
 
    prsrhs = Zero

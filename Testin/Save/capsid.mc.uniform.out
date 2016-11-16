@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:41
+2016-11-14     12:24:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -120,9 +120,9 @@ number of chains types         =       1     (     10 )
 number of particle types       =       4     (     10 )
 number of atom types           =       4     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-100-mer                1                    block         0    0  100    0
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
+----------         ------------             --------  -------------  -------------  -------------  -------------
+100-mer                1                    block         0             0           100             0
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -916,7 +916,7 @@ asphericity (<2:nd moments>)   =          0.22528
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:41
+2016-11-14     12:24:16
 
 title   : 1 pe and their counterions + 1 capsid and their counterions                               
 
@@ -1469,12 +1469,12 @@ number density                 =      7.63944E-07    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          4.91395        0.08931        0.49696        0.00980             1.
-<r(ee)**2>**0.5                =         63.46864      191.78636       20.07923       71.10295             2.
-<r(g)**2>**0.5                 =         34.22864        8.97999        4.22466        2.01328             3.
-smallest rms mom. p.a.         =         12.01498        2.86951        2.36753        0.51440             3.
-intermediate rms mom. p.a.     =         16.53976        1.74128        1.88624        0.52006             3.
-largest rms mom. p.a.          =         27.45316        7.85129        3.97622        2.01441             3.
+<r(bb)**2>**0.5                =          4.91395        0.00908        0.49696        0.00977             1.
+<r(ee)**2>**0.5                =         63.46864        1.49331       20.07923        1.69870             2.
+<r(g)**2>**0.5                 =         34.22864        0.13093        4.22466        0.23191             3.
+smallest rms mom. p.a.         =         12.01498        0.11883        2.36753        0.10625             3.
+intermediate rms mom. p.a.     =         16.53976        0.05256        1.88624        0.13316             3.
+largest rms mom. p.a.          =         27.45316        0.14262        3.97622        0.24572             3.
 <persist. l.>  (r(ee))         =          6.59532        0.19324        0.40572        0.07193             2.
 <persist. l.>  (r(g))          =          7.56841        0.07578        0.15485        0.01313             2.
 <angle>                        =        145.23568        0.80679        1.73995        0.10026             1.
@@ -1873,19 +1873,19 @@ no    group label            no of particles     precision
          -------         ------------     --------
          Coordinate            0.01         0.03 
          ControlAver           0.00         0.00 
-         MainAver              0.00         0.00 
+         MainAver              0.00         0.01 
          DistFunc              0.01         0.05 
          Group                 0.00         0.00 
-         IOMolsim              0.01         0.02 
+         IOMolsim              0.00         0.01 
          SetVList              0.00         0.01 
-         MCPass                0.25         0.89 
+         MCPass                0.23         0.89 
           SPartMove            0.01         0.03  
-          DUTotal              0.23         0.79  
-           DUTwoBody           0.16         0.56   
+          DUTotal              0.21         0.79  
+           DUTwoBody           0.15         0.59   
            DUBond              0.00         0.02   
            DUAngle             0.01         0.03   
            DUExternal          0.01         0.03   
           PivotMove            0.00         0.00  
           SlitherMove          0.00         0.00  
  
-total cpu time since start (s)        0.31
+total cpu time since start (s)        0.28

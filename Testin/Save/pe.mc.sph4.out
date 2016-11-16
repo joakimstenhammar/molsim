@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:59
+2016-11-14     12:23:42
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -122,9 +122,9 @@ number of chains types         =       1     (     10 )
 number of particle types       =       2     (     10 )
 number of atom types           =       2     (     10 )
 
-chain type         no of chains             topology  no of particles of the different types
-----------         ------------             --------  --------------------------------------
-100-mer                1                    block       100    0          
+chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
+----------         ------------             --------  -------------  -------------
+100-mer                1                    block       100             0 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -458,7 +458,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:00
+2016-11-14     12:23:42
 
 title   : 1 pe and their counterions confined to a sphere of radius 100, thermodynamic integration  
 
@@ -605,12 +605,12 @@ number density                 =      3.58099E-05    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =         24.00894      110.95533       13.25315       14.81309            21.
-<r(ee)**2>**0.5                =        128.38105     2280.44359       82.62291      938.56347            10.
-<r(g)**2>**0.5                 =         54.37404      376.85229       24.30246       61.56816            23.
-smallest rms mom. p.a.         =         15.36585       29.54303        6.72983        7.30550            16.
-intermediate rms mom. p.a.     =         29.97422       98.63753       15.76343       31.01057            20.
-largest rms mom. p.a.          =         42.68458      272.79699       19.23224       60.03556            22.
+<r(bb)**2>**0.5                =         24.00894        2.20908       13.25315        0.54754            21.
+<r(ee)**2>**0.5                =        128.38105        8.59390       82.62291        5.49694            10.
+<r(g)**2>**0.5                 =         54.37404        3.36146       24.30246        1.23531            23.
+smallest rms mom. p.a.         =         15.36585        0.93300        6.72983        0.52249            16.
+intermediate rms mom. p.a.     =         29.97422        1.60253       15.76343        0.95471            20.
+largest rms mom. p.a.          =         42.68458        3.08408       19.23224        1.50214            22.
 <persist. l.>  (r(ee))         =         15.47380        1.14695        2.17790        0.26588            20.
 <persist. l.>  (r(g))          =          3.95084        0.18227        0.87583        0.18840             6.
 <angle>                        =         72.23841        3.21235       10.69225        2.80174            12.
@@ -1373,22 +1373,22 @@ structure factor
          -------          ------------     --------
          Coordinate             0.00         0.00
          ControlAver            0.00         0.00
-         MainAver               0.01         0.01
+         MainAver               0.00         0.01
          DistFunc               0.01         0.02
          Group                  0.00         0.00
          StaticDriver           0.03         0.04
           SPDF                  0.00         0.00 
-          SFNoPBC               0.03         0.04 
+          SFNoPBC               0.02         0.04 
          IOMolsim               0.00         0.00
          SetVList               0.00         0.00
-         MCPass                 0.67         0.93
-          SPartMove             0.03         0.04 
-          DUTotal               0.57         0.79 
-           DUTwoBody            0.36         0.50  
-           DUBond               0.03         0.04  
-           DUAngle              0.04         0.05  
+         MCPass                 0.60         0.93
+          SPartMove             0.03         0.05 
+          DUTotal               0.50         0.77 
+           DUTwoBody            0.32         0.50  
+           DUBond               0.03         0.05  
+           DUAngle              0.04         0.06  
           ChainMove             0.00         0.00 
           SlitherMove           0.00         0.00 
           PivotMove             0.00         0.00 
  
-total cpu time since start (s)        0.74
+total cpu time since start (s)        0.66
