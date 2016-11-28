@@ -2166,8 +2166,11 @@ subroutine NetworkAver(iStage)
          var(3+ioffset)%value = var(3+ioffset)%value + NetworkProperty%rg2m
          var(4+ioffset)%value = var(4+ioffset)%value + NetworkProperty%rg2l
          var(5+ioffset)%value = var(5+ioffset)%value + NetworkProperty%asph
+         var(6+ioffset)%value = var(6+ioffset)%value + NetworkProperty%theta(1)
+         var(7+ioffset)%value = var(7+ioffset)%value + NetworkProperty%theta(2)
+         var(8+ioffset)%value = var(8+ioffset)%value + NetworkProperty%theta(3)
          if (lweakcharge) &
-         var(6+ioffset)%value = var(6+ioffset)%value + NetworkProperty%alpha
+         var(9+ioffset)%value = var(6+ioffset)%value + NetworkProperty%alpha
       end do
       call ScalarSample(iStage, 1, nvar, var)
 
