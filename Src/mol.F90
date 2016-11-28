@@ -144,9 +144,10 @@ module MolModule
       real(8)    :: rg2s                    ! square extention along principal axes (smallest)
       real(8)    :: rg2m                    ! square extention along principal axes (middle)
       real(8)    :: rg2l                    ! square extention along principal axes (largest)
+      real(8)    :: eivr(3,3)               ! normalized eigenvectors of the principal frame
+      real(8)    :: theta(3)                ! angles of axes of largest extension and x-, y-, and z-axes of main frame
       real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
       real(8)    :: alpha                   ! degree of ionization (for titrating systems)
-      real(8)    :: eivr(3,3)               ! normalized eigenvectors of the principal frame
    end type networkprop_var
 
 ! ... data structure for simple averaging
