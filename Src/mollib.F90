@@ -1092,7 +1092,7 @@ end subroutine Diag_old
 
 !************************************************************************
 !*                                                                      *
-!*     diag                                                             *
+!*     Diag                                                             *
 !*                                                                      *
 !************************************************************************
 
@@ -1100,7 +1100,7 @@ end subroutine Diag_old
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
 
-subroutine diag(n,a,d,v,nrot)
+subroutine Diag(n,a,d,v,nrot)
    implicit none
    real(8), parameter :: zero = 0.0d0, fourth = 0.25d0, one = 1.0d0, two = 2.0d0
    integer(4), parameter :: mnrot = 50     ! maximum number sweeps
@@ -1200,9 +1200,9 @@ subroutine diag(n,a,d,v,nrot)
       end do
 
    end do
-   if (nrot > mnrot) call stop('diag', 'no convergence', 6)
+   if (nrot > mnrot) call stop('Diag', 'no convergence', 6)
 
-end subroutine diag
+end subroutine Diag
 
 !************************************************************************
 !*                                                                      *
@@ -1210,7 +1210,7 @@ end subroutine diag
 !*                                                                      *
 !************************************************************************
 
-! ... Given the eigenvalues d and eigenvectors v as output from diag this 
+! ... Given the eigenvalues d and eigenvectors v as output from Diag this 
 ! ... routine sorts the eigenvalues into descending order, and rearranges 
 ! ... the columns of v correspondingly. The method is straight insertion.
 
