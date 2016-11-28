@@ -2122,10 +2122,11 @@ subroutine NetworkAver(iStage)
    case (iReadInput)
 
       if (lweakcharge) then
-         ntype = 6
+         ntype = 9
       else
-         ntype = 5
+         ntype = 8
       end if
+
       nvar = nnwt*ntype
       allocate(var(nvar))
 
@@ -2136,8 +2137,11 @@ subroutine NetworkAver(iStage)
          var(3+ioffset)%label = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
          var(4+ioffset)%label = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
          var(5+ioffset)%label = '<asphericity>                  = ' ! asphericity
+         var(6+ioffset)%label = '<xtheta>                       = ' ! angle of axes of largest extension and x-axes of main frame
+         var(7+ioffset)%label = '<ytheta>                       = ' ! angle of axes of largest extension and y-axes of main frame
+         var(8+ioffset)%label = '<ztheta>                       = ' ! angle of axes of largest extension and z-axes of main frame
          if (lweakcharge) &
-         var(6+ioffset)%label = '<alpha>                        = ' ! degree of ionization
+         var(9+ioffset)%label = '<alpha>                        = ' ! degree of ionization
          var(1+ioffset:ntype+ioffset)%norm = One/nnwnwt(inwt)
      end do
 
