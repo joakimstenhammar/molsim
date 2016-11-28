@@ -1206,6 +1206,51 @@ end subroutine diag
 
 !************************************************************************
 !*                                                                      *
+!*     Eigensort                                                        *
+!*                                                                      *
+!************************************************************************
+
+! ... Given the eigenvalues d and eigenvectors v as output from diag this 
+! ... routine sorts the eigenvalues into descending order, and rearranges 
+! ... the columns of v correspondingly. The method is straight insertion.
+
+!     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
+
+subroutine Eigensort(d,v,n)
+
+   implicit none 
+
+   integer(4)  :: n
+   real(8)     :: d(n), v(n,n)
+   integer(4)  :: i, j, k
+   real(8)     :: p
+
+   do i = 1, n-1
+      k=i
+      p=d(i)
+      do j = i+1, n
+         if (d(j).ge.p) then
+            k=j
+            p=d(j)
+         end if
+      end do   
+      if (k.ne.i) then
+         d(k)=d(i)
+         d(i)=p
+         do j=1,n
+            p=v(j,i)
+            v(j,i)=v(j,k)
+            v(j,k)=p
+         end do
+      end if
+   end do 
+
+   return
+
+end subroutine
+
+!************************************************************************
+!*                                                                      *
 !*     Smooth                                                           *
 !*                                                                      *
 !************************************************************************
