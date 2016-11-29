@@ -1578,11 +1578,6 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    integer(4)  :: nrot
    integer(4)  :: npcharged
    
-   real(8), parameter :: eivrmf(3,3) = reshape( [ 1.0, 0.0, 0.0,   &    ! eigenvectors of the main frame
-                                                  0.0, 1.0, 0.0,   &
-                                                  0.0, 0.0, 1.0 ], &
-                                                 [3,3]  )
-
 ! ... counter
    integer(4)  :: inwt, ip, iploc
    integer(4)  :: irow
@@ -1642,9 +1637,9 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
 ! ... angle of axes of largest extension (principal frame) and x,y,z-axes of main frame
 
-   theta(1) = RadToDeg*acos(dot_product(eivr(1:3,1),eivrmf(1:3,1))) ! eivr(1:3,1) is the eigenvector corresponding to the largest eigenvalue
-   theta(2) = RadToDeg*acos(dot_product(eivr(1:3,1),eivrmf(1:3,2))) ! --> Here, the angles between the eigenvector of the largest extension ...
-   theta(3) = RadToDeg*acos(dot_product(eivr(1:3,1),eivrmf(1:3,3))) !       ... and the respective axes of the main frame are derived
+   theta(1) = RadToDeg*acos(eivr(1,1)) ! eivr(1,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the x-axis
+   theta(2) = RadToDeg*acos(eivr(2,1)) ! eivr(2,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the y-axis
+   theta(3) = RadToDeg*acos(eivr(3,1)) ! eivr(3,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the z-axis
    NetworkProperty%theta = theta
 
 ! ... asphericity  ( = 0 for sphere, 0.526 for gaussian chain, and 1 for a rod)
