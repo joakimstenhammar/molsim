@@ -2126,6 +2126,10 @@ subroutine NetworkAver(iStage)
       nvar = nnwt*ntype
       allocate(var(nvar))
 
+      ! ... please note, that properties of type 1-7 are "rms" quantities. They have to be normalized by "ScalarNorm" with 
+      ! ... iopt = 2. If new properties are wished to be incorporated, please adjust the call of "ScalarNorm" below for 
+      ! ... both stages, "IAfterMacrostep" and "IAfterSimulation".
+
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
          var(1+ioffset)%label  = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
@@ -2183,7 +2187,7 @@ subroutine NetworkAver(iStage)
       call WriteHead(2, txheading, uout)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2) 
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2)
          call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
