@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.1.0] - 2016-11-29 - Tangela
+## [2.1.0] - 2016-11-29 - Tangoloss
 ### Changed
 - new network properties are being calculated: theta, rg2x, rg2y and rg2z
 - please confer the [Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/networks) for further information
