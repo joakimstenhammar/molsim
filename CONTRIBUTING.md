@@ -11,3 +11,7 @@ When you are assigned to a merge request you are supposed to read the changes in
 Some general rules when commenting the code:
 * When reviewing the code mark comments regarding ''cosmetic'' changes in the code with :sparkles: (`:sparkles: `).
 * Mark all general comments which requre further attention with :negative_squared_cross_mark: (`:negative_squared_cross_mark:`). When the isse of the comment was resolved, mark it with :white_check_mark: (`:white_check_mark:`)
+
+Some other things to check:
+* are all new features described in the wiki?
+* is the version changed (corretly? adhere to [Semantic Versioning](http://semver.org/))
