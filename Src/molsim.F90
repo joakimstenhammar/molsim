@@ -2128,16 +2128,19 @@ subroutine NetworkAver(iStage)
 
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         var(1+ioffset)%label = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
-         var(2+ioffset)%label = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
-         var(3+ioffset)%label = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
-         var(4+ioffset)%label = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
-         var(5+ioffset)%label = '<asphericity>                  = ' ! asphericity
-         var(6+ioffset)%label = '<xtheta>                       = ' ! angle of axes of largest extension and x-axes of main frame
-         var(7+ioffset)%label = '<ytheta>                       = ' ! angle of axes of largest extension and y-axes of main frame
-         var(8+ioffset)%label = '<ztheta>                       = ' ! angle of axes of largest extension and z-axes of main frame
+         var(1+ioffset)%label  = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
+         var(2+ioffset)%label  = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
+         var(3+ioffset)%label  = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
+         var(4+ioffset)%label  = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
+         var(5+ioffset)%label  = '<r(g)**2_xx>**0.5              = ' ! xx component of the rms radius of gyration
+         var(6+ioffset)%label  = '<r(g)**2_yy>**0.5              = ' ! yy component of the rms radius of gyration
+         var(7+ioffset)%label  = '<r(g)**2_zz>**0.5              = ' ! zz component of the rms radius of gyration
+         var(8+ioffset)%label  = '<asphericity>                  = ' ! asphericity
+         var(9+ioffset)%label  = '<xtheta>                       = ' ! angle of axes of largest extension and x-axes of main frame
+         var(10+ioffset)%label = '<ytheta>                       = ' ! angle of axes of largest extension and y-axes of main frame
+         var(11+ioffset)%label = '<ztheta>                       = ' ! angle of axes of largest extension and z-axes of main frame
          if (lweakcharge) &
-         var(9+ioffset)%label = '<alpha>                        = ' ! degree of ionization
+         var(12+ioffset)%label = '<alpha>                        = ' ! degree of ionization
          var(1+ioffset:ntype+ioffset)%norm = One/nnwnwt(inwt)
      end do
 
