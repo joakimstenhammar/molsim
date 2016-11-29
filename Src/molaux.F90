@@ -1562,6 +1562,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
 ! ... properties
    real(8)     :: rcom(3)                    ! center of mass
+   real(8)     :: rg2xx, rg2yy, rg2zz        ! xx-, yy- and zz-component of the rms radius of gyration
    real(8)     :: l2_small, l2_mid, l2_large ! small, middle and large extension along principal axes
    real(8)     :: eivr(3,3)                  ! eigenvectors of the principal frame
    real(8)     :: Asphericity                ! asphericity
@@ -1577,10 +1578,10 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    integer(4)  :: nrot
    integer(4)  :: npcharged
    
-   real(8), parameter :: umat(3,3) = reshape( [ 1.0, 0.0, 0.0,   &    ! 3x3 unit matrix
-                                                0.0, 1.0, 0.0,   &
-                                                0.0, 0.0, 1.0 ], &
-                                               [3,3]  )
+   real(8), parameter :: eivrmf(3,3) = reshape( [ 1.0, 0.0, 0.0,   &    ! eigenvectors of the main frame
+                                                  0.0, 1.0, 0.0,   &
+                                                  0.0, 0.0, 1.0 ], &
+                                                 [3,3]  )
 
 ! ... counter
    integer(4)  :: inwt, ip, iploc
@@ -1612,11 +1613,21 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    end do
    NetworkProperty%rg2 = vsumr*massinwt(inwt)
 
-   call Diag(3,mimat,diagonal,eivr,nrot)
+! ... xx-,yy- and zz-component of the rms radius of gyration
+
+   rg2xx = mimat(1,1)*massinwt(inwt)
+   rg2yy = mimat(2,2)*massinwt(inwt)
+   rg2zz = mimat(3,3)*massinwt(inwt)
+
+   NetworkProperty%rg2xx = rg2xx
+   NetworkProperty%rg2yy = rg2yy
+   NetworkProperty%rg2zz = rg2zz
 
 ! ... normalized eigenvectors of the principal frame in descending order of the eigenvalues (due to Eigensort)
 
+   call Diag(3,mimat,diagonal,eivr,nrot)
    call Eigensort(diagonal,eivr,3)
+
    NetworkProperty%eivr(1:3,1:3) = eivr(1:3,1:3)
 
 ! ... small, middle and large square extension along principal axes and eigenvectors of the principal frame
@@ -1631,9 +1642,9 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
 ! ... angle of axes of largest extension (principal frame) and x,y,z-axes of main frame
 
-   theta(1) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,1))) ! eivr(1:3,1) is the eigenvector corresponding to the largest eigenvalue
-   theta(2) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,2))) ! --> Here, the angles between the eigenvector of the largest extension ...
-   theta(3) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,3))) !       ... and the respective axes of the main frame are derived
+   theta(1) = RadToDeg*acos(dot_product(eivr(1:3,1),eivrmf(1:3,1))) ! eivr(1:3,1) is the eigenvector corresponding to the largest eigenvalue
+   theta(2) = RadToDeg*acos(dot_product(eivr(1:3,1),eivrmf(1:3,2))) ! --> Here, the angles between the eigenvector of the largest extension ...
+   theta(3) = RadToDeg*acos(dot_product(eivr(1:3,1),eivrmf(1:3,3))) !       ... and the respective axes of the main frame are derived
    NetworkProperty%theta = theta
 
 ! ... asphericity  ( = 0 for sphere, 0.526 for gaussian chain, and 1 for a rod)
