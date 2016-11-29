@@ -1099,6 +1099,7 @@ end subroutine Diag_old
 ! ... diagonalize a real matrix and calculate eigenvectors
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
+!     -> subroutine "jacobi"
 
 subroutine Diag(n,a,d,v,nrot)
    implicit none
@@ -1215,6 +1216,7 @@ end subroutine Diag
 ! ... the columns of v correspondingly. The method is straight insertion.
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
+!     --> subroutine "eigsrt"
 
 subroutine Eigensort(d,v,n)
 
