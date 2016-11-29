@@ -2121,11 +2121,7 @@ subroutine NetworkAver(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (lweakcharge) then
-         ntype = 9
-      else
-         ntype = 8
-      end if
+      ntype = merge(12,11,lweakcharge) ! ntype equals 12 only if lweakcharge, else ntype = 11
 
       nvar = nnwt*ntype
       allocate(var(nvar))
