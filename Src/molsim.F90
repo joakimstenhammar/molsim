@@ -2129,12 +2129,12 @@ subroutine NetworkAver(iStage)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
          var(1+ioffset)%label  = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
-         var(2+ioffset)%label  = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
-         var(3+ioffset)%label  = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
-         var(4+ioffset)%label  = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
-         var(5+ioffset)%label  = '<r(g)**2_xx>**0.5              = ' ! xx component of the rms radius of gyration
-         var(6+ioffset)%label  = '<r(g)**2_yy>**0.5              = ' ! yy component of the rms radius of gyration
-         var(7+ioffset)%label  = '<r(g)**2_zz>**0.5              = ' ! zz component of the rms radius of gyration
+         var(2+ioffset)%label  = '<r(g)**2_xx>**0.5              = ' ! xx component of the rms radius of gyration
+         var(3+ioffset)%label  = '<r(g)**2_yy>**0.5              = ' ! yy component of the rms radius of gyration
+         var(4+ioffset)%label  = '<r(g)**2_zz>**0.5              = ' ! zz component of the rms radius of gyration
+         var(5+ioffset)%label  = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
+         var(6+ioffset)%label  = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
+         var(7+ioffset)%label  = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
          var(8+ioffset)%label  = '<asphericity>                  = ' ! asphericity
          var(9+ioffset)%label  = '<xtheta>                       = ' ! angle of axes of largest extension and x-axes of main frame
          var(10+ioffset)%label = '<ytheta>                       = ' ! angle of axes of largest extension and y-axes of main frame
@@ -2161,12 +2161,12 @@ subroutine NetworkAver(iStage)
          ioffset = ntype*(inwt-1)
          call CalcNetworkProperty(inw, NetworkProperty)
          var(1+ioffset)%value  = var(1+ioffset)%value  + NetworkProperty%rg2
-         var(2+ioffset)%value  = var(2+ioffset)%value  + NetworkProperty%rg2s
-         var(3+ioffset)%value  = var(3+ioffset)%value  + NetworkProperty%rg2m
-         var(4+ioffset)%value  = var(4+ioffset)%value  + NetworkProperty%rg2l
-         var(5+ioffset)%value  = var(5+ioffset)%value  + NetworkProperty%rg2xx
-         var(6+ioffset)%value  = var(6+ioffset)%value  + NetworkProperty%rg2yy
-         var(7+ioffset)%value  = var(7+ioffset)%value  + NetworkProperty%rg2zz
+         var(2+ioffset)%value  = var(2+ioffset)%value  + NetworkProperty%rg2xx
+         var(3+ioffset)%value  = var(3+ioffset)%value  + NetworkProperty%rg2yy
+         var(4+ioffset)%value  = var(4+ioffset)%value  + NetworkProperty%rg2zz
+         var(5+ioffset)%value  = var(5+ioffset)%value  + NetworkProperty%rg2s
+         var(6+ioffset)%value  = var(6+ioffset)%value  + NetworkProperty%rg2m
+         var(7+ioffset)%value  = var(7+ioffset)%value  + NetworkProperty%rg2l
          var(8+ioffset)%value  = var(8+ioffset)%value  + NetworkProperty%asph
          var(9+ioffset)%value  = var(9+ioffset)%value  + NetworkProperty%theta(1)
          var(10+ioffset)%value = var(10+ioffset)%value + NetworkProperty%theta(2)
