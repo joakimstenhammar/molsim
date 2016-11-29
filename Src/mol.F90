@@ -141,12 +141,16 @@ module MolModule
    type networkprop_var  
       real(8)    :: ro(3)                   ! center of mass
       real(8)    :: rg2                     ! radius of gyration squared
+      real(8)    :: rg2x                    ! radius of gyration squared projected on the x-axis
+      real(8)    :: rg2y                    ! radius of gyration squared projected on the y-axis
+      real(8)    :: rg2z                    ! radius of gyration squared projected on the z-axis
       real(8)    :: rg2s                    ! square extention along principal axes (smallest)
       real(8)    :: rg2m                    ! square extention along principal axes (middle)
       real(8)    :: rg2l                    ! square extention along principal axes (largest)
+      real(8)    :: eivr(3,3)               ! normalized eigenvectors of the principal frame
+      real(8)    :: theta(3)                ! angles of axes of largest extension and x-, y-, and z-axes of main frame
       real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
       real(8)    :: alpha                   ! degree of ionization (for titrating systems)
-      real(8)    :: eivr(3,3)               ! normalized eigenvectors of the principal frame
    end type networkprop_var
 
 ! ... data structure for simple averaging
@@ -182,7 +186,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v2.0.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v2.1.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units

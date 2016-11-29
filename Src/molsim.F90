@@ -2121,23 +2121,30 @@ subroutine NetworkAver(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (lweakcharge) then
-         ntype = 6
-      else
-         ntype = 5
-      end if
+      ntype = merge(12,11,lweakcharge) ! ntype equals 12 only if lweakcharge, else ntype = 11
+
       nvar = nnwt*ntype
       allocate(var(nvar))
 
+      ! ... please note, that properties of type 1-7 are "rms" quantities. They have to be normalized by "ScalarNorm" with 
+      ! ... iopt = 2. If new properties are wished to be incorporated, please adjust the call of "ScalarNorm" below for 
+      ! ... both stages, "IAfterMacrostep" and "IAfterSimulation".
+
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         var(1+ioffset)%label = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
-         var(2+ioffset)%label = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
-         var(3+ioffset)%label = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
-         var(4+ioffset)%label = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
-         var(5+ioffset)%label = '<asphericity>                  = ' ! asphericity
+         var(1+ioffset)%label  = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
+         var(2+ioffset)%label  = '<r(g)**2_x>**0.5               = ' ! rms radius of gyration projection on the x-axis
+         var(3+ioffset)%label  = '<r(g)**2_y>**0.5               = ' ! rms radius of gyration projection on the y-axis 
+         var(4+ioffset)%label  = '<r(g)**2_z>**0.5               = ' ! rms radius of gyration projection on the z-axis 
+         var(5+ioffset)%label  = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
+         var(6+ioffset)%label  = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
+         var(7+ioffset)%label  = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
+         var(8+ioffset)%label  = '<asphericity>                  = ' ! asphericity
+         var(9+ioffset)%label  = '<xtheta>                       = ' ! angle of axes of largest extension and x-axes of main frame
+         var(10+ioffset)%label = '<ytheta>                       = ' ! angle of axes of largest extension and y-axes of main frame
+         var(11+ioffset)%label = '<ztheta>                       = ' ! angle of axes of largest extension and z-axes of main frame
          if (lweakcharge) &
-         var(6+ioffset)%label = '<alpha>                        = ' ! degree of ionization
+         var(12+ioffset)%label = '<alpha>                        = ' ! degree of ionization
          var(1+ioffset:ntype+ioffset)%norm = One/nnwnwt(inwt)
      end do
 
@@ -2157,13 +2164,19 @@ subroutine NetworkAver(iStage)
          inwt = inwtnwn(inw)
          ioffset = ntype*(inwt-1)
          call CalcNetworkProperty(inw, NetworkProperty)
-         var(1+ioffset)%value = var(1+ioffset)%value + NetworkProperty%rg2
-         var(2+ioffset)%value = var(2+ioffset)%value + NetworkProperty%rg2s
-         var(3+ioffset)%value = var(3+ioffset)%value + NetworkProperty%rg2m
-         var(4+ioffset)%value = var(4+ioffset)%value + NetworkProperty%rg2l
-         var(5+ioffset)%value = var(5+ioffset)%value + NetworkProperty%asph
+         var(1+ioffset)%value  = var(1+ioffset)%value  + NetworkProperty%rg2
+         var(2+ioffset)%value  = var(2+ioffset)%value  + NetworkProperty%rg2x
+         var(3+ioffset)%value  = var(3+ioffset)%value  + NetworkProperty%rg2y
+         var(4+ioffset)%value  = var(4+ioffset)%value  + NetworkProperty%rg2z
+         var(5+ioffset)%value  = var(5+ioffset)%value  + NetworkProperty%rg2s
+         var(6+ioffset)%value  = var(6+ioffset)%value  + NetworkProperty%rg2m
+         var(7+ioffset)%value  = var(7+ioffset)%value  + NetworkProperty%rg2l
+         var(8+ioffset)%value  = var(8+ioffset)%value  + NetworkProperty%asph
+         var(9+ioffset)%value  = var(9+ioffset)%value  + NetworkProperty%theta(1)
+         var(10+ioffset)%value = var(10+ioffset)%value + NetworkProperty%theta(2)
+         var(11+ioffset)%value = var(11+ioffset)%value + NetworkProperty%theta(3)
          if (lweakcharge) &
-         var(6+ioffset)%value = var(6+ioffset)%value + NetworkProperty%alpha
+         var(12+ioffset)%value = var(12+ioffset)%value + NetworkProperty%alpha
       end do
       call ScalarSample(iStage, 1, nvar, var)
 
@@ -2174,14 +2187,14 @@ subroutine NetworkAver(iStage)
       call WriteHead(2, txheading, uout)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
-         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2)
+         call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
          call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
          write(uout,'()')
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
-           Asphericity(var(2+ioffset)%avs2**2,var(3+ioffset)%avs2**2,var(4+ioffset)%avs2**2) 
+           Asphericity(var(5+ioffset)%avs2**2,var(6+ioffset)%avs2**2,var(7+ioffset)%avs2**2) 
          write(uout,'()')
       end do
 
@@ -2191,14 +2204,14 @@ subroutine NetworkAver(iStage)
       call WriteHead(2, txheading, uout)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
-         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2) 
+         call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
          call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
          write(uout,'()')
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
-           Asphericity(var(2+ioffset)%avs1**2,var(3+ioffset)%avs1**2,var(4+ioffset)%avs1**2)
+           Asphericity(var(5+ioffset)%avs1**2,var(6+ioffset)%avs1**2,var(7+ioffset)%avs1**2)
          write(uout,'()')
       end do
 

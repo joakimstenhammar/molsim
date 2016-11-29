@@ -1562,9 +1562,11 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
 ! ... properties
    real(8)     :: rcom(3)                    ! center of mass
+   real(8)     :: rg2x, rg2y, rg2z           ! radius of gyration squared projected on the x, y and z-axes
    real(8)     :: l2_small, l2_mid, l2_large ! small, middle and large extension along principal axes
    real(8)     :: eivr(3,3)                  ! eigenvectors of the principal frame
    real(8)     :: Asphericity                ! asphericity
+   real(8)     :: theta(3)                   ! angles of axes of largest extension and x-, y-, and z-axes of main frame
    real(8)     :: alpha                      ! degree of ionization
 
 ! ... processing variables
@@ -1575,7 +1577,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    real(8)     :: diagonal(3)
    integer(4)  :: nrot
    integer(4)  :: npcharged
-
+   
 ! ... counter
    integer(4)  :: inwt, ip, iploc
    integer(4)  :: irow
@@ -1606,21 +1608,39 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    end do
    NetworkProperty%rg2 = vsumr*massinwt(inwt)
 
-   call Diag(3,mimat,diagonal,eivr,nrot)
+! ... radius of gyration squared projected on the x-, y- and z-axes
 
-! ... normalized eigenvectors of the principal frame
+   rg2x = mimat(1,1)*massinwt(inwt)
+   rg2y = mimat(2,2)*massinwt(inwt)
+   rg2z = mimat(3,3)*massinwt(inwt)
+
+   NetworkProperty%rg2x = rg2x
+   NetworkProperty%rg2y = rg2y
+   NetworkProperty%rg2z = rg2z
+
+! ... normalized eigenvectors of the principal frame in descending order of the eigenvalues (due to Eigensort)
+
+   call Diag(3,mimat,diagonal,eivr,nrot)
+   call Eigensort(diagonal,eivr,3)
 
    NetworkProperty%eivr(1:3,1:3) = eivr(1:3,1:3)
 
 ! ... small, middle and large square extension along principal axes and eigenvectors of the principal frame
 
-   l2_small = min(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
-   l2_large = max(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
-   l2_mid  = (diagonal(1)+diagonal(2)+diagonal(3))/massnwt(inwt)-(l2_small+l2_large)
+   l2_large = diagonal(1)*massinwt(inwt)
+   l2_mid   = diagonal(2)*massinwt(inwt)
+   l2_small = diagonal(3)*massinwt(inwt)
 
    NetworkProperty%rg2s = max(Zero,l2_small)
    NetworkProperty%rg2m = max(Zero,l2_mid  )
    NetworkProperty%rg2l = max(Zero,l2_large)
+
+! ... angle of axes of largest extension (principal frame) and x,y,z-axes of main frame
+
+   theta(1) = RadToDeg*acos(eivr(1,1)) ! eivr(1,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the x-axis
+   theta(2) = RadToDeg*acos(eivr(2,1)) ! eivr(2,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the y-axis
+   theta(3) = RadToDeg*acos(eivr(3,1)) ! eivr(3,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the z-axis
+   NetworkProperty%theta = theta
 
 ! ... asphericity  ( = 0 for sphere, 0.526 for gaussian chain, and 1 for a rod)
 

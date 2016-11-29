@@ -1092,15 +1092,16 @@ end subroutine Diag_old
 
 !************************************************************************
 !*                                                                      *
-!*     diag                                                             *
+!*     Diag                                                             *
 !*                                                                      *
 !************************************************************************
 
 ! ... diagonalize a real matrix and calculate eigenvectors
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
+!     -> subroutine "jacobi"
 
-subroutine diag(n,a,d,v,nrot)
+subroutine Diag(n,a,d,v,nrot)
    implicit none
    real(8), parameter :: zero = 0.0d0, fourth = 0.25d0, one = 1.0d0, two = 2.0d0
    integer(4), parameter :: mnrot = 50     ! maximum number sweeps
@@ -1200,9 +1201,55 @@ subroutine diag(n,a,d,v,nrot)
       end do
 
    end do
-   if (nrot > mnrot) call stop('diag', 'no convergence', 6)
+   if (nrot > mnrot) call stop('Diag', 'no convergence', 6)
 
-end subroutine diag
+end subroutine Diag
+
+!************************************************************************
+!*                                                                      *
+!*     Eigensort                                                        *
+!*                                                                      *
+!************************************************************************
+
+! ... Given the eigenvalues d and eigenvectors v as output from Diag this 
+! ... routine sorts the eigenvalues into descending order, and rearranges 
+! ... the columns of v correspondingly. The method is straight insertion.
+
+!     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
+!     --> subroutine "eigsrt"
+
+subroutine Eigensort(d,v,n)
+
+   implicit none 
+
+   integer(4)  :: n
+   real(8)     :: d(n), v(n,n)
+   integer(4)  :: i, j, k
+   real(8)     :: p
+
+   do i = 1, n-1
+      k=i
+      p=d(i)
+      do j = i+1, n
+         if (d(j).ge.p) then
+            k=j
+            p=d(j)
+         end if
+      end do   
+      if (k.ne.i) then
+         d(k)=d(i)
+         d(i)=p
+         do j=1,n
+            p=v(j,i)
+            v(j,i)=v(j,k)
+            v(j,k)=p
+         end do
+      end if
+   end do 
+
+   return
+
+end subroutine
 
 !************************************************************************
 !*                                                                      *
