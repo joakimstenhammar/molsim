@@ -1614,7 +1614,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
    call Diag(3,mimat,diagonal,eivr,nrot)
 
-! ... normalized eigenvectors of the principal frame in descending order (due to Eigensort)
+! ... normalized eigenvectors of the principal frame in descending order of the eigenvalues (due to Eigensort)
 
    call Eigensort(diagonal,eivr,3)
    NetworkProperty%eivr(1:3,1:3) = eivr(1:3,1:3)
@@ -1625,19 +1625,15 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    l2_mid   = diagonal(2)*massinwt(inwt)
    l2_small = diagonal(3)*massinwt(inwt)
 
-   !l2_small = min(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
-   !l2_large = max(diagonal(1),diagonal(2),diagonal(3))/massnwt(inwt)
-   !l2_mid  = (diagonal(1)+diagonal(2)+diagonal(3))/massnwt(inwt)-(l2_small+l2_large)
-
    NetworkProperty%rg2s = max(Zero,l2_small)
    NetworkProperty%rg2m = max(Zero,l2_mid  )
    NetworkProperty%rg2l = max(Zero,l2_large)
 
 ! ... angle of axes of largest extension (principal frame) and x,y,z-axes of main frame
 
-   theta(1) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,1))) 
-   theta(2) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,2)))
-   theta(3) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,3)))
+   theta(1) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,1))) ! eivr(1:3,1) is the eigenvector corresponding to the largest eigenvalue
+   theta(2) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,2))) ! --> Here, the angles between the eigenvector of the largest extension ...
+   theta(3) = RadToDeg*acos(dot_product(eivr(1:3,1),umat(1:3,3))) !       ... and the respective axes of the main frame are derived
    NetworkProperty%theta = theta
 
 ! ... asphericity  ( = 0 for sphere, 0.526 for gaussian chain, and 1 for a rod)
