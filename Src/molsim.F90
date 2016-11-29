@@ -2160,16 +2160,19 @@ subroutine NetworkAver(iStage)
          inwt = inwtnwn(inw)
          ioffset = ntype*(inwt-1)
          call CalcNetworkProperty(inw, NetworkProperty)
-         var(1+ioffset)%value = var(1+ioffset)%value + NetworkProperty%rg2
-         var(2+ioffset)%value = var(2+ioffset)%value + NetworkProperty%rg2s
-         var(3+ioffset)%value = var(3+ioffset)%value + NetworkProperty%rg2m
-         var(4+ioffset)%value = var(4+ioffset)%value + NetworkProperty%rg2l
-         var(5+ioffset)%value = var(5+ioffset)%value + NetworkProperty%asph
-         var(6+ioffset)%value = var(6+ioffset)%value + NetworkProperty%theta(1)
-         var(7+ioffset)%value = var(7+ioffset)%value + NetworkProperty%theta(2)
-         var(8+ioffset)%value = var(8+ioffset)%value + NetworkProperty%theta(3)
+         var(1+ioffset)%value  = var(1+ioffset)%value  + NetworkProperty%rg2
+         var(2+ioffset)%value  = var(2+ioffset)%value  + NetworkProperty%rg2s
+         var(3+ioffset)%value  = var(3+ioffset)%value  + NetworkProperty%rg2m
+         var(4+ioffset)%value  = var(4+ioffset)%value  + NetworkProperty%rg2l
+         var(5+ioffset)%value  = var(5+ioffset)%value  + NetworkProperty%rg2xx
+         var(6+ioffset)%value  = var(6+ioffset)%value  + NetworkProperty%rg2yy
+         var(7+ioffset)%value  = var(7+ioffset)%value  + NetworkProperty%rg2zz
+         var(8+ioffset)%value  = var(8+ioffset)%value  + NetworkProperty%asph
+         var(9+ioffset)%value  = var(9+ioffset)%value  + NetworkProperty%theta(1)
+         var(10+ioffset)%value = var(10+ioffset)%value + NetworkProperty%theta(2)
+         var(11+ioffset)%value = var(11+ioffset)%value + NetworkProperty%theta(3)
          if (lweakcharge) &
-         var(9+ioffset)%value = var(6+ioffset)%value + NetworkProperty%alpha
+         var(12+ioffset)%value = var(12+ioffset)%value + NetworkProperty%alpha
       end do
       call ScalarSample(iStage, 1, nvar, var)
 
@@ -2180,8 +2183,8 @@ subroutine NetworkAver(iStage)
       call WriteHead(2, txheading, uout)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
-         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2) 
+         call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
          call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
@@ -2197,8 +2200,8 @@ subroutine NetworkAver(iStage)
       call WriteHead(2, txheading, uout)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         call ScalarNorm(iStage, 1+ioffset, 4+ioffset, var, 2) 
-         call ScalarNorm(iStage, 5+ioffset, ntype+ioffset, var, 0)
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2) 
+         call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
          call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
