@@ -1562,7 +1562,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 
 ! ... properties
    real(8)     :: rcom(3)                    ! center of mass
-   real(8)     :: rg2xx, rg2yy, rg2zz        ! xx-, yy- and zz-component of the rms radius of gyration
+   real(8)     :: rg2x, rg2y, rg2z           ! radius of gyration squared projected on the x, y and z-axes
    real(8)     :: l2_small, l2_mid, l2_large ! small, middle and large extension along principal axes
    real(8)     :: eivr(3,3)                  ! eigenvectors of the principal frame
    real(8)     :: Asphericity                ! asphericity
@@ -1613,15 +1613,15 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    end do
    NetworkProperty%rg2 = vsumr*massinwt(inwt)
 
-! ... xx-,yy- and zz-component of the rms radius of gyration
+! ... radius of gyration squared projected on the x-, y- and z-axes
 
-   rg2xx = mimat(1,1)*massinwt(inwt)
-   rg2yy = mimat(2,2)*massinwt(inwt)
-   rg2zz = mimat(3,3)*massinwt(inwt)
+   rg2x = mimat(1,1)*massinwt(inwt)
+   rg2y = mimat(2,2)*massinwt(inwt)
+   rg2z = mimat(3,3)*massinwt(inwt)
 
-   NetworkProperty%rg2xx = rg2xx
-   NetworkProperty%rg2yy = rg2yy
-   NetworkProperty%rg2zz = rg2zz
+   NetworkProperty%rg2x = rg2x
+   NetworkProperty%rg2y = rg2y
+   NetworkProperty%rg2z = rg2z
 
 ! ... normalized eigenvectors of the principal frame in descending order of the eigenvalues (due to Eigensort)
 

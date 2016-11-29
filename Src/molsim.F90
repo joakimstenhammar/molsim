@@ -2129,9 +2129,9 @@ subroutine NetworkAver(iStage)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
          var(1+ioffset)%label  = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
-         var(2+ioffset)%label  = '<r(g)**2_xx>**0.5              = ' ! xx component of the rms radius of gyration
-         var(3+ioffset)%label  = '<r(g)**2_yy>**0.5              = ' ! yy component of the rms radius of gyration
-         var(4+ioffset)%label  = '<r(g)**2_zz>**0.5              = ' ! zz component of the rms radius of gyration
+         var(2+ioffset)%label  = '<r(g)**2_x>**0.5               = ' ! rms radius of gyration projection on the x-axis
+         var(3+ioffset)%label  = '<r(g)**2_y>**0.5               = ' ! rms radius of gyration projection on the y-axis 
+         var(4+ioffset)%label  = '<r(g)**2_z>**0.5               = ' ! rms radius of gyration projection on the z-axis 
          var(5+ioffset)%label  = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
          var(6+ioffset)%label  = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
          var(7+ioffset)%label  = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
@@ -2161,9 +2161,9 @@ subroutine NetworkAver(iStage)
          ioffset = ntype*(inwt-1)
          call CalcNetworkProperty(inw, NetworkProperty)
          var(1+ioffset)%value  = var(1+ioffset)%value  + NetworkProperty%rg2
-         var(2+ioffset)%value  = var(2+ioffset)%value  + NetworkProperty%rg2xx
-         var(3+ioffset)%value  = var(3+ioffset)%value  + NetworkProperty%rg2yy
-         var(4+ioffset)%value  = var(4+ioffset)%value  + NetworkProperty%rg2zz
+         var(2+ioffset)%value  = var(2+ioffset)%value  + NetworkProperty%rg2x
+         var(3+ioffset)%value  = var(3+ioffset)%value  + NetworkProperty%rg2y
+         var(4+ioffset)%value  = var(4+ioffset)%value  + NetworkProperty%rg2z
          var(5+ioffset)%value  = var(5+ioffset)%value  + NetworkProperty%rg2s
          var(6+ioffset)%value  = var(6+ioffset)%value  + NetworkProperty%rg2m
          var(7+ioffset)%value  = var(7+ioffset)%value  + NetworkProperty%rg2l

@@ -141,9 +141,9 @@ module MolModule
    type networkprop_var  
       real(8)    :: ro(3)                   ! center of mass
       real(8)    :: rg2                     ! radius of gyration squared
-      real(8)    :: rg2xx                   ! xx-component of the radius of gyration squared
-      real(8)    :: rg2yy                   ! yy-component of the radius of gyration squared
-      real(8)    :: rg2zz                   ! zz-component of the radius of gyration squared
+      real(8)    :: rg2x                    ! radius of gyration squared projected on the x-axis
+      real(8)    :: rg2y                    ! radius of gyration squared projected on the y-axis
+      real(8)    :: rg2z                    ! radius of gyration squared projected on the z-axis
       real(8)    :: rg2s                    ! square extention along principal axes (smallest)
       real(8)    :: rg2m                    ! square extention along principal axes (middle)
       real(8)    :: rg2l                    ! square extention along principal axes (largest)
