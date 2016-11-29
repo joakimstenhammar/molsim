@@ -2207,7 +2207,7 @@ subroutine NetworkAver(iStage)
          call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
          write(uout,'()')
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
-           Asphericity(var(2+ioffset)%avs1**2,var(3+ioffset)%avs1**2,var(4+ioffset)%avs1**2)
+           Asphericity(var(5+ioffset)%avs1**2,var(6+ioffset)%avs1**2,var(7+ioffset)%avs1**2)
          write(uout,'()')
       end do
 
