@@ -1,5 +1,7 @@
 Contributing guide
 ==================
+This contributing guide describes the working procedure of the further development of Molsim. Changes and new features should always be implemented following the guidelines given below. The procedure can be summed up to the following steps:
+- 
 
 ## How to review a merge request
 
