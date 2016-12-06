@@ -59,6 +59,8 @@ When the assignee of your merge request has fully reviewed your modifications, i
 * General comments with a :negative_squared_cross_mark: in it. Resolve the described issue and change the :negative_squared_cross_mark: to a :white_check_mark: (`:white_check_mark:`).
 * Line-oriented comments: Resolve the described issue and mark the discussion as resolved.
 
+Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still it is better to resolve it  or discuss with the assignee, why for example it should not be changed.
+
 ## 6. How to merge it
 When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests). 
 
