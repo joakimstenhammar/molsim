@@ -68,7 +68,12 @@ When finally all discussions have been resolved and the WIP-prefix has been remo
 After the merge has been done, there are still a few thing in order to finalize your merge request:
 
 ### 7.1 Generate a tag 
-Generating a tag means to mark this specific point of the version history. In order to do so:
+Generating a tag means to mark this specific point of the version history. First checkout the `master` branch, and pull it:
+```sh
+git checkout master
+git pull
+```
+Then tag the current commit:
 ```sh
 git tag -a vX.Y.Z -m "<NAME-OF-NEW-VERSION>"
 ```
@@ -87,7 +92,7 @@ Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/ma
 Inform everyone about the new available version by adding a comment to [this issue](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/issues/20).
 
 ## Appendix: Checklist
-* Make sure, that the [Testin](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin) runs clean! For further informations confer the corresponding [Wiki entry](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin).
-* Ascertain, that the compilation with `mode=warn` does not trigger any warnings related to your modifications!
-* Describe all changes in the [Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home)!
-* Change the version number corresponding to [Semantic Versioning](http://semver.org/)!
+* [ ] Make sure, that the [Testin](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin) runs clean! For further informations confer the corresponding [Wiki entry](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin).
+* [ ] Ascertain, that the compilation with `mode=warn` does not trigger any warnings related to your modifications!
+* [ ] Describe all changes in the [Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home)!
+* [ ] Change the version number corresponding to [Semantic Versioning](http://semver.org/)!
