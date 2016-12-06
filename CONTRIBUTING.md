@@ -68,9 +68,9 @@ After the merge has been done, there are still a few thing in order to finalize 
 ### 7.1 Generate a tag 
 Generating a tag means to mark this specific point of the version history. In order to do so:
 ```sh
-git tag -a vx.y.z -m "<NAME-OF-NEW-VERSION>"
+git tag -a vX.Y.Z -m "<NAME-OF-NEW-VERSION>"
 ```
-where `x`, `y` and `z` correspond to the major (x), minor (y) and patch level (z) number of the software version ([Semantic Versioning](http://semver.org/)). The `<NAME-OF-NEW-VERSION>` corresponds to the old name, if changes have been made only on the patch level. If changes on the major or minor level have been made, a new name my be chosen from this and **only** this [specific list](http://www.pokewiki.de/Pokémon-Liste). Try to chose a name, such that it roughly fits to what you modified.
+where `X`, `Y` and `Z` correspond to the major (X), minor (Y) and patch level (Z) number of the software version ([Semantic Versioning](http://semver.org/)). The `<NAME-OF-NEW-VERSION>` corresponds to the old name, if changes have been made only on the patch level. If changes on the major or minor level have been made, a new name my be chosen from this and **only** this [specific list](http://www.pokewiki.de/Pokémon-Liste). Try to chose a name, such that it roughly fits to what you modified.
 After tagging
 ```sh
 git push --tags
