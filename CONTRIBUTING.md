@@ -39,24 +39,23 @@ Whenever you start to work on your branch again you should pull the branch in or
 ```sh
 git pull
 ```
-When you're done with your modifications, you may request a merge of your branch into the `master`.
+When you're done with your modifications, you may request a merge of your branch into the `master`. Before doing so, please confer [this checklist](#appendix-checklist) and make sure, that all requirements have been satisfied.
 ## 3. How to request a merge into Master
-In order to request a merge of your branch into the `master` browse the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests) to create a new merge request.
+In order to request a merge of your branch into the `master` browse the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests) to create a new merge request. Note to request the merge with a WIP-prefix. The merge is then designated as "work in progress".
 ## 4. How to review a merge request
-When you are assigned to a merge request you are supposed to read the changes in the code and check for possible mistakes. Besides of possible mistakes the code should be straight forward to understand. If parts of the code are difficult to understand, request more comments! The following tools can help you detect errors:
-* run the tests in the `Testin` directory (note to compile with `mode=test`). The diff should yield no changes. If any file in the `Testin/save` or `Testin/in` dir was changed, review whether these are expected changes
-* compile with `mode=warn`. Check that no warnings are affecting the parts of the code relevant for the merge request
-* when viewing the code differences using git (or the gitlab interface) hide whitespace changes 
+When you are assigned to a merge request you are supposed to read the changes in the code and check for possible mistakes. Besides of possible mistakes the code should be straight forward to understand. If parts of the code are difficult to understand, request more comments! When reviewing the code differences using git (or the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests)) hide whitespace changes. Whenever you find something to be wrong or incomprehensible, add a comment to the respective line of code. This will start a discussion to be resolved by the author of the modification.
 
 Some general rules when commenting the changes of the code:
-* When reviewing the code mark comments regarding ''cosmetic'' changes in the code with :sparkles: (`:sparkles: `).
-* Mark all general comments which require further attention with :negative_squared_cross_mark: (`:negative_squared_cross_mark:`). When the issue of the comment was resolved, mark it with :white_check_mark: (`:white_check_mark:`)
+* When reviewing the code, mark comments regarding ''cosmetic'' changes in the code with :sparkles: (`:sparkles: `).
+* Mark all general comments (*i.e.* comments not related to a specific line of code) which require further attention with :negative_squared_cross_mark: (`:negative_squared_cross_mark:`).
 
-Some other things to check:
-* are all new features described in the wiki?
-* is the version changed (correctly? adhere to [Semantic Versioning](http://semver.org/))
-
+Besides of the reviewing of the detailed code modifications, please check whether all requirements in [this checklist](#appendix-checklist) have been met. When you are finished reviewing all modifications and all discussions have been resolved, remove the WIP-prefix from the merge request. This signals the author of the modifications, that his branch may be merged.
 ## 5. How to resolve all discussions
-
+When the issue of the comment was resolved, mark it with :white_check_mark: (`:white_check_mark:`)
 ## 6. How to merge it
 ## 7. How to finalize your merge
+## Appendix: Checklist
+* Make sure, that the [Testin](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin) runs clean! For further informations confer the corresponding [Wiki entry](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin).
+* Ascertain, that the compilation with `mode=warn` does not trigger any warnings related to your modifications!
+* Describe all changes in the [Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home)!
+* Change the version number corresponding to [Semantic Versioning](http://semver.org/)!
