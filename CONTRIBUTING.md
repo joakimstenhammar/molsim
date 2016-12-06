@@ -1,14 +1,14 @@
 Contributing guide
 ==================
 This contributing guide describes the working procedure of the further development of Molsim. Changes and new features should always be implemented following the guidelines given below. The procedure can be summed up to the following steps: 
- 
-  1. [Generate a new branch](##1.-how-to-generate-a-new-branch)
-  2. [Commit features/changes](##2.-how-to-commit-features/changes)
-  3. [Request a merge into Master]
-  4. [Review a merge request]
-  5. [Resolve all discussions]
-  6. [Merge it!]
-  7. [Finalize your merge]
+
+  1. [Generate a new branch](#1-how-to-generate-a-new-branch)
+  2. [Commit features/changes](#2-how-to-commit-featureschanges)
+  3. [Request a merge into Master](#3-how-to-request-a-merge-into-master)
+  4. [Review a merge request](#4-how-to-review-a-merge-request)
+  5. [Resolve all discussions](#5-how-to-resolve-all-discussions)
+  6. [Merge it!](#6-how-to-merge-it)
+  7. [Finalize your merge](#7-how-to-finalize-your-merge)
 
 Most of the tasks may either be done using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/) or by using the command line. In this contributing guide the respective way is described, of which the authors think it is most convenient.
 
@@ -43,8 +43,8 @@ When you're done with your modifications, you may request a merge of your branch
 ## 3. How to request a merge into Master
 In order to request a merge of your branch into the `master` browse the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests) to create a new merge request.
 ## 4. How to review a merge request
-When you are assigned to a merge request you are supposed to read the changes in the code and check for possible mistakes. The following tools can help you detect errors:
-* run the tests in the `Testin` directory. The diff should yield no changes. If any file in the `Testin/save` or `Testin/in` dir was changed, review whether these are expected changes
+When you are assigned to a merge request you are supposed to read the changes in the code and check for possible mistakes. Besides of possible mistakes the code should be straight forward to understand. If parts of the code are difficult to understand, request more comments! The following tools can help you detect errors:
+* run the tests in the `Testin` directory (note to compile with `mode=test`). The diff should yield no changes. If any file in the `Testin/save` or `Testin/in` dir was changed, review whether these are expected changes
 * compile with `mode=warn`. Check that no warnings are affecting the parts of the code relevant for the merge request
 * when viewing the code differences using git (or the gitlab interface) hide whitespace changes 
 
@@ -57,5 +57,6 @@ Some other things to check:
 * is the version changed (correctly? adhere to [Semantic Versioning](http://semver.org/))
 
 ## 5. How to resolve all discussions
+
 ## 6. How to merge it
 ## 7. How to finalize your merge
