@@ -73,10 +73,12 @@ Generating a tag means to mark this specific point of the version history. In or
 git tag -a vX.Y.Z -m "<NAME-OF-NEW-VERSION>"
 ```
 where `X`, `Y` and `Z` correspond to the major (X), minor (Y) and patch level (Z) number of the software version ([Semantic Versioning](http://semver.org/)). The `<NAME-OF-NEW-VERSION>` corresponds to the old name, if changes have been made only on the patch level. If changes on the major or minor level have been made, a new name my be chosen from this and **only** this [specific list](http://www.pokewiki.de/Pokémon-Liste). Try to chose a name, such that it roughly fits to what you modified.
+
 After tagging
 ```sh
 git push --tags
 ```
+in order to synchronize your new tag.
 
 ### 7.2 Update the changelog
 Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
