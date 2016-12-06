@@ -2,17 +2,17 @@ Contributing guide
 ==================
 This contributing guide describes the working procedure of the further development of Molsim. Changes and new features should always be implemented following the guidelines given below. The procedure can be summed up to the following steps: 
  
-  1. Generate a new branch  
-  2. Commit features/changes  
-  3. Request a merge into Master  
-  4. Review a merge request  
-  5. Resolve all discussions  
-  6. Merge it!  
-  7. Finalize your merge  
+  1. [Generate a new branch](##1.-how-to-generate-a-new-branch)
+  2. [Commit features/changes](##2.-how-to-commit-features/changes)
+  3. [Request a merge into Master]
+  4. [Review a merge request]
+  5. [Resolve all discussions]
+  6. [Merge it!]
+  7. [Finalize your merge]
 
 Most of the tasks may either be done using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/) or by using the command line. In this contributing guide the respective way is described, of which the authors think it is most convenient.
 
-## How to generate a new branch
+## 1. How to generate a new branch
 Changes of Molsim may only be made within the scope of [branches](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging). This way you can implement your changes without messing with the main version (`master`) of Molsim. To generate a new branch:
 ```sh
 git checkout -b <NAME-OF-NEW-BRANCH>
@@ -22,7 +22,7 @@ The just created branch exists only locally, to set it up on the remote reposito
 git push --set-upstream origin <NAME-OF-NEW-BRANCH>
 ```
 You're now in your new branch. You may now begin to implement new features/changes.
-## How to commit features/changes
+## 2. How to commit features/changes
 The changes you apply to the code should be as efficient and non-invasive as possible. Try to divide your modifications in logically-associated chunks of code. These chunks can then individually be commited and described in a commit message. After you changed something you first have to stage the files in which changes were made and which you'd like to commit.
 ```sh
 git add <LIST-OF-MODIFIED-FILES>
@@ -40,9 +40,9 @@ Whenever you start to work on your branch again you should pull the branch in or
 git pull
 ```
 When you're done with your modifications, you may request a merge of your branch into the `master`.
-## How to request a merge into Master
+## 3. How to request a merge into Master
 In order to request a merge of your branch into the `master` browse the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests) to create a new merge request.
-## How to review a merge request
+## 4. How to review a merge request
 When you are assigned to a merge request you are supposed to read the changes in the code and check for possible mistakes. The following tools can help you detect errors:
 * run the tests in the `Testin` directory. The diff should yield no changes. If any file in the `Testin/save` or `Testin/in` dir was changed, review whether these are expected changes
 * compile with `mode=warn`. Check that no warnings are affecting the parts of the code relevant for the merge request
@@ -55,6 +55,7 @@ Some general rules when commenting the changes of the code:
 Some other things to check:
 * are all new features described in the wiki?
 * is the version changed (correctly? adhere to [Semantic Versioning](http://semver.org/))
-## How to resolve all discussions
-## How to merge it
-## How to finalize your merge
+
+## 5. How to resolve all discussions
+## 6. How to merge it
+## 7. How to finalize your merge
