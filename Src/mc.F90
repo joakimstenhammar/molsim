@@ -1652,7 +1652,7 @@ subroutine PivotMove(iStage)
       do iseg = iseg1, iseg2                                              ! loop over main chain segments
          ip = ipnsegcn(iseg,ic)                                           ! particle number of main chain segment
          do icl = 1, nbondcl(ip)                                          ! loop over number of crosslinks
-            if (genic(icnpn(bondcl(icl,ip))) < genic(ic)) cycle           ! ignore crosslinks to lower generations
+            if ((genic(icnpn(bondcl(icl,ip))) < genic(ic)) .and. (txpivot(iptmove) == 'upper')) cycle           ! ignore crosslinks to lower generations if txpivot = upper
             call UndoPBCChain(vaux(1,ip),icnpn(bondcl(icl,ip)), 1, vaux)  ! restore the chain with UndoPBCChain
             do iseg3 = 1, sum(npptct(1:npt,ictpn(bondcl(icl,ip))))        ! loop over segments of relevant chain type
                ip4 = ipnsegcn(iseg3,icnpn(bondcl(icl,ip)))                ! particle number in side chain
@@ -1664,7 +1664,8 @@ subroutine PivotMove(iStage)
          end do
       end do
       nptmlast = nptm                                                                  ! used for next generation
-      do igen = genic(ic)+1, ngen
+      do igen = merge(genic(ic),0,(txpivot(iptmove) == 'upper'))+1, ngen
+         if (igen == genic(ic)) cycle
          do iploc = nptmfirst, nptmlast
             do icl=1, nbondcl(ipnptm(iploc))
                if (genic(icnpn(bondcl(icl,ipnptm(iploc)))) < igen) cycle               ! ignore crosslinks to lower generations
