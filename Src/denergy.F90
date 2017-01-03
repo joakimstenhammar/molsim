@@ -113,8 +113,17 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
 
 ! ............... initiate ...............
 
-   du%tot = Zero
-   lhsoverlap = .true.             ! temporary fix to satisfy sensitive compilers
+   du%tot   = Zero
+   du%twob  = Zero
+   du%oneb  = Zero
+   du%rec   = Zero
+   du%stat  = Zero
+   du%pol   = Zero
+   du%bond  = Zero
+   du%angle = Zero
+   du%crosslink   = Zero
+   du%external    = Zero
+   lhsoverlap  = .true.             ! temporary fix to satisfy sensitive compilers
 
 ! .............. select appropiate energy routines ............
 
