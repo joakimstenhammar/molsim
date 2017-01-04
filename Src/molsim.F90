@@ -344,6 +344,7 @@ subroutine IOSystem(iStage)
       call LowerCase(txstart)
       call LowerCase(txuser)
 
+
 ! ... set lsim and lana
 
       lsim =.false.
@@ -441,6 +442,7 @@ subroutine IOSystem(iStage)
       prsrst = prsr
       volst  = vol
       if (iseed <= 0) iseed = int(1.0e+6*Second())
+      iseed = -iseed
 
    case (iWriteInput)
 
