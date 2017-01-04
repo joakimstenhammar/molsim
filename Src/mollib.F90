@@ -2640,7 +2640,7 @@ function Random(idum)
    Random=min(AM*iy,RNMX) !Because users don’t expect endpoint values.
    return
 
-end Random
+end
 
 !************************************************************************
 !*                                                                      *
