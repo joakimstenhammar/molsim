@@ -2610,7 +2610,7 @@ end subroutine QuaVelToAngVel
 module Random_Module
    integer, parameter :: k4b=selected_int_kind(9) ! = 4 on intel fortran and gfortran
    real(8) :: am
-   integer(k4b) :: ix=-1,iy=-1,k
+   integer(k4b) :: ix=-1,iy=-1
 end module Random_Module
 
 function Random(idum)
@@ -2619,6 +2619,7 @@ function Random(idum)
    integer(k4b), intent(inout) :: idum
    real(8) :: Random
    integer(k4b), parameter :: ia=16807,im=2147483647,iq=127773,ir=2836
+   integer(k4b)   :: k
    if (idum <= 0 .or. iy < 0) then           !initialize.
       am=nearest(1.0,-1.0)/im
       iy=ior(ieor(888889999,abs(idum)),1)

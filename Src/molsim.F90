@@ -682,7 +682,7 @@ end subroutine IOScale
 subroutine IOCnf(str)
 
    use MolModule
-   use Random_Module, only: am, ix, iy, k
+   use Random_Module, only: am, ix, iy
    implicit none
 
    character(*) :: str
@@ -712,7 +712,7 @@ subroutine IOCnf(str)
                read(ucnf) nstep1done, iaux, raux, raux, raux !  2007-03-16-
             end if
          else if (txstart == 'continue') then
-            read(ucnf) nstep1done, iseed, am, ix, iy, k, boxlen             ! 2017-01-05-
+            read(ucnf) nstep1done, iseed, am, ix, iy, boxlen             ! 2017-01-05-
             !read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30-2017-01-05
 !           read(ucnf) nstep1done, iseed, raux, raux, raux   !  1999-12-21--2003-09-30
          end if
@@ -764,7 +764,7 @@ subroutine IOCnf(str)
 
       rewind(ucnf)
       if (lmc .or. lmcall) call OriToQua(np, 1, np, ori, qua)
-      write(ucnf) nstep1done, iseed, am, ix, iy, k, boxlen
+      write(ucnf) nstep1done, iseed, am, ix, iy, boxlen
       write(ucnf) np, iaux, raux, raux, laux, laux
       write(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
       if (lclink) write(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
