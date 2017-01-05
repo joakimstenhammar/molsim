@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:29:20
+2017-01-05     15:49:53
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -257,7 +257,7 @@ pressure (kT) (excl. contact)  =      1.25000E-04
 ..............................................................................................................
 
 time step                          0
-seed of random generator         999
+seed of random generator        -999
 total energy                 2.49989
 kinetic energy               2.49989
 tot. pot. energy             0.00000
@@ -316,7 +316,7 @@ total cpu time since start (s)        0.01
 ..............................................................................................................
 
 time step                          1
-seed of random generator         999
+seed of random generator        -999
 total energy                 2.49891
 kinetic energy               2.49891
 tot. pot. energy             0.00000
@@ -365,7 +365,7 @@ particle distance matrix
 ..............................................................................................................
 
 time step                          2
-seed of random generator         999
+seed of random generator        -999
 total energy                 2.49603
 kinetic energy               2.49603
 tot. pot. energy             0.00000
@@ -472,7 +472,7 @@ number density                 =      1.25000E-04
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:29:20
+2017-01-05     15:49:53
 
 title   : free translation and rotation                                                             
 
@@ -605,10 +605,10 @@ number density                 =      1.25000E-04    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.35 
-         ControlAver           0.00         0.38 
-         MainAver              0.00         0.27 
-         IOMolsim              0.00         0.00 
+         Coordinate            0.00         0.07 
+         ControlAver           0.00         0.03 
+         MainAver              0.00         0.11 
+         IOMolsim              0.00         0.79 
          SetVList              0.00         0.00 
          MDDriver              0.00         0.00 
           VelVer               0.00         0.00  
