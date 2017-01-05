@@ -83,7 +83,7 @@ program MolsimDriver
 
 ! ............... initiate one macrostep  ................
 
-      if (maxcpu > 0) call CpuLeft(maxcpu, master, uout)
+      if (maxcpu > 0) call CpuLeft(maxcpu, uout)
       call IOMolsim(iBeforeMacrostep)
       call IOSystem(iBeforeMacrostep)
       call MolsimDriverSub(iBeforeMacrostep)
