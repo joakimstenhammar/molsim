@@ -734,7 +734,6 @@ subroutine IOCnf(str)
       call par_bc_reals (am     , 1   )
       call par_bc_ints (ix     , 1   )
       call par_bc_ints (iy     , 1   )
-      call par_bc_ints (k     , 1   )
       call par_bc_reals(boxlen    , 3   )
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
@@ -764,7 +763,7 @@ subroutine IOCnf(str)
 
       rewind(ucnf)
       if (lmc .or. lmcall) call OriToQua(np, 1, np, ori, qua)
-      write(ucnf) nstep1done, iseed, am, ix, iy, boxlen
+      write(ucnf) nstep1, iseed, am, ix, iy, boxlen
       write(ucnf) np, iaux, raux, raux, laux, laux
       write(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
       if (lclink) write(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
