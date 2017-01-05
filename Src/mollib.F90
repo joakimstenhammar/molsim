@@ -2596,54 +2596,45 @@ end subroutine QuaVelToAngVel
 
 !************************************************************************
 !*                                                                      *
-!*     ran                                                              *
+!*     Random                                                           *
 !*                                                                      *
 !************************************************************************
 
-! ... return a random number in the range of 0 to 1
+! ... return a random number in the range of 0 < ran < 1
 !     iseed should not be equal to zero, and the first seed should be negative
-!     by Learmonth and Lewis 1973 (32 bits integer)
+!     "Numerical recipes in Fortran 90" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1992.
+!     modified from function ran
+
+!“Minimal” random number generator of Park and Miller combined with a Marsaglia shift sequence. Returns a uniform random deviate between 0.0 and 1.0 (exclusive of the endpoint values). This fully portable, scalar generator has the “traditional” (not Fortran 90) calling sequence with a random deviate as the returned function value: call with idum a negative integer to initialize; thereafter, do not alter idum except to reinitialize. The period of this generator is about 3.1 × 10^18 .
+
+module Random_Module
+   integer, parameter :: k4b=selected_int_kind(9) ! = 4 on intel fortran and gfortran
+   real(8) :: am
+   integer(k4b) :: ix=-1,iy=-1,k
+end module Random_Module
 
 function Random(idum)
-   integer(4) idum,IM1,IM2,IMM1,IA1,IA2,IQ1,IQ2,IR1,IR2,NTAB,NDIV
-   real(8) Random,AM,EPS,RNMX
-   parameter (IM1=2147483563,IM2=2147483399,AM=1./IM1,IMM1=IM1-1, &
-        IA1=40014,IA2=40692,IQ1=53668,IQ2=52774,IR1=12211, &
-        IR2=3791,NTAB=32,NDIV=1+IMM1/NTAB,EPS=1.2e-7,RNMX=1.-EPS)
-   !Long period (> 2×10 18 ) random number generator of L’Ecuyer with Bays-Durham shuffle and added safeguards. Returns a uniform random deviate between 0.0 and 1.0 (exclusive of the endpoint values). Call with idum a negative integer to initialize; thereafter, do not alter idum between successive deviates in a sequence. RNMX should approximate the largest floating value that is less than 1.
-   integer(4) idum2,j,k,iv(NTAB),iy
-   save iv,iy,idum2
-   data idum2/123456789/, iv/NTAB*0/, iy/0/
-
-   if (idum.le.0) then !Initialize.
-      idum=max(-idum,1) !Be sure to prevent idum = 0.
-      idum2=idum
-      do j=NTAB+8,1,-1 !Load the shuffle table (after 8 warm-ups).
-         k=idum/IQ1
-         idum=IA1*(idum-k*IQ1)-k*IR1
-         if (idum.lt.0) idum=idum+IM1
-         if (j.le.NTAB) iv(j)=idum
-      enddo
-      iy=iv(1)
-   endif
-
-   k=idum/IQ1 !Start here when not initializing.
-   idum=IA1*(idum-k*IQ1)-k*IR1 !Compute idum=mod(IA1*idum,IM1)without overflows by Schrage’s method.
-   if (idum.lt.0) idum=idum+IM1
-   k=idum2/IQ2
-   idum2=IA2*(idum2-k*IQ2)-k*IR2 !Compute idum2=mod(IA2*idum2,IM2)likewise.
-   if (idum2.lt.0) idum2=idum2+IM2
-   j=1+iy/NDIV !Will be in the range 1:NTAB.
-   iy=iv(j)-idum2 !Here idum is shuffled, idum and idum2 are combined to generate output. 
-   iv(j)=idum
-   if(iy.lt.1)iy=iy+IMM1
-   Random=min(AM*iy,RNMX) !Because users don’t expect endpoint values.
-   return
-
-end
+   use Random_Module
+   implicit none
+   integer(k4b), intent(inout) :: idum
+   real(8) :: Random
+   integer(k4b), parameter :: ia=16807,im=2147483647,iq=127773,ir=2836
+   if (idum <= 0 .or. iy < 0) then           !initialize.
+      am=nearest(1.0,-1.0)/im
+      iy=ior(ieor(888889999,abs(idum)),1)
+      ix=ieor(777755555,abs(idum))
+      idum=abs(idum)+1                          !set idum positive.
+   end if
+   ix=ieor(ix,ishft(ix,13))                  !marsaglia shift sequence with period 2^32 − 1.
+   ix=ieor(ix,ishft(ix,-17))
+   ix=ieor(ix,ishft(ix,5))
+   k=iy/iq                                   !park-miller sequence by schrage’s method, period 2^31 − 2.
+   iy=ia*(iy-k*iq)-ir*k
+   if (iy < 0) iy=iy+im
+   Random=am*ior(iand(im,ieor(ix,iy)),1)     !combine the two generators with masking to ensure nonzero value.
+end function Random
 
 !************************************************************************
-!*                                                                      *
 !*     Random                                                           *
 !*                                                                      *
 !************************************************************************
@@ -3710,13 +3701,12 @@ end function BrentMod
 !     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
 
 
-subroutine KnuthShuffle(a,asize)
-
-   use MolModule
+subroutine KnuthShuffle(a,asize, iseed)
    implicit none
 
    integer, intent(in) :: asize !size needed to cope with allocatable arrays
    integer, intent(inout) :: a(asize)
+   integer, intent(inout) :: iseed
    integer :: i, randpos, itmp
    real(8) :: Random
 
