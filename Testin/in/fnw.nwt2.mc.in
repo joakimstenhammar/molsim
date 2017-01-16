@@ -47,9 +47,9 @@
 &nmlPotential
 /
 &nmlPotentialChain
- bond(1) = 2.4, 2.0, 5.0,
- bond(2) = 2.4, 2.0, 5.0,
- clink   = 2.4, 2.0, 5.0,
+ bond(1) = 2.4, 2, 5.0,
+ bond(2) = 2.4, 2, 5.0,
+ clink   = 2.4, 2, 5.0,
 /
 &nmlSetConfiguration
  rnwt(1)         =       88 , rnwt(2)         =       50 ,
