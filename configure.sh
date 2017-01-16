@@ -61,6 +61,7 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
 
       if [ ! -f $FILE ];
       then
+         dnfftw=""
          read -e -p "$FILE not found. Download from fftw.org? (requires wget) " -i "n" dnfftw
          case ${dnfftw:0:1} in
              y|Y )
@@ -83,6 +84,16 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
       mkdir -p $HOME/.fftw
       curdir=$PWD
       tar xfv $FILE -C $HOME/.fftw
+      if [ -f fftw-*.tar.gz ];
+      then
+         case ${dnfftw:0:1} in
+             y|Y )
+             rm fftw-3.3.4.tar.gz
+             ;;
+             * )
+             echo "not removing tar file"
+         esac
+      fi
       cd $HOME/.fftw/fftw*
       pwd
       ./configure --prefix="$HOME/.fftw"
