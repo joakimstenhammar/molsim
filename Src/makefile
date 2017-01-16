@@ -239,10 +239,10 @@ endif
 
 
 ifeq ($(ARCH), LOCAL_INTEL)
-   LLIB += -L$(FFTW_PATH)/lib -lfftw3 -lm
+   LLIB += -L$(wildcard $(FFTW_PATH)/lib*) -lfftw3 -lm
 endif
 ifeq ($(ARCH), LOCAL_GFORTRAN)
-   LLIB += -L$(FFTW_PATH)/lib -lfftw3 -lm
+   LLIB += -L$(wildcard $(FFTW_PATH)/lib*) -lfftw3 -lm
 endif
 ifeq ($(ARCH), ALARIK_INTEL)
    LLIB += $(FFTW3_HOME)/lib/libfftw3.so  #linker issues with ifort on Alarik => workaround
