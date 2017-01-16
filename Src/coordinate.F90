@@ -2195,10 +2195,10 @@ subroutine SetNetwork(ipt)
 ! ... when particle and chain number don't accord to the neccesary ones: stop excecution and write required numbers
 
    if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then 
-      write(uout,'(a50,i)') "failed to set network of network type:"       , inwt
-      write(uout,'(a50,i)') "required number of chains:"                   , nstrand*nnwnwt(inwt)
-      write(uout,'(a50,i)') "required number of node particles:"           , nnode*nnwnwt(inwt)
-      write(uout,'(a50,i)') "required (total) number of strand particles:" , nstrand*nnwnwt(inwt)*npct(ict)
+      write(uout,'(a50,i0)') "failed to set network of network type:"       , inwt
+      write(uout,'(a50,i0)') "required number of chains:"                   , nstrand*nnwnwt(inwt)
+      write(uout,'(a50,i0)') "required number of node particles:"           , nnode*nnwnwt(inwt)
+      write(uout,'(a50,i0)') "required (total) number of strand particles:" , nstrand*nnwnwt(inwt)*npct(ict)
       call Stop (txroutine, "Please adjust nppt(node) and ncct(strand)", uout)
    end if
 
