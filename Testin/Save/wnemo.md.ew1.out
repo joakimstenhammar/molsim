@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:25
+2017-01-17     13:29:45
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -835,7 +835,7 @@ number of particles            =          2.00000
 volume                         =      1.00000E+03
 
  
-total cpu time since start (s)        0.02
+total cpu time since start (s)        0.07
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1113,7 +1113,7 @@ ind. dip. mom.: h              =          0.00880        0.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:25
+2017-01-17     13:29:45
 
 title   : nemo water, ewald summation                                                               
 
@@ -1539,22 +1539,22 @@ distribution functions
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.00         0.05
-         ControlAver                    0.00         0.12
-         MainAver                       0.00         0.10
-         DistFunc                       0.00         0.28
+         Coordinate                     0.00         0.03
+         ControlAver                    0.00         0.01
+         MainAver                       0.00         0.04
+         DistFunc                       0.00         0.17
          IOMolsim                       0.00         0.08
          SetVList                       0.00         0.00
-         MDDriver                       0.00         0.37
+         MDDriver                       0.02         0.67
           VelVer                        0.00         0.00
-          UTotal                        0.00         0.37
+          UTotal                        0.02         0.67
            UTwoBodyP                    0.00         0.00
-           UManyBodyP                   0.00         0.37
-            FieldStat                   0.00         0.01
-            FieldStatEwald              0.00         0.15
-             FieldStatEwaldRecStd       0.00         0.14
-            FieldTot                    0.00         0.01
-            FieldTotEwald               0.00         0.19
-             FieldTotEwaldRecStd        0.00         0.17
+           UManyBodyP                   0.02         0.67
+            FieldStat                   0.00         0.00
+            FieldStatEwald              0.01         0.25
+             FieldStatEwaldRecStd       0.01         0.24
+            FieldTot                    0.00         0.00
+            FieldTotEwald               0.01         0.40
+             FieldTotEwaldRecStd        0.01         0.39
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.10

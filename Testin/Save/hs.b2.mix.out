@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:43
+2017-01-17     13:33:08
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -219,7 +219,7 @@ sd of the second virial coeff.              =          0.0105
 second virial coeff. (cm**3/mole)           =          1.2606
 sd of the second virial coeff. (cm**3/mole) =          0.0063
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.12
 
 **************************************************************************************************************
 *                                               neighbour list                                               *
@@ -240,7 +240,7 @@ maximal number of neighbours   =          2000
 particle no     atom no     atom type                                   coordinates                         separation
     1    2        1    2   hs         hs            0.349  -0.662  -0.015        0.000   0.000   0.000        0.748
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.12
 
 **************************************************************************************************************
 *                                         image preparation: general                                         *

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v1.3.5                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-15     09:47:39
+2017-01-17     13:33:13
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -386,9 +386,9 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -0.63696        0.04454     -0.459E-15
- total two-body energy         =         -0.76187        0.01258      0.344E-15
-  bead-bead                    =         -0.76187        0.01258      0.344E-15
+total potential energy         =         -0.63696        0.04454      0.000E+00
+ total two-body energy         =         -0.76187        0.01258      0.573E-15
+  bead-bead                    =         -0.76187        0.01258      0.573E-15
  bond energy                   =          0.12490        0.05545     -0.456E-15
  angle energy                  =          0.00000        0.00000      0.000E+00
 enthalpy                       =          0.52789        0.04454
@@ -436,7 +436,7 @@ asphericity (<2:nd moments>)   =          0.99931
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-15     09:47:39
+2017-01-17     13:33:13
 
 title   : RI-PHA-046 - 00                                                                           
 
@@ -617,15 +617,15 @@ asphericity (<2:nd moments>)   =          0.99931
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.17 
+         Coordinate            0.00         0.08 
          ControlAver           0.00         0.04 
-         MainAver              0.00         0.31 
-         IOMolsim              0.00         0.18 
+         MainAver              0.00         0.33 
+         IOMolsim              0.00         0.13 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.30 
-          SPartMove            0.00         0.14  
-          DUTotal              0.00         0.15  
-           DUTwoBody           0.00         0.00   
-           DUBond              0.00         0.03   
+         MCPass                0.00         0.42 
+          SPartMove            0.00         0.04  
+          DUTotal              0.00         0.12  
+           DUTwoBody           0.00         0.07   
+           DUBond              0.00         0.00   
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02

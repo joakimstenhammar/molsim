@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:29:47
+2017-01-17     13:28:37
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -292,7 +292,7 @@ total potential energy (NkT)   =         -8.30758
 pressure (NkT/V)(excl. contact)=          2.35808
 pressure (kT) (excl. contact)  =      9.06585E-02
  
-total cpu time since start (s)        0.23
+total cpu time since start (s)        0.82
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -313,7 +313,7 @@ quantity                                    LJ
 <force**2>                     =            0.9944E+07
 <torque**2>x'                  =            0.6605E+06
 <torque**2>y'                  =            0.6166E+06
-<torque**2>z'                  =            0.4721E-26
+<torque**2>z'                  =            0.4442E-26
 <linear mom.>x                 =           -0.2284E+01
 <linear mom.>y                 =           -0.2521E+01
 <linear mom.>z                 =           -0.4657E+00
@@ -367,7 +367,7 @@ number density                 =      3.84458E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:29:49
+2017-01-17     13:28:42
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -460,7 +460,7 @@ quantity                                    LJ
 <force**2>                     =            0.9944E+07
 <torque**2>x'                  =            0.6605E+06
 <torque**2>y'                  =            0.6166E+06
-<torque**2>z'                  =            0.4721E-26
+<torque**2>z'                  =            0.4442E-26
 <linear mom.>x                 =           -0.2284E+01
 <linear mom.>y                 =           -0.2521E+01
 <linear mom.>z                 =           -0.4657E+00
@@ -8762,30 +8762,30 @@ rupp                             =    30.00
  
          section                cpu time (s)     fraction
          -------                ------------     --------
-         Coordinate                   0.00         0.00
+         Coordinate                   0.01         0.00
          ControlAver                  0.00         0.00
          MainAver                     0.00         0.00
-         DistFunc                     0.03         0.02
+         DistFunc                     0.07         0.01
          Group                        0.00         0.00
-         StaticDriver                 1.35         0.84
-          RDF                         0.06         0.04
-          RDFCond                     0.08         0.05
-          AngDF                       0.04         0.03
-          SphHarAver                  0.00         0.00
-          RadAngDF                    0.07         0.05
-          Kirkwoodgk                  0.04         0.03
-          OriPolDF                    0.06         0.04
-          MultipolDF                  0.87         0.55
-          DomainDriver                0.11         0.07
-         IOMolsim                     0.05         0.03
-         SetVList                     0.03         0.02
-         MDDriver                     0.13         0.08
+         StaticDriver                 3.82         0.83
+          RDF                         0.12         0.03
+          RDFCond                     0.21         0.05
+          AngDF                       0.13         0.03
+          SphHarAver                  0.02         0.00
+          RadAngDF                    0.32         0.07
+          Kirkwoodgk                  0.20         0.04
+          OriPolDF                    0.17         0.04
+          MultipolDF                  2.23         0.49
+          DomainDriver                0.43         0.09
+         IOMolsim                     0.11         0.02
+         SetVList                     0.10         0.02
+         MDDriver                     0.47         0.10
           VelVer                      0.00         0.00
-          UTotal                      0.13         0.08
-           UTwoBodyP                  0.03         0.02
-           UDipole                    0.10         0.06
-            UDipoleP                  0.07         0.04
-            UDipoleEwald              0.03         0.02
-             UDipoleEwaldRecStd       0.03         0.02
+          UTotal                      0.47         0.10
+           UTwoBodyP                  0.09         0.02
+           UDipole                    0.38         0.08
+            UDipoleP                  0.23         0.05
+            UDipoleEwald              0.15         0.03
+             UDipoleEwaldRecStd       0.15         0.03
  
-total cpu time since start (s)        1.74
+total cpu time since start (s)        5.10

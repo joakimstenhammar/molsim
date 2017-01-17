@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:11
+2017-01-17     13:29:13
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -342,12 +342,12 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          0.26472        0.00000     -0.419E-15
+total potential energy         =          0.26472        0.00000      0.000E+00
  total two-body energy         =          0.00000        0.00000      0.000E+00
   micelle-micelle              =          0.00000        0.00000      0.000E+00
   micelle-ion                  =          0.00000        0.00000      0.000E+00
   ion-ion                      =          0.00000        0.00000      0.000E+00
- external potential            =          0.26472        0.00000     -0.419E-15
+ external potential            =          0.26472        0.00000      0.000E+00
 enthalpy                       =          2.74243        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -366,7 +366,7 @@ number density                 =      3.81972E-06
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:11
+2017-01-17     13:29:13
 
 title   : hs 0:1 system, spherical cell, low dielectric micelle, p-algorithm                        
 
@@ -1425,16 +1425,16 @@ no    group label            no of particles     precision
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.02 
-         ControlAver           0.00         0.00 
-         MainAver              0.00         0.03 
-         DistFunc              0.01         0.81 
+         Coordinate            0.00         0.04 
+         ControlAver           0.00         0.02 
+         MainAver              0.00         0.05 
+         DistFunc              0.01         0.78 
          Group                 0.00         0.02 
-         IOMolsim              0.00         0.11 
+         IOMolsim              0.00         0.09 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.00 
+         MCPass                0.00         0.01 
           SPartMove            0.00         0.00  
-          DUTotal              0.00         0.00  
+          DUTotal              0.00         0.01  
            DUTwoBody           0.00         0.00   
            DUExternal          0.00         0.00   
  

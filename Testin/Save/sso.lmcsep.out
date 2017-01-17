@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:19
+2017-01-17     13:33:13
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -364,7 +364,7 @@ total potential energy (NkT)   =         -1.09103
 pressure (NkT/V)(excl. contact)=         -0.44119
 pressure (kT) (excl. contact)  =     -2.55318E-08
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -424,9 +424,9 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -2.36544        0.18346     -0.596E-14
- total two-body energy         =         -2.96933        0.07954     -0.503E-14
-  bead-bead                    =         -2.96933        0.07954     -0.503E-14
+total potential energy         =         -2.36544        0.18346      0.360E-14
+ total two-body energy         =         -2.96933        0.07954      0.251E-14
+  bead-bead                    =         -2.96933        0.07954      0.251E-14
  bond energy                   =          0.60389        0.22271      0.320E-15
  angle energy                  =          0.00000        0.00000      0.000E+00
 enthalpy                       =         -3.45858        0.18346
@@ -474,7 +474,7 @@ asphericity (<2:nd moments>)   =          0.32444
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:19
+2017-01-17     13:33:13
 
 title   : test of molsim: lmcsep (branch sso)                                                       
 
@@ -733,16 +733,16 @@ asphericity (<2:nd moments>)   =          0.32444
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.06 
-         ControlAver           0.00         0.00 
-         MainAver              0.00         0.08 
-         IOMolsim              0.00         0.04 
-         SetVList              0.00         0.01 
-         MCPass                0.02         0.82 
+         Coordinate            0.00         0.04 
+         ControlAver           0.00         0.01 
+         MainAver              0.00         0.04 
+         IOMolsim              0.00         0.03 
+         SetVList              0.00         0.03 
+         MCPass                0.05         0.85 
           SPartMove            0.00         0.05  
-          DUTotal              0.02         0.69  
-           DUTwoBody           0.01         0.46   
-           DUBond              0.00         0.07   
-          PivotMove            0.00         0.00  
+          DUTotal              0.04         0.67  
+           DUTwoBody           0.04         0.58   
+           DUBond              0.00         0.03   
+          PivotMove            0.00         0.01  
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.08

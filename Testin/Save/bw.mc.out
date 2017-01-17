@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:12
+2017-01-17     13:29:14
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -423,7 +423,7 @@ total potential energy (NkT)   =         24.88640
 pressure (NkT/V)(excl. contact)=        112.31346
 pressure (kT) (excl. contact)  =      5.19970E-01
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -480,11 +480,11 @@ orientation order, z'-axis     =                0.9565              0.9801
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         11.61951       19.67851      0.156E-13
- total two-body energy         =         11.61951       19.67851      0.156E-13
-  water-water                  =          0.42037        0.04807      0.385E-13
-  water-benzene                =         12.79692       19.17765      0.165E-11
-  benzene-benzene              =         -1.59778        1.39331     -0.532E-14
+total potential energy         =         11.61951       19.67851      0.349E-13
+ total two-body energy         =         11.61951       19.67851      0.349E-13
+  water-water                  =          0.42037        0.04807      0.116E-12
+  water-benzene                =         12.79692       19.17765      0.189E-11
+  benzene-benzene              =         -1.59778        1.39331     -0.423E-14
 enthalpy                       =        112.88698      119.95688
 cv                             =       4195.72816
 temperature                    =        298.00000        0.00000
@@ -551,11 +551,11 @@ orientation order, z'-axis     =                0.8221              0.9282
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -3.80916        0.57281     -0.272E-14
- total two-body energy         =         -3.80916        0.57281     -0.272E-14
-  water-water                  =          0.34666        0.09571     -0.103E-12
-  water-benzene                =         -0.75621        0.34014      0.555E-15
-  benzene-benzene              =         -3.39961        0.20906      0.159E-14
+total potential energy         =         -3.80916        0.57281      0.742E-14
+ total two-body energy         =         -3.80916        0.57281      0.742E-14
+  water-water                  =          0.34666        0.09571      0.137E-12
+  water-benzene                =         -0.75621        0.34014     -0.925E-14
+  benzene-benzene              =         -3.39961        0.20906      0.454E-14
 enthalpy                       =         -2.97334        3.55508
 cv                             =          3.55506
 temperature                    =        298.00000        0.00000
@@ -574,7 +574,7 @@ number density                 =      4.62963E-03
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:12
+2017-01-17     13:29:14
 
 title   : benzene-water interface                                                                   
 
@@ -754,10 +754,10 @@ total potential energy         =          3.90518        5.74569       17.17059 
   water-water                  =          0.38351        0.01687        0.04793        0.04804             1.
   water-benzene                =          6.02036        5.18201       16.47349       48.85625             2.
   benzene-benzene              =         -2.49869        0.55038        1.37427        3.01712             3.
-enthalpy                       =         54.95682       43.69519      109.77061      258.97247             4.
+enthalpy                       =         54.95682       43.69519      109.77061      258.97248             4.
 cv                             =       1110.88651
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
-pressure (excl. cont. contr.)  =        392.46867      291.27686      719.08514      205.43120             4.
+pressure (excl. cont. contr.)  =        392.46867      291.27687      719.08514      205.43121             4.
 number of particles            =          8.00000        0.00000        0.00000        0.00000             0.
 volume                         =      1.72800E+03    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
@@ -963,15 +963,15 @@ distribution functions
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.12 
+         Coordinate            0.00         0.04 
          ControlAver           0.00         0.01 
-         MainAver              0.00         0.08 
-         DistFunc              0.00         0.30 
-         IOMolsim              0.00         0.10 
+         MainAver              0.00         0.02 
+         DistFunc              0.01         0.25 
+         IOMolsim              0.00         0.05 
          SetVList              0.00         0.00 
-         MCPass                0.01         0.40 
+         MCPass                0.02         0.63 
           SPartMove            0.00         0.00  
-          DUTotal              0.01         0.34  
-           DUTwoBody           0.01         0.34   
+          DUTotal              0.02         0.58  
+           DUTwoBody           0.02         0.55   
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.05

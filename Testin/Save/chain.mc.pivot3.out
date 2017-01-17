@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:16
+2017-01-17     13:30:08
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -309,7 +309,7 @@ total potential energy (NkT)   =          0.31721
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      2.00000E-05
  
-total cpu time since start (s)        0.00
+total cpu time since start (s)        0.01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -363,11 +363,11 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          1.50721        0.36298     -0.938E-15
+total potential energy         =          1.50721        0.36298      0.000E+00
  total two-body energy         =          0.00000        0.00000      0.000E+00
   bead-bead                    =          0.00000        0.00000      0.000E+00
  bond energy                   =          0.00000        0.00000      0.000E+00
- angle energy                  =          1.50721        0.36298     -0.938E-15
+ angle energy                  =          1.50721        0.36298      0.000E+00
 enthalpy                       =          3.98492        0.36298
 cv                             =          3.56891
 temperature                    =        298.00000        0.00000
@@ -386,7 +386,7 @@ number density                 =      2.00000E-05
 
 quantity                                  average     fluctuation
 --------                                  -------     -----------
-<r(bb)**2>**0.5                =          5.00000        0.00137
+<r(bb)**2>**0.5                =          5.00000        0.00000
 <r(ee)**2>**0.5                =         40.64315       32.85092
 <r(g)**2>**0.5                 =         15.82143        9.76634
 smallest rms mom. p.a.         =          3.10806        2.24675
@@ -413,7 +413,7 @@ asphericity (<2:nd moments>)   =          0.53001
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:16
+2017-01-17     13:30:08
 
 title   : testchain: 20-mer                                                                         
 
@@ -560,7 +560,7 @@ quantity                                  average      precision    fluctuation 
 total potential energy         =          1.50721        0.06630        0.38620        0.87133             3.
  total two-body energy         =          0.00000        0.00000        0.00000        0.00000             0.
   bead-bead                    =          0.00000        0.00000        0.00000        0.00000             0.
- bond energy                   =          0.00000        0.00000        0.00000        0.00000            21.
+ bond energy                   =          0.00000        0.00000        0.00000        0.00000            22.
  angle energy                  =          1.50721        0.06630        0.38620        0.87133             3.
 enthalpy                       =          3.98492        0.06630        0.38620        0.87133             3.
 cv                             =          3.56891
@@ -580,7 +580,7 @@ number density                 =      2.00000E-05    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.00000        0.00000        0.00118        0.00006             0.
+<r(bb)**2>**0.5                =          5.00000        0.00000        0.00000        0.00029             0.
 <r(ee)**2>**0.5                =         40.64315        1.65123       32.68982        2.39230             2.
 <r(g)**2>**0.5                 =         15.82143        0.35247        9.86835        0.55368             1.
 smallest rms mom. p.a.         =          3.10806        0.06499        2.34440        0.11088             1.
@@ -608,16 +608,16 @@ asphericity (<2:nd moments>)   =          0.53001
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.02 
+         Coordinate            0.00         0.01 
          ControlAver           0.00         0.01 
-         MainAver              0.00         0.04 
+         MainAver              0.01         0.06 
          IOMolsim              0.00         0.02 
          SetVList              0.00         0.00 
-         MCPass                0.04         0.91 
-          PivotMove            0.00         0.09  
-          DUTotal              0.03         0.68  
-           DUTwoBody           0.01         0.27   
-           DUBond              0.00         0.09   
-           DUAngle             0.00         0.08   
+         MCPass                0.09         0.90 
+          PivotMove            0.01         0.10  
+          DUTotal              0.06         0.65  
+           DUTwoBody           0.03         0.36   
+           DUBond              0.01         0.07   
+           DUAngle             0.01         0.09   
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.11

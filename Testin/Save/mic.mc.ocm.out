@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:22:47
+2017-01-17     13:28:52
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -315,7 +315,7 @@ Average cluster size 1    1d: micelle                    1.55000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:22:47
+2017-01-17     13:28:52
 
 title   : hs 60:1 system rho(m) = 2*10e-6                                                           
 
@@ -915,18 +915,18 @@ no    function                         min            max            nbin       
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.00         0.00
-         ControlAver            0.00         0.00
-         MainAver               0.00         0.00
-         DistFunc               0.00         0.36
-         StaticDriver           0.00         0.44
-          SFPBC                 0.00         0.29 
-          ClusterSD             0.00         0.13 
-         IOMolsim               0.00         0.19
-         SetVList               0.00         0.00
-         MCPass                 0.00         0.00
+         Coordinate             0.00         0.05
+         ControlAver            0.00         0.03
+         MainAver               0.00         0.06
+         DistFunc               0.00         0.18
+         StaticDriver           0.00         0.32
+          SFPBC                 0.00         0.25 
+          ClusterSD             0.00         0.06 
+         IOMolsim               0.00         0.23
+         SetVList               0.00         0.05
+         MCPass                 0.00         0.09
           SPartMove             0.00         0.00 
-          DUTotal               0.00         0.00 
-           DUTwoBody            0.00         0.00  
+          DUTotal               0.00         0.04 
+           DUTwoBody            0.00         0.04  
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:12
+2017-01-17     13:29:14
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -351,13 +351,13 @@ total potential energy         =        -26.04853        0.50202     -0.579E-15
   macroion-macroion            =          0.00000        0.00000      0.000E+00
   macroion-ion                 =        -42.72451        0.59001      0.238E-15
   ion-ion                      =         16.63330        0.17910      0.000E+00
- external potential            =          0.04268        0.00489     -0.213E-14
+ external potential            =          0.04268        0.00489      0.753E-15
 enthalpy                       =         15.39265        0.50202
 cv                             =          0.00926
 temperature                    =       6000.00000        0.00000
-pressure (excl. cont. contr.)  =       1808.96945        0.00000
+pressure (excl. cont. contr.)  =       1808.96945        0.00003
 number of particles            =         11.00000        0.00000
-volume                         =      4.18449E+02    7.62939E-06
+volume                         =      4.18449E+02    5.39480E-06
 
 total potential energy (NkT)   =         -0.52215
 pressure (NkT/V)(excl. contact)=          0.83070
@@ -419,13 +419,13 @@ total potential energy         =        -26.23409        0.57147      0.000E+00
   macroion-macroion            =          0.00000        0.00000      0.000E+00
   macroion-ion                 =        -43.52069        1.11100      0.229E-15
   ion-ion                      =         17.24466        0.76447     -0.417E-15
- external potential            =          0.04194        0.00531     -0.258E-14
+ external potential            =          0.04194        0.00531     -0.794E-15
 enthalpy                       =         14.70932        0.57147
 cv                             =          0.01200
 temperature                    =       6000.00000        0.00000
-pressure (excl. cont. contr.)  =       1787.24106        0.00003
+pressure (excl. cont. contr.)  =       1787.24106        0.00000
 number of particles            =         11.00000        0.00000
-volume                         =      4.18449E+02    7.62939E-06
+volume                         =      4.18449E+02    5.39480E-06
 
 total potential energy (NkT)   =         -0.52587
 pressure (NkT/V)(excl. contact)=          0.82073
@@ -438,7 +438,7 @@ number density                 =      2.62876E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:12
+2017-01-17     13:29:14
 
 title   : hs 10:1 system, spherical cell, low dielectric micelle, p-algorithm                       
 
@@ -558,7 +558,7 @@ cv                             =          0.01059
 temperature                    =       6000.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =       1798.10526        4.96642       10.51921        2.95639             4.
 number of particles            =         11.00000        0.00000        0.00000        0.00000             0.
-volume                         =      4.18449E+02    7.89283E-07    7.62939E-06    0.00000E+00             0.
+volume                         =      4.18449E+02    0.00000E+00    7.62939E-06    0.00000E+00             0.
 
 total potential energy (NkT)   =         -0.52401        0.00186
 pressure (NkT/V)(excl. contact)=          0.82571        0.00499
@@ -1238,17 +1238,17 @@ number of images made          =    1
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.03 
+         Coordinate            0.00         0.04 
          ControlAver           0.00         0.03 
-         MainAver              0.00         0.04 
-         DistFunc              0.01         0.43 
-         ImageDriver           0.00         0.12 
-         IOMolsim              0.00         0.11 
+         MainAver              0.00         0.07 
+         DistFunc              0.01         0.39 
+         ImageDriver           0.00         0.11 
+         IOMolsim              0.00         0.08 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.24 
+         MCPass                0.01         0.29 
           SPartMove            0.00         0.02  
-          DUTotal              0.00         0.17  
-           DUTwoBody           0.00         0.05   
-           DUExternal          0.00         0.05   
+          DUTotal              0.01         0.22  
+           DUTwoBody           0.00         0.04   
+           DUExternal          0.00         0.08   
  
 total cpu time since start (s)        0.03

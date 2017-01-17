@@ -13,7 +13,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -35,7 +35,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:01
+2017-01-17     13:32:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -281,7 +281,7 @@ total potential energy (NkT)   =          2.31390
 pressure (NkT/V)(excl. contact)=          1.77129
 pressure (kT) (excl. contact)  =      4.22865E-07
  
-total cpu time since start (s)        0.39
+total cpu time since start (s)        1.46
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -335,7 +335,7 @@ quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =          5.73327        0.00372      0.538E-13
  total two-body energy         =          5.73327        0.00372      0.538E-13
-  ion-ion                      =          9.68184        0.00355      0.348E-13
+  ion-ion                      =          9.68184        0.00355      0.344E-13
   ion-counterion               =         -6.57574        0.00148     -0.166E-13
   counterion-counterio         =          2.62717        0.00052      0.173E-14
  external potential            =          0.00000        0.00000      0.000E+00
@@ -357,7 +357,7 @@ number density                 =      2.38732E-07
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:02
+2017-01-17     13:32:21
 
 title   : ions and counterions spherically confined                                                 
 
@@ -458,7 +458,7 @@ cv                             =          0.01872
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.00174        0.00000        0.00000        0.00000             0.
 number of particles            =       1000.00000        0.00000        0.00000        0.00000             0.
-volume                         =      4.18879E+09    5.13575E+00    0.00000E+00    0.00000E+00             0.
+volume                         =      4.18879E+09    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
 total potential energy (NkT)   =          2.31394        0.00000
 pressure (NkT/V)(excl. contact)=          1.77129        0.00000
@@ -1419,20 +1419,20 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.31         0.21
-         ControlAver            0.00         0.00
+         Coordinate             1.23         0.26
+         ControlAver            0.01         0.00
          MainAver               0.00         0.00
-         DistFunc               0.01         0.01
+         DistFunc               0.04         0.01
          Group                  0.00         0.00
          StaticDriver           0.01         0.00
           SPDF                  0.01         0.00 
          ImageDriver            0.01         0.00
-         IOMolsim               0.03         0.02
-         SetVList               0.14         0.10
-         MCPass                 0.99         0.66
-          SPartMove             0.01         0.01 
-          DUTotal               0.94         0.63 
-           DUTwoBody            0.90         0.60  
-           DUExternal           0.01         0.01  
+         IOMolsim               0.08         0.02
+         SetVList               0.52         0.11
+         MCPass                 2.90         0.61
+          SPartMove             0.03         0.01 
+          DUTotal               2.77         0.58 
+           DUTwoBody            2.68         0.56  
+           DUExternal           0.03         0.01  
  
-total cpu time since start (s)        1.58
+total cpu time since start (s)        5.06

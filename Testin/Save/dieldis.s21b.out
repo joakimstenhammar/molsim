@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:22:56
+2017-01-17     13:29:12
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -270,7 +270,7 @@ total potential energy (NkT)   =        102.91386
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      5.96831E-11
  
-total cpu time since start (s)        0.00
+total cpu time since start (s)        0.01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -319,13 +319,13 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -1.41814        0.00000      0.438E-14
+total potential energy         =         -1.41814        0.00000     -0.454E-13
  total two-body energy         =         -3.65653        0.00000      0.000E+00
   jon1-jon1                    =          0.00000        0.00000      0.000E+00
   jon1-jon2                    =         -3.65653        0.00000      0.000E+00
   jon2-jon2                    =          0.00000        0.00000      0.000E+00
- total one-body energy         =          2.23838        0.00000      0.109E-13
-  jon1                         =          1.20399        0.00000      0.262E-13
+ total one-body energy         =          2.23838        0.00000     -0.194E-13
+  jon1                         =          1.20399        0.00000     -0.210E-13
   jon2                         =          1.03439        0.00000      0.000E+00
 enthalpy                       =          1.05957        0.00000
 cv                             =          0.00000
@@ -345,7 +345,7 @@ number density                 =      5.96831E-11
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:22:56
+2017-01-17     13:29:12
 
 title   : two charges near a spherical dielectric boundary, check of energy evaulation              
 
@@ -472,11 +472,11 @@ number density                 =      5.96831E-11    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.27 
-         ControlAver           0.00         0.06 
-         MainAver              0.00         0.31 
-         IOMolsim              0.00         0.35 
-         SetVList              0.00         0.01 
+         Coordinate            0.00         0.07 
+         ControlAver           0.00         0.03 
+         MainAver              0.00         0.58 
+         IOMolsim              0.00         0.32 
+         SetVList              0.00         0.00 
          MCPass                0.00         0.00 
           SPartMove            0.00         0.00  
           DUTotal              0.00         0.00  

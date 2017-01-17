@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:19
+2017-01-17     13:29:27
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -744,7 +744,7 @@ total potential energy (NkT)   =         -1.56728
 pressure (NkT/V)(excl. contact)=         -1.75552
 pressure (kT) (excl. contact)  =     -8.77761E-01
  
-total cpu time since start (s)        0.02
+total cpu time since start (s)        0.07
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -837,7 +837,7 @@ chemical pot., total (kT)      =       0.357
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:20
+2017-01-17     13:29:31
 
 title   : lj mvt ensemble                                                                           
 
@@ -1699,18 +1699,18 @@ number of images made          =    1
          Coordinate             0.01         0.00
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
-         DistFunc               0.01         0.00
-         StaticDriver           0.01         0.01
-          Widom1                0.01         0.01 
+         DistFunc               0.02         0.00
+         StaticDriver           0.03         0.01
+          Widom1                0.03         0.01 
          ImageDriver            0.00         0.00
-         IOMolsim               0.01         0.01
-         SetVList               0.01         0.01
-         MCPass                 1.53         0.96
-          SPartMove             0.01         0.01 
-          DUTotal               0.13         0.08 
-           DUTwoBody            0.11         0.07  
-          VolChange             1.38         0.87 
-          UTotal                1.37         0.86 
-           UTwoBodyA            1.36         0.85  
+         IOMolsim               0.03         0.01
+         SetVList               0.04         0.01
+         MCPass                 3.79         0.96
+          SPartMove             0.01         0.00 
+          DUTotal               0.24         0.06 
+           DUTwoBody            0.22         0.06  
+          VolChange             3.51         0.89 
+          UTotal                3.46         0.88 
+           UTwoBodyA            3.39         0.86  
  
-total cpu time since start (s)        1.60
+total cpu time since start (s)        3.97

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:29:36
+2017-01-17     13:28:04
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -471,7 +471,7 @@ number density                 =      1.00000E-03
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:29:36
+2017-01-17     13:28:04
 
 title   : one dipole, test of ewald summation, jcp 112, 6152 (2000)                                 
 
@@ -610,18 +610,18 @@ number density                 =      1.00000E-03    0.00000E+00
  
          section                cpu time (s)     fraction
          -------                ------------     --------
-         Coordinate                   0.00         0.24
-         ControlAver                  0.00         0.07
-         MainAver                     0.00         0.22
-         IOMolsim                     0.00         0.20
+         Coordinate                   0.00         0.21
+         ControlAver                  0.00         0.00
+         MainAver                     0.00         0.18
+         IOMolsim                     0.00         0.00
          SetVList                     0.00         0.00
-         MDDriver                     0.00         0.27
+         MDDriver                     0.00         0.61
           VelVer                      0.00         0.00
-          UTotal                      0.00         0.21
+          UTotal                      0.00         0.61
            UTwoBodyP                  0.00         0.00
-           UDipole                    0.00         0.21
+           UDipole                    0.00         0.61
             UDipoleP                  0.00         0.00
-            UDipoleEwald              0.00         0.21
-             UDipoleEwaldRecStd       0.00         0.05
+            UDipoleEwald              0.00         0.61
+             UDipoleEwaldRecStd       0.00         0.61
  
 total cpu time since start (s)        0.01

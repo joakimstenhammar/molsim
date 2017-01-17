@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:22:18
+2017-01-17     13:27:34
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -240,7 +240,7 @@ total potential energy (NkT)   =          0.00000
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      1.99774E-04
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -372,7 +372,7 @@ number density                 =      1.99774E-04
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:22:18
+2017-01-17     13:27:35
 
 title   : dumbell fluid (Jos)                                                                       
 
@@ -467,7 +467,7 @@ cv                             =          0.00000
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.82194        0.00000        0.00000        0.00000             0.
 number of particles            =        100.00000        0.00000        0.00000        0.00000             0.
-volume                         =      5.00566E+05    0.00000E+00    0.00000E+00    5.37235E-11             0.
+volume                         =      5.00566E+05    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
 total potential energy (NkT)   =          0.00000        0.00000
 pressure (NkT/V)(excl. contact)=          1.00000        0.00000
@@ -951,18 +951,18 @@ running coordinate number/radial distribution function
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.00         0.02
-         ControlAver            0.00         0.00
+         Coordinate             0.01         0.02
+         ControlAver            0.00         0.01
          MainAver               0.00         0.00
-         DistFunc               0.03         0.27
+         DistFunc               0.08         0.30
          Group                  0.00         0.00
-         StaticDriver           0.01         0.06
-          RDF                   0.01         0.06 
-         IOMolsim               0.00         0.04
-         SetVList               0.00         0.03
-         MCPass                 0.06         0.57
-          SPartMove             0.01         0.06 
-          DUTotal               0.04         0.43 
-           DUTwoBody            0.03         0.34  
+         StaticDriver           0.01         0.04
+          RDF                   0.01         0.03 
+         IOMolsim               0.01         0.03
+         SetVList               0.01         0.04
+         MCPass                 0.16         0.57
+          SPartMove             0.00         0.01 
+          DUTotal               0.15         0.54 
+           DUTwoBody            0.15         0.51  
  
-total cpu time since start (s)        0.11
+total cpu time since start (s)        0.31

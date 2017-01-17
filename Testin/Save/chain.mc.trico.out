@@ -73,7 +73,7 @@ ict, jct, ictct
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -95,7 +95,7 @@ ict, jct, ictct
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-15     13:29:06
+2017-01-17     13:30:06
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -492,7 +492,7 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =      13896.99735        0.00000     -0.150E-15
+total potential energy         =      13896.99735        0.00000     -0.299E-15
  total two-body energy         =          0.00000        0.00000      0.000E+00
   a-a                          =          0.00000        0.00000      0.000E+00
   a-b                          =          0.00000        0.00000      0.000E+00
@@ -501,7 +501,7 @@ total potential energy         =      13896.99735        0.00000     -0.150E-15
   b-c                          =          0.00000        0.00000      0.000E+00
   c-c                          =          0.00000        0.00000      0.000E+00
  bond energy                   =          0.02261        0.00000      0.175E-15
- angle energy                  =      13896.97474        0.00000     -0.150E-15
+ angle energy                  =      13896.97474        0.00000     -0.299E-15
 enthalpy                       =      13899.47506        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -547,7 +547,7 @@ asphericity (<2:nd moments>)   =          0.29618
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-15     13:29:06
+2017-01-17     13:30:06
 
 title   : testchain: tricopolymer (abbbbccabbbbcc)                                                  
 
@@ -762,16 +762,16 @@ asphericity (<2:nd moments>)   =          0.29618
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.26 
-         ControlAver           0.00         0.00 
-         MainAver              0.00         0.27 
-         IOMolsim              0.00         0.23 
-         SetVList              0.00         0.00 
+         Coordinate            0.00         0.32 
+         ControlAver           0.00         0.12 
+         MainAver              0.00         0.12 
+         IOMolsim              0.00         0.21 
+         SetVList              0.00         0.01 
          MCPass                0.00         0.23 
-          SPartMove            0.00         0.00  
-          DUTotal              0.00         0.22  
-           DUTwoBody           0.00         0.14   
+          SPartMove            0.00         0.02  
+          DUTotal              0.00         0.07  
+           DUTwoBody           0.00         0.06   
            DUBond              0.00         0.00   
-           DUAngle             0.00         0.01   
+           DUAngle             0.00         0.00   
  
 total cpu time since start (s)        0.01

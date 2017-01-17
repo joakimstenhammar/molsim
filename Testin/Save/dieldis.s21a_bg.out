@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:22:57
+2017-01-17     13:29:13
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -270,7 +270,7 @@ total potential energy (NkT)   =        102.54279
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      5.96831E-08
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -318,7 +318,7 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =        234.68656        0.00000     -0.121E-15
+total potential energy         =        234.68656        0.00000      0.000E+00
  total two-body energy         =         -3.86429        0.00000      0.000E+00
   jon1-jon1                    =          0.00000        0.00000      0.000E+00
   jon1-jon2                    =         -3.86429        0.00000      0.000E+00
@@ -344,7 +344,7 @@ number density                 =      5.96831E-08
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:22:58
+2017-01-17     13:29:13
 
 title   : two charges near a spherical dielectric boundary, check of energy evaulation              
 
@@ -470,14 +470,14 @@ number density                 =      5.96831E-08    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.20 
-         ControlAver           0.00         0.04 
-         MainAver              0.00         0.65 
-         IOMolsim              0.00         0.11 
+         Coordinate            0.00         0.30 
+         ControlAver           0.00         0.05 
+         MainAver              0.00         0.17 
+         IOMolsim              0.00         0.48 
          SetVList              0.00         0.00 
          MCPass                0.00         0.00 
           SPartMove            0.00         0.00  
           DUTotal              0.00         0.00  
            DUDielDis           0.00         0.00   
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02

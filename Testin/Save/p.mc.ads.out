@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:18
+2017-01-17     13:30:11
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -278,7 +278,7 @@ total potential energy (NkT)   =         -0.02260
 pressure (NkT/V)(excl. contact)=          1.11529
 pressure (kT) (excl. contact)  =      2.45364E-03
  
-total cpu time since start (s)        1.38
+total cpu time since start (s)        4.19
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -293,12 +293,12 @@ total cpu time since start (s)        1.38
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          0.85681        0.22581     -0.800E-15
- total two-body energy         =          0.07792        0.01115      0.373E-14
-  polymer-polymer              =          0.07792        0.01115      0.373E-14
- bond energy                   =          0.89183        0.22834      0.169E-14
+total potential energy         =          0.85681        0.22581     -0.192E-14
+ total two-body energy         =          0.07792        0.01115      0.138E-14
+  polymer-polymer              =          0.07792        0.01115      0.138E-14
+ bond energy                   =          0.89183        0.22834      0.215E-14
  angle energy                  =          0.00000        0.00000      0.000E+00
- external potential            =         -0.11295        0.01149      0.381E-14
+ external potential            =         -0.11295        0.01149      0.433E-14
 enthalpy                       =          3.62018        0.22581
 cv                             =        364.62038
 temperature                    =        298.00000        0.00000
@@ -354,9 +354,9 @@ quantity                                  average    fluctuation          check
 total potential energy         =          1.12210        0.01827      0.107E-02
  total two-body energy         =          0.07994        0.00521      0.162E-01
   polymer-polymer              =          0.07994        0.00521      0.162E-01
- bond energy                   =          1.18490        0.02053      0.180E-13
+ bond energy                   =          1.18490        0.02053      0.177E-13
  angle energy                  =          0.00000        0.00000      0.000E+00
- external potential            =         -0.14274        0.00706      0.535E-14
+ external potential            =         -0.14274        0.00706      0.549E-14
 enthalpy                       =          2.08596        0.01827
 cv                             =          2.38571
 temperature                    =        298.00000        0.00000
@@ -402,7 +402,7 @@ asphericity (<2:nd moments>)   =          0.40742
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:28
+2017-01-17     13:30:40
 
 title   : hd 20-mer adsorption                                                                      
 
@@ -456,13 +456,13 @@ maximum           5280.0                    184.0                      551966.0 
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =          0.98945        0.09217        0.21819      309.90224             4.
- total two-body energy         =          0.07893        0.00071        0.00954       13.71732             0.
-  polymer-polymer              =          0.07893        0.00071        0.00954       13.71732             0.
- bond energy                   =          1.03837        0.09915        0.22636      302.66577             4.
+total potential energy         =          0.98945        0.09217        0.21819      309.90225             4.
+ total two-body energy         =          0.07893        0.00071        0.00954       13.71733             0.
+  polymer-polymer              =          0.07893        0.00071        0.00954       13.71733             0.
+ bond energy                   =          1.03837        0.09915        0.22636      302.66578             4.
  angle energy                  =          0.00000        0.00000        0.00000        0.00000             0.
  external potential            =         -0.12784        0.00773        0.01532        7.05846             4.
-enthalpy                       =          2.85307        0.32428        0.76745      975.72157             3.
+enthalpy                       =          2.85307        0.32428        0.76745      975.72159             3.
 cv                             =        106.49837
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          6.80814        1.50259        3.18259        0.89446             4.
@@ -2492,22 +2492,22 @@ rad = 50.0, 20-mer                         0.0438         0.0000             0.
  
          section           cpu time (s)     fraction
          -------           ------------     --------
-         Coordinate              0.69         0.07
-         MainAver                0.03         0.00
-         Group                   0.00         0.00
-         StaticDriver            0.05         0.00
-          SPDF                   0.00         0.00
+         Coordinate              2.06         0.07
+         MainAver                0.09         0.00
+         Group                   0.01         0.00
+         StaticDriver            0.15         0.01
+          SPDF                   0.01         0.00
           LoopTailTrain          0.00         0.00
-          AdsBondOrder           0.03         0.00
-         IOMolsim                1.32         0.13
-         SetVList                4.66         0.46
-         MCPass                  3.34         0.33
-          SPartMove              0.19         0.02
-          DUTotal                2.67         0.26
-           DUTwoBody             1.43         0.14 
-           DUBond                0.21         0.02 
-           DUExternal            0.22         0.02 
-          SlitherMove            0.02         0.00
-          ChainMove              0.01         0.00
+          AdsBondOrder           0.11         0.00
+         IOMolsim                3.38         0.12
+         SetVList               16.44         0.56
+         MCPass                  7.10         0.24
+          SPartMove              0.26         0.01
+          DUTotal                5.91         0.20
+           DUTwoBody             4.29         0.15 
+           DUBond                0.27         0.01 
+           DUExternal            0.39         0.01 
+          SlitherMove            0.07         0.00
+          ChainMove              0.03         0.00
  
-total cpu time since start (s)       10.15
+total cpu time since start (s)       29.65

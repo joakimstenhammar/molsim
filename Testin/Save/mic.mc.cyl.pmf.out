@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:29:56
+2017-01-17     13:28:54
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -408,7 +408,7 @@ total potential energy (NkT)   =         -0.71916
 pressure (NkT/V)(excl. contact)=          0.76004
 pressure (kT) (excl. contact)  =      1.15873E-05
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -461,10 +461,10 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -4.33535        1.68115      0.693E-14
- total two-body energy         =         -4.33535        1.68115      0.693E-14
+total potential energy         =         -4.33535        1.68115      0.745E-14
+ total two-body energy         =         -4.33535        1.68115      0.745E-14
   macroion-macroion            =         10.63218        0.70949      0.000E+00
-  macroion-ion1                =        -24.17867        1.13971      0.425E-15
+  macroion-ion1                =        -24.17867        1.13971      0.567E-15
   ion1-ion1                    =          9.21114        0.14747      0.451E-14
 enthalpy                       =         -2.45220        1.68115
 cv                             =        466.98961
@@ -529,10 +529,10 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -9.74301        0.98111      0.346E-15
- total two-body energy         =         -9.74301        0.98111      0.346E-15
+total potential energy         =         -9.74301        0.98111      0.000E+00
+ total two-body energy         =         -9.74301        0.98111      0.000E+00
   macroion-macroion            =          8.48560        0.39521      0.000E+00
-  macroion-ion1                =        -27.95606        0.72776      0.142E-14
+  macroion-ion1                =        -27.95606        0.72776      0.116E-14
   ion1-ion1                    =          9.72744        0.13330      0.561E-15
 enthalpy                       =         -9.64268        0.98111
 cv                             =        159.04643
@@ -552,7 +552,7 @@ number density                 =      1.52457E-05
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:29:56
+2017-01-17     13:28:54
 
 title   : 2*(60:1) hs system, pmf                                                                   
 
@@ -1322,16 +1322,16 @@ potential of mean force between two particles
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.00         0.04
+         Coordinate             0.00         0.02
          ControlAver            0.00         0.01
          MainAver               0.00         0.01
-         StaticDriver           0.01         0.09
-          PotMeanForce          0.01         0.09 
-         IOMolsim               0.00         0.04
-         SetVList               0.00         0.00
-         MCPass                 0.05         0.82
-          SPartMove             0.01         0.10 
-          DUTotal               0.04         0.60 
-           DUTwoBody            0.03         0.45  
+         StaticDriver           0.01         0.05
+          PotMeanForce          0.01         0.04 
+         IOMolsim               0.00         0.02
+         SetVList               0.00         0.01
+         MCPass                 0.12         0.88
+          SPartMove             0.01         0.05 
+          DUTotal               0.10         0.75 
+           DUTwoBody            0.09         0.66  
  
-total cpu time since start (s)        0.08
+total cpu time since start (s)        0.16

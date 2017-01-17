@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:43
+2017-01-17     13:33:07
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -16629,7 +16629,7 @@ total potential energy (NkT)   =          0.00000
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      2.26816E-03
  
-total cpu time since start (s)        0.16
+total cpu time since start (s)        0.31
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -16700,7 +16700,7 @@ number density                 =      2.26816E-03
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:43
+2017-01-17     13:33:07
 
 title   : hard ellipsoids with dipole moment in en external field                                   
 
@@ -17072,19 +17072,19 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.09         0.26
+         Coordinate             0.10         0.12
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
-         DistFunc               0.10         0.28
+         DistFunc               0.28         0.35
          Group                  0.00         0.00
          StaticDriver           0.00         0.00
-         ImageDriver            0.02         0.06
+         ImageDriver            0.03         0.03
          IOMolsim               0.00         0.00
-         SetVList               0.08         0.21
-         MCPass                 0.06         0.18
+         SetVList               0.25         0.31
+         MCPass                 0.15         0.18
           SPartMove             0.01         0.01 
-          DUTotal               0.05         0.14 
-           DUTwoBody            0.03         0.09  
-           DUExternal           0.00         0.01  
+          DUTotal               0.13         0.16 
+           DUTwoBody            0.11         0.13  
+           DUExternal           0.01         0.01  
  
-total cpu time since start (s)        0.40
+total cpu time since start (s)        0.92

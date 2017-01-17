@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.1.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:30:12
+2017-01-17     13:29:14
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1080,7 +1080,7 @@ particle 108     x'y' = -0.503E-02
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 velocities: Maxwell distribution
 
-linear moments (x,y,z)         =     0.629E-12   0.249E-12   0.654E-12
+linear moments (x,y,z)         =    -0.185E-12   0.782E-13   0.142E-11
 angular moments (x,y,z)        =     0.167E+04    805.      -0.179E+04
 
 first macrostep                =      1
@@ -1362,7 +1362,7 @@ total potential energy (NkT)   =         -7.00635
 pressure (NkT/V)(excl. contact)=        -10.81480
 pressure (kT) (excl. contact)  =     -7.20387E-02
  
-total cpu time since start (s)        0.08
+total cpu time since start (s)        0.24
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1386,9 +1386,9 @@ quantity                                    benzene
 <torque**2>x'                  =            0.6365E+06
 <torque**2>y'                  =            0.2402E+06
 <torque**2>z'                  =            0.7766E+06
-<linear mom.>x                 =            0.3068E-14
-<linear mom.>y                 =            0.5987E-14
-<linear mom.>z                 =           -0.1776E-14
+<linear mom.>x                 =           -0.3322E-14
+<linear mom.>y                 =            0.4901E-14
+<linear mom.>z                 =            0.4408E-14
 <angular mom.>x                =           -0.2156E+03
 <angular mom.>y                =            0.2204E+03
 <angular mom.>z                =            0.2349E+03
@@ -1438,7 +1438,7 @@ number density                 =      6.66112E-03
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:30:13
+2017-01-17     13:29:15
 
 title   : liquid benzene                                                                            
 
@@ -1728,9 +1728,9 @@ quantity                                    benzene
 <torque**2>x'                  =            0.6365E+06
 <torque**2>y'                  =            0.2402E+06
 <torque**2>z'                  =            0.7766E+06
-<linear mom.>x                 =            0.3068E-14
-<linear mom.>y                 =            0.5987E-14
-<linear mom.>z                 =           -0.1776E-14
+<linear mom.>x                 =           -0.3322E-14
+<linear mom.>y                 =            0.4901E-14
+<linear mom.>z                 =            0.4408E-14
 <angular mom.>x                =           -0.2156E+03
 <angular mom.>y                =            0.2204E+03
 <angular mom.>z                =            0.2349E+03
@@ -2253,17 +2253,17 @@ s.d. of in-plane
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.01         0.03
+         Coordinate             0.01         0.01
          ControlAver            0.00         0.00
-         MainAver               0.00         0.01
-         DistFunc               0.12         0.45
-         StaticDriver           0.00         0.01
-          XYProjectDF           0.00         0.01 
-         IOMolsim               0.05         0.20
+         MainAver               0.00         0.00
+         DistFunc               0.41         0.45
+         StaticDriver           0.00         0.00
+          XYProjectDF           0.00         0.00 
+         IOMolsim               0.14         0.15
          SetVList               0.00         0.00
-         MDDriver               0.08         0.31
+         MDDriver               0.35         0.38
           Gear                  0.00         0.00 
-          UTotal                0.08         0.31 
-           UTwoBodyP            0.08         0.31  
+          UTotal                0.35         0.38 
+           UTwoBodyP            0.35         0.38  
  
-total cpu time since start (s)        0.31
+total cpu time since start (s)        1.09
