@@ -134,6 +134,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   COMP_SER = gfortran
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none
+  OPT_SER  = -O0 -ffree-form -ffree-line-length-none
    
   LLIB =
   
