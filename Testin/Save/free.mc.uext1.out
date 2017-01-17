@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:27:33
+2016-09-14     08:29:19
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -351,7 +351,7 @@ number density                 =      2.98416E-05
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:27:33
+2016-09-14     08:29:19
 
 title   : free translation and rotation                                                             
 
@@ -463,7 +463,7 @@ cv                             =          2.36246
 temperature                    =        120.30000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.04956        0.00000        0.00000        0.00000             0.
 number of particles            =          1.00000        0.00000        0.00000        0.00000             0.
-volume                         =      3.35103E+04    0.00000E+00    0.00000E+00    2.09161E-12             0.
+volume                         =      3.35103E+04    0.00000E+00    0.00000E+00    7.51087E-12             0.
 
 total potential energy (NkT)   =          0.19578        0.00000
 pressure (NkT/V)(excl. contact)=          1.00000        0.00000
@@ -477,15 +477,15 @@ number density                 =      2.98416E-05    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.00 
-         ControlAver           0.00         0.04 
-         MainAver              0.02         0.46 
-         IOMolsim              0.01         0.11 
+         Coordinate            0.00         0.01 
+         ControlAver           0.00         0.09 
+         MainAver              0.00         0.13 
+         IOMolsim              0.00         0.05 
          SetVList              0.00         0.00 
-         MCPass                0.02         0.39 
-          SPartMove            0.00         0.04  
-          DUTotal              0.01         0.19  
-           DUTwoBody           0.00         0.03   
-           DUExternal          0.00         0.05   
+         MCPass                0.02         0.72 
+          SPartMove            0.00         0.11  
+          DUTotal              0.01         0.49  
+           DUTwoBody           0.00         0.08   
+           DUExternal          0.00         0.14   
  
-total cpu time since start (s)        0.06
+total cpu time since start (s)        0.04

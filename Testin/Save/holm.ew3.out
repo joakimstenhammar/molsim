@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:27:52
+2016-09-14     08:29:31
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -404,7 +404,7 @@ total potential energy (NkT)   =      -1866.96258
 pressure (NkT/V)(excl. contact)=       -620.03053
 pressure (kT) (excl. contact)  =     -2.01510E+04
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -526,11 +526,11 @@ atom                   force
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =      -7059.71864     1267.44951     -0.117E-13
- total two-body energy         =       -325.91295      218.58594      0.000E+00
-  jon1-jon1                    =          2.42021        1.97751      0.000E+00
-  jon1-jon2                    =       -328.68634      220.63038     -0.114E-15
-  jon2-jon2                    =          0.35318        0.24385      0.119E-15
+total potential energy         =      -7059.71864     1267.44951     -0.109E-13
+ total two-body energy         =       -325.91295      218.58594      0.459E-15
+  jon1-jon1                    =          2.42021        1.97751     -0.212E-15
+  jon1-jon2                    =       -328.68634      220.63038      0.341E-15
+  jon2-jon2                    =          0.35318        0.24385     -0.238E-15
  pot. energy from rec. space   =      -6733.80569     1052.00547     -0.124E-13
 enthalpy                       =      -8595.97622     1267.44951
 cv                             =   56567564.17221
@@ -550,7 +550,7 @@ number density                 =      3.25000E+01
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:27:53
+2016-09-14     08:29:31
 
 title   : test of 2-d ewald summation, cf. arnold, de joannis, and holm                             
 
@@ -705,13 +705,13 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =      -7059.71864      549.63717     1169.86966     1370.96944             2.
+total potential energy         =      -7059.71864      549.63716     1169.86966     1370.96944             2.
  total two-body energy         =       -325.91295       91.67350      189.99883      242.66188             2.
   jon1-jon1                    =          2.42021        0.63787        1.59254        4.85646             1.
   jon1-jon2                    =       -328.68634       92.37063      191.59854      246.97178             2.
   jon2-jon2                    =          0.35318        0.04531        0.24302        0.38389             0.
  pot. energy from rec. space   =      -6733.80569      457.87094      982.92889     1538.57900             2.
-enthalpy                       =      -8595.97622      549.63717     1169.86966     1370.96944             2.
+enthalpy                       =      -8595.97622      549.63716     1169.86966     1370.96944             2.
 cv                             =   56567564.17221
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =  -82907997.20169        0.00000        1.00000        0.00000             0.
@@ -730,17 +730,17 @@ number density                 =      3.25000E+01    0.00000E+00
  
          section                   cpu time (s)     fraction
          -------                   ------------     --------
-         Coordinate                      0.00         0.00
+         Coordinate                      0.00         0.01
          ControlAver                     0.00         0.00
          MainAver                        0.00         0.01
-         IOMolsim                        0.00         0.00
+         IOMolsim                        0.00         0.01
          SetVList                        0.00         0.00
-         MCPass                          0.34         0.99
+         MCPass                          0.10         0.97
           SPartMove                      0.00         0.00
-          DUTotal                        0.32         0.93
+          DUTotal                        0.09         0.94
            DUTwoBody                     0.00         0.01
-           DUTwoBodyEwald                0.32         0.92
-            UEwaldRecStd                 0.28         0.82
-            DUTwoBodyEwaldRec2dlc        0.03         0.10
+           DUTwoBodyEwald                0.09         0.92
+            UEwaldRecStd                 0.09         0.88
+            DUTwoBodyEwaldRec2dlc        0.00         0.02
  
-total cpu time since start (s)        0.43
+total cpu time since start (s)        0.11

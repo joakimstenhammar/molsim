@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:29:38
+2016-09-14     08:30:23
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -429,7 +429,7 @@ total potential energy (NkT)   =         -5.11815
 pressure (NkT/V)(excl. contact)=         14.27386
 pressure (kT) (excl. contact)  =      4.79133E-01
  
-total cpu time since start (s)        0.17
+total cpu time since start (s)        0.06
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -524,7 +524,7 @@ ind. dip. mom.: h              =          0.01087        0.00042
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:29:39
+2016-09-14     08:30:23
 
 title   : nemo water, mcall, reaction field                                                         
 
@@ -1165,20 +1165,20 @@ distribution functions
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.00         0.00
-         ControlAver              0.01         0.01
+         Coordinate               0.00         0.01
+         ControlAver              0.00         0.00
          MainAver                 0.00         0.00
-         DistFunc                 0.03         0.03
-         IOMolsim                 0.00         0.00
-         SetVList                 0.00         0.00
-         MCallPass                0.83         0.96
-          MCallPass_move          0.01         0.01
-          UTotal                  0.81         0.94
-           UTwoBodyP              0.13         0.15
-           UManyBodyP             0.68         0.79
-            FieldStat             0.18         0.20 
-            FieldTot              0.41         0.48 
-            IterIdm               0.09         0.11 
-             FieldIdm             0.09         0.11  
+         DistFunc                 0.01         0.05
+         IOMolsim                 0.00         0.01
+         SetVList                 0.00         0.01
+         MCallPass                0.20         0.91
+          MCallPass_move          0.00         0.00
+          UTotal                  0.20         0.90
+           UTwoBodyP              0.04         0.18
+           UManyBodyP             0.16         0.72
+            FieldStat             0.05         0.22 
+            FieldTot              0.08         0.37 
+            IterIdm               0.03         0.13 
+             FieldIdm             0.03         0.13  
  
-total cpu time since start (s)        1.03
+total cpu time since start (s)        0.27

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:28:56
+2016-09-14     08:29:57
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -291,7 +291,7 @@ total potential energy (NkT)   =         -2.60575
 pressure (NkT/V)(excl. contact)=          0.13129
 pressure (kT) (excl. contact)  =      4.00417E-06
  
-total cpu time since start (s)        0.46
+total cpu time since start (s)        0.17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -343,12 +343,12 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -6.83287        0.00000     -0.116E-13
- total two-body energy         =         -0.77233        0.00000     -0.104E-12
+total potential energy         =         -6.83287        0.00000     -0.938E-14
+ total two-body energy         =         -0.77233        0.00000     -0.103E-12
   micelle-micelle              =          0.85303        0.00000      0.437E-15
   micelle-ion                  =         -3.99757        0.00000      0.205E-14
   ion-ion                      =          2.37221        0.00000     -0.357E-13
- pot. energy from rec. space   =         -6.06054        0.00000      0.492E-15
+ pot. energy from rec. space   =         -6.06054        0.00000     -0.123E-14
 enthalpy                       =         -6.50757        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -368,7 +368,7 @@ Average cluster size 1    1d: micelle                    1.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:29:05
+2016-09-14     08:30:00
 
 title   : hs 60:1 system rho(m) = 0.5*10e-6                                                         
 
@@ -2493,24 +2493,24 @@ no    function                         min            max            nbin       
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.09         0.01
+         Coordinate                     0.04         0.01
          ControlAver                    0.00         0.00
          MainAver                       0.00         0.00
-         DistFunc                       0.17         0.02
-         StaticDriver                   0.03         0.00
+         DistFunc                       0.07         0.03
+         StaticDriver                   0.02         0.01
           G3Dist                        0.01         0.00
-          SFPBC                         0.03         0.00
+          SFPBC                         0.01         0.00
           ClusterSD                     0.00         0.00
-         IOMolsim                       0.16         0.02
-         SetVList                       0.22         0.03
-         MCPass                         7.55         0.92
-          SPartMove                     0.01         0.00
-          DUTotal                       5.66         0.69
-           DUTwoBody                    0.31         0.04
-           DUTwoBodyEwald               5.34         0.65
-            DUTwoBodyEwaldRecSPM        5.33         0.65
-             DUMakeGQMesh               2.23         0.27
-             DUMakeFFT                  1.82         0.22
-             DUCalcGIF                  1.26         0.15
+         IOMolsim                       0.08         0.03
+         SetVList                       0.10         0.04
+         MCPass                         2.34         0.88
+          SPartMove                     0.00         0.00
+          DUTotal                       2.19         0.83
+           DUTwoBody                    0.14         0.05
+           DUTwoBodyEwald               2.05         0.77
+            DUTwoBodyEwaldRecSPM        2.05         0.77
+             DUMakeGQMesh               0.17         0.07
+             DUMakeFFT                  1.60         0.60
+             DUCalcGIF                  0.26         0.10
  
-total cpu time since start (s)        8.64
+total cpu time since start (s)        2.79

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:27:30
+2016-09-14     08:29:18
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -359,7 +359,7 @@ angular velocities     FANV
 forces                 FFOR      
 torques                FTOR      
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -367,7 +367,7 @@ total cpu time since start (s)        0.04
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:27:32
+2016-09-14     08:29:19
 
 title   : test of molsim: aqueous solution of benzene                                               
 
@@ -4218,24 +4218,24 @@ time (middle, lower, upper)    n samp          value precision          value pr
          -------           ------------     --------
          Coordinate              0.00         0.00
          Group                   0.00         0.00
-         StaticDriver            2.25         0.97
-          RDF                    0.36         0.16
-          AngDF                  0.27         0.12
+         StaticDriver            0.64         0.93
+          RDF                    0.13         0.19
+          AngDF                  0.08         0.12
           AngExtDF               0.00         0.00
-          NNHB                   0.21         0.09
-          NNDF                   0.09         0.04
-          EnergyDF               1.22         0.53
+          NNHB                   0.06         0.08
+          NNDF                   0.02         0.03
+          EnergyDF               0.32         0.48
           crystalformat          0.00         0.00
-         DynamicDriver           0.05         0.02
-          MSD                    0.01         0.00
-          OrixTCF                0.01         0.00
-          OriyTCF                0.01         0.00
-          OrizTCF                0.01         0.00
-          LinVelTCF              0.01         0.00
-          AngVelTCF              0.00         0.00
-          ForTCF                 0.01         0.00
-          TorTCF                 0.01         0.00
+         DynamicDriver           0.04         0.06
+          MSD                    0.01         0.01
+          OrixTCF                0.01         0.01
+          OriyTCF                0.00         0.01
+          OrizTCF                0.01         0.01
+          LinVelTCF              0.01         0.01
+          AngVelTCF              0.00         0.01
+          ForTCF                 0.00         0.01
+          TorTCF                 0.00         0.01
          IOMolsim                0.00         0.00
-         SetVList                0.01         0.00
+         SetVList                0.00         0.00
  
-total cpu time since start (s)        2.36
+total cpu time since start (s)        0.70

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:29:31
+2016-09-14     08:30:20
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1251,7 +1251,7 @@ total potential energy (NkT)   =         -1.58878
 pressure (NkT/V)(excl. contact)=         -1.79333
 pressure (kT) (excl. contact)  =     -8.96663E-01
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1323,7 +1323,7 @@ number density                 =      5.00000E-01
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:29:31
+2016-09-14     08:30:21
 
 title   : lj                                                                                        
 
@@ -2430,7 +2430,7 @@ kinetic energy                 =          2.89511        0.04272        0.12870 
 total potential energy         =         -3.07683        0.04006        0.12686       13.35582             1.
  total two-body energy         =         -3.07683        0.04006        0.12686       13.35582             1.
   lj-lj                        =         -3.07683        0.04006        0.12686       13.35582             1.
-enthalpy                       =         -4.42245        0.75294        1.73670      183.76192             1.
+enthalpy                       =         -4.42245        0.75294        1.73670      183.76191             1.
 cv                             =        -12.07663
 temperature                    =        232.13390        3.42513       10.31963        2.14260             1.
 pressure (excl. cont. contr.)  =      -1117.22278      591.82292     1346.11178      263.76362             1.
@@ -2654,16 +2654,16 @@ number of images made          =    1
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.01         0.07 
-         ControlAver           0.00         0.03 
+         Coordinate            0.01         0.13 
+         ControlAver           0.00         0.01 
          MainAver              0.00         0.00 
-         DistFunc              0.02         0.10 
-         ImageDriver           0.00         0.02 
-         IOMolsim              0.02         0.14 
-         SetVList              0.03         0.19 
-         MDDriver              0.07         0.45 
-          VelVer               0.00         0.01  
-          UTotal               0.07         0.43  
-           UTwoBodyA           0.07         0.42   
+         DistFunc              0.01         0.11 
+         ImageDriver           0.00         0.03 
+         IOMolsim              0.01         0.15 
+         SetVList              0.01         0.16 
+         MDDriver              0.03         0.41 
+          VelVer               0.00         0.00  
+          UTotal               0.03         0.40  
+           UTwoBodyA           0.03         0.40   
  
-total cpu time since start (s)        0.18
+total cpu time since start (s)        0.08

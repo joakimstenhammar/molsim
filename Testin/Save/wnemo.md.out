@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:29:40
+2016-09-14     08:30:24
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -578,9 +578,9 @@ quantity                                    water
 <torque**2>x'                  =            0.3453E+07
 <torque**2>y'                  =            0.6960E+07
 <torque**2>z'                  =            0.5420E+07
-<linear mom.>x                 =           -0.2611E-12
-<linear mom.>y                 =           -0.1386E-12
-<linear mom.>z                 =            0.0000E+00
+<linear mom.>x                 =           -0.2149E-12
+<linear mom.>y                 =           -0.9237E-13
+<linear mom.>z                 =           -0.4263E-13
 <angular mom.>x                =           -0.1652E+03
 <angular mom.>y                =           -0.4277E+02
 <angular mom.>z                =            0.1619E+03
@@ -643,7 +643,7 @@ ind. dip. mom.: h              =          0.00536        0.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:29:40
+2016-09-14     08:30:24
 
 title   : nemo water                                                                                
 
@@ -775,9 +775,9 @@ quantity                                    water
 <torque**2>x'                  =            0.3453E+07
 <torque**2>y'                  =            0.6960E+07
 <torque**2>z'                  =            0.5420E+07
-<linear mom.>x                 =           -0.2611E-12
-<linear mom.>y                 =           -0.1386E-12
-<linear mom.>z                 =            0.0000E+00
+<linear mom.>x                 =           -0.2149E-12
+<linear mom.>y                 =           -0.9237E-13
+<linear mom.>z                 =           -0.4263E-13
 <angular mom.>x                =           -0.1652E+03
 <angular mom.>y                =           -0.4277E+02
 <angular mom.>z                =            0.1619E+03
@@ -1277,14 +1277,14 @@ distribution functions
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.31 
-         ControlAver           0.00         0.00 
-         MainAver              0.00         0.11 
-         DistFunc              0.00         0.39 
-         IOMolsim              0.00         0.09 
+         Coordinate            0.00         0.21 
+         ControlAver           0.00         0.01 
+         MainAver              0.00         0.04 
+         DistFunc              0.00         0.48 
+         IOMolsim              0.00         0.21 
          SetVList              0.00         0.00 
-         MDDriver              0.00         0.10 
-          VelVer               0.00         0.10  
+         MDDriver              0.00         0.05 
+          VelVer               0.00         0.00  
           UTotal               0.00         0.00  
            UTwoBodyP           0.00         0.00   
            UManyBodyP          0.00         0.00   

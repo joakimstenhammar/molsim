@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:29:26
+2016-09-14     08:30:18
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -744,7 +744,7 @@ total potential energy (NkT)   =         -1.56728
 pressure (NkT/V)(excl. contact)=         -1.75552
 pressure (kT) (excl. contact)  =     -8.77761E-01
  
-total cpu time since start (s)        0.08
+total cpu time since start (s)        0.03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -803,9 +803,9 @@ orientation order, z'-axis     =                0.9814
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -3.20315        0.02055      0.100E-12
- total two-body energy         =         -3.20315        0.02055      0.100E-12
-  lj-lj                        =         -3.20315        0.02055      0.100E-12
+total potential energy         =         -3.20315        0.02055      0.101E-12
+ total two-body energy         =         -3.20315        0.02055      0.101E-12
+  lj-lj                        =         -3.20315        0.02055      0.101E-12
 enthalpy                       =         -6.71442        0.02055
 temperature                    =        240.56000        0.00000
 pressure (excl. cont. contr.)  =      -2915.30178        0.00000
@@ -837,7 +837,7 @@ chemical pot., total (kT)      =       0.352
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:29:27
+2016-09-14     08:30:19
 
 title   : lj mvt ensemble                                                                           
 
@@ -1695,19 +1695,19 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.01         0.01
-         ControlAver            0.00         0.01
+         Coordinate             0.01         0.02
+         ControlAver            0.00         0.00
          MainAver               0.00         0.00
-         DistFunc               0.02         0.02
-         StaticDriver           0.03         0.04
-          Widom1                0.03         0.04 
-         ImageDriver            0.00         0.00
-         IOMolsim               0.02         0.03
-         SetVList               0.16         0.23
-         MCPass                 0.48         0.66
-          SPartMove             0.01         0.01 
-          DUTotal               0.24         0.33 
-           DUTwoBody            0.22         0.30  
-          NPartChange           0.21         0.29 
+         DistFunc               0.01         0.03
+         StaticDriver           0.01         0.04
+          Widom1                0.01         0.04 
+         ImageDriver            0.00         0.01
+         IOMolsim               0.01         0.04
+         SetVList               0.06         0.20
+         MCPass                 0.22         0.67
+          SPartMove             0.01         0.03 
+          DUTotal               0.11         0.35 
+           DUTwoBody            0.09         0.28  
+          NPartChange           0.07         0.22 
  
-total cpu time since start (s)        0.66
+total cpu time since start (s)        0.29

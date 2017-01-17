@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:29:11
+2016-11-14     12:22:55
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -298,11 +298,11 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          2.46119        0.00000      0.992E-14
+total potential energy         =          2.46119        0.00000      0.325E-13
  total two-body energy         =          0.00000        0.00000      0.000E+00
   jon1-jon1                    =          0.00000        0.00000      0.000E+00
- total one-body energy         =          2.46119        0.00000      0.992E-14
-  jon1                         =          2.46119        0.00000      0.992E-14
+ total one-body energy         =          2.46119        0.00000      0.325E-13
+  jon1                         =          2.46119        0.00000      0.325E-13
 enthalpy                       =          4.93890        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
@@ -321,7 +321,7 @@ number density                 =      2.98416E-14
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:29:11
+2016-11-14     12:22:55
 
 title   : one charge near a spherical dielectric boundary, check of energy evaulation               
 
@@ -441,14 +441,14 @@ number density                 =      2.98416E-14    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.16 
-         ControlAver           0.00         0.08 
-         MainAver              0.00         0.17 
-         IOMolsim              0.00         0.34 
+         Coordinate            0.00         0.33 
+         ControlAver           0.00         0.22 
+         MainAver              0.00         0.02 
+         IOMolsim              0.00         0.44 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.25 
-          SPartMove            0.00         0.01  
-          DUTotal              0.00         0.24  
+         MCPass                0.00         0.00 
+          SPartMove            0.00         0.00  
+          DUTotal              0.00         0.00  
            DUDielDis           0.00         0.00   
  
 total cpu time since start (s)        0.01

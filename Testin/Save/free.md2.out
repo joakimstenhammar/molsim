@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:27:33
+2016-09-14     08:29:20
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -344,7 +344,7 @@ particle data
 particle position
    1     mol1           1.2247E+00  0.0000E+00  0.0000E+00
 particle orientation
-   1     mol1           8.7638E-01 -4.8162E-01 -8.3267E-17    0.0000E+00  2.2204E-16 -1.0000E+00    4.8162E-01  8.7638E-01  1.1102E-16
+   1     mol1           8.7638E-01 -4.8162E-01 -8.3267E-17    0.0000E+00  1.7694E-16 -1.0000E+00    4.8162E-01  8.7638E-01  1.5613E-16
 forces and torques (lab frame)
    1     mol1           0.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  0.0000E+00
 linear acceleration, (old and new)
@@ -393,7 +393,7 @@ particle data
 particle position
    1     mol1           2.4494E+00  0.0000E+00  0.0000E+00
 particle orientation
-   1     mol1           5.3510E-01 -8.4479E-01 -5.5511E-17   -5.5511E-17  5.5511E-17 -1.0000E+00    8.4479E-01  5.3510E-01 -5.5511E-17
+   1     mol1           5.3510E-01 -8.4479E-01 -5.5511E-17   -5.5511E-17  4.1633E-17 -1.0000E+00    8.4479E-01  5.3510E-01 -4.1633E-17
 forces and torques (lab frame)
    1     mol1           0.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  0.0000E+00
 linear acceleration, (old and new)
@@ -424,7 +424,7 @@ quantity                                    mol1
 <linear mom.>y                 =            0.0000E+00
 <linear mom.>z                 =            0.0000E+00
 <angular mom.>x                =           -0.6945E-15
-<angular mom.>y                =            0.5593E-14
+<angular mom.>y                =            0.4382E-14
 <angular mom.>z                =           -0.4086E+02
 <t(tran)>                      =              120.2634
 <t(rot)>                       =              125.5240
@@ -472,7 +472,7 @@ number density                 =      1.25000E-04
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:27:33
+2016-09-14     08:29:20
 
 title   : free translation and rotation                                                             
 
@@ -556,7 +556,7 @@ quantity                                    mol1
 <linear mom.>y                 =            0.0000E+00
 <linear mom.>z                 =            0.0000E+00
 <angular mom.>x                =           -0.6945E-15
-<angular mom.>y                =            0.5593E-14
+<angular mom.>y                =            0.4382E-14
 <angular mom.>z                =           -0.4086E+02
 <t(tran)>                      =              120.2634
 <t(rot)>                       =              125.5240
@@ -605,13 +605,13 @@ number density                 =      1.25000E-04    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.14 
-         ControlAver           0.00         0.10 
-         MainAver              0.00         0.19 
-         IOMolsim              0.00         0.33 
+         Coordinate            0.00         0.12 
+         ControlAver           0.00         0.20 
+         MainAver              0.00         0.29 
+         IOMolsim              0.00         0.20 
          SetVList              0.00         0.00 
-         MDDriver              0.00         0.23 
-          Gear                 0.00         0.01  
+         MDDriver              0.00         0.19 
+          Gear                 0.00         0.08  
           UTotal               0.00         0.00  
            UTwoBodyP           0.00         0.00   
  

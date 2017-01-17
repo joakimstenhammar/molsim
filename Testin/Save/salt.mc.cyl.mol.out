@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:28:01
+2016-11-14     12:22:31
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -303,7 +303,7 @@ total potential energy (NkT)   =          0.05336
 pressure (NkT/V)(excl. contact)=          1.01909
 pressure (kT) (excl. contact)  =      1.70928E-05
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -354,11 +354,11 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -0.13473        0.15786      0.315E-13
- total two-body energy         =         -0.13473        0.15786      0.315E-13
+total potential energy         =         -0.13473        0.15786      0.312E-13
+ total two-body energy         =         -0.13473        0.15786      0.312E-13
   subun3-subun3                =          0.91980        0.00000      0.000E+00
   subun3-ionp                  =         -4.65810        0.00000      0.000E+00
-  subun3-ionm                  =          2.88267        0.10244      0.266E-14
+  subun3-ionm                  =          2.88267        0.10244      0.237E-14
   ionp-ionp                    =          5.98364        0.00000      0.000E+00
   ionp-ionm                    =         -7.57844        0.08246     -0.643E-15
   ionm-ionm                    =          2.31571        0.03551      0.125E-14
@@ -437,11 +437,11 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -0.31368        0.03412     -0.279E-13
- total two-body energy         =         -0.31368        0.03412     -0.279E-13
+total potential energy         =         -0.31368        0.03412     -0.288E-13
+ total two-body energy         =         -0.31368        0.03412     -0.288E-13
   subun3-subun3                =          0.91980        0.00000      0.000E+00
   subun3-ionp                  =         -4.65810        0.00000      0.000E+00
-  subun3-ionm                  =          2.74236        0.05649     -0.240E-14
+  subun3-ionm                  =          2.74236        0.05649     -0.225E-14
   ionp-ionp                    =          5.98364        0.00000      0.000E+00
   ionp-ionm                    =         -7.60565        0.05305      0.106E-14
   ionm-ionm                    =          2.30428        0.03447      0.512E-15
@@ -477,7 +477,7 @@ chemical pot., total (kT)      =     -23.955
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:28:03
+2016-11-14     12:22:31
 
 title   : charged three-atom particles, counterions, coins: chem pot calculation (Jos)              
 
@@ -1559,18 +1559,18 @@ chemical pot., total (kT)      =     -24.021     0.066
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.01         0.00
+         Coordinate             0.00         0.01
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
-         DistFunc               0.35         0.26
+         DistFunc               0.11         0.23
          Group                  0.00         0.00
-         StaticDriver           0.18         0.14
-          Widom1                0.18         0.14 
+         StaticDriver           0.07         0.15
+          Widom1                0.07         0.15 
          IOMolsim               0.01         0.01
-         SetVList               0.01         0.00
-         MCPass                 0.76         0.57
-          SPartMove             0.01         0.01 
-          DUTotal               0.73         0.55 
-           DUTwoBody            0.71         0.53  
+         SetVList               0.00         0.00
+         MCPass                 0.28         0.60
+          SPartMove             0.01         0.02 
+          DUTotal               0.26         0.55 
+           DUTwoBody            0.25         0.53  
  
-total cpu time since start (s)        1.40
+total cpu time since start (s)        0.49

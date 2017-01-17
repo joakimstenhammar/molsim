@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:31:25
+2016-11-14     12:23:43
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -358,7 +358,7 @@ total potential energy (NkT)   =          3.26558
 pressure (NkT/V)(excl. contact)=          1.98691
 pressure (kT) (excl. contact)  =      3.97382E-06
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -425,13 +425,13 @@ orientation order, z'-axis     =               -0.0638              1.0000      
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =          7.47550        0.04328     -0.219E-01
- total two-body energy         =          6.65504        0.09348     -0.503E-14
-  pe-pe                        =          7.73404        0.07716      0.478E-15
-  pe-ionp                      =         -3.85745        0.01442     -0.574E-14
-  pe-ionm                      =          1.88792        0.00215     -0.723E-15
+ total two-body energy         =          6.65504        0.09348     -0.531E-14
+  pe-pe                        =          7.73404        0.07716      0.120E-15
+  pe-ionp                      =         -3.85745        0.01442     -0.621E-14
+  pe-ionm                      =          1.88792        0.00215     -0.241E-15
   ionp-ionp                    =          3.77875        0.00228      0.301E-14
   ionp-ionm                    =         -3.81905        0.00339     -0.619E-14
-  ionm-ionm                    =          0.93083        0.00063     -0.977E-15
+  ionm-ionm                    =          0.93083        0.00063     -0.488E-15
  bond energy                   =          0.12363        0.04108     -0.298E+00
  angle energy                  =          0.69683        0.03721     -0.147E+00
 enthalpy                       =         12.39850        0.04328
@@ -540,12 +540,12 @@ orientation order, z'-axis     =                0.0870              1.0000      
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
 total potential energy         =          7.10703        0.12018      0.182E-02
- total two-body energy         =          6.33095        0.13325      0.266E-14
-  pe-pe                        =          7.44636        0.12386      0.250E-15
-  pe-ionp                      =         -3.89025        0.00314      0.175E-14
-  pe-ionm                      =          1.88451        0.00446      0.109E-14
+ total two-body energy         =          6.33095        0.13325      0.192E-14
+  pe-pe                        =          7.44636        0.12386      0.125E-15
+  pe-ionp                      =         -3.89025        0.00314      0.222E-14
+  pe-ionm                      =          1.88451        0.00446      0.847E-15
   ionp-ionp                    =          3.77928        0.00135      0.915E-14
-  ionp-ionm                    =         -3.82044        0.00354     -0.357E-14
+  ionp-ionm                    =         -3.82044        0.00354     -0.380E-14
   ionm-ionm                    =          0.93148        0.00041      0.342E-14
  bond energy                   =          0.06369        0.03010      0.280E+02
  angle energy                  =          0.71239        0.05547     -0.253E+00
@@ -594,7 +594,7 @@ asphericity (<2:nd moments>)   =          0.45144
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:31:26
+2016-11-14     12:23:44
 
 title   : 1 pe where particles contain three atoms, counterions, coins (Jos)                        
 
@@ -3394,24 +3394,24 @@ ionm-ionm
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.01         0.00
+         Coordinate             0.00         0.00
          ControlAver            0.00         0.00
-         MainAver               0.01         0.00
-         DistFunc               0.04         0.02
+         MainAver               0.00         0.00
+         DistFunc               0.01         0.02
          Group                  0.00         0.00
-         StaticDriver           0.20         0.13
-          SPDF                  0.00         0.00 
-          SFPBC                 0.20         0.13 
-         IOMolsim               0.02         0.01
-         SetVList               0.07         0.04
-         MCPass                 1.22         0.78
-          SPartMove             0.03         0.02 
-          DUTotal               1.16         0.74 
-           DUTwoBody            1.10         0.70  
-           DUBond               0.01         0.00  
+         StaticDriver           0.05         0.09
+          SPDF                  0.00         0.01 
+          SFPBC                 0.04         0.08 
+         IOMolsim               0.01         0.02
+         SetVList               0.02         0.04
+         MCPass                 0.46         0.82
+          SPartMove             0.01         0.01 
+          DUTotal               0.43         0.77 
+           DUTwoBody            0.39         0.70  
+           DUBond               0.01         0.01  
            DUAngle              0.01         0.01  
           SlitherMove           0.00         0.00 
           ChainMove             0.00         0.00 
           PivotMove             0.00         0.00 
  
-total cpu time since start (s)        1.62
+total cpu time since start (s)        0.58

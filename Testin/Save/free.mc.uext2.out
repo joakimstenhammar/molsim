@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:27:33
+2016-09-14     08:29:20
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -321,10 +321,10 @@ orientation order, z'-axis     =                0.9857
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =        -75.59374        3.28243      0.751E-15
+total potential energy         =        -75.59374        3.28243     -0.751E-15
  total two-body energy         =          0.00000        0.00000      0.000E+00
   mol1-mol1                    =          0.00000        0.00000      0.000E+00
- external potential            =        -75.59374        3.28243      0.751E-15
+ external potential            =        -75.59374        3.28243     -0.751E-15
 enthalpy                       =        -74.59351        3.28243
 cv                             =         89.54177
 temperature                    =        120.30000        0.00000
@@ -343,7 +343,7 @@ number density                 =      1.00000E-03
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:27:33
+2016-09-14     08:29:20
 
 title   : free translation and rotation                                                             
 
@@ -471,15 +471,15 @@ number density                 =      1.00000E-03    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.01 
-         ControlAver           0.00         0.04 
-         MainAver              0.02         0.44 
-         IOMolsim              0.00         0.06 
+         Coordinate            0.00         0.03 
+         ControlAver           0.00         0.06 
+         MainAver              0.01         0.19 
+         IOMolsim              0.00         0.12 
          SetVList              0.00         0.00 
-         MCPass                0.02         0.45 
-          SPartMove            0.00         0.04  
-          DUTotal              0.02         0.31  
-           DUTwoBody           0.00         0.07   
-           DUExternal          0.00         0.08   
+         MCPass                0.02         0.60 
+          SPartMove            0.00         0.07  
+          DUTotal              0.01         0.29  
+           DUTwoBody           0.00         0.05   
+           DUExternal          0.00         0.06   
  
-total cpu time since start (s)        0.06
+total cpu time since start (s)        0.04

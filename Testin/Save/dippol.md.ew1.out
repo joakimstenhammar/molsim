@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:28:51
+2016-09-14     08:29:53
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -606,7 +606,7 @@ number of particles            =          2.00000
 volume                         =      1.00000E+03
 
  
-total cpu time since start (s)        0.02
+total cpu time since start (s)        0.01
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -811,7 +811,7 @@ ind. dip. mom.: site2          =          0.14145        0.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:28:51
+2016-09-14     08:29:53
 
 title   : dipole test, with induction, development of ewald summation                               
 
@@ -978,21 +978,21 @@ ind. dip. mom.: site2          =          0.14145        0.00000        0.00000 
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.00         0.13
-         ControlAver                    0.00         0.04
-         MainAver                       0.00         0.18
-         IOMolsim                       0.00         0.10
+         Coordinate                     0.00         0.10
+         ControlAver                    0.00         0.02
+         MainAver                       0.00         0.22
+         IOMolsim                       0.00         0.35
          SetVList                       0.00         0.00
-         MDDriver                       0.00         0.55
-          VelVer                        0.00         0.00
-          UTotal                        0.00         0.55
+         MDDriver                       0.00         0.30
+          VelVer                        0.00         0.02
+          UTotal                        0.00         0.28
            UTwoBodyP                    0.00         0.00
-           UManyBodyP                   0.00         0.55
-            FieldStat                   0.00         0.00
-            FieldStatEwald              0.00         0.20
-             FieldStatEwaldRecStd       0.00         0.20
+           UManyBodyP                   0.00         0.28
+            FieldStat                   0.00         0.02
+            FieldStatEwald              0.00         0.09
+             FieldStatEwaldRecStd       0.00         0.09
             FieldTot                    0.00         0.00
-            FieldTotEwald               0.00         0.35
-             FieldTotEwaldRecStd        0.00         0.30
+            FieldTotEwald               0.00         0.15
+             FieldTotEwaldRecStd        0.00         0.09
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.01

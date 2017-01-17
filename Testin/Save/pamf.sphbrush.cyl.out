@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                          version 6.4.7, v2.0.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:32:23
+2016-11-14     12:24:03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1372,7 +1372,7 @@ total potential energy (NkT)   =          1.81840
 pressure (NkT/V)(excl. contact)=          1.60615
 pressure (kT) (excl. contact)  =      2.13448E-05
  
-total cpu time since start (s)        0.28
+total cpu time since start (s)        0.09
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1442,8 +1442,8 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          4.59087        0.08794      0.472E-13
- total two-body energy         =          4.04392        0.23284      0.521E-13
+total potential energy         =          4.59087        0.08794      0.470E-13
+ total two-body energy         =          4.04392        0.23284      0.536E-13
   sph-sph                      =          0.00000        0.00000      0.000E+00
   sph-p+                       =          0.00000        0.00000      0.000E+00
   sph-p-                       =          0.00000        0.00000      0.000E+00
@@ -1451,10 +1451,10 @@ total potential energy         =          4.59087        0.08794      0.472E-13
   p+-p+                        =          0.00000        0.00000      0.000E+00
   p+-p-                        =          0.00000        0.00000      0.000E+00
   p+-i+                        =          0.00000        0.00000      0.000E+00
-  p--p-                        =          6.33088        0.23416      0.173E-13
-  p--i+                        =         -3.83297        0.00258      0.308E-13
+  p--p-                        =          6.33088        0.23416      0.180E-13
+  p--i+                        =         -3.83297        0.00258      0.316E-13
   i+-i+                        =          1.54601        0.00052      0.880E-15
- bond energy                   =          0.54695        0.16847      0.171E-14
+ bond energy                   =          0.54695        0.16847      0.234E-14
  angle energy                  =          0.00000        0.00000      0.000E+00
 enthalpy                       =          8.57044        0.08794
 cv                             =         10.49387
@@ -1501,7 +1501,7 @@ asphericity (<2:nd moments>)   =          0.50571
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:32:28
+2016-11-14     12:24:05
 
 title   : Two spheres with diblock brushes, mean force                                              
 
@@ -4272,22 +4272,22 @@ aver number of overlap (fhs)   =         12.40000        2.05138        4.66201 
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.08         0.02
-         ControlAver            0.01         0.00
-         MainAver               0.01         0.00
-         DistFunc               0.17         0.03
+         Coordinate             0.03         0.02
+         ControlAver            0.00         0.00
+         MainAver               0.00         0.00
+         DistFunc               0.05         0.03
          Group                  0.00         0.00
-         StaticDriver           0.96         0.19
-          SPDF                  0.01         0.00 
-          MeanForce2            0.95         0.19 
-         IOMolsim               0.08         0.02
-         SetVList               0.08         0.02
-         MCPass                 3.74         0.73
-          SPartMove             0.04         0.01 
-          DUTotal               3.59         0.70 
-           DUTwoBody            3.51         0.68  
-           DUBond               0.02         0.00  
-          PivotMove             0.01         0.00 
+         StaticDriver           0.26         0.16
+          SPDF                  0.00         0.00 
+          MeanForce2            0.25         0.16 
+         IOMolsim               0.03         0.02
+         SetVList               0.02         0.01
+         MCPass                 1.20         0.75
+          SPartMove             0.01         0.01 
+          DUTotal               1.16         0.73 
+           DUTwoBody            1.12         0.71  
+           DUBond               0.01         0.00  
+          PivotMove             0.00         0.00 
           BrushMove             0.00         0.00 
  
-total cpu time since start (s)        5.37
+total cpu time since start (s)        1.65

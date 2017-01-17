@@ -4229,7 +4229,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                          version 6.4.7, v2.1.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -4251,7 +4251,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:32:55
+2016-12-12     13:01:30
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -6659,7 +6659,7 @@ total potential energy (NkT)   =      32665.32015
 pressure (NkT/V)(excl. contact)=         -1.68825
 pressure (kT) (excl. contact)  =     -4.61631E-05
  
-total cpu time since start (s)        0.25
+total cpu time since start (s)        0.11
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -6727,7 +6727,7 @@ total potential energy         =          3.25842        0.00000      0.382E-10
   bead1-bead1                  =          0.00000        0.00000      0.000E+00
   bead1-bead2                  =          0.00000        0.00000      0.000E+00
   bead2-bead2                  =          0.00000        0.00000      0.000E+00
- bond energy                   =          2.99583        0.00000      0.289E-15
+ bond energy                   =          2.99583        0.00000      0.578E-15
  angle energy                  =          0.00000        0.00000      0.000E+00
  crosslink energy              =          0.30052        0.00000      0.180E-15
  external potential            =         -0.03792        0.00000      0.156E-08
@@ -6810,7 +6810,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:32:56
+2016-12-12     13:01:30
 
 title   : bottle-brush: large, adsorbed                                                             
 
@@ -9445,22 +9445,22 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.09         0.15
-         ControlAver            0.00         0.00
+         Coordinate             0.05         0.18
+         ControlAver            0.00         0.01
          MainAver               0.00         0.01
          Group                  0.00         0.00
-         StaticDriver           0.00         0.00
-          SPDF                  0.00         0.00 
-         ImageDriver            0.02         0.03
-         IOMolsim               0.09         0.15
-         SetVList               0.10         0.16
-         MCPass                 0.29         0.49
-          PivotMove             0.01         0.01 
+         StaticDriver           0.00         0.01
+          SPDF                  0.00         0.01 
+         ImageDriver            0.02         0.08
+         IOMolsim               0.04         0.15
+         SetVList               0.03         0.12
+         MCPass                 0.12         0.45
+          PivotMove             0.00         0.01 
           SPartMove             0.00         0.00 
-          DUTotal               0.28         0.46 
-           DUTwoBody            0.26         0.44  
-           DUBond               0.00         0.00  
+          DUTotal               0.11         0.42 
+           DUTwoBody            0.09         0.36  
+           DUBond               0.00         0.01  
          DUCrossLink            0.00         0.00
-           DUExternal           0.00         0.00  
+           DUExternal           0.00         0.01  
  
-total cpu time since start (s)        0.74
+total cpu time since start (s)        0.32

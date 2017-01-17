@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.2                                           **
+**                                      version 6.4.7, Sep 18, 2015 v                                       **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-17     13:33:04
+2016-09-14     08:31:41
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1050,7 +1050,7 @@ total potential energy (NkT)   =         -4.71174
 pressure (NkT/V)(excl. contact)=          3.25245
 pressure (kT) (excl. contact)  =      4.64289E-04
  
-total cpu time since start (s)        0.07
+total cpu time since start (s)        0.03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1103,12 +1103,12 @@ orientation order, z'-axis     =                0.9328              0.8993
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =        -17.00912        0.90924     -0.386E-13
- total two-body energy         =         14.04212        0.31216     -0.509E-13
+total potential energy         =        -17.00912        0.90924     -0.427E-13
+ total two-body energy         =         14.04212        0.31216     -0.480E-13
   palca+-palca+                =         68.29765        1.56342     -0.831E-14
-  palca+-palca-                =        -73.73052        1.50129     -0.810E-15
-  palca--palca-                =         19.47498        0.25996      0.267E-14
- external potential            =        -31.05124        0.61038      0.920E-15
+  palca+-palca-                =        -73.73052        1.50129      0.203E-15
+  palca--palca-                =         19.47498        0.25996      0.210E-14
+ external potential            =        -31.05124        0.61038     -0.242E-14
 enthalpy                       =         -8.94641        0.90924
 cv                             =        279.63695
 temperature                    =        298.15000        0.00000
@@ -1127,7 +1127,7 @@ number density                 =      1.42750E-04
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-17     13:33:05
+2016-09-14     08:31:41
 
 title   : point charged rigid dimers in a slit with sigma=0.033As/m^2 on both walls                 
 
@@ -2848,17 +2848,17 @@ no    function                         min            max            nbin       
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.02         0.03
+         Coordinate             0.01         0.04
          ControlAver            0.00         0.00
-         MainAver               0.00         0.00
-         DistFunc               0.03         0.05
+         MainAver               0.00         0.01
+         DistFunc               0.01         0.05
          StaticDriver           0.00         0.01
-         IOMolsim               0.02         0.04
-         SetVList               0.04         0.05
-         MCPass                 0.57         0.83
-          SPartMove             0.01         0.01 
-          DUTotal               0.55         0.81 
-           DUTwoBody            0.54         0.79  
-           DUExternal           0.00         0.01  
+         IOMolsim               0.01         0.05
+         SetVList               0.01         0.05
+         MCPass                 0.20         0.80
+          SPartMove             0.00         0.02 
+          DUTotal               0.19         0.76 
+           DUTwoBody            0.18         0.70  
+           DUExternal           0.00         0.02  
  
-total cpu time since start (s)        0.76
+total cpu time since start (s)        0.28
