@@ -59,9 +59,9 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
 
       FILE="fftw-3.3.4.tar.gz"
 
+      dnfftw=""
       if [ ! -f $FILE ];
       then
-         dnfftw=""
          read -e -p "$FILE not found. Download from fftw.org? (requires wget) " -i "n" dnfftw
          case ${dnfftw:0:1} in
              y|Y )
