@@ -1429,7 +1429,7 @@ subroutine SetChainCircle(iptset)
             ro(2,ip) = radcir*sin((iseg-1)*angle0)
             ro(3,ip) = zero
             if (CheckPartOutsideBox(ip)) cycle              ! check if particle is outside the box
-            call SetOriCircle(ro(1:3,ip),ori(1:3,1,ip))         ! set orientation, z'-axis in the tangient
+            call SetOriCircle(ro(1:3,ip),ori(1:3,1:3,ip))         ! set orientation, z'-axis in the tangient
             call SetAtomPos(ip,ip,.false.)                  ! set atom positions
             if (lWarnHCOverlap(ip, radatset, .true.)) cycle ! check if atom-atom hard-core overlap
             lpset(ip) =.true.                               ! configuration accepted
