@@ -3660,7 +3660,7 @@ subroutine MCAllPass(iStage)
          drostep(3,ip) = (Random(iseed)-Half)*dtranall(ipt)
       end if
       ro(1:3,ip) = ro(1:3,ip)+drostep(1:3,ip)
-      call CheckPartBCTM(1, ro(1,ip), lboxoverlap)
+      call CheckPartBCTM(1, ro(1:3,ip), lboxoverlap)
       if (lboxoverlap) goto 200
       if ((umbcoord/= 'r') .and. ((ip == ipumb1) .or. (ip == ipumb2))) then
       else

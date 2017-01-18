@@ -1429,7 +1429,7 @@ subroutine SetChainCircle(iptset)
             ro(2,ip) = radcir*sin((iseg-1)*angle0)
             ro(3,ip) = zero
             if (CheckPartOutsideBox(ip)) cycle              ! check if particle is outside the box
-            call SetOriCircle(ro(1,ip),ori(1,1,ip))         ! set orientation, z'-axis in the tangient
+            call SetOriCircle(ro(1:3,ip),ori(1:3,1,ip))         ! set orientation, z'-axis in the tangient
             call SetAtomPos(ip,ip,.false.)                  ! set atom positions
             if (lWarnHCOverlap(ip, radatset, .true.)) cycle ! check if atom-atom hard-core overlap
             lpset(ip) =.true.                               ! configuration accepted
@@ -1465,7 +1465,7 @@ subroutine SuperballSub(radcir)            ! calculate radius of the circle for 
             ro(1,ip) = radcir*cos((iseg-1)*angle0)
             ro(2,ip) = radcir*sin((iseg-1)*angle0)
             ro(3,ip) = zero
-            call SetOriCircle(ro(1,ip),ori(1,1,ip))
+            call SetOriCircle(ro(1:3,ip),ori(1:3,1:3,ip))
       !       write(*,'(a,3(3f10.3,5x))') 'setoricircle',  ro(1:3,ip), ori(1:3,2,ip), ori(1:3,3,ip)
          end do
          r21(1:3) = ro(1:3,ipnsegcn(1,ic))-ro(1:3,ipnsegcn(2,ic))

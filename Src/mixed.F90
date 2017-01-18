@@ -358,7 +358,7 @@ subroutine Mixed4(ip)
    ('x','y','z',m = 1,4)
    ino = 0
    do itry = 1, ntry
-      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1,ip))
+      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1:3,ip))
       call SetPartOriRandom(iseed, ori(1,1,ip))
       call SetAtomProp(ip, ip, .false.)
       call UTwoBodyPair(1, 2, utwob, dum)
@@ -421,7 +421,7 @@ subroutine Mixed5(ip)
    sum2 = Zero
    do m = 1, no
       if (mod(m-1,no/nblock) == 0) sum = Zero
-      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1,ip))
+      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1:3,ip))
       call SetPartOriRandom(iseed, ori(1,1,ip))
       call SetAtomProp(ip, ip, .false.)
       call UTwoBodyPair(1, 2, utwob, dum)
@@ -506,7 +506,7 @@ subroutine Mixed6(ip)
    uboltz = Zero
    uw = Zero
    do ino = 1, no
-      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1,ip))
+      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1:3,ip))
       call SetPartOriRandom(iseed, ori(1,1,ip))
       call SetAtomProp(ip, ip, .false.)
       call UTwoBodyPair(1, 2, utwob, dum)

@@ -1844,7 +1844,7 @@ subroutine CalcChainComPairListGeneral(nobj, ichain, rcluster2, mnpair, npair, n
 
    do ic = 1, nc                              ! get com for all chains
       ict = ictcn(ic)
-      call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
+      call UndoPBCChain(ro(1:3,ipnsegcn(1,ic)), ic, 1, vaux)
       xcom = sum(vaux(1,ipnsegcn(1:npct(ict),ic)))/npct(ict)
       ycom = sum(vaux(2,ipnsegcn(1:npct(ict),ic)))/npct(ict)
       zcom = sum(vaux(3,ipnsegcn(1:npct(ict),ic)))/npct(ict)
