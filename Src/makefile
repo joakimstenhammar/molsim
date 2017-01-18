@@ -135,6 +135,29 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none
    
+  OPT_format = -ffree-form -ffree-line-length-none
+  OPT_normal = $(OPT_format) -fast
+  OPT_quick := $(OPT_format) -O0	#quick compilation
+  OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
+  OPT_debug := $(OPT_format) -O0 -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan   # provide useful info at exceptions (use for debug)
+  OPT_warn := $(OPT_format) -g -O0 -Wall -Wextra -Warray-temporaries -Wconversion     				       # provides many warnings
+
+  mode = default
+  ifeq ($(mode),normal)
+     	OPT_SER = $(OPT_normal)
+  endif
+  ifeq ($(mode),test)
+     	OPT_SER = $(OPT_test)
+  endif
+  ifeq ($(mode),debug)
+     	OPT_SER = $(OPT_debug)
+  endif
+  ifeq ($(mode),quick)
+     	OPT_SER = $(OPT_quick)
+  endif
+  ifeq ($(mode),warn)
+     	OPT_SER = $(OPT_warn)
+  endif
   LLIB =
   
 endif
