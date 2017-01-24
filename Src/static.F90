@@ -2141,7 +2141,7 @@ subroutine ScatIntens(nbin, q, sfpar)
 
    namelist /nmlScatIntens/ nshell, rshell, cshell
 
-    if (.not.allocated(nshell)) then 
+    if (.not.allocated(nshell)) then
        allocate(nshell(npt), rshell(mnshell,npt), cshell(mnshell,npt))
        nshell = 0
        rshell = 0.0E+00
@@ -4814,7 +4814,7 @@ subroutine LoopTailTrain(iStage)
       call LowerCase(adscond%txobject)
       call LowerCase(adscond%txsurface)
 
-      if (.not.allocated(ladsseg)) then 
+      if (.not.allocated(ladsseg)) then
          allocate(ladsseg(maxval(npct(1:nct))))
          ladsseg = .false.
       end if
@@ -5040,7 +5040,7 @@ end subroutine CheckAdsChainSeg
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(iobjt)) then 
+      if (.not.allocated(iobjt)) then
          allocate(iobjt(npt))
          iobjt = 0
       end if
@@ -5064,7 +5064,7 @@ end subroutine CheckAdsChainSeg
 
    case (iWriteInput)
 
-     if (.not.allocated(txobjt)) then 
+     if (.not.allocated(txobjt)) then
         allocate(txobjt(nobjt))
      end if
 
@@ -7438,7 +7438,7 @@ subroutine SurfaceArea(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(wradat)) then 
+      if (.not.allocated(wradat)) then
          allocate(wradat(nat))
          wradat = 0.0E+00
       end if

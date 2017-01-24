@@ -1577,7 +1577,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    real(8)     :: diagonal(3)
    integer(4)  :: nrot
    integer(4)  :: npcharged
-   
+
 ! ... counter
    integer(4)  :: inwt, ip, iploc
    integer(4)  :: irow

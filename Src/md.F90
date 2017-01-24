@@ -215,7 +215,7 @@ subroutine VelVer(iStage)
 
    if (ltrace) call WriteTrace(2, txroutine, iSimulationStep)
 
-   if(.not.allocated(quado)) then 
+   if(.not.allocated(quado)) then
       allocate(quado(0:3,np))
       quado = 0.0E+00
    end if

@@ -156,7 +156,7 @@ subroutine ImageVRML(iStage, iimage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(atsize)) then 
+      if (.not.allocated(atsize)) then
          allocate(atsize(nat), rgbcolor(3,nat))
          atsize = 0.0E+00
          rgbcolor = 0.0E+00
@@ -370,7 +370,7 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    real(8) :: corner(1:3,1:8)
    real(8), save :: rgbcolor_dipole(1:3,1:2) = reshape([One, One, Zero,  Zero, One, One],[3,2])
 
-   if (.not.allocated(ro_temp)) then 
+   if (.not.allocated(ro_temp)) then
       allocate(ro_temp(1:3,1:na))
       ro_temp = 0.0E+00
    end if
@@ -426,7 +426,7 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
 ! ... make bonds
 
    mnbond = 2*na                                          ! maximal number of bonds that can be made
-   if(.not.allocated(bondlist)) then 
+   if(.not.allocated(bondlist)) then
       allocate(bondlist(2,mnbond))
       bondlist = 0
    end if
@@ -810,7 +810,7 @@ end subroutine DrawAtom_jasper
 !........................................................................
 
 subroutine DrawAtom
-      if(.not.allocated(icount)) then 
+      if(.not.allocated(icount)) then
          allocate(icount(nat))
          icount = 0
       end if
@@ -920,7 +920,7 @@ subroutine ImageVTF(iStage, iimage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(atsize)) then 
+      if (.not.allocated(atsize)) then
          allocate(atsize(nat), rgbcolor(3,nat), lptinnw(mnpt))
          atsize = 0.0E+00
          rgbcolor = 0.0E+00
@@ -1113,7 +1113,7 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
 ! ... determine connectivity of atoms
 
    mnbond = 2*na
-   if (.not. allocated(bondlist)) then 
+   if (.not. allocated(bondlist)) then
       allocate(bondlist(2,mnbond))
       bondlist = 0
    end if
@@ -1178,7 +1178,7 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
       end if
    end if
 
-   if (.not. allocated(ro_vtf)) then 
+   if (.not. allocated(ro_vtf)) then
       allocate(ro_vtf(1:3,1:na))
       ro_vtf = 0.0E+00
    end if

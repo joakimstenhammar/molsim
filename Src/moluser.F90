@@ -1653,7 +1653,7 @@ subroutine ChainCOMDump(iStage)
 
    case (iBeforeSimulation)
 
-      if (.not.allocated(rcom)) then 
+      if (.not.allocated(rcom)) then
          allocate(rcom(3,nc))
          rcom = 0.0E+00
       end if
@@ -1736,7 +1736,7 @@ subroutine ChainReeDump(iStage)
 
    case (iBeforeSimulation)
 
-      if (.not.allocated(ree)) then 
+      if (.not.allocated(ree)) then
          allocate(ree(3,nc))
          ree = 0.0E+00
       end if
@@ -2437,7 +2437,7 @@ subroutine GroupAds1(iStage, m)
    logical,   allocatable, save :: ladsseg(:)      ! .true. if segment is adsorbed
    integer(4) :: ip, igr, ic
 
-   if (.not.allocated(ladschain)) then 
+   if (.not.allocated(ladschain)) then
       allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
       ladschain = .false.
       ladsseg = .false.
@@ -3437,7 +3437,7 @@ subroutine CylDistFunc(iStage)
 ! ... set nvar and allocate memory
 
       nvar = ntype*npt
-      if (.not.allocated(var)) then 
+      if (.not.allocated(var)) then
          allocate(var(nvar), ipnt(ntype,nvar))
          ipnt = 0
       end if
@@ -3661,10 +3661,10 @@ subroutine SFPBC2D(iStage)
 ! ... set nvar and allocate memory
 
       nvar = ntype*npt**2
-      if (.not.allocated(var)) then 
+      if (.not.allocated(var)) then
          allocate(var(nvar), Withff(nvar), ff(nvar))
       end if
-      if (.not.allocated(ipnt)) then 
+      if (.not.allocated(ipnt)) then
          allocate(ipnt(ntype,nptpt), sfpar(2*mnbin_df2d,2*mnbin_df,nptpt), sfparsd(2*mnbin_df2d,nptpt))
          ipnt = 0
          sfpar = 0.0E+00
@@ -4947,7 +4947,7 @@ subroutine CalcDomain
    var(1)%nbin = vtype(1)%nbin
 
    call DistFuncSample(iWriteInput, nvar, var)
-   if (.not.allocated(gmax)) then 
+   if (.not.allocated(gmax)) then
       allocate(gmax(np), rmax(np))
       gmax = 0.0E+00
       rmax = 0.0E+00
@@ -5800,7 +5800,7 @@ subroutine AdsRadGyr(iStage)
 
    case (iWriteInput)
 
-      if (.not.allocated(ladschainold)) then 
+      if (.not.allocated(ladschainold)) then
          allocate(ladschainold(nc), ladsseg(maxval(npct(1:nct))))
          ladschainold = .false.
          ladsseg = .false.
@@ -5978,12 +5978,12 @@ subroutine AdsBondOrder(iStage)
 
    case (iWriteInput)
 
-   if (.not.allocated(ladschain)) then 
+   if (.not.allocated(ladschain)) then
       allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
       ladschain = .false.
       ladsseg = .false.
    end if
-   if (.not.allocated(bondorder)) then 
+   if (.not.allocated(bondorder)) then
       allocate(bondorder(mnbond), bondlist(2,mnbond), nq(mnbond), rdir(3,mnbond), rc(3,mnbond), q(6,mnbond))
       bondorder = 0.0E+00
       bondlist = 0
@@ -6162,7 +6162,7 @@ subroutine AdsPropDyn(iStage)
       read(uin,nmlAdsPropDyn)
       if (lana .and. lbd) call IOBD(iStage)                                     ! to read tstep
 
-      if (.not.allocated(ladschain)) then 
+      if (.not.allocated(ladschain)) then
          allocate(ladschain(nc), ladsseg(maxval(npct(1:nct))))
          ladschain = .false.
          ladsseg = .false.
@@ -6288,7 +6288,7 @@ subroutine CalcAvBondOrder(ictbond, ladschain, radius, avbondorder)
    real(8), allocatable, save :: bondorder(:), rdir(:,:), rc(:,:), q(:,:)
    integer(4) :: nbond, ib, ibsum
 
-   if (.not.allocated(bondorder)) then 
+   if (.not.allocated(bondorder)) then
       allocate(bondorder(mnbond), bondlist(2,mnbond), nq(mnbond), rdir(3,mnbond), rc(3,mnbond), q(6,mnbond))
       bondorder = 0.0E+00
       bondlist = 0
@@ -6493,21 +6493,21 @@ subroutine AdsEventDyn(iStage)
 
    case (iWriteInput)
 
-      if (.not.allocated(ladschainold)) then 
+      if (.not.allocated(ladschainold)) then
          allocate(ladschainold(nc),ladsseg(maxval(npct(1:nct))))
          ladschainold = .false.
          ladsseg = .false.
       end if
-      if (.not.allocated(nAdsEvent)) then 
+      if (.not.allocated(nAdsEvent)) then
          allocate(nAdsEvent(nc))
          nAdsEvent = 0
       end if
-      if (.not.allocated(AdsStart)) then 
+      if (.not.allocated(AdsStart)) then
          allocate(AdsStart(mnadsevent,nc), AdsLength(mnadsevent,nc))
          AdsStart = 0.0E+00
          AdsLength = 0.0E+00
       end if
-      if (.not.allocated(ResTime)) then 
+      if (.not.allocated(ResTime)) then
          allocate(ResTime(nc))
          ResTime = 0.0E+00
       end if
@@ -7172,7 +7172,7 @@ subroutine ReadPrimAdsData
    read(uuser,'(5x,i8)') nct
    read(uuser,'(5x,i8)') nc
 
-   if (.not.allocated(Idt)) then 
+   if (.not.allocated(Idt)) then
       allocate(Idt(nc), Id(nc), nAdsEvent(nc), AdsStart(mnAdsEvent,nc), AdsLength(mnAdsEvent,nc))
       Idt = 0
       Id = 0
@@ -7699,7 +7699,7 @@ subroutine SPDF_COMB(iStage)
 
      if(.not.lclink) call stop(txroutine, '.not.lclink', uout)
 
-     if (.not.allocated(rotemp)) then 
+     if (.not.allocated(rotemp)) then
         allocate(rotemp(3,np), ro_loc(3,np), ro_temp(3,np))
         rotemp = 0.0E+00
         ro_loc = 0.0E+00
@@ -8039,7 +8039,7 @@ subroutine COMB_DF(iStage)
 
 	  if(.not.lclink) call stop(txroutine, '.not.lclink', uout)
 
-      if (.not.allocated(ro_loc)) then 
+      if (.not.allocated(ro_loc)) then
          allocate(ro_loc(3,np), ro_temp(3,np))
          ro_loc = 0.0E+00
          ro_temp = 0.0E+00
@@ -9645,7 +9645,7 @@ module ComplexationModule
 
 
    real(8)  :: rcut_complexation
-   real(8)  :: r2cut_cmplx 
+   real(8)  :: r2cut_cmplx
 
    logical, allocatable :: lcmplx_ipjp(:,:)
 
@@ -9753,7 +9753,7 @@ module ComplexationModule
          end if
 
          lcmplx_ipjp = .false.
-        
+
          do ip = 1, np-1
             do jp = ip + 1, np
                d(1:3) = ro(1:3,ip) - ro(1:3,jp)
@@ -9967,7 +9967,7 @@ module ComplexationModule
          case (iSimulationStep)
 
             var%nsamp2 = var%nsamp2 + 1
-            
+
             do ipt = 1, npt
                do jpt = ipt + 1, npt
                   ivar = ivar_ptpt(ipt, jpt)
@@ -10025,7 +10025,7 @@ module ComplexationModule
       contains
 
          recursive subroutine get_nbead_clstr(ip, iptc, jptc, nbead)
-              
+
             use MolModule ,only: np
             implicit none
 

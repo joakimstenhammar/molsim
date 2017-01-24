@@ -1211,8 +1211,8 @@ end subroutine Diag
 !*                                                                      *
 !************************************************************************
 
-! ... Given the eigenvalues d and eigenvectors v as output from Diag this 
-! ... routine sorts the eigenvalues into descending order, and rearranges 
+! ... Given the eigenvalues d and eigenvectors v as output from Diag this
+! ... routine sorts the eigenvalues into descending order, and rearranges
 ! ... the columns of v correspondingly. The method is straight insertion.
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
@@ -1220,7 +1220,7 @@ end subroutine Diag
 
 subroutine Eigensort(d,v,n)
 
-   implicit none 
+   implicit none
 
    integer(4)  :: n
    real(8)     :: d(n), v(n,n)
@@ -1235,7 +1235,7 @@ subroutine Eigensort(d,v,n)
             k=j
             p=d(j)
          end if
-      end do   
+      end do
       if (k.ne.i) then
          d(k)=d(i)
          d(i)=p
@@ -1245,7 +1245,7 @@ subroutine Eigensort(d,v,n)
             v(j,k)=p
          end do
       end if
-   end do 
+   end do
 
    return
 
@@ -3657,7 +3657,7 @@ end function BrentMod
 !*                                                                      *
 !************************************************************************
 
-! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker 
+! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker
 !     "The Art of Computer Programming" Second Edition Donald E. Knuth 1981
 !     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
 

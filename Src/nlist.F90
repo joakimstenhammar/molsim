@@ -531,7 +531,7 @@ subroutine NList(iStage)
          if (itest == 4) call TestLList(uout)
       end if
 
-      if (.not.allocated(drosum)) then 
+      if (.not.allocated(drosum)) then
          allocate(drosum(3,np_alloc))
          drosum = 0.0E+00
       end if
@@ -1039,7 +1039,7 @@ subroutine TestVList(unit)
 
 ! ... allocate memory
 
-   if (.not.allocated(nneighbour)) then 
+   if (.not.allocated(nneighbour)) then
       allocate(nneighbour(maxnneigh))
       nneighbour = 0
    end if

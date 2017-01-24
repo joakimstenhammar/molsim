@@ -155,8 +155,8 @@ module MCModule
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
    real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
-   
-   
+
+
 
 ! ... mcall trial move variables
 
@@ -436,135 +436,135 @@ subroutine IOMC(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(lptmove)) then 
+      if (.not. allocated(lptmove)) then
          allocate(lptmove(npt))
       end if
-      if (.not. allocated(pspart)) then 
+      if (.not. allocated(pspart)) then
          allocate(pspart(npt))
       end if
-      if (.not. allocated(dtran)) then 
+      if (.not. allocated(dtran)) then
          allocate(dtran(npt))
       end if
-      if (.not. allocated(drot)) then 
+      if (.not. allocated(drot)) then
          allocate(drot(npt))
       end if
-      if (.not. allocated(lcl1spart)) then 
+      if (.not. allocated(lcl1spart)) then
          allocate(lcl1spart(npt))
       end if
-      if (.not. allocated(lfixzcoord)) then 
+      if (.not. allocated(lfixzcoord)) then
          allocate(lfixzcoord(npt))
       end if
-      if (.not. allocated(lfixxycoord)) then 
+      if (.not. allocated(lfixxycoord)) then
          allocate(lfixxycoord(npt))
       end if
-      if (.not. allocated(lshiftzcom)) then 
+      if (.not. allocated(lshiftzcom)) then
          allocate(lshiftzcom(npt))
       end if
-      if (.not. allocated(pspartcl2)) then 
+      if (.not. allocated(pspartcl2)) then
          allocate(pspartcl2(npt))
       end if
-      if (.not. allocated(txmembcl2)) then 
+      if (.not. allocated(txmembcl2)) then
          allocate(txmembcl2(npt))
       end if
-      if (.not. allocated(radcl2)) then 
+      if (.not. allocated(radcl2)) then
          allocate(radcl2(npt))
       end if
-      if (.not. allocated(dtrancl2)) then 
+      if (.not. allocated(dtrancl2)) then
          allocate(dtrancl2(npt))
       end if
-      if (.not. allocated(ppivot)) then 
+      if (.not. allocated(ppivot)) then
          allocate(ppivot(npt))
       end if
-      if (.not. allocated(txpivot)) then 
+      if (.not. allocated(txpivot)) then
          allocate(txpivot(npt))
       end if
-      if (.not. allocated(drotpivot)) then 
+      if (.not. allocated(drotpivot)) then
          allocate(drotpivot(npt))
       end if
-      if (.not. allocated(drotminpivot)) then 
+      if (.not. allocated(drotminpivot)) then
          allocate(drotminpivot(npt))
       end if
-      if (.not. allocated(lcl1pivot)) then 
+      if (.not. allocated(lcl1pivot)) then
          allocate(lcl1pivot(npt))
       end if
-      if (.not. allocated(pchain)) then 
+      if (.not. allocated(pchain)) then
          allocate(pchain(npt))
       end if
-      if (.not. allocated(dtranchain)) then 
+      if (.not. allocated(dtranchain)) then
          allocate(dtranchain(npt))
       end if
-      if (.not. allocated(drotchain)) then 
+      if (.not. allocated(drotchain)) then
          allocate(drotchain(npt))
       end if
-      if (.not. allocated(lcl1chain)) then 
+      if (.not. allocated(lcl1chain)) then
          allocate(lcl1chain(npt))
       end if
-      if (.not. allocated(pslither)) then 
+      if (.not. allocated(pslither)) then
          allocate(pslither(npt))
       end if
-      if (.not. allocated(pbrush)) then 
+      if (.not. allocated(pbrush)) then
          allocate(pbrush(npt))
       end if
-      if (.not. allocated(dtranbrush)) then 
+      if (.not. allocated(dtranbrush)) then
          allocate(dtranbrush(npt))
          dtranbrush = 0.0E+00
       end if
-      if (.not. allocated(drotbrush)) then 
+      if (.not. allocated(drotbrush)) then
          allocate(drotbrush(npt))
          drotbrush = 0.0E+00
       end if
-      if (.not. allocated(lcl1brush)) then 
+      if (.not. allocated(lcl1brush)) then
          allocate(lcl1brush(npt))
          lcl1brush = .false.
       end if
-      if (.not. allocated(pbrushcl2)) then 
+      if (.not. allocated(pbrushcl2)) then
          allocate(pbrushcl2(npt))
       end if
-      if (.not. allocated(dtranbrushcl2)) then 
+      if (.not. allocated(dtranbrushcl2)) then
          allocate(dtranbrushcl2(npt))
          dtranbrushcl2 = 0.0E+00
       end if
-      if (.not. allocated(drotbrushcl2)) then 
+      if (.not. allocated(drotbrushcl2)) then
          allocate(drotbrushcl2(npt))
          drotbrushcl2 = 0.0E+00
       end if
-      if (.not. allocated(phierarchical)) then 
+      if (.not. allocated(phierarchical)) then
          allocate(phierarchical(npt))
       end if
-      if (.not. allocated(dtranhierarchical)) then 
+      if (.not. allocated(dtranhierarchical)) then
          allocate(dtranhierarchical(npt))
          dtranhierarchical = 0.0E+00
       end if
-      if (.not. allocated(pnetwork)) then 
+      if (.not. allocated(pnetwork)) then
          allocate(pnetwork(npt))
       end if
-      if (.not. allocated(dtrannetwork)) then 
+      if (.not. allocated(dtrannetwork)) then
          allocate(dtrannetwork(npt))
          dtrannetwork = 0.0E+00
       end if
-      if (.not. allocated(pvol)) then 
+      if (.not. allocated(pvol)) then
          allocate(pvol(npt))
       end if
-      if (.not. allocated(pnpart)) then 
+      if (.not. allocated(pnpart)) then
          allocate(pnpart(npt))
       end if
-      if (.not. allocated(chempot)) then 
+      if (.not. allocated(chempot)) then
          allocate(chempot(npt))
          chempot = 0.0E+00
       end if
-      if (.not. allocated(radcl1)) then 
+      if (.not. allocated(radcl1)) then
          allocate(radcl1(npt))
       end if
-      if (.not. allocated(pselectcl1)) then 
+      if (.not. allocated(pselectcl1)) then
          allocate(pselectcl1(npt))
       end if
-      if (.not. allocated(pcharge)) then 
+      if (.not. allocated(pcharge)) then
          allocate(pcharge(npt))
       end if
-      if (.not. allocated(pspartsso)) then 
+      if (.not. allocated(pspartsso)) then
          allocate(pspartsso(npt))
       end if
-      if (.not. allocated(plocal)) then 
+      if (.not. allocated(plocal)) then
          allocate(plocal(npt))
       end if
 
@@ -645,21 +645,21 @@ subroutine IOMC(iStage)
          lssopt = .false.
          where ( pspartsso(1:npt) > Zero) lssopt = .true.
       end if
-            
+
 
    case (iWriteInput)
 
 ! ... allocate memory for MC-specific pointers
 
-      if (.not.allocated(ianatm)) then 
+      if (.not.allocated(ianatm)) then
          allocate(ianatm(na_alloc))
          ianatm = 0
       end if
-      if (.not.allocated(iptmpn)) then 
+      if (.not.allocated(iptmpn)) then
          allocate(iptmpn(np_alloc))
          iptmpn = 0
       end if
-      if (.not.allocated(ipnptm)) then 
+      if (.not.allocated(ipnptm)) then
          allocate(ipnptm(np_alloc))
          ipnptm = 0
       end if
@@ -670,7 +670,7 @@ subroutine IOMC(iStage)
 
 ! ... initiate lptm
 
-      if (.not.allocated(lptm)) then 
+      if (.not.allocated(lptm)) then
          allocate(lptm(np_alloc))
          lptm = .false.
       end if
@@ -678,7 +678,7 @@ subroutine IOMC(iStage)
 
 ! ... initiate lmcsep
 
-      if (lmcsep .and. (.not. allocated(plocal))) then 
+      if (lmcsep .and. (.not. allocated(plocal))) then
          allocate(plocal(npt))
       end if
 
@@ -717,7 +717,7 @@ subroutine IOMC(iStage)
 
 ! ... normalize probabilities of different trial moves
 
-      if (.not.allocated(psum)) then 
+      if (.not.allocated(psum)) then
          allocate(psum(npt))
          psum = 0.0E+00
       end if
@@ -1458,7 +1458,7 @@ subroutine SPartCl2Move(iStage)
 
 ! ... consider first primary cluster particles
 
-   if (.not.allocated(n1)) then 
+   if (.not.allocated(n1)) then
       allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
       n1 = 0
       n2 = 0
@@ -1787,7 +1787,7 @@ subroutine PivotDual    ! dual pivot rotation
    real(8)    :: dx1, dy1, dz1, dx2, dy2, dz2, dtemp_min(2), r1, r2
    real(8)    :: dinf, r_dist
 
-   if (.not.allocated(dtemp)) then 
+   if (.not.allocated(dtemp)) then
       allocate(dtemp(np_alloc,2))
       dtemp = 0.0E+00
    end if
@@ -2643,7 +2643,7 @@ subroutine BrushCl2Move(iStage)
 
 ! ... consider first primary cluster particles (particles of type iptmove including particle ipmove)
 
-   if (.not.allocated(n1)) then 
+   if (.not.allocated(n1)) then
       allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
       n1 = 0
       n2 = 0
@@ -3545,11 +3545,11 @@ subroutine IOMCAll(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(dtranall)) then 
+      if (.not. allocated(dtranall)) then
          allocate(dtranall(npt))
          dtranall = 0.0E+00
       end if
-      if (.not. allocated(drotall)) then 
+      if (.not. allocated(drotall)) then
          allocate(drotall(npt))
          drotall = 0.0E+00
       end if
@@ -3619,7 +3619,7 @@ subroutine MCAllPass(iStage)
 
    if (ltime) call CpuAdd('start', trim(txroutine)//'_move', 1, uout)
 
-   if(.not.allocated(rosave)) then 
+   if(.not.allocated(rosave)) then
       allocate(rosave(3,np_alloc), orisave(3,3,np_alloc), boxlensave(1:3), &
            idmsyssave(1:3), idmosave(1:3,1:np), idmsave(1:3,1:na), forcesave(1:3,1:na))
       rosave = 0.0E+00
@@ -4873,7 +4873,7 @@ subroutine MCAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if (.not.allocated(nys1)) then 
+      if (.not.allocated(nys1)) then
          allocate(nys1(0:nevent,0:npt,nmovetype), nys2(0:nevent,0:npt,nmovetype), &
       npcl1s1(2,npt,nmovetype), npcl1s2(2,npt,nmovetype), npcl2s1(2,npt), npcl2s2(2,npt), nprimpartclmax(npt))
          nys1 = 0
@@ -4884,7 +4884,7 @@ subroutine MCAver(iStage)
          npcl2s2 = 0
          nprimpartclmax = 0
       end if
-      if (.not.allocated(nazs1)) then 
+      if (.not.allocated(nazs1)) then
          allocate(nazs1(1:nat), nazs2(1:nat))
          nazs1 = 0
          nazs2 = 0

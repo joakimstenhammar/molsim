@@ -786,28 +786,28 @@ subroutine MemoryDynamic(str, sf, cf)
    integer(4) :: ierr
 
    if (str(1:1) == 'a') then
-      if(.not. allocated(cf%sf)) then 
+      if(.not. allocated(cf%sf)) then
          allocate(cf%sf(cf%nolevel,cf%nlevel,sf%ndim,np), stat = ierr)
       end if
-      if(.not. allocated(cf%sf_aver)) then 
+      if(.not. allocated(cf%sf_aver)) then
          allocate(cf%sf_aver(sf%ndim,cf%nolevel,np), stat = ierr)
       end if
-      if(.not. allocated(cf%sf_mean)) then 
+      if(.not. allocated(cf%sf_mean)) then
          allocate(cf%sf_mean(sf%ndim,sf%ngr), stat = ierr)
       end if
-      if(.not. allocated(cf%cf)) then 
+      if(.not. allocated(cf%cf)) then
          allocate(cf%cf(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
       end if
-      if(.not. allocated(cf%cf2)) then 
+      if(.not. allocated(cf%cf2)) then
          allocate(cf%cf2(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
       end if
-      if(.not. allocated(cf%Np)) then 
+      if(.not. allocated(cf%Np)) then
          allocate(cf%Np(cf%nlevel,cf%nolevel,np), stat = ierr)
       end if
-      if(.not. allocated(cf%Ngr)) then 
+      if(.not. allocated(cf%Ngr)) then
          allocate(cf%Ngr(cf%nlevel,cf%nolevel,sf%ngr), stat = ierr)
       end if
-      if(.not. allocated(cf%Nlev)) then 
+      if(.not. allocated(cf%Nlev)) then
          allocate(cf%Nlev(cf%nolevel,np), stat = ierr)
       end if
       if (ierr /= 0) call WriteIOStat(txroutine, 'memory allocation failed', ierr, 2, 6)
