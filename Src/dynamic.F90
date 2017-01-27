@@ -263,7 +263,7 @@ subroutine MSD(iStage)
       call CFCalc(iStage, txfunc, [zero], sf, cf)
    case (iSimulationStep)
       if ((cfin%nmean /= 1) .and. .not.cfin%lsvalue) return
-      call CFCalc(iStage, txfunc, ro(1:3,1:np), sf, cf)
+      call CFCalc(iStage, txfunc, ro(1,1), sf, cf)
    case (iAfterSimulation)
       if ((cfin%nmean /= 1) .and. .not.cfin%lsvalue) return
       call CFCalc(iStage, txfunc, [zero], sf, cf)
