@@ -215,9 +215,9 @@ subroutine IOMolsim(iStage)
          call WriteFront('Molsim', 'integrated md/mc/bd simulation program belonging to the molsim package', &
                          txVersionDate, txAuthor,'&
                          & Anna Akinchina, Fredrik Carlsson, Samuel Edgecombe, Yoshikatsu Hayashi \&
-                         & Pascal Hebbeker, Cornelius Hofzumahaus, Niklas Källrot, Björn Linse, Vladimir Lobaskin \&
-                         & Thomas M. Nymand, Alberto Pais, Jurij Rescic, Stefanie Schneider, Marie Skepö \&
-                         & Joakim Stenhammar, Anders Wallqvist, Jos van Rijssel, Erik Wernersson, Per-Olof Åstrand &
+                         & Pascal Hebbeker, Cornelius Hofzumahaus, Niklas Kllrot, Bjrn Linse, Vladimir Lobaskin \&
+                         & Thomas M. Nymand, Alberto Pais, Jurij Rescic, Stefanie Schneider, Marie Skep \&
+                         & Joakim Stenhammar, Anders Wallqvist, Jos van Rijssel, Erik Wernersson, Per-Olof strand &
                          &', uout)
          call WriteDateTime(uout)
          call WriteHead(1, 'input data', uout)
@@ -442,7 +442,7 @@ subroutine IOSystem(iStage)
       prsrst = prsr
       volst  = vol
       if (iseed <= 0) iseed = int(1.0e+6*Second())
-      iseed = -abs(iseed)     !the first seed should be negative, as the random seed generator be only initialized properly when the passed seed is negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed)
+      iseed = -abs(iseed)     !the first seed should be negative, as the random seed generator is only initialized properly when the passed seed is negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed) when iseed > 0
 
    case (iWriteInput)
 
