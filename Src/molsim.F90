@@ -442,7 +442,7 @@ subroutine IOSystem(iStage)
       prsrst = prsr
       volst  = vol
       if (iseed <= 0) iseed = int(1.0e+6*Second())
-      iseed = -abs(iseed)     !the first seed should be negative!
+      iseed = -abs(iseed)     !the first seed should be negative, as the random seed generator be only initialized properly when the passed seed is negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed)
 
    case (iWriteInput)
 

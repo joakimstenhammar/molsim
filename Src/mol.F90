@@ -566,7 +566,7 @@ module MolModule
 
 ! ... random number
 
-   integer(k4b)    :: iseed                  ! seed of random number generator
+   integer(k4b)  :: iseed                  ! seed of random number generator
    integer(4)    :: maxcpu                 ! maximum number of cpu time (seconds)
 
 ! ... configuration
