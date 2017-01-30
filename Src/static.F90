@@ -6627,13 +6627,13 @@ subroutine DUWidomx(nptset, iptset, iseedWidom, duwidom, lhsoverlap)
          ipt = iptset(ip)
          do jp = 1, np                 ! inserted particle - other particle pairs
             jpt = iptpn(jp)
-            call UTwoBodyWidom(ipt, roset(1,ip), jpt, ro(1,jp), uuu, lhsoverlap)
+            call UTwoBodyWidom(ipt, roset(1:3,ip), jpt, ro(1:3,jp), uuu, lhsoverlap)
             if (lhsoverlap) goto 400
             duwidom(jpt) = duwidom(jpt)+uuu
          end do
          do jp = ip+1, nptset          ! inserted particle - inserted particle pairs
             jpt = iptset(jp)
-            call UTwoBodyWidom(ipt, roset(1,ip), jpt, roset(1,jp), uuu, lhsoverlap)
+            call UTwoBodyWidom(ipt, roset(1:3,ip), jpt, roset(1:3,jp), uuu, lhsoverlap)
             if (lhsoverlap) goto 400
             duwidom(jpt) = duwidom(jpt)+uuu
          end do

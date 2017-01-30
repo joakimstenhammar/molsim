@@ -2551,18 +2551,18 @@ subroutine DUBond
 
       if (jp_m/= 0) then                           ! bond between moving segment and its lower neighbour
          if (.not.lptm(jp_m)) then                 ! lower neighbour is not moved
-            call DUBondSub(ro(1,jp_m),ro(1,jp_m))
+            call DUBondSub(ro(1:3,jp_m),ro(1:3,jp_m))
          else                                      ! lower neighbour is moved
             if(iploc > 1) then
-               call DUBondSub(rotm(1,iploc-1),ro(1,jp_m))          ! orig
+               call DUBondSub(rotm(1:3,iploc-1),ro(1:3,jp_m))          ! orig
             else
-               call DUBondSub(rotm(1,iptmpn(jp_m)),ro(1,jp_m))     ! Jos
+               call DUBondSub(rotm(1:3,iptmpn(jp_m)),ro(1:3,jp_m))     ! Jos
             end if
          end if
       end if
       if (jp_p/= 0) then                           ! bond between moving segment and its upper neighbour
          if (.not.lptm(jp_p)) then                 ! upper neighbour is not moved
-            call DUBondSub(ro(1,jp_p),ro(1,jp_p))
+            call DUBondSub(ro(1:3,jp_p),ro(1:3,jp_p))
          else                                      ! upper neighbour is moved
             continue                               ! already taken account
          end if
@@ -2631,40 +2631,40 @@ subroutine DUAngle
          if (lptm(jp_m)) then
             if (lptm(jp_p)) then
                if(( iploc > 1 ) .and. (iploc < nptm)) then
-                  call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+                  call DUAngleSub(rotm(1:3,iploc-1), rotm(1:3,iploc), rotm(1:3,iploc+1), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))
                else
-                  call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p))  ! Jos
+                  call DUAngleSub(rotm(1:3,iptmpn(jp_m)), rotm(1:3,iploc), rotm(1:3,iptmpn(jp_p)), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))  ! Jos
                end if
             else
                if(iploc > 1) then
-                  call DUAngleSub(rotm(1,iploc-1), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+                  call DUAngleSub(rotm(1:3,iploc-1), rotm(1:3,iploc), ro(1:3,jp_p), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))
                else
-                  call DUAngleSub(rotm(1,iptmpn(jp_m)), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))    ! Jos
+                  call DUAngleSub(rotm(1:3,iptmpn(jp_m)), rotm(1:3,iploc), ro(1:3,jp_p), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))    ! Jos
                end if
             end if
          else
             if (lptm(jp_p)) then
                if(iploc < nptm) then
-                  call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iploc+1), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+                  call DUAngleSub(ro(1:3,jp_m), rotm(1:3,iploc), rotm(1:3,iploc+1), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))
                else
-                  call DUAngleSub(ro(1,jp_m), rotm(1,iploc), rotm(1,iptmpn(jp_p)), ro(1,jp_m), ro(1,ip), ro(1,jp_p)) ! Jos
+                  call DUAngleSub(ro(1:3,jp_m), rotm(1:3,iploc), rotm(1:3,iptmpn(jp_p)), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p)) ! Jos
                endif
             else
-               call DUAngleSub(ro(1,jp_m), rotm(1,iploc), ro(1,jp_p), ro(1,jp_m), ro(1,ip), ro(1,jp_p))
+               call DUAngleSub(ro(1:3,jp_m), rotm(1:3,iploc), ro(1:3,jp_p), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))
             end if
          end if
       end if
       if (jp_m /= 0) then
          if (jp_mm /= 0) then                     ! segment has two lower neighbours
             if (.not.lptm(jp_m)) then             ! neighbour is not moved
-               call DUAngleSub(ro(1,jp_mm), ro(1,jp_m), rotm(1,iploc), ro(1,jp_mm), ro(1,jp_m), ro(1,ip))
+               call DUAngleSub(ro(1:3,jp_mm), ro(1:3,jp_m), rotm(1:3,iploc), ro(1:3,jp_mm), ro(1:3,jp_m), ro(1:3,ip))
             end if
          end if
       end if
       if (jp_p /= 0) then
          if (jp_pp /= 0) then                     ! segment has two upper neigbhours
             if (.not.lptm(jp_p)) then             ! neighbour is not moved
-               call DUAngleSub(rotm(1,iploc), ro(1,jp_p), ro(1,jp_pp), ro(1,ip), ro(1,jp_p), ro(1,jp_pp))
+               call DUAngleSub(rotm(1:3,iploc), ro(1:3,jp_p), ro(1:3,jp_pp), ro(1:3,ip), ro(1:3,jp_p), ro(1:3,jp_pp))
             end if
          end if
       end if
@@ -2741,11 +2741,11 @@ subroutine DUCrossLink
       do icl = 1, nbondcl(ip)
          jp = bondcl(icl,ip)                            ! crosslinked neighbour
          if (.not.lptm(jp)) then                        ! neighbour is not moved
-            call DUCrossLinkSub(ro(1,jp),ro(1,jp))
+            call DUCrossLinkSub(ro(1:3,jp),ro(1:3,jp))
          else                                           ! neighbour is moved
             if (ip > jp) cycle                          ! avoid double counting
             jploc = iptmpn(jp)                          ! local id of neighbour
-            call DUCrossLinkSub(rotm(1,jploc),ro(1,jp))
+            call DUCrossLinkSub(rotm(1:3,jploc),ro(1:3,jp))
          end if
       end do
    end do
