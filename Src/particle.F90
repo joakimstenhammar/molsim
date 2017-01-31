@@ -600,6 +600,22 @@ subroutine SetObjectParam1
       end if
    end do
 
+! ... check consistence of npptct and iptsegct (only if txcopolymer = 'sequence')
+   do ict = 1, nct
+      if (txcopolymer(ict) == 'sequence') then
+         do ipt = 1, npt
+            if (npptct(ipt,ict) /= count(iptsegct(1:npct(ict),ict) == ipt)) then
+               write(uout,'(a,i5)') 'ict = ', ict
+               write(uout,'(a,i5)') 'ipt = ', ipt
+               write(uout,'(a,i5)') 'count(iptsegct(1:npct(ict),ict) == ipt) = ', &
+                                     count(iptsegct(1:npct(ict),ict) == ipt)
+               write(uout,'(a,i5)') 'npptct(ipt,ict) = ', npptct(ipt,ict)
+               call Stop(txroutine, 'copolymer sequence: inconsistency among npptct and iptsegct', uout)
+            end if
+         end do
+      end if
+   end do
+
 ! ... check consistence among nnwnwt and ncct
 
    do ict = 1, nct
