@@ -1530,7 +1530,11 @@ subroutine SetChainRandom(iptset)
          ip = ipnsegcn(1,ic)
          ipt = iptpn(ip)
          if ((ipt == iptnode) .or. (ict == ictstrand)) cycle ! exclude chains which are nodes or strands
-         if(ihnpn(ip) /= 0) cycle                           ! exclude chains which are in hierarchical structure
+         if (lhierarchical) then
+            if(ihnpn(ip) /= 0) cycle                        ! exclude chains which are in hierarchical structure
+         else if (lnetwork) then
+            if (sum(ncctnwt(ict,1:nnwt)) > 0) cycle         ! exclude chains which are in finite network structure
+         end if
       ! MORE
       end if
       do iseg = 1, npct(ict)
