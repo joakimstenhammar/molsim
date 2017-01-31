@@ -46,6 +46,8 @@ module ParticleModule
    type(block_type), allocatable :: rep_iblock_ict(:,:)
    integer(4)  :: nblockict(mnct)
 
+   integer(4), allocatable :: iptsegct(:,:) ! particle type ipt of segment number iseg of chain type ict
+
 end module ParticleModule
 
 !************************************************************************
