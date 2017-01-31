@@ -83,6 +83,8 @@ subroutine Particle(iStage)
 
    namelist /nmlRepeating/  rep_iblock_ict
 
+   namelist /nmlCopolymerSequence/ iptsegct
+
    namelist /nmlNetworkConfiguration/ nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -144,6 +146,20 @@ subroutine Particle(iStage)
          rep_iblock_ict = block_type(0,0)
          rewind(uin)
          read(uin,nmlRepeating)
+      end if
+
+! ... read input data (nmlCopolymerSequence)
+
+      if(any(txcopolymer(1:nct) == 'sequence')) then
+         do ict = 1, nct
+            npct(ict) = sum(npptct(1:npt,ict))  ! npct needed for following allocation
+         end do
+         if(.not. allocated(iptsegct)) then
+            allocate(iptsegct(maxval(npct(1:nct)),nct))
+         end if
+         iptsegct = 0
+         rewind(uin)
+         read(uin,nmlCopolymerSequence)
       end if
 
 ! ... read input data (nmlNetworkConfiguration)
