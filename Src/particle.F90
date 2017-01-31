@@ -918,6 +918,10 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    integer(4), allocatable :: ipstart(:)
    integer(4), allocatable :: iptiseg(:)
 
+   ! ... copolymer sequence
+   integer(4)              :: ip, ipt
+   integer(4), allocatable :: ipnextpt(:)
+
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
       ipnsegcn = 0
@@ -1021,6 +1025,35 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
          end do
 
          deallocate(iptiseg, ipstart)
+
+      else if (txcopolymer(ict) == 'sequence') then
+
+         ! ... prepare allocatable var
+         if (.not. allocated(ipnextpt)) then
+            allocate(ipnextpt(npt))
+            ipnextpt = 0
+         end if
+
+         ! ... prepare ipnextpt
+         ip = 1
+         do ipt = 1, npt
+            ipnextpt(ipt) = ip ! first particle of particle type ipt
+            ip = ip+nppt(ipt)
+         end do
+
+         ! ... loop over chains of type ict
+         do icloc = 1, ncct(ict)
+            ic = ic+1                              ! global chain number
+            do iseg = 1, npct(ict)                 ! loop over chain segments
+               ipt = iptsegct(iseg,ict)            ! particle type of segment iseg
+               ip  = ipnextpt(ipt)                 ! corresponding next particle of type ipt
+               ipnsegcn(iseg,ic) = ip              ! set ipnsegcn
+               ipnextpt(ipt) = ipnextpt(ipt) + 1   ! increment ipnextpt
+            end do
+         end do
+
+         deallocate(ipnextpt)
+
       end if
     end do
 
