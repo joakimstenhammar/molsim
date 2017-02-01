@@ -286,6 +286,9 @@ $molsim  complexation.mc          $core
 #finite networks (fnw)
 $molsim fnw.nwt2.mc               $core
 
+#copolymer sequence
+$molsim chain.sequence.fnw.mc     $core
+
 echo
 echo "Remove group and dump files"
 echo
