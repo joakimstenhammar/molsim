@@ -3338,17 +3338,17 @@ subroutine SetImageSph(iplow, ipupp, mode)
 
    if (mode == 1) then        ! set image particles from iplow to ipupp
       do ip = iplow, ipupp
-         call SetImageSphSub(rad2img, zfac, ro(1,ip), az(ip), dip(1,ip), rimg(1,ip), zimg(ip), dipimg(1,ip))
+         call SetImageSphSub(rad2img, zfac, ro(1:3,ip), az(ip), dip(1:3,ip), rimg(1:3,ip), zimg(ip), dipimg(1:3,ip))
       end do
    else if (mode == 2) then     ! update image particles for moved particles
       do iploc = 1, nptm
          ip = ipnptm(iploc)
-         call SetImageSphSub(rad2img, zfac, rotm(1,iploc), az(ip), diptm(1,iploc), rimg(1,ip), zimg(ip), dipimg(1,ip))
+         call SetImageSphSub(rad2img, zfac, rotm(1:3,iploc), az(ip), diptm(1:3,iploc), rimg(1:3,ip), zimg(ip), dipimg(1:3,ip))
       end do
    else if (mode == 3) then     ! update moved image particles to old configuration
       do iploc = 1, nptm
          ip = ipnptm(iploc)
-         call SetImageSphSub(rad2img, zfac, ro(1,ip), az(ip), dip(1,ip), rimg(1,ip), zimg(ip), dipimg(1,ip))
+         call SetImageSphSub(rad2img, zfac, ro(1:3,ip), az(ip), dip(1:3,ip), rimg(1:3,ip), zimg(ip), dipimg(1:3,ip))
       end do
    else
       call Stop(txroutine,'Error in mode',uout)
