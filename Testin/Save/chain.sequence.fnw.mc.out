@@ -2370,7 +2370,7 @@ inwtct(1:nct)    1    0    0
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.1                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -2392,7 +2392,7 @@ inwtct(1:nct)    1    0    0
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-31     17:00:03
+2017-02-01     16:27:38
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -2430,7 +2430,6 @@ optional subroutine used
    MainAver
    Group
    Static
-   Image
 
 parameters controlling the output interval (0 = no)
 -------------------------------------------------
@@ -2450,9 +2449,6 @@ number        generic name        file name
    2               fout           FOUT      
    3               fcnf           FCNF      
    8               flist          FLIST     
-  10               fimg           FIMG      
-  11               fvtf           FVTF      
-  12               ftcl           FTCL      
 
 **************************************************************************************************************
 *                                                   units                                                    *
@@ -3563,7 +3559,7 @@ total potential energy (NkT)   =        452.97454
 pressure (NkT/V)(excl. contact)=        151.99151
 pressure (kT) (excl. contact)  =      3.08486E-05
  
-total cpu time since start (s)        0.08
+total cpu time since start (s)        0.07
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -3785,7 +3781,7 @@ asphericity (<2:nd moments>)   =          0.00010
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-31     17:00:03
+2017-02-01     16:27:39
 
 title   : finite network and sequence copolymer                                                     
 
@@ -4776,38 +4772,6 @@ static analysis routines used
 -----------------------------
 
 **************************************************************************************************************
-*                                         image preparation: general                                         *
-**************************************************************************************************************
-
-image interval                 =           1
-no of time steps/passes used   =          10
-
-image preparation routines used
--------------------------------
-   ImageVTF   
-
-**************************************************************************************************************
-*                                          preparation of vtf file                                           *
-**************************************************************************************************************
-
-generating vtf file                 after_iimage
-options (tximage)                   frame                                                                           
-maximum bond length               =     0.00
-bond radius                       =     0.30
-
-atom type no  atom type      size (radius)       rgbcolor
-------------  ---------      -------------       --------
-  1           node              2.000         1.00  0.00  0.00
-  2           mon1              2.000         0.00  1.00  0.00
-  3           mon2              2.000         0.00  0.00  1.00
-  4           mon3              2.000         0.50  0.50  0.00
-  5           mon4              2.000         0.50  0.00  0.50
-  6           mon5              2.000         0.00  0.50  0.50
-  7           mon6              2.000         0.65  0.35  0.00
-
-number of images made             =   12
-
-**************************************************************************************************************
 *                                             timing statistics                                              *
 **************************************************************************************************************
 
@@ -4819,15 +4783,13 @@ number of images made             =   12
          MainAver               0.01         0.01
          Group                  0.00         0.00
          StaticDriver           0.00         0.00
-         ImageDriver            0.03         0.04
-          ImageVTF              0.03         0.04 
          IOMolsim               0.02         0.03
-         SetVList               0.02         0.03
-         MCPass                 0.61         0.84
-          SPartMove             0.01         0.01 
-          DUTotal               0.57         0.79 
-           DUTwoBody            0.49         0.68  
-           DUBond               0.01         0.02  
-         DUCrossLink            0.01         0.02
+         SetVList               0.03         0.05
+         MCPass                 0.59         0.86
+          SPartMove             0.01         0.02 
+          DUTotal               0.55         0.82 
+           DUTwoBody            0.50         0.73  
+           DUBond               0.01         0.01  
+         DUCrossLink            0.01         0.01
  
-total cpu time since start (s)        0.77
+total cpu time since start (s)        0.73

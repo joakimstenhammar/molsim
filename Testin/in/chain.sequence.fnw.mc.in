@@ -13,18 +13,18 @@
  iseed     =           1 ,
  nstep1    =           1 ,
  nstep2    =          10 ,
- lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .t.,  ldynamic = .f.,  limage = .t. , 
+ lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .t.,  ldynamic = .f.,  limage = .f. ,
  itest     =  0 ,  ipart =  1 ,  iatom =  0 ,  iaver =  0 ,  ishow  =  1 ,  iplot   =  1 ,  ilist    =  1 ,  ltrace = .f. ,
  lblockaver = .f.,
 /
-&nmlScale 
+&nmlScale
 /
 &nmlParticle
  lclink         =     .true.,
  nnwt           =         1 ,
  nct            =         3 ,
  txcopolymer(1) = 'sequence', txcopolymer(2) =    'block', txcopolymer(3) = 'sequence',
- txct(1)        =  'strand1', txct(2)        =  'strand2', txct(3)        =  'strand3', 
+ txct(1)        =  'strand1', txct(2)        =  'strand2', txct(3)        =  'strand3',
  ncct(1)        =        16 , ncct(2)        =         4 , ncct(3)        =        32 ,
  npt            =         7 ,
  txpt(1)        =     'node', txpt(2)       =  'mon1', txpt(3)       =  'mon2', txpt(4)       =  'mon3', txpt(5)       =  'mon4', txpt(6)       =  'mon5', txpt(7)       =  'mon6',
@@ -69,8 +69,8 @@
  clink   = 2.4, 2, 5.0 ,
 /
 &nmlSetConfiguration
- txsetconf(1) = 'network',     txsetconf(2) = 'network',     txsetconf(3) = 'network', 
- txsetconf(4) = 'chainrandom', 
+ txsetconf(1) = 'network',     txsetconf(2) = 'network',     txsetconf(3) = 'network',
+ txsetconf(4) = 'chainrandom',
  txsetconf(5) = 'chainrandom', txsetconf(6) = 'chainrandom', txsetconf(7) = 'chainrandom',
  rnwt(1) =  65.0 ,
  txoriginnwt(1) = 'origin',
@@ -93,8 +93,8 @@
  istatic          =  1 ,
 /
 &nmlImage
- iimage =  1 , 
- lvtf   = .t., 
+ iimage =  1 ,
+ lvtf   = .t.,
 /
 &nmlVTF
  txwhen  = 'after_iimage',
