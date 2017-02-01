@@ -920,7 +920,6 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
    ! ... copolymer sequence
    integer(4)              :: ip, ipt
-   integer(4), allocatable :: ipnextpt(:)
 
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
@@ -1029,30 +1028,25 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
       else if (txcopolymer(ict) == 'sequence') then
 
          ! ... prepare allocatable var
-         if (.not. allocated(ipnextpt)) then
-            allocate(ipnextpt(npt))
-            ipnextpt = 0
+         if(.not. allocated(ipstart))  then
+            allocate(ipstart(npt))
+            ipstart = 0
          end if
-
-         ! ... prepare ipnextpt
-         ip = 1
-         do ipt = 1, npt
-            ipnextpt(ipt) = ip ! first particle of particle type ipt
-            ip = ip+nppt(ipt)
-         end do
 
          ! ... loop over chains of type ict
          do icloc = 1, ncct(ict)
-            ic = ic+1                              ! global chain number
-            do iseg = 1, npct(ict)                 ! loop over chain segments
-               ipt = iptsegct(iseg,ict)            ! particle type of segment iseg
-               ip  = ipnextpt(ipt)                 ! corresponding next particle of type ipt
-               ipnsegcn(iseg,ic) = ip              ! set ipnsegcn
-               ipnextpt(ipt) = ipnextpt(ipt) + 1   ! increment ipnextpt
+            ic = ic+1                            ! global chain number
+            do ipt = 1, npt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+            end do
+            do iseg = 1, npct(ict)               ! loop over chain segments
+               ipt = iptsegct(iseg,ict)          ! particle type of segment iseg
+               ipstart(ipt) = ipstart(ipt) + 1   ! increment ipstart
+               ipnsegcn(iseg,ic) = ipstart(ipt)  ! set ipnsegcn
             end do
          end do
 
-         deallocate(ipnextpt)
+         deallocate(ipstart)
 
       end if
     end do
