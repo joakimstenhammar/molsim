@@ -67,8 +67,8 @@ subroutine Particle(iStage)
 
    character(40), parameter :: txroutine ='Particle'
    character(80), parameter :: txheading ='particle data'
-   integer(4) :: igen, ialoc, inwt, ict, ipt, iat, iatloc, m
-   character(3)             :: txnxt   ! txnxt is being used to store the number of an object type as a string (dynamic formatting)
+   integer(4) :: igen, ialoc, inwt, ict, iseg, ipt, iat, iatloc, m
+   character(10)             :: txhelp  ! auxiliary
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
@@ -400,14 +400,14 @@ subroutine Particle(iStage)
          end if
 
          if (lnetwork) then
-            write(txnxt,'(i3)') nct
+            write(txhelp,'(i3)') nct
             write(uout,'()')
-            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txnxt))//'(a8,i0,a6,2x))') &
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txhelp))//'(a8,i0,a6,2x))') &
             ' network  ',' type ', ' no ', ' topology ', ('ncctnwt(',ict,',inwt)',ict = 1, nct)
-            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txnxt))//'(a15,2x))')       &
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txhelp))//'(a15,2x))')       &
             '----------','------', '----', '----------', ('---------------',ict = 1, nct)
             do inwt = 1, nnwt
-               write(uout,'(1x,a,t14,1x,i2,t24,i2,t32,a,t46,'//trim(adjustl(txnxt))//'(i5,11x))') &
+               write(uout,'(1x,a,t14,1x,i2,t24,i2,t32,a,t46,'//trim(adjustl(txhelp))//'(i5,11x))') &
                txnwt(inwt), inwt, nnwnwt(inwt), txtoponwt(inwt), ncctnwt(1:nct,inwt)
             end do
             write(uout,'()')
@@ -427,15 +427,41 @@ subroutine Particle(iStage)
          end if
 
          if (lchain) then
-            write(txnxt,'(i3)') npt
+            write(txhelp,'(i3)') npt
             write(uout,'()')
-            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txnxt))//'(a7,i0,a5,2x))') &
+            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txhelp))//'(a7,i0,a5,2x))') &
             'chain type', 'no of chains', 'topology', ('npptct(',ipt,',ict) ',ipt = 1, npt)
-            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txnxt))//'(a13,2x))')       &
+            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txhelp))//'(a13,2x))')       &
             '----------', '------------', '--------', ('-------------', ipt = 1, npt)
             do ict = 1, nct
-               write(uout,'(a,t20,i5,t45,a,t55,'//trim(adjustl(txnxt))//'(i5,9x))') &
+               write(uout,'(a,t20,i5,t45,a,t55,'//trim(adjustl(txhelp))//'(i5,9x))') &
                txct(ict), ncct(ict), txcopolymer(ict), npptct(1:npt,ict)
+            end do
+            write(uout,'()')
+            do ict = 1, nct
+               write(uout,'(a)') repeat('- ',15)//'sequence of chain type '''//trim(adjustl(txct(ict)))//''''//repeat(' -',15)
+               write(uout,'()')
+               do iseg = 1, npct(ict)
+                  write(txhelp,'(i10)') iptpn(ipnsegcn(iseg,icnct(ict)))
+                  txhelp = merge(trim(adjustl(txhelp))//' ',trim(adjustl(txhelp))//'-',iseg == npct(ict))
+                  if (modulo(iseg,50) == 0 .or. iseg == npct(ict)) then
+                     write(uout,fmt='(a)',advance='yes') trim(adjustl(txhelp))
+                  else
+                     write(uout,fmt='(a)',advance='no')  trim(adjustl(txhelp))
+                  end if
+               end do
+               write (uout,'()')
+               do iseg = 1, npct(ict)
+                  write(txhelp,'(a10)') achar(iptpn(ipnsegcn(iseg,icnct(ict)))+iachar('A')-1)
+                  txhelp = merge(trim(adjustl(txhelp))//' ',trim(adjustl(txhelp))//'-',iseg == npct(ict))
+                  if (modulo(iseg,50) == 0 .or. iseg == npct(ict)) then
+                     write(uout,fmt='(a)',advance='yes') trim(adjustl(txhelp))
+                  else
+                     write(uout,fmt='(a)',advance='no')  trim(adjustl(txhelp))
+                  end if
+               end do
+               write(uout,'()')
+               if (ict == nct) write(uout,'(a)') repeat('- ',45)
             end do
             if (lspma) write(uout,'(a)')
             if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
