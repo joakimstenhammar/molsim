@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:20
+2017-02-02     14:47:32
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -135,6 +135,21 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 center                 1                    block         1             0             0
 PDM                    3                    block         0            50             0
 PPO                    1                    block         0             0           100
+
+- - - - - - - - - - - - - sequence of chain type 1 'center' - - - - - - - - - - - - -
+
+1
+
+- - - - - - - - - - - - - sequence of chain type 2 'PDM' - - - - - - - - - - - - -
+
+2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2
+
+- - - - - - - - - - - - - sequence of chain type 3 'PPO' - - - - - - - - - - - - -
+
+3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-
+3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -604,7 +619,7 @@ total potential energy (NkT)   =         -0.03998
 pressure (NkT/V)(excl. contact)=          0.97431
 pressure (kT) (excl. contact)  =      3.05688E-05
  
-total cpu time since start (s)        0.01
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -777,7 +792,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:20
+2017-02-02     14:47:32
 
 title   : test complexation                                                                         
 
@@ -1624,21 +1639,21 @@ Size distribution of the binary clusters
  
          section                cpu time (s)     fraction
          -------                ------------     --------
-         Coordinate                   0.00         0.14
-         ControlAver                  0.00         0.01
+         Coordinate                   0.00         0.12
+         ControlAver                  0.00         0.02
          MainAver                     0.00         0.05
-         StaticDriver                 0.00         0.09
-         ComplexationDriver           0.00         0.09
+         StaticDriver                 0.00         0.10
+         ComplexationDriver           0.00         0.10
           ComplexFraction             0.00         0.00
-          ClusterDF                   0.00         0.06
-         IOMolsim                     0.00         0.10
+          ClusterDF                   0.00         0.08
+         IOMolsim                     0.00         0.09
          SetVList                     0.00         0.08
          MCPass                       0.01         0.42
-          SPartMove                   0.00         0.01
-          DUTotal                     0.01         0.39
-           DUTwoBody                  0.01         0.32
-           DUBond                     0.00         0.02
-         DUCrossLink                  0.00         0.00
+          SPartMove                   0.00         0.06
+          DUTotal                     0.01         0.32
+           DUTwoBody                  0.01         0.23
+           DUBond                     0.00         0.01
+         DUCrossLink                  0.00         0.02
           PivotMove                   0.00         0.00
          GetComplex                   0.00         0.00
  

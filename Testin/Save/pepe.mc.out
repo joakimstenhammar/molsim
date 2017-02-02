@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:45
+2017-02-02     14:46:46
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -124,6 +124,16 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 ----------         ------------             --------  -------------  -------------
 20+mer                20                    block        20             0 
 20-mer                20                    block         0            20 
+
+- - - - - - - - - - - - - sequence of chain type 1 '20+mer' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - sequence of chain type 2 '20-mer' - - - - - - - - - - - - -
+
+2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -317,7 +327,7 @@ total potential energy (NkT)   =          4.81464
 pressure (NkT/V)(excl. contact)=          2.60488
 pressure (kT) (excl. contact)  =      2.60488E-04
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.06
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -28324,7 +28334,7 @@ Average cluster size 1    1d: 20+mer 20-mer              1.45000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:45
+2017-02-02     14:46:47
 
 title   : oppositely charged polyions, 20 beads * 20v20 chains                                      
 
@@ -29314,7 +29324,7 @@ s.d. of 2d: 20+mer 20-mer
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.02         0.03
+         Coordinate             0.01         0.03
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
          DistFunc               0.00         0.00
@@ -29324,13 +29334,13 @@ s.d. of 2d: 20+mer 20-mer
           ClusterSD             0.00         0.01 
          IOMolsim               0.02         0.04
          SetVList               0.02         0.03
-         MCPass                 0.42         0.86
-          SlitherMove           0.06         0.13 
-          DUTotal               0.29         0.60 
-           DUTwoBody            0.29         0.59  
+         MCPass                 0.43         0.86
+          SlitherMove           0.07         0.14 
+          DUTotal               0.29         0.58 
+           DUTwoBody            0.29         0.58  
           PivotMove             0.02         0.04 
            DUBond               0.00         0.00  
-          SPartMove             0.02         0.04 
-          ChainMove             0.02         0.05 
+          SPartMove             0.03         0.05 
+          ChainMove             0.02         0.04 
  
-total cpu time since start (s)        0.52
+total cpu time since start (s)        0.54

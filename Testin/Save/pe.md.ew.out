@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:44
+2017-02-02     14:46:46
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -121,6 +121,13 @@ number of atom types           =       2     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
 ----------         ------------             --------  -------------  -------------
 100-mer               10                    block       100             0 
+
+- - - - - - - - - - - - - sequence of chain type 1 '100-mer' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -357,7 +364,7 @@ total potential energy (NkT)   =         12.44072
 pressure (NkT/V)(excl. contact)=         20.54346
 pressure (kT) (excl. contact)  =      3.28695E-04
  
-total cpu time since start (s)        0.31
+total cpu time since start (s)        0.34
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -461,7 +468,7 @@ asphericity (<2:nd moments>)   =          0.39304
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:44
+2017-02-02     14:46:46
 
 title   : polymer, 100 beads * 10 chains                                                            
 
@@ -933,17 +940,17 @@ distribution functions
          section          cpu time (s)     fraction
          -------          ------------     --------
          Coordinate             0.08         0.18
-         ControlAver            0.00         0.01
-         MainAver               0.00         0.01
+         ControlAver            0.00         0.00
+         MainAver               0.00         0.00
          DistFunc               0.00         0.01
          IOMolsim               0.17         0.37
          SetVList               0.12         0.25
          MDDriver               0.09         0.19
           VelVer                0.00         0.00 
-          UTotal                0.08         0.19 
+          UTotal                0.09         0.18 
            UTwoBodyA            0.07         0.16  
-           UEwald               0.01         0.03  
-            UEwaldRecStd        0.01         0.03   
+           UEwald               0.01         0.02  
+            UEwaldRecStd        0.01         0.02   
            UBond                0.00         0.00  
  
-total cpu time since start (s)        0.56
+total cpu time since start (s)        0.59

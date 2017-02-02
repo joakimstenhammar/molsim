@@ -309,7 +309,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -331,7 +331,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-12-12     13:01:29
+2017-02-02     14:47:17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -439,6 +439,16 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 ----------         ------------             --------  -------------  -------------
 10-mer1                2                    block        10             0 
 5-mer2                10                    block         0             5 
+
+- - - - - - - - - - - - - sequence of chain type 1 '10-mer1' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - sequence of chain type 2 '5-mer2' - - - - - - - - - - - - -
+
+2-2-2-2-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -899,7 +909,7 @@ asphericity (<2:nd moments>)   =          0.53725
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-12-12     13:01:30
+2017-02-02     14:47:17
 
 title   : bottle-brush: small, 2 molecules, uneven side-chain distribution                          
 
@@ -1261,18 +1271,18 @@ number of images made          =    1
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.01 
+         Coordinate            0.00         0.02 
          ControlAver           0.00         0.00 
-         MainAver              0.01         0.07 
-         ImageDriver           0.00         0.01 
-         IOMolsim              0.00         0.01 
+         MainAver              0.02         0.09 
+         ImageDriver           0.00         0.02 
+         IOMolsim              0.00         0.00 
          SetVList              0.00         0.00 
-         MCPass                0.17         0.85 
+         MCPass                0.14         0.83 
           SPartMove            0.01         0.04  
-          DUTotal              0.13         0.64  
-           DUTwoBody           0.06         0.31   
-           DUBond              0.01         0.05   
-         DUCrossLink           0.01         0.05 
-          PivotMove            0.00         0.02  
+          DUTotal              0.10         0.61  
+           DUTwoBody           0.06         0.33   
+           DUBond              0.01         0.04   
+         DUCrossLink           0.01         0.04 
+          PivotMove            0.00         0.03  
  
-total cpu time since start (s)        0.20
+total cpu time since start (s)        0.17

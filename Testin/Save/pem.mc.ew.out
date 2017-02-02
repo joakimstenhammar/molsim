@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:45
+2017-02-02     14:46:47
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -127,6 +127,12 @@ number of atom types           =       4     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
 ----------         ------------             --------  -------------  -------------  -------------  -------------
 40-mer                 2                    block        40             0             0             0
+
+- - - - - - - - - - - - - sequence of chain type 1 '40-mer' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -544,7 +550,7 @@ asphericity (<2:nd moments>)   =          0.59075
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:45
+2017-02-02     14:46:47
 
 title   : 2 micelles, 2 pe's, and their counterions                                                 
 
@@ -1854,23 +1860,23 @@ number of images made          =    1
  
          section                  cpu time (s)     fraction
          -------                  ------------     --------
-         Coordinate                     0.00         0.04
+         Coordinate                     0.00         0.03
          ControlAver                    0.00         0.01
          MainAver                       0.00         0.03
-         DistFunc                       0.01         0.23
-         StaticDriver                   0.00         0.07
-          ChainBeadPartContact          0.00         0.06
+         DistFunc                       0.01         0.20
+         StaticDriver                   0.00         0.05
+          ChainBeadPartContact          0.00         0.05
          ImageDriver                    0.00         0.06
-         IOMolsim                       0.00         0.08
-         SetVList                       0.00         0.04
-         MCPass                         0.02         0.46
+         IOMolsim                       0.00         0.07
+         SetVList                       0.00         0.03
+         MCPass                         0.03         0.51
           SPartMove                     0.00         0.01
-          DUTotal                       0.02         0.42
-           DUTwoBody                    0.01         0.17
-           DUTwoBodyEwald               0.01         0.22
-            UEwaldRecStd                0.01         0.21
+          DUTotal                       0.02         0.46
+           DUTwoBody                    0.01         0.19
+           DUTwoBodyEwald               0.01         0.20
+            UEwaldRecStd                0.01         0.19
            DUBond                       0.00         0.01
           ChainMove                     0.00         0.00
           PivotMove                     0.00         0.01
  
-total cpu time since start (s)        0.06
+total cpu time since start (s)        0.07

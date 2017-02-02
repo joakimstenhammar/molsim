@@ -73,7 +73,7 @@ ict, jct, ictct
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -95,7 +95,7 @@ ict, jct, ictct
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-15     13:29:06
+2017-02-02     14:46:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -187,6 +187,12 @@ number of atom types           =       3     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
 ----------         ------------             --------  -------------  -------------  -------------
 triblock               2                    regular       2             8             4
+
+- - - - - - - - - - - - - sequence of chain type 1 'triblock' - - - - - - - - - - - - -
+
+1-2-2-2-2-3-3-1-2-2-2-2-3-3
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -547,7 +553,7 @@ asphericity (<2:nd moments>)   =          0.29618
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-15     13:29:06
+2017-02-02     14:46:16
 
 title   : testchain: tricopolymer (abbbbccabbbbcc)                                                  
 
@@ -762,16 +768,16 @@ asphericity (<2:nd moments>)   =          0.29618
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.26 
-         ControlAver           0.00         0.00 
-         MainAver              0.00         0.27 
-         IOMolsim              0.00         0.23 
+         Coordinate            0.00         0.25 
+         ControlAver           0.00         0.05 
+         MainAver              0.00         0.17 
+         IOMolsim              0.00         0.37 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.23 
+         MCPass                0.00         0.15 
           SPartMove            0.00         0.00  
-          DUTotal              0.00         0.22  
-           DUTwoBody           0.00         0.14   
+          DUTotal              0.00         0.14  
+           DUTwoBody           0.00         0.01   
            DUBond              0.00         0.00   
-           DUAngle             0.00         0.01   
+           DUAngle             0.00         0.00   
  
 total cpu time since start (s)        0.01

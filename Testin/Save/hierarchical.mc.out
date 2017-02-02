@@ -1384,7 +1384,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -1406,7 +1406,7 @@ ip    ic           maxnbondcl(ipt)         nbondcl(ip)          bondcl(1,ip)  ..
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-12-12     13:01:45
+2017-02-02     14:47:31
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1516,6 +1516,24 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 4-mer2                 4                    block         0             4             0             0
 4-mer3                16                    block         0             0             4             0
 4-mer4                64                    block         0             0             0             4
+
+- - - - - - - - - - - - - sequence of chain type 1 '1-mer1' - - - - - - - - - - - - -
+
+1
+
+- - - - - - - - - - - - - sequence of chain type 2 '4-mer2' - - - - - - - - - - - - -
+
+2-2-2-2
+
+- - - - - - - - - - - - - sequence of chain type 3 '4-mer3' - - - - - - - - - - - - -
+
+3-3-3-3
+
+- - - - - - - - - - - - - sequence of chain type 4 '4-mer4' - - - - - - - - - - - - -
+
+4-4-4-4
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -2432,7 +2450,7 @@ total potential energy (NkT)   =          0.00000
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      4.21250E-05
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -2636,7 +2654,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-12-12     13:01:45
+2017-02-02     14:47:32
 
 title   : third generation dendrimer                                                                
 
@@ -3597,18 +3615,18 @@ number of images made          =    1
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.01         0.05 
+         Coordinate            0.01         0.04 
          ControlAver           0.00         0.00 
-         MainAver              0.04         0.16 
+         MainAver              0.04         0.17 
          ImageDriver           0.01         0.03 
-         IOMolsim              0.01         0.02 
+         IOMolsim              0.00         0.02 
          SetVList              0.00         0.02 
-         MCPass                0.17         0.69 
-          SPartMove            0.01         0.03  
-          DUTotal              0.15         0.62  
-           DUTwoBody           0.11         0.43   
-           DUBond              0.01         0.03   
+         MCPass                0.14         0.69 
+          SPartMove            0.00         0.02  
+          DUTotal              0.12         0.58  
+           DUTwoBody           0.09         0.42   
+           DUBond              0.01         0.04   
          DUCrossLink           0.01         0.03 
           PivotMove            0.00         0.00  
  
-total cpu time since start (s)        0.26
+total cpu time since start (s)        0.22

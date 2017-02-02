@@ -43,7 +43,7 @@ ict, jct, ictct
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -65,7 +65,7 @@ ict, jct, ictct
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-15     13:29:06
+2017-02-02     14:46:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -158,6 +158,16 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 ----------         ------------             --------  -------------  -------------  -------------
 hompolymer             2                    block         2             0             0
 diblock                2                    block         0             2             2
+
+- - - - - - - - - - - - - sequence of chain type 1 'hompolymer' - - - - - - - - - - - - -
+
+1-1
+
+- - - - - - - - - - - - - sequence of chain type 2 'diblock' - - - - - - - - - - - - -
+
+2-2-3-3
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -512,7 +522,7 @@ asphericity (<2:nd moments>)   =          0.37573
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-15     13:29:06
+2017-02-02     14:46:16
 
 title   : testchain: homopolymer + diblock                                                          
 
@@ -721,16 +731,16 @@ asphericity (<2:nd moments>)   =          0.37573
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.20 
-         ControlAver           0.00         0.10 
-         MainAver              0.00         0.26 
-         IOMolsim              0.00         0.23 
+         Coordinate            0.00         0.27 
+         ControlAver           0.00         0.06 
+         MainAver              0.00         0.22 
+         IOMolsim              0.00         0.45 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.22 
-          SPartMove            0.00         0.01  
-          DUTotal              0.00         0.21  
-           DUTwoBody           0.00         0.01   
-           DUBond              0.00         0.19   
+         MCPass                0.00         0.00 
+          SPartMove            0.00         0.00  
+          DUTotal              0.00         0.00  
+           DUTwoBody           0.00         0.00   
+           DUBond              0.00         0.00   
            DUAngle             0.00         0.00   
  
 total cpu time since start (s)        0.01

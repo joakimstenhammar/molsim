@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:47
+2017-02-02     14:46:49
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -143,6 +143,22 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 99-mer1                1                    block        99             0             0             0             0
 6-mer2                 7                    block         0             6             0             0             0
 99-mer6                1                    block         0             0            99             0             0
+
+- - - - - - - - - - - - - sequence of chain type 1 '99-mer1' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - sequence of chain type 2 '6-mer2' - - - - - - - - - - - - -
+
+2-2-2-2-2-2
+
+- - - - - - - - - - - - - sequence of chain type 3 '99-mer6' - - - - - - - - - - - - -
+
+3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-
+3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -874,7 +890,7 @@ total potential energy (NkT)   =          0.24306
 pressure (NkT/V)(excl. contact)=          0.44044
 pressure (kT) (excl. contact)  =      1.15950E-06
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.04
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -1317,7 +1333,7 @@ quantity                                  average
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:48
+2017-02-02     14:46:50
 
 title   : comb polymer: single-graft chain PLUS linear chain PLUS counterions                       
 
@@ -8729,21 +8745,21 @@ number of images made          =    1
          ControlAver                    0.00         0.00
          MainAver                       0.01         0.00
          Group                          0.00         0.00
-         StaticDriver                   0.07         0.04
+         StaticDriver                   0.08         0.04
           ChainTypeDF                   0.01         0.01
           SPDF_COMB                     0.01         0.01
-          COMB_DF                       0.01         0.00
-          OCF                           0.00         0.00
+          COMB_DF                       0.00         0.00
+          OCF                           0.01         0.00
           OCF_DF                        0.01         0.00
           ChainBeadBeadContact          0.00         0.00
           SFPBC_COMB                    0.03         0.02
-         ImageDriver                    0.00         0.00
+         ImageDriver                    0.01         0.00
          IOMolsim                       0.01         0.01
          SetVList                       0.01         0.00
-         MCPass                         1.73         0.93
-          SPartMove                     0.01         0.01
-          DUTotal                       1.60         0.86
-           DUTwoBody                    1.49         0.80
+         MCPass                         1.80         0.93
+          SPartMove                     0.02         0.01
+          DUTotal                       1.67         0.86
+           DUTwoBody                    1.54         0.80
            DUBond                       0.01         0.01
            DUAngle                      0.02         0.01
          DUCrossLink                    0.02         0.01
@@ -8752,4 +8768,4 @@ number of images made          =    1
           SlitherMove                   0.00         0.00
           HierarchicalMove              0.00         0.00
  
-total cpu time since start (s)        1.88
+total cpu time since start (s)        1.97

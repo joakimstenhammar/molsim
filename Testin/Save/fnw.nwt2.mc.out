@@ -9896,7 +9896,7 @@ inwtct(1:nct)    1    2
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.1.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -9918,7 +9918,7 @@ inwtct(1:nct)    1    2
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-29     11:32:42
+2017-02-02     14:47:33
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -10026,6 +10026,16 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 ----------         ------------             --------  -------------  -------------  -------------  -------------
 strand_L             184                    block         0             5             0             0
 strand_S             104                    block         0             0             0             5
+
+- - - - - - - - - - - - - sequence of chain type 1 'strand_L' - - - - - - - - - - - - -
+
+2-2-2-2-2
+
+- - - - - - - - - - - - - sequence of chain type 2 'strand_S' - - - - - - - - - - - - -
+
+4-4-4-4-4
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -11807,7 +11817,7 @@ total potential energy (NkT)   =          0.00000
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      4.57778E-07
  
-total cpu time since start (s)        0.21
+total cpu time since start (s)        0.22
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -11984,7 +11994,7 @@ asphericity (<2:nd moments>)   =          0.00004
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-29     11:32:44
+2017-02-02     14:47:35
 
 title   : variation of microgel topology                                                            
 
@@ -13825,15 +13835,15 @@ number of images made             =   12
          MainAver               0.11         0.06
          Group                  0.00         0.00
          StaticDriver           0.00         0.00
-         ImageDriver            0.05         0.03
-          ImageVTF              0.05         0.03 
+         ImageDriver            0.06         0.03
+          ImageVTF              0.06         0.03 
          IOMolsim               0.07         0.04
-         SetVList               0.07         0.04
-         MCPass                 1.53         0.81
+         SetVList               0.06         0.03
+         MCPass                 1.57         0.81
           SPartMove             0.02         0.01 
-          DUTotal               1.47         0.78 
-           DUTwoBody            1.41         0.74  
-           DUBond               0.01         0.00  
+          DUTotal               1.51         0.78 
+           DUTwoBody            1.44         0.74  
+           DUBond               0.01         0.01  
          DUCrossLink            0.01         0.00
  
-total cpu time since start (s)        2.05
+total cpu time since start (s)        2.10

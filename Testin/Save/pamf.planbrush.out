@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:02
+2017-02-02     14:47:09
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -123,6 +123,12 @@ number of atom types           =       4     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
 ----------         ------------             --------  -------------  -------------  -------------  -------------
 diblock                2                    block        10            10             0             0
+
+- - - - - - - - - - - - - sequence of chain type 1 'diblock' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-2-2-2-2-2-2-2-2-2-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -535,7 +541,7 @@ asphericity (<2:nd moments>)   =          0.99355
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:02
+2017-02-02     14:47:09
 
 title   : planar pe_brush                                                                           
 
@@ -1936,18 +1942,18 @@ gr:4             1.000       2.000       0.000       0.000      0.8000E-05   0.0
          section          cpu time (s)     fraction
          -------          ------------     --------
          Coordinate             0.00         0.05
-         ControlAver            0.00         0.01
+         ControlAver            0.00         0.00
          MainAver               0.00         0.12
-         DistFunc               0.00         0.13
+         DistFunc               0.00         0.14
          Group                  0.00         0.01
-         StaticDriver           0.00         0.09
-          SPDF                  0.00         0.06 
-         IOMolsim               0.00         0.04
+         StaticDriver           0.00         0.07
+          SPDF                  0.00         0.07 
+         IOMolsim               0.00         0.08
          SetVList               0.00         0.01
-         MCPass                 0.01         0.54
-          SPartMove             0.00         0.07 
-          DUTotal               0.01         0.43 
-           DUTwoBody            0.01         0.25  
-           DUBond               0.00         0.01  
+         MCPass                 0.01         0.51
+          SPartMove             0.00         0.02 
+          DUTotal               0.01         0.42 
+           DUTwoBody            0.01         0.24  
+           DUBond               0.00         0.05  
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.04

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v1.3.5                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-15     09:47:39
+2017-02-02     14:47:31
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -120,6 +120,12 @@ number of atom types           =       1     (     10 )
 chain type         no of chains             topology  npptct(1,ict)
 ----------         ------------             --------  -------------
 chain                  1                    block        10               
+
+- - - - - - - - - - - - - sequence of chain type 1 'chain' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -436,7 +442,7 @@ asphericity (<2:nd moments>)   =          0.99931
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-15     09:47:39
+2017-02-02     14:47:31
 
 title   : RI-PHA-046 - 00                                                                           
 
@@ -617,15 +623,15 @@ asphericity (<2:nd moments>)   =          0.99931
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.17 
-         ControlAver           0.00         0.04 
-         MainAver              0.00         0.31 
-         IOMolsim              0.00         0.18 
+         Coordinate            0.00         0.13 
+         ControlAver           0.00         0.02 
+         MainAver              0.00         0.36 
+         IOMolsim              0.00         0.14 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.30 
-          SPartMove            0.00         0.14  
-          DUTotal              0.00         0.15  
-           DUTwoBody           0.00         0.00   
-           DUBond              0.00         0.03   
+         MCPass                0.00         0.35 
+          SPartMove            0.00         0.01  
+          DUTotal              0.00         0.22  
+           DUTwoBody           0.00         0.01   
+           DUBond              0.00         0.13   
  
 total cpu time since start (s)        0.01

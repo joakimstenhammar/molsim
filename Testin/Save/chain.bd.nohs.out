@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:18
+2017-02-02     14:46:19
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -120,6 +120,12 @@ number of atom types           =       1     (     10 )
 chain type         no of chains             topology  npptct(1,ict)
 ----------         ------------             --------  -------------
 20-mer                 1                    block        20               
+
+- - - - - - - - - - - - - sequence of chain type 1 '20-mer' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -384,7 +390,7 @@ asphericity (<2:nd moments>)   =          0.53784
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:18
+2017-02-02     14:46:19
 
 title   : testchain: 20-mer                                                                         
 
@@ -564,15 +570,15 @@ asphericity (<2:nd moments>)   =          0.53784
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.12 
-         ControlAver           0.00         0.10 
-         MainAver              0.00         0.31 
-         IOMolsim              0.00         0.09 
+         Coordinate            0.00         0.07 
+         ControlAver           0.00         0.08 
+         MainAver              0.00         0.12 
+         IOMolsim              0.00         0.18 
          SetVList              0.00         0.00 
-         BDDriver              0.00         0.39 
-          UTotal               0.00         0.21  
+         BDDriver              0.00         0.55 
+          UTotal               0.00         0.48  
            UTwoBodyA           0.00         0.09   
-           UBond               0.00         0.02   
-           UAngle              0.00         0.00   
+           UBond               0.00         0.12   
+           UAngle              0.00         0.25   
  
 total cpu time since start (s)        0.01

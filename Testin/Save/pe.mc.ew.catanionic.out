@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:43
+2017-02-02     14:46:45
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -122,6 +122,12 @@ number of atom types           =       4     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
 ----------         ------------             --------  -------------  -------------  -------------  -------------
 pe1                    1                    block        50             0             0             0
+
+- - - - - - - - - - - - - sequence of chain type 1 'pe1' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -818,7 +824,7 @@ asphericity (<2:nd moments>)   =          0.20943
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:43
+2017-02-02     14:46:45
 
 title   : pe at a cationic surface of mobile charges                                                
 
@@ -4286,26 +4292,26 @@ no    function                    average        rms
  
          section                   cpu time (s)     fraction
          -------                   ------------     --------
-         Coordinate                      0.01         0.11
-         ControlAver                     0.00         0.00
-         MainAver                        0.00         0.03
-         Group                           0.00         0.00
+         Coordinate                      0.01         0.09
+         ControlAver                     0.00         0.02
+         MainAver                        0.00         0.02
+         Group                           0.00         0.01
          StaticDriver                    0.01         0.23
-          SPDF                           0.00         0.03
-          SFPBC                          0.01         0.15
+          SPDF                           0.00         0.04
+          SFPBC                          0.01         0.12
           ChainTypeDF                    0.00         0.05
-         IOMolsim                        0.00         0.07
-         SetVList                        0.00         0.05
+         IOMolsim                        0.00         0.06
+         SetVList                        0.00         0.06
          MCPass                          0.03         0.51
-          SPartMove                      0.00         0.02
+          SPartMove                      0.00         0.01
           DUTotal                        0.03         0.46
-           DUTwoBody                     0.01         0.15
-           DUTwoBodyEwald                0.01         0.20
-            UEwaldRecStd                 0.01         0.14
-            DUTwoBodyEwaldRec2dlc        0.00         0.04
-           DUBond                        0.00         0.01
-           DUAngle                       0.00         0.02
-           DUExternal                    0.00         0.03
+           DUTwoBody                     0.01         0.20
+           DUTwoBodyEwald                0.01         0.17
+            UEwaldRecStd                 0.01         0.13
+            DUTwoBodyEwaldRec2dlc        0.00         0.02
+           DUBond                        0.00         0.03
+           DUAngle                       0.00         0.01
+           DUExternal                    0.00         0.02
           ChainMove                      0.00         0.00
  
-total cpu time since start (s)        0.07
+total cpu time since start (s)        0.08

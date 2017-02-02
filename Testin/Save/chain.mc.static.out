@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:17
+2017-02-02     14:46:19
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -123,6 +123,16 @@ chain type         no of chains             topology  npptct(1,ict)  npptct(2,ic
 ----------         ------------             --------  -------------  -------------
 20-mer1                2                    block        20             0 
 20-mer2                2                    block         0            20 
+
+- - - - - - - - - - - - - sequence of chain type 1 '20-mer1' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - sequence of chain type 2 '20-mer2' - - - - - - - - - - - - -
+
+2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -611,7 +621,7 @@ asphericity (<2:nd moments>)   =          0.52367
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:18
+2017-02-02     14:46:19
 
 title   : testchain: 2+2 20-mer's                                                                   
 
@@ -3170,19 +3180,19 @@ no    function                    average        rms
          -------            ------------     --------
          Coordinate               0.00         0.01
          ControlAver              0.00         0.00
-         MainAver                 0.00         0.02
-         StaticDriver             0.04         0.15
-          ChainDF                 0.03         0.09
+         MainAver                 0.00         0.01
+         StaticDriver             0.05         0.15
+          ChainDF                 0.03         0.08
           ChainTypeDF             0.01         0.03
-          ChainTypeExtDF          0.01         0.02
-         IOMolsim                 0.00         0.01
+          ChainTypeExtDF          0.01         0.03
+         IOMolsim                 0.00         0.00
          SetVList                 0.00         0.00
-         MCPass                   0.25         0.82
-          PivotMove               0.01         0.03
-          DUTotal                 0.20         0.66
-           DUTwoBody              0.12         0.39
-           DUBond                 0.01         0.03
+         MCPass                   0.28         0.83
+          PivotMove               0.01         0.02
+          DUTotal                 0.23         0.68
+           DUTwoBody              0.13         0.39
+           DUBond                 0.02         0.06
            DUAngle                0.02         0.06
-          SPartMove               0.01         0.03
+          SPartMove               0.01         0.04
  
-total cpu time since start (s)        0.31
+total cpu time since start (s)        0.35

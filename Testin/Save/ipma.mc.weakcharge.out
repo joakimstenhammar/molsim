@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:53
+2017-02-02     14:46:54
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -124,6 +124,12 @@ number of atom types           =       5     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
 ----------         ------------             --------  -------------  -------------  -------------
 iPMA                   2                    regular      24            24             0
+
+- - - - - - - - - - - - - sequence of chain type 1 'iPMA' - - - - - - - - - - - - -
+
+1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -1346,7 +1352,7 @@ asphericity (<2:nd moments>)   =          0.48635
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:59
+2017-02-02     14:47:01
 
 title   : salt free iPMA cm=0.1 25-mer                                                              
 
@@ -2925,20 +2931,20 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.00         0.00
+         Coordinate             0.01         0.00
          ControlAver            0.00         0.00
          MainAver               0.01         0.00
          DistFunc               0.04         0.01
          ImageDriver            0.00         0.00
-         IOMolsim               0.00         0.00
+         IOMolsim               0.01         0.00
          SetVList               0.01         0.00
-         MCPass                 6.10         0.99
-          ChainMove             0.03         0.01 
-          DUTotal               5.71         0.92 
-           DUTwoBody            5.55         0.90  
-           DUBond               0.04         0.01  
+         MCPass                 6.55         0.99
+          ChainMove             0.04         0.01 
+          DUTotal               6.12         0.92 
+           DUTwoBody            5.93         0.89  
+           DUBond               0.06         0.01  
           PivotMove             0.03         0.00 
           ChargeChange          0.01         0.00 
           SPartMove             0.02         0.00 
  
-total cpu time since start (s)        6.19
+total cpu time since start (s)        6.64

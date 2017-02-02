@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:05
+2017-02-02     14:47:11
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -124,6 +124,12 @@ number of atom types           =       4     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
 ----------         ------------             --------  -------------  -------------  -------------  -------------
 diblock              200                    block         0            10            10             0
+
+- - - - - - - - - - - - - sequence of chain type 1 'diblock' - - - - - - - - - - - - -
+
+2-2-2-2-2-2-2-2-2-2-3-3-3-3-3-3-3-3-3-3
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -441,7 +447,7 @@ total potential energy (NkT)   =          1.12909
 pressure (NkT/V)(excl. contact)=          1.37636
 pressure (kT) (excl. contact)  =      3.19238E-05
  
-total cpu time since start (s)        1.55
+total cpu time since start (s)        1.66
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -571,7 +577,7 @@ Average cluster size 1    1d: sph                        1.00000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:10
+2017-02-02     14:47:17
 
 title   : 10 spheres with diblock brush                                                             
 
@@ -3881,25 +3887,25 @@ no    function                         min            max            nbin       
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.55         0.13
+         Coordinate               0.58         0.13
          ControlAver              0.00         0.00
          MainAver                 0.00         0.00
-         DistFunc                 0.67         0.16
+         DistFunc                 0.68         0.15
          Group                    0.00         0.00
          StaticDriver             0.03         0.01
           SFPBC                   0.03         0.01
           ClusterSD               0.00         0.00
-         IOMolsim                 0.92         0.22
-         SetVList                 0.33         0.08
+         IOMolsim                 0.97         0.21
+         SetVList                 0.34         0.07
          SetLList                 0.00         0.00
-         MCPass                   1.75         0.41
+         MCPass                   1.96         0.43
           SPartMove               0.01         0.00
-          DUTotal                 1.65         0.39
-           DUTwoBody              0.30         0.07
-           DUTwoBodyEwald         1.32         0.31
-            UEwaldRecStd          1.31         0.31 
-           DUBond                 0.00         0.00
-          PivotMove               0.00         0.00
+          DUTotal                 1.85         0.40
+           DUTwoBody              0.33         0.07
+           DUTwoBodyEwald         1.48         0.32
+            UEwaldRecStd          1.46         0.32 
+           DUBond                 0.01         0.00
+          PivotMove               0.01         0.00
           BrushMove               0.00         0.00
  
-total cpu time since start (s)        5.38
+total cpu time since start (s)        5.79

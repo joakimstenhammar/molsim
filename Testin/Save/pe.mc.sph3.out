@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:23:41
+2017-02-02     14:46:42
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -124,6 +124,13 @@ number of atom types           =       2     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
 ----------         ------------             --------  -------------  -------------
 100-mer                1                    block       100             0 
+
+- - - - - - - - - - - - - sequence of chain type 1 '100-mer' - - - - - - - - - - - - -
+
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-
+1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -437,7 +444,7 @@ asphericity (<2:nd moments>)   =          0.26187
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:23:41
+2017-02-02     14:46:43
 
 title   : 1 pe and their counterions confined to a sphere of radius 100                             
 
@@ -1347,14 +1354,14 @@ structure factor
           SFNoPBC               0.02         0.04 
          IOMolsim               0.00         0.00
          SetVList               0.00         0.00
-         MCPass                 0.59         0.92
-          SPartMove             0.03         0.04 
-          DUTotal               0.50         0.78 
-           DUTwoBody            0.33         0.52  
-           DUBond               0.03         0.04  
+         MCPass                 0.60         0.93
+          SPartMove             0.03         0.05 
+          DUTotal               0.50         0.76 
+           DUTwoBody            0.33         0.51  
+           DUBond               0.02         0.04  
            DUAngle              0.03         0.05  
           ChainMove             0.01         0.01 
           PivotMove             0.00         0.00 
           SlitherMove           0.00         0.00 
  
-total cpu time since start (s)        0.65
+total cpu time since start (s)        0.66

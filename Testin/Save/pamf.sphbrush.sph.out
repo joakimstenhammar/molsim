@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:02
+2017-02-02     14:47:09
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -123,6 +123,12 @@ number of atom types           =       4     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)  npptct(4,ict)
 ----------         ------------             --------  -------------  -------------  -------------  -------------
 diblock               20                    block         0            10            10             0
+
+- - - - - - - - - - - - - sequence of chain type 1 'diblock' - - - - - - - - - - - - -
+
+2-2-2-2-2-2-2-2-2-2-3-3-3-3-3-3-3-3-3-3
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -983,7 +989,7 @@ asphericity (<2:nd moments>)   =          0.64982
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:03
+2017-02-02     14:47:09
 
 title   : one sphere with diblock brush                                                             
 
@@ -2611,14 +2617,14 @@ no    group label            no of particles     precision
          Coordinate            0.01         0.02 
          ControlAver           0.00         0.00 
          MainAver              0.00         0.01 
-         DistFunc              0.02         0.05 
+         DistFunc              0.02         0.06 
          Group                 0.00         0.00 
          IOMolsim              0.01         0.02 
-         SetVList              0.00         0.01 
-         MCPass                0.33         0.88 
-          SPartMove            0.01         0.03  
-          DUTotal              0.29         0.79  
-           DUTwoBody           0.26         0.70   
+         SetVList              0.01         0.02 
+         MCPass                0.33         0.87 
+          SPartMove            0.01         0.02  
+          DUTotal              0.30         0.79  
+           DUTwoBody           0.27         0.71   
            DUBond              0.01         0.02   
           PivotMove            0.00         0.00  
  

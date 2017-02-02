@@ -33,7 +33,7 @@ ict, jct, ictct
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -55,7 +55,7 @@ ict, jct, ictct
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-15     13:29:06
+2017-02-02     14:46:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -147,6 +147,12 @@ number of atom types           =       2     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
 ----------         ------------             --------  -------------  -------------
 diblock                2                    block         2             2 
+
+- - - - - - - - - - - - - sequence of chain type 1 'diblock' - - - - - - - - - - - - -
+
+1-1-2-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -433,7 +439,7 @@ asphericity (<2:nd moments>)   =          0.42491
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-15     13:29:06
+2017-02-02     14:46:16
 
 title   : testchain: diblock                                                                        
 
@@ -604,15 +610,15 @@ asphericity (<2:nd moments>)   =          0.42491
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.30 
-         ControlAver           0.00         0.01 
-         MainAver              0.00         0.29 
-         IOMolsim              0.00         0.20 
+         Coordinate            0.00         0.06 
+         ControlAver           0.00         0.05 
+         MainAver              0.00         0.47 
+         IOMolsim              0.00         0.34 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.20 
-          SPartMove            0.00         0.01  
-          DUTotal              0.00         0.19  
-           DUTwoBody           0.00         0.19   
+         MCPass                0.00         0.08 
+          SPartMove            0.00         0.00  
+          DUTotal              0.00         0.08  
+           DUTwoBody           0.00         0.00   
            DUBond              0.00         0.00   
            DUAngle             0.00         0.00   
  

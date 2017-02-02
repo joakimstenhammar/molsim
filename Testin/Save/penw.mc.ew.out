@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-15     12:20:23
+2017-02-02     14:47:03
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -122,6 +122,12 @@ number of atom types           =       3     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
 ----------         ------------             --------  -------------  -------------  -------------
 strand                16                    block         0            10             0
+
+- - - - - - - - - - - - - sequence of chain type 1 'strand' - - - - - - - - - - - - -
+
+2-2-2-2-2-2-2-2-2-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -335,7 +341,7 @@ total potential energy (NkT)   =          1.17116
 pressure (NkT/V)(excl. contact)=          1.60462
 pressure (kT) (excl. contact)  =      3.12010E-04
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.02
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -442,7 +448,7 @@ asphericity (<2:nd moments>)   =          0.95357
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-15     12:20:23
+2017-02-02     14:47:03
 
 title   : charged periodic network + counterions                                                    
 
@@ -1156,13 +1162,13 @@ distribution functions
          DistFunc                 0.01         0.03
          IOMolsim                 0.01         0.02
          SetVList                 0.03         0.08
-         MCPass                   0.27         0.82
-          SPartMove               0.01         0.03
-          DUTotal                 0.24         0.75
-           DUTwoBody              0.10         0.32
-           DUTwoBodyEwald         0.10         0.30
-            UEwaldRecStd          0.09         0.26 
-           DUBond                 0.01         0.02
-         DUCrossLink              0.00         0.01
+         MCPass                   0.25         0.82
+          SPartMove               0.01         0.02
+          DUTotal                 0.23         0.75
+           DUTwoBody              0.10         0.31
+           DUTwoBodyEwald         0.10         0.31
+            UEwaldRecStd          0.08         0.26 
+           DUBond                 0.00         0.01
+         DUCrossLink              0.01         0.02
  
-total cpu time since start (s)        0.35
+total cpu time since start (s)        0.33
