@@ -67,7 +67,8 @@ subroutine Particle(iStage)
 
    character(40), parameter :: txroutine ='Particle'
    character(80), parameter :: txheading ='particle data'
-   integer(4) :: igen, ialoc, inwt, ict, iseg, ipt, iat, iatloc, m
+   integer(4) :: igen, ialoc, inwt, ict, ic, jc, iseg, ipt, iat, iatloc, m
+   logical                   :: luniformsequence
    character(10)             :: txhelp  ! auxiliary
 
    namelist /nmlParticle/ txelec,                                                       &
@@ -439,28 +440,34 @@ subroutine Particle(iStage)
             end do
             write(uout,'()')
             do ict = 1, nct
-               write(uout,'(a)') repeat('- ',15)//'sequence of chain type '''//trim(adjustl(txct(ict)))//''''//repeat(' -',15)
+               write(txhelp,'(i3)') ict
+               write(uout,'(a)') repeat('- ',13)//'sequence of chain type '//trim(adjustl(txhelp))&
+                                 &//' '''//trim(adjustl(txct(ict)))//''''//repeat(' -',13)
                write(uout,'()')
-               do iseg = 1, npct(ict)
-                  write(txhelp,'(i10)') iptpn(ipnsegcn(iseg,icnct(ict)))
-                  txhelp = merge(trim(adjustl(txhelp))//' ',trim(adjustl(txhelp))//'-',iseg == npct(ict))
-                  if (modulo(iseg,50) == 0 .or. iseg == npct(ict)) then
-                     write(uout,fmt='(a)',advance='yes') trim(adjustl(txhelp))
-                  else
-                     write(uout,fmt='(a)',advance='no')  trim(adjustl(txhelp))
-                  end if
+               luniformsequence = .true.
+  testuniform: do ic = icnct(ict), icnct(ict) + ncct(ict) - 1
+                  do jc = ic + 1, icnct(ict) + ncct(ict) - 1
+                     if (any(iptpn(ipnsegcn(1:npct(ict),ic)) /= iptpn(ipnsegcn(1:npct(ict),jc)))) then
+                        luniformsequence = .false.
+                        exit testuniform
+                     end if
+                  end do
+               end do testuniform
+               do ic = icnct(ict), icnct(ict)+ncct(ict)-1
+                  if (.not. luniformsequence) write(uout,'(a5,i0)') 'ic = ', ic
+                  do iseg = 1, npct(ict)
+                     write(txhelp,'(i10)') iptpn(ipnsegcn(iseg,ic))
+                     txhelp = merge(trim(adjustl(txhelp))//' ',trim(adjustl(txhelp))//'-',iseg == npct(ict))
+                     if (modulo(iseg,50) == 0 .or. iseg == npct(ict)) then
+                        write(uout,fmt='(a)',advance='yes') trim(adjustl(txhelp))
+                     else
+                        write(uout,fmt='(a)',advance='no')  trim(adjustl(txhelp))
+                     end if
+                  end do
+                  if (luniformsequence) exit
+                  write (uout,'()')
                end do
                write (uout,'()')
-               do iseg = 1, npct(ict)
-                  write(txhelp,'(a10)') achar(iptpn(ipnsegcn(iseg,icnct(ict)))+iachar('A')-1)
-                  txhelp = merge(trim(adjustl(txhelp))//' ',trim(adjustl(txhelp))//'-',iseg == npct(ict))
-                  if (modulo(iseg,50) == 0 .or. iseg == npct(ict)) then
-                     write(uout,fmt='(a)',advance='yes') trim(adjustl(txhelp))
-                  else
-                     write(uout,fmt='(a)',advance='no')  trim(adjustl(txhelp))
-                  end if
-               end do
-               write(uout,'()')
                if (ict == nct) write(uout,'(a)') repeat('- ',45)
             end do
             if (lspma) write(uout,'(a)')
@@ -940,12 +947,10 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    integer(4) :: nrep, irep, nreplen
    integer(4) :: iblock
    integer(4) :: iplow
+   integer(4) :: ipt
    integer(4), allocatable :: npset(:)
    integer(4), allocatable :: ipstart(:)
    integer(4), allocatable :: iptiseg(:)
-
-   ! ... copolymer sequence
-   integer(4)              :: ip, ipt
 
    if (.not.allocated(ipnsegcn)) then 
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
