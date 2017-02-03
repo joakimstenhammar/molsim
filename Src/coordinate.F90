@@ -49,6 +49,7 @@ module CoordinateModule
 
    real(8),      allocatable :: rnwt(:)       ! radius of network type inwt [Allocate with nnwt]
    character(8), allocatable :: txoriginnwt(:)! network center of network type inwt ("origin" and "random") [Allocate with nnwt]
+   real(8),      allocatable :: shiftnwt(:,:) ! shift of cut-off sphere center center during finite network generation
 
    real(8)       :: radlimit(2)               ! lower and upper radial limit of particles (for SetCoreCell)
 
