@@ -324,7 +324,7 @@ subroutine SetConfiguration
                                   radatset, lranori,  bondscl, anglemin,                             &
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
-                                  rnwt, txoriginnwt,                                                 &
+                                  rnwt, txoriginnwt, shiftnwt                                        &
                                   radlimit,                                                          &
                                   itestcoordinate
 
@@ -352,6 +352,9 @@ subroutine SetConfiguration
       end if
       if(.not.allocated(txoriginnwt)) then
          allocate(txoriginnwt(nnwt))
+      end if
+      if(.not.allocated(shiftnwt)) then
+         allocate(shiftnwt(3,nnwt))
       end if
    end if
 
@@ -408,8 +411,9 @@ subroutine SetConfiguration
    itestcoordinate   = 0
 
    if (lnetwork) then
-      rnwt(1:nnwt)        = 10.0
-      txoriginnwt(1:nnwt) = 'origin'
+      rnwt(1:nnwt)         = 10.0
+      txoriginnwt(1:nnwt)  = 'origin'
+      shiftnwt(1:3,1:nnwt) = Zero
    end if
 
    rewind(uin)
