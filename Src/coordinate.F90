@@ -2153,7 +2153,7 @@ subroutine SetNetwork(ipt)
    integer(4)     :: inwt                ! network type counter
    integer(4)     :: inw                 ! network counter
    integer(4)     :: ntry, itry          ! counter attempts to set gel
-   integer(4)     :: nclmade             ! number of crossliks formed
+   integer(4)     :: nclmade             ! number of crosslinks formed
    integer(4), allocatable :: ipclbeg(:) ! id of particles that begin crosslinks
    integer(4), allocatable :: ipclend(:) ! id of particles that ends crosslinks
 
