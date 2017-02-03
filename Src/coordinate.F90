@@ -324,7 +324,7 @@ subroutine SetConfiguration
                                   radatset, lranori,  bondscl, anglemin,                             &
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
-                                  rnwt, txoriginnwt, shiftnwt                                        &
+                                  rnwt, txoriginnwt, shiftnwt,                                       &
                                   radlimit,                                                          &
                                   itestcoordinate
 
