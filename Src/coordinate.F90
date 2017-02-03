@@ -574,14 +574,12 @@ subroutine SetConfiguration
       end if
    end do
 
-   if (master) then
-      if (lclink) then
-         if (count(txsetconf == 'periodicnetwork') > 0) then
-            write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
-         end if
-         if (count(txsetconf == 'network') > 0) then
-            write(uout,'(a,t60,i8)') 'number of crosslinks                     = ', ncl
-         end if
+   if (lclink .and. master) then
+      if (count(txsetconf == 'periodicnetwork') > 0) then
+         write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
+      end if
+      if (count(txsetconf == 'network') > 0) then
+         write(uout,'(a,t60,i8)') 'number of crosslinks                     = ', ncl
       end if
    end if
 
