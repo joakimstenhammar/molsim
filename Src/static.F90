@@ -43,6 +43,7 @@ subroutine StaticDriver(iStage)
                           lcluster, lzerosecondmoment, lmultipoledf,                            &
                           lenergydf, lwidom1, lwidom2, lmeanforce1, lmeanforce2, lpotmeanforce, &
                           lsurfacearea, lcrystalformat, ltrajectory, lsubstructuredf,           &
+                          lnetworkdf, lnetworkradialdf,                                         &
                           lstaticuser
    type(scalar_var), allocatable, save :: var(:)
    integer(4), save :: nvar = 1
@@ -55,6 +56,7 @@ subroutine StaticDriver(iStage)
                         lcluster, lzerosecondmoment, lmultipoledf,                             &
                         lenergydf, lwidom1, lwidom2, lmeanforce1, lmeanforce2, lpotmeanforce,  &
                         lsurfacearea, lcrystalformat, ltrajectory, lsubstructuredf,            &
+                        lnetworkdf, lnetworkradialdf,                                          &
                         lstaticuser
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -98,8 +100,10 @@ subroutine StaticDriver(iStage)
       lsurfacearea     = .false.
       lcrystalformat   = .false.
       ltrajectory      = .false.
-      lstaticuser      = .false.
       lsubstructuredf  = .false.
+      lnetworkdf       = .false.
+      lnetworkradialdf = .false.
+      lstaticuser      = .false.
 
       rewind(uin)
       read(uin,nmlStatic)
