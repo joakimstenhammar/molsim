@@ -8394,11 +8394,11 @@ subroutine NetworkDF(iStage)
                   var(ivar)%max  = vtype(itype)%max
                   var(ivar)%nbin = vtype(itype)%nbin
                   if      (itype == 4) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))//' '//txgr(igrloc) 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))//' '//txgr(igrloc)
                   else if (itype == 5) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))//' '//txgr(igrloc) 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))//' '//txgr(igrloc)
                   else
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))    ! for those with ngrloc = 1 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))    ! for those with ngrloc = 1
                   end if
                end do
             end do
@@ -8442,12 +8442,12 @@ subroutine NetworkDF(iStage)
                end do
             end if
          end do
-         
+
 ! ... sample type 4
 
-         itype = 4 
+         itype = 4
          if (vtype(itype)%l) then
-            do ip = 1, np  
+            do ip = 1, np
                igrloc = igrpn(ip,1)
                if (igrloc <= 0) cycle
                ivar = ipnt(igrloc,inw,itype)
@@ -8458,13 +8458,13 @@ subroutine NetworkDF(iStage)
                ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
             end do
-         end if 
+         end if
 
 ! ... sample type 5
 
-         itype = 5 
+         itype = 5
          if (vtype(itype)%l) then
-            do ip = 1, np  
+            do ip = 1, np
                igrloc = igrpn(ip,1)
                if (igrloc <= 0) cycle
                ivar = ipnt(igrloc,inw,itype)
@@ -8475,7 +8475,7 @@ subroutine NetworkDF(iStage)
                ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
             end do
-         end if 
+         end if
 
       end do
 
@@ -8553,14 +8553,14 @@ end subroutine NetworkDF
 !     type  label     quantity
 !     ----  -----     --------
 !      1    rdens     particle number density
-!      2    rrden     reduced particle number density                        
+!      2    rrden     reduced particle number density
 !      3    rgchain   chain radius of gyration
 !      4    z(r)      sum of all charges
 !      5    zcum(r)   cumulative sum of all charges
-!      6    a(r)      reduced degree of ionization                  
+!      6    a(r)      reduced degree of ionization
 !      7    rdensc(r) chain number density
-!      8    isegdist    average distance of particle segment iseg belonging to chains of group igr to COM 
-!      9    icdist    average distance of chains ic belonging to group igr to COM 
+!      8    isegdist    average distance of particle segment iseg belonging to chains of group igr to COM
+!      9    icdist    average distance of chains ic belonging to group igr to COM
 
 subroutine NetworkRadialDF(iStage)
 
@@ -8580,14 +8580,14 @@ subroutine NetworkRadialDF(iStage)
    integer(4),   allocatable, save :: ipnt(:,:,:)
    type(networkprop_var)           :: NetworkProperty
    type(chainprop_var)             :: ChainProperty
- 
+
    character(3)                    :: txinw
    integer(4)                      :: itype, ivar, ibin, nref
    integer(4)                      :: inwt, inw, ict, ic, icloc, ipt, ip, iploc, ia, igr, igrloc, iseg
    real(8)                         :: InvFlt, InvInt
    real(8)                         :: rcom(1:3), r2, r1, vsum, norm, dvol
 
-!    real(8)                         :: tolerance = sqrt(epsilon(r2))   ! Cornelius Hofzumahaus: In order to solve the bin splitting problem 
+!    real(8)                         :: tolerance = sqrt(epsilon(r2))   ! Cornelius Hofzumahaus: In order to solve the bin splitting problem
 
    namelist /nmlNetworkRadialDF/ vtype
 
@@ -8617,7 +8617,7 @@ subroutine NetworkRadialDF(iStage)
          vtype(4) = vtype(5)
       else if (vtype(4)%l .and. vtype(5)%l) then
          vtype(5) = vtype(4)
-      end if   
+      end if
 
       if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine, 'vtype%nbin > mnbin_df', uout)
 
@@ -8657,15 +8657,15 @@ subroutine NetworkRadialDF(iStage)
                   if      (itype == 1) then
                      var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
                   else if (itype == 2) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc) 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
                   else if (itype == 3) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txct(igrloc) 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txct(igrloc)
                   else if (itype == 7) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc) 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
                   else if (itype == 8) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc) 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
                   else
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))    ! for those with ngrloc = 1 
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))    ! for those with ngrloc = 1
                   end if
                end do
             end do
@@ -8690,7 +8690,7 @@ subroutine NetworkRadialDF(iStage)
       do inw = 1, nnw
 
 ! ... get center of mass of network inw and network type inwt
-         inwt = inwtnwn(inw) 
+         inwt = inwtnwn(inw)
          call UndoPBCNetwork(ro(1,ipnsegcn(1,icnclocnwn(1,inw))), inw, vaux)
          call CalcNetworkProperty(inw, vaux, NetworkProperty)
 
@@ -8698,7 +8698,7 @@ subroutine NetworkRadialDF(iStage)
 
 ! ... sample type 1
 
-         itype = 1   ! Cornelius Hofzumahaus: temporary hack of itype = 1 print 
+         itype = 1   ! Cornelius Hofzumahaus: temporary hack of itype = 1 print
          if (vtype(itype)%l) then
             do ip = 1, np
                if (laz(ip)) then
@@ -8709,7 +8709,7 @@ subroutine NetworkRadialDF(iStage)
                   r1 = sqrt(r2)
                   ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-               end if 
+               end if
             end do
          end if
 
@@ -8730,10 +8730,10 @@ subroutine NetworkRadialDF(iStage)
 
          itype = 2
          if (vtype(itype)%l) then
-            do igr = 1, ngr(1) 
+            do igr = 1, ngr(1)
                ivar = ipnt(igr,inw,itype)
                do ibin = -1, var(ivar)%nbin
-                  var(ivar)%avs2(ibin) = var(ipnt(igr,inw,1))%avs2(ibin)  ! reference to itype 1 in ipnt 
+                  var(ivar)%avs2(ibin) = var(ipnt(igr,inw,1))%avs2(ibin)  ! reference to itype 1 in ipnt
                end do
             end do
          end if
@@ -8742,7 +8742,7 @@ subroutine NetworkRadialDF(iStage)
 
          itype = 3
          if (vtype(itype)%l) then
-            do icloc = 1, ncnwt(inwt)  
+            do icloc = 1, ncnwt(inwt)
                ic  = icnclocnwn(icloc,inw)
                ict = ictcn(ic)
                ivar = ipnt(ict,inw,itype)
@@ -8764,7 +8764,7 @@ subroutine NetworkRadialDF(iStage)
             do ipt = 1, npt
                if (zat(iatpt(ipt)) == Zero) cycle
                do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
-                  if (lweakcharge .and. .not. laz(ip)) cycle    
+                  if (lweakcharge .and. .not. laz(ip)) cycle
                   call PBCr2(ro(1,ip)-rcom(1), ro(2,ip)-rcom(2), ro(3,ip)-rcom(3), r2)
                   r1 = sqrt(r2)
                   ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
@@ -8779,7 +8779,7 @@ subroutine NetworkRadialDF(iStage)
          if (vtype(itype)%l) then
             ivar = ipnt(1,inw,itype)
             do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = sum(var(ipnt(1,inw,4))%avs2(-1:ibin))   ! reference to itype 4 in ipnt 
+               var(ivar)%avs2(ibin) = sum(var(ipnt(1,inw,4))%avs2(-1:ibin))   ! reference to itype 4 in ipnt
             end do
          end if
 
@@ -8827,7 +8827,7 @@ subroutine NetworkRadialDF(iStage)
                ivar = ipnt(igr,inw,itype)
                ic = icnpn(ip)
                if (idircn(ic) > Zero) then ! chain has been set directing from inside to outside
-                  iseg = isegpn(ip) 
+                  iseg = isegpn(ip)
                else if (idircn(ic) < Zero ) then ! chain has been set directing from outside to inside
                   iseg = npct(ictcn(ic)) - isegpn(ip) + 1
                end if
@@ -8857,7 +8857,7 @@ subroutine NetworkRadialDF(iStage)
             end do
          end if
 
-      end do 
+      end do
 
    case (iAfterMacrostep)
 
@@ -8887,7 +8887,7 @@ subroutine NetworkRadialDF(iStage)
                   if (var(ivar)%nsampbin2(ibin) > Zero) then
                      var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)/var(ivar)%nsampbin2(ibin)
                      var(ivar)%nsampbin1(ibin) = var(ivar)%nsampbin1(ibin)+One
-                  end if 
+                  end if
                end do
             end do
          end if
@@ -8911,7 +8911,7 @@ subroutine NetworkRadialDF(iStage)
                ivar = ipnt(igr,inw,itype)
                norm = var(ivar)%nsamp2
                do ibin = -1, var(ivar)%nbin
-                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin) 
+                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin)
                   var(ivar)%nsampbin1(ibin) = var(ivar)%nsampbin1(ibin)+One
                end do
             end do
@@ -8922,7 +8922,7 @@ subroutine NetworkRadialDF(iStage)
             ivar = ipnt(1,inw,itype)
             norm = var(ivar)%nsamp2
             do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin) 
+               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin)
                var(ivar)%nsampbin1(ibin) = var(ivar)%nsampbin1(ibin)+One
             end do
          end if
@@ -8934,8 +8934,8 @@ subroutine NetworkRadialDF(iStage)
       if (lsim .and. master) write(ucnf) var
 
    case (iAfterSimulation)
-      
-      do inw = 1, nnw 
+
+      do inw = 1, nnw
          itype = 3
          if (vtype(itype)%l) then
             do ict = 1, nct
@@ -8946,7 +8946,7 @@ subroutine NetworkRadialDF(iStage)
                end do
             end do
          end if
-         
+
          itype = 6
          if (vtype(itype)%l) then
             ivar = ipnt(1,inw,itype)
@@ -8975,7 +8975,7 @@ subroutine NetworkRadialDF(iStage)
                var(ivar)%avs1(ibin) = var(ivar)%avs1(ibin) * norm / var(ivar)%nsampbin1(ibin) 
             end do
          end if
-      
+
       end do
 
       call DistFuncSample(iStage, nvar, var)
