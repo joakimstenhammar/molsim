@@ -8429,14 +8429,34 @@ subroutine NetworkDF(iStage)
 
          do itype = 1, 3
             if (vtype(itype)%l) then
-               do igrloc = 1, ngrloc(itype)
+               igrloc = 1
+               ivar = ipnt(igrloc,inw,itype)
+               if (itype == 1) then
+                  value = sqrt(NetworkProperty%rg2)
+               else if (itype == 2) then
+                  value = NetworkProperty%asph
+               else if (itype == 3) then
+                  value = NetworkProperty%alpha
+               end if
+               ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
+               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
+            end if
+         end do
+
+! ... sample type 4 to 5
+
+         do itype = 4, 5
+            if (vtype(itype)%l) then
+               do ic = 1, nc
+                  igrloc = igrpn(ipnsegcn(1,ic),1) ! group number of first segment of chain ic
+                  if (igrloc <= 0) cycle
                   ivar = ipnt(igrloc,inw,itype)
-                  if (itype == 1) then
-                     value = sqrt(NetworkProperty%rg2)
-                  else if (itype == 2) then
-                     value = NetworkProperty%asph
-                  else if (itype == 3) then
-                     value = NetworkProperty%alpha
+                  call UndoPBCChain(ro(1,ipnsegcn(1,ic)),ic,1,vaux)
+                  call CalcChainProperty(ic,vaux,ChainProperty)
+                  if (itype == 4) then
+                     value = sqrt(ChainProperty%rg2)
+                  else if (itype == 5) then
+                     value = sqrt(ChainProperty%ree2)
                   end if
                   ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
@@ -8444,63 +8464,29 @@ subroutine NetworkDF(iStage)
             end if
          end do
 
-! ... sample type 4
-
-         itype = 4
-         if (vtype(itype)%l) then
-            do ip = 1, np
-               igrloc = igrpn(ip,1)
-               if (igrloc <= 0) cycle
-               ivar = ipnt(igrloc,inw,itype)
-               ic  = icnpn(ip)
-               call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-               call CalcChainProperty(ic, vaux, ChainProperty)
-               value = sqrt(ChainProperty%rg2)
-               ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
-               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-            end do
-         end if
-
-! ... sample type 5
-
-         itype = 5
-         if (vtype(itype)%l) then
-            do ip = 1, np
-               igrloc = igrpn(ip,1)
-               if (igrloc <= 0) cycle
-               ivar = ipnt(igrloc,inw,itype)
-               ic  = icnpn(ip)
-               call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-               call CalcChainProperty(ic, vaux, ChainProperty)
-               value = sqrt(ChainProperty%ree2)
-               ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
-               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-            end do
-         end if
-
       end do
 
    case (iAfterMacrostep)
 
-      call DistFuncNorm(1, nvar, var)
-      call DistFuncSample(iStage, nvar, var)
+      call DistFuncNorm(1,nvar,var)
+      call DistFuncSample(iStage,nvar,var)
       if (lsim .and. master) write(ucnf) var
 
    case (iAfterSimulation)
 
-      call DistFuncSample(iStage, nvar, var)
-      call WriteHead(2, txheading, uout)
-      call DistFuncHead(nvar, var, uout)
-      call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
-      call DistFuncAverValue(nvar, var, uout)
+      call DistFuncSample(iStage,nvar,var)
+      call WriteHead(2,txheading,uout)
+      call DistFuncHead(nvar,var,uout)
+      call DistFuncWrite(txheading,nvar,var,uout,ulist,ishow,iplot,ilist)
+      call DistFuncAverValue(nvar,var,uout)
 
 ! ..............    make average of distribution functions over networks of same type   .............
 
 ! ... set nvartype2 and nvar2 as well as allocate memory
 
       vtype%nvar = nnwt
-      nvar2 = sum(vtype%nvar, 1, vtype%l)
-      allocate(ilow(nvar2), iupp(nvar2), var2(nvar2), vspread(nvar2))
+      nvar2 = sum(vtype%nvar,1,vtype%l)
+      allocate(ilow(nvar2),iupp(nvar2),var2(nvar2),vspread(nvar2))
       ilow = 0
       iupp = 0
       vspread = 0.0E+00
