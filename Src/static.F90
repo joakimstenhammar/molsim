@@ -8378,8 +8378,8 @@ subroutine NetworkDF(iStage)
 
 ! ... set nvartype and nvar as well as allocate memory
 
-      nvar = sum(vtype%nvar, 1, vtype%l)
-      allocate(var(nvar), ipnt(maxval(ngrloc(1:ntype)),nnw,ntype))
+      nvar = sum(vtype%nvar,dim=1,mask=vtype%l)
+      allocate(var(nvar),ipnt(maxval(ngrloc(1:ntype)),nnw,ntype))
       ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
@@ -8423,8 +8423,7 @@ subroutine NetworkDF(iStage)
       var%nsamp2 = var%nsamp2 + 1
 
       do inw = 1, nnw
-         call UndoPBCNetwork(ro(1,ipnsegcn(1,icnclocnwn(1,inw))), inw, vaux)
-         call CalcNetworkProperty(inw, vaux, NetworkProperty)
+         call CalcNetworkProperty(inw,NetworkProperty)
 
 ! ... sample type 1 to 3
 
