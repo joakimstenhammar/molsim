@@ -122,13 +122,15 @@ subroutine StaticDriver(iStage)
 
 
       if (.not.lgroup) then
-         if (lspdf    ) call Stop(txroutine, 'spdf is selected, but no group division', uout)
-         if (lrdf     ) call Stop(txroutine, 'rdf is selected, but no group division', uout)
-         if (langdf   ) call Stop(txroutine, 'angdf is selected, but no group division', uout)
-         if (lnnhb    ) call Stop(txroutine, 'nnhb is selected, but no group division', uout)
-         if (lnndf    ) call Stop(txroutine, 'nndf is selected, but no group division', uout)
-         if (lenergydf) call Stop(txroutine, 'energydf is selected, but no group division', uout)
-         if (lsubstructuredf) call Stop(txroutine, 'substructuredf is selected, but no group division', uout)
+         if (lspdf           ) call Stop(txroutine, 'spdf is selected, but no group division', uout)
+         if (lrdf            ) call Stop(txroutine, 'rdf is selected, but no group division', uout)
+         if (langdf          ) call Stop(txroutine, 'angdf is selected, but no group division', uout)
+         if (lnnhb           ) call Stop(txroutine, 'nnhb is selected, but no group division', uout)
+         if (lnndf           ) call Stop(txroutine, 'nndf is selected, but no group division', uout)
+         if (lenergydf       ) call Stop(txroutine, 'energydf is selected, but no group division', uout)
+         if (lsubstructuredf ) call Stop(txroutine, 'substructuredf is selected, but no group division', uout)
+         if (lnetworkdf      ) call Stop(txroutine, 'networkdf is selected, but no group division', uout)
+         if (lnetworkradialdf) call Stop(txroutine, 'networkradialdf is selected, but no group division', uout)
       end if
 
       call StaticDriverSub
@@ -8364,7 +8366,7 @@ subroutine NetworkDF(iStage)
       rewind(uin)
       read(uin,nmlNetworkDF)
 
-      if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine, 'vtype%nbin > mnbin_df', uout)
+      if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine,'vtype%nbin > mnbin_df', uout)
 
    case (iWriteInput)
 
