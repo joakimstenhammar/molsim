@@ -8621,8 +8621,8 @@ subroutine NetworkRadialDF(iStage)
 
 ! ... set nvar and allocate memory
 
-      nvar = sum(vtype%nvar, 1, vtype%l)
-      allocate(var(nvar), ipnt(maxval(ngrloc(1:ntype)),nnw,ntype))
+      nvar = sum(vtype%nvar,1,vtype%l)
+      allocate(var(nvar),ipnt(maxval(ngrloc(1:ntype)),nnw,ntype))
       ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
@@ -8656,16 +8656,16 @@ subroutine NetworkRadialDF(iStage)
          end if
       end do
 
-      call DistFuncSample(iStage, nvar, var) ! -> Initiate bin and bini
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate bin and bini
 
    case (iBeforeSimulation)
 
-      call DistFuncSample(iStage, nvar, var) ! -> Initiate nsamp1, avs1, avsd, nsampbin1
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp1, avs1, avsd, nsampbin1
       if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
 
    case (iBeforeMacrostep)
 
-      call DistFuncSample(iStage, nvar, var) ! -> Initiate nsamp2, avs2, nsampbin2
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp2, avs2, nsampbin2
 
    case (iSimulationStep)
 
@@ -8675,50 +8675,22 @@ subroutine NetworkRadialDF(iStage)
 
 ! ... get center of mass of network inw and network type inwt
          inwt = inwtnwn(inw)
-         call UndoPBCNetwork(ro(1,ipnsegcn(1,icnclocnwn(1,inw))), inw, vaux)
-         call CalcNetworkProperty(inw, vaux, NetworkProperty)
+         call CalcNetworkProperty(inw,NetworkProperty)
 
          rcom(1:3) = NetworkProperty%ro(1:3)
 
 ! ... sample type 1
 
-         itype = 1   ! Cornelius Hofzumahaus: temporary hack of itype = 1 print
+         itype = 1
          if (vtype(itype)%l) then
             do ip = 1, np
-               if (laz(ip)) then
-                  igr = igrpn(ip,1)
-                  if (igr <= 0) cycle
-                  ivar = ipnt(igr,inw,itype)
-                  call PBCr2(ro(1,ip)-rcom(1), ro(2,ip)-rcom(2), ro(3,ip)-rcom(3), r2)
-                  r1 = sqrt(r2)
-                  ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
-                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-               end if
-            end do
-         end if
-
-         !itype = 1
-         !if (vtype(itype)%l) then
-            !do ip = 1, np
-               !igr = igrpn(ip,1)
-               !if (igr <= 0) cycle
-               !ivar = ipnt(igr,inw,itype)
-               !call PBCr2(ro(1,ip)-rcom(1), ro(2,ip)-rcom(2), ro(3,ip)-rcom(3), r2)
-               !r1 = sqrt(r2)
-               !ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
-               !var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-            !end do
-         !end if
-
-! ... sample type 2
-
-         itype = 2
-         if (vtype(itype)%l) then
-            do igr = 1, ngr(1)
+               igr = igrpn(ip,1)
+               if (igr <= 0) cycle
                ivar = ipnt(igr,inw,itype)
-               do ibin = -1, var(ivar)%nbin
-                  var(ivar)%avs2(ibin) = var(ipnt(igr,inw,1))%avs2(ibin)  ! reference to itype 1 in ipnt
-               end do
+               call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
+               r1 = sqrt(r2)
+               ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
+               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
             end do
          end if
 
@@ -8844,6 +8816,20 @@ subroutine NetworkRadialDF(iStage)
       end do
 
    case (iAfterMacrostep)
+
+! ... sample type 2
+
+         itype = 2
+         if (vtype(itype)%l) then
+            do inw = 1, nnw
+               do igr = 1, ngr(1)
+                  ivar = ipnt(igr,inw,itype)
+                  do ibin = -1, var(ivar)%nbin
+                     var(ivar)%avs2(ibin) = var(ipnt(igr,inw,1))%avs2(ibin)  ! reference to itype 1 in ipnt
+                  end do
+               end do
+            end do
+         end if
 
 ! ... normalisation
 
