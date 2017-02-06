@@ -8512,19 +8512,19 @@ subroutine NetworkDF(iStage)
          end if
       end do
 
-      call DistFuncAverDist(nvar2, ilow, iupp, var, var2, vspread)
+      call DistFuncAverDist(nvar2,ilow,iupp,var,var2,vspread)
 
-      call DistFuncWrite(trim(txheading)//': aver', nvar2, var2, uout, ulist, ishow, iplot, ilist)
+      call DistFuncWrite(trim(txheading)//': aver',nvar2,var2,uout,ulist,ishow,iplot,ilist)
       write(uout,'()')
       write(uout,'(a,(t30,f10.4))') 'rms spread = ', vspread
 
-      call DistFuncAverValue(nvar2, var2, uout)
+      call DistFuncAverValue(nvar2,var2,uout)
 
-      deallocate(var, ipnt, ilow, iupp, var2, vspread)
+      deallocate(var,ipnt,ilow,iupp,var2,vspread)
 
    end select
 
-   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop',txroutine,1,uout)
 
 end subroutine NetworkDF
 
@@ -8535,7 +8535,6 @@ end subroutine NetworkDF
 !************************************************************************
 
 ! ... calculate radial distribution functions of properties of networks
-! ... Cornelius Hofzumahaus 09/15
 
 !     type  label     quantity
 !     ----  -----     --------
@@ -8546,7 +8545,7 @@ end subroutine NetworkDF
 !      5    zcum(r)   cumulative sum of all charges
 !      6    a(r)      reduced degree of ionization
 !      7    rdensc(r) chain number density
-!      8    isegdist    average distance of particle segment iseg belonging to chains of group igr to COM
+!      8    isegdist  average distance of particle segment iseg belonging to chains of group igr to COM
 !      9    icdist    average distance of chains ic belonging to group igr to COM
 
 subroutine NetworkRadialDF(iStage)
@@ -8574,15 +8573,13 @@ subroutine NetworkRadialDF(iStage)
    real(8)                         :: InvFlt, InvInt
    real(8)                         :: rcom(1:3), r2, r1, vsum, norm, dvol
 
-!    real(8)                         :: tolerance = sqrt(epsilon(r2))   ! Cornelius Hofzumahaus: In order to solve the bin splitting problem
-
    namelist /nmlNetworkRadialDF/ vtype
 
    if (slave) return ! only master
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
-   call CpuAdd('start', txroutine, 1, uout)
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    select case (iStage)
    case (iReadInput)
@@ -8973,7 +8970,7 @@ subroutine NetworkRadialDF(iStage)
 
    end select
 
-   call CpuAdd('stop', txroutine, 1, uout)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine NetworkRadialDF
 
