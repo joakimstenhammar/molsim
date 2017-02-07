@@ -8545,8 +8545,6 @@ end subroutine NetworkDF
 !      5    qcum(r)     cumulative radial sum of all charges
 !      6    alpha(r)    reduced degree of ionization
 !      7    rchain(r)   radial chain number distribution
-!      8    isegdist    average distance of particle segment iseg belonging to chains of group igr to COM
-!      9    icdist      average distance of chains ic belonging to group igr to COM
 
 subroutine NetworkRadialDF(iStage)
 
@@ -8558,7 +8556,7 @@ subroutine NetworkRadialDF(iStage)
 
    character(40),        parameter :: txroutine ='NetworkRadialDF'
    character(80),        parameter :: txheading ='radial distribution functions of networks'
-   integer(4)   ,        parameter :: ntype = 9
+   integer(4)   ,        parameter :: ntype = 7
    type(static1D_var),        save :: vtype(ntype)
    integer(4),                save :: nvar
    integer(4),                save :: ngrloc(ntype)
@@ -8620,11 +8618,11 @@ subroutine NetworkRadialDF(iStage)
 
       vtype%label = ['<rpart>   ','<rdens>   ','<rgchain> ', &
                     &'<sum(q)>  ','<q_cum>   ','<alpha>   ', &
-                    &'<rchain>  ','<isegdist>','<icdist>  '   ]
+                    &'<rchain>  ' ]
 
       vtype%nvar  = [ ngr(1)*nnw,   ngr(1)*nnw,     nct*nnw, &
                     &        nnw,          nnw,         nnw, &
-                    & ngr(1)*nnw,   ngr(1)*nnw,         nnw  ]
+                    & ngr(1)*nnw  ]
 
       ngrloc(1:ntype) = vtype(1:ntype)%nvar / nnw   ! = ngr(1), ngr(1), nct, 1, 1, 1, ngr(1)
 
@@ -8654,8 +8652,6 @@ subroutine NetworkRadialDF(iStage)
                   else if (itype == 3) then
                      var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txct(igrloc)
                   else if (itype == 7) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
-                  else if (itype == 8) then
                      var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
                   else
                      var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))    ! for those with ngrloc = 1
@@ -8731,8 +8727,8 @@ subroutine NetworkRadialDF(iStage)
             do ipt = 1, npt
                if (zat(iatpt(ipt)) == Zero) cycle
                do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
-                  if (lweakcharge .and. .not. laz(ip)) cycle
-                  call PBCr2(ro(1,ip)-rcom(1), ro(2,ip)-rcom(2), ro(3,ip)-rcom(3), r2)
+                  if (lweakcharge .and. .not.laz(ip)) cycle
+                  call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
                   r1 = sqrt(r2)
                   ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + zat(iatpt(iptpn(ip)))
@@ -8740,15 +8736,7 @@ subroutine NetworkRadialDF(iStage)
             end do
          end if
 
-! ... sample type 5
-
-         itype = 5
-         if (vtype(itype)%l) then
-            ivar = ipnt(1,inw,itype)
-            do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = sum(var(ipnt(1,inw,4))%avs2(-1:ibin))   ! reference to itype 4 in ipnt
-            end do
-         end if
+! ... sample type 5 in iStage == 'iAfterMacrostep'
 
 ! ... sample type 6
 
@@ -8759,7 +8747,7 @@ subroutine NetworkRadialDF(iStage)
                ip = ipnplocnwn(iploc,inw)
                ipt = iptpn(ip)
                if (.not. latweakcharge(iatpt(ipt))) cycle
-               call PBCr2(ro(1,ip)-rcom(1), ro(2,ip)-rcom(2), ro(3,ip)-rcom(3), r2)
+               call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                if (laz(ip)) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
@@ -8775,52 +8763,12 @@ subroutine NetworkRadialDF(iStage)
                igr = igrpn(ipnsegcn(1,ic),1)
                if (igr <= 0) cycle
                ivar = ipnt(igr,inw,itype)
-               call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-               call CalcChainProperty(ic, vaux, ChainProperty)
-               call PBCr2(ChainProperty%ro(1)-rcom(1), ChainProperty%ro(2)-rcom(2), ChainProperty%ro(3)-rcom(3), r2)
+               call UndoPBCChain(ro(1,ipnsegcn(1,ic)),ic,1,vaux)
+               call CalcChainProperty(ic,vaux,ChainProperty)
+               call PBCr2(ChainProperty%ro(1)-rcom(1),ChainProperty%ro(2)-rcom(2),ChainProperty%ro(3)-rcom(3),r2)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-            end do
-         end if
-
-! ... sample type 8
-
-         itype = 8
-         if (vtype(itype)%l) then
-            do ip = 1, np
-               igr = igrpn(ip,1)
-               if (igr <= 0) cycle
-               ivar = ipnt(igr,inw,itype)
-               ic = icnpn(ip)
-               if (idircn(ic) > Zero) then ! chain has been set directing from inside to outside
-                  iseg = isegpn(ip)
-               else if (idircn(ic) < Zero ) then ! chain has been set directing from outside to inside
-                  iseg = npct(ictcn(ic)) - isegpn(ip) + 1
-               end if
-               call PBCr2(ro(1,ip)-rcom(1), ro(2,ip)-rcom(2), ro(3,ip)-rcom(3), r2)
-               r1 = sqrt(r2)
-               ibin = max(-1,min(floor(var(ivar)%bini*(real(iseg)-var(ivar)%min)),int(var(ivar)%nbin)))
-               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + r1
-               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
-            end do
-         end if
-
-! ... sample type 9
-
-         itype = 9
-         if (vtype(itype)%l) then
-            do ic = 1, nc
-               igr = igrpn(ipnsegcn(1,ic),1)
-               if (igr <= 0) cycle
-               ivar = ipnt(1,inw,itype)
-               call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-               call CalcChainProperty(ic, vaux, ChainProperty)
-               call PBCr2(ChainProperty%ro(1)-rcom(1), ChainProperty%ro(2)-rcom(2), ChainProperty%ro(3)-rcom(3), r2)
-               r1 = sqrt(r2)
-               ibin = max(-1,min(floor(var(ivar)%bini*(real(igr)-var(ivar)%min)),int(var(ivar)%nbin)))
-               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + r1
-               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
             end do
          end if
 
@@ -8828,23 +8776,38 @@ subroutine NetworkRadialDF(iStage)
 
    case (iAfterMacrostep)
 
-! ... sample type 2 by copying data from type 1
+! ... sample dependent distribution functions
 
-         itype = 2
-         if (vtype(itype)%l) then
-            do inw = 1, nnw
+         do inw = 1, nnw
+
+! ... sample type 2 by copying data from type 1
+            itype = 2
+            if (vtype(itype)%l) then
                do igr = 1, ngr(1)
                   ivar = ipnt(igr,inw,itype)
                   do ibin = -1, var(ivar)%nbin
                      var(ivar)%avs2(ibin) = var(ipnt(igr,inw,1))%avs2(ibin)  ! reference to itype 1 in ipnt
                   end do
                end do
-            end do
-         end if
+            end if
+
+! ... sample type 5 by copying and summing up data from type 4
+
+            itype = 5
+            if (vtype(itype)%l) then
+               ivar = ipnt(1,inw,itype)
+               var(ivar)%avs2(-1) = var(ipnt(1,inw,4))%avs2(-1)
+               do ibin = 0, var(ivar)%nbin
+                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin-1)+var(ipnt(1,inw,4))%avs2(ibin) ! reference to itype 4 in ipnt
+               end do
+            end if
+
+         end do
 
 ! ... normalisation
 
       do inw = 1, nnw
+
          itype = 2
          if (vtype(itype)%l) then
             do igr = 1, ngr(1)
@@ -8884,28 +8847,6 @@ subroutine NetworkRadialDF(iStage)
             end do
          end if
 
-         itype = 8
-         if (vtype(itype)%l) then
-            do igr = 1, ngr(1)
-               ivar = ipnt(igr,inw,itype)
-               norm = var(ivar)%nsamp2
-               do ibin = -1, var(ivar)%nbin
-                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin)
-                  var(ivar)%nsampbin1(ibin) = var(ivar)%nsampbin1(ibin)+One
-               end do
-            end do
-         end if
-
-         itype = 9
-         if (vtype(itype)%l) then
-            ivar = ipnt(1,inw,itype)
-            norm = var(ivar)%nsamp2
-            do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin)
-               var(ivar)%nsampbin1(ibin) = var(ivar)%nsampbin1(ibin)+One
-            end do
-         end if
-
       end do
 
       call DistFuncSample(iStage, nvar, var) ! -> update nsamp1, divide avs2 by nsamp2, sum up avs1 and avsd
@@ -8915,6 +8856,7 @@ subroutine NetworkRadialDF(iStage)
    case (iAfterSimulation)
 
       do inw = 1, nnw
+
          itype = 3
          if (vtype(itype)%l) then
             do ict = 1, nct
@@ -8932,26 +8874,6 @@ subroutine NetworkRadialDF(iStage)
             norm = var(ivar)%nsamp1 ! *nsamp1 in order to counteract wrong normalization in distfuncsample
             do ibin = -1, var(ivar)%nbin
                if (var(ivar)%nsampbin1(ibin) > Zero) var(ivar)%avs1(ibin) = norm*var(ivar)%avs1(ibin)/var(ivar)%nsampbin1(ibin)
-            end do
-         end if
-
-         itype = 8
-         if (vtype(itype)%l) then
-            do igr = 1, ngr(1)
-               ivar = ipnt(igr,inw,itype)
-               norm = var(ivar)%nsamp1
-               do ibin = -1, var(ivar)%nbin
-                  var(ivar)%avs1(ibin) = var(ivar)%avs1(ibin) * norm / var(ivar)%nsampbin1(ibin) 
-               end do
-            end do
-         end if
-
-         itype = 9
-         if (vtype(itype)%l) then
-            ivar = ipnt(1,inw,itype)
-            norm = var(ivar)%nsamp1
-            do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs1(ibin) = var(ivar)%avs1(ibin) * norm / var(ivar)%nsampbin1(ibin) 
             end do
          end if
 
