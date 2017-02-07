@@ -2509,6 +2509,173 @@ subroutine GroupAds_layer1_ramp(iStage, m)
 
 end subroutine GroupAds_layer1_ramp
 
+!************************************************************************
+!*                                                                      *
+!*     GroupNetworkGenerations                                          *
+!*                                                                      *
+!************************************************************************
+
+! ... group division according to generations of non-periodic network
+
+subroutine GroupNetworkGenerations(iStage,m,txtype)
+
+   use MolModule
+   implicit none
+
+   integer(4),    intent(in)     :: iStage
+   integer(4),    intent(in)     :: m
+   character(20), intent(in)     :: txtype(2)
+
+   character(len=*), parameter   :: txroutine = 'GroupNetworkGenerations'
+
+   integer(4), allocatable, save :: igencn(:)
+   logical                       :: lassigned(0:nc)
+
+   integer(4)                    :: ivar, ip, igr, ic, jc
+   integer(4)                    :: n ! n is being used as a subsitute for where "m" is usually being used in this context
+
+   logical                       :: ldum
+   character(10)                 :: str
+
+
+   select case (iStage)
+
+   case (iReadInput)
+
+      ! ... temporarily set ngr = 1: Adjust value as network configuration data is available
+      ngr(m) = 1
+
+   case (iWriteInput)
+
+      ! ... Evaluate required information
+      call SetNetworkGenerationPointer
+
+      ! ... Determine ngr(m) and assign generations to chains
+      if(.not.allocated(igencn)) allocate(igencn(0:nc))
+      igencn(0:nc) = 0
+      do ic = 1, nc
+         if (nclcn(ic) == 1) then ! dangling chain ic
+            call AssignChainGeneration(ic,0,igencn)
+         end if
+      end do
+
+      ngr(m) = maxval(igencn(1:nc))
+
+      ! ... update maxngr, ngrgr and ngrvar according to the determined ngr(m)
+      maxngr = maxval(ngr(1:2))
+      ngrgr = ngr(1)*ngr(2)
+      ngrvar = 2+sum(ngr(1:2))
+
+      ! ... reallocate parameters with updated values for maxngr and ngrgr
+      deallocate(grvar,iptgr,iatgr,natgr,igrgr,igrpnt,txgr,txgrgr)
+      allocate(grvar(ngrvar),iptgr(maxngr,2),iatgr(maxngr,2),natgr(maxngr,2),igrgr(maxngr,maxngr),igrpnt(2,0:maxngr),txgr(maxngr),txgrgr(ngrgr))
+
+      ! ... set igrpnt according to the determined ngr(m)
+      ivar = 0
+      do n = 1, 2
+         do igr = 0, ngr(n)
+            ivar = ivar + 1
+            igrpnt(n,igr) = ivar
+         end do
+      end do
+
+      ! ... after reallocation resetting variables of other global group (m) ref or field may be required
+      do n = 1, 2
+         grvar(igrpnt(n,0))%label = 'not in any group'
+      end do
+
+      ! If m == 2, then all parameters for m == 1 had already been set. This setting has then been undone by reallocation and needs to be redone
+      if (m == 2) then
+         n = 1
+         if (txtype(n)(1:8) == 'type=all') then
+            call GroupAll(iStage,n)
+         else if (txtype(n)(1:5) == 'type=') then
+            call GroupType(iStage,n,txtype)
+         else
+            if (txtype(n) == 'networkgenerations') then
+               call Stop(txroutine,'ref = "networkgenerations" .and. field = "networkgenerations"',uout)
+            end if
+            call GroupUser(iStage,n,txtype,ldum)
+         end if
+      end if
+
+      ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
+      str = '      '
+      do igr = 1, ngr(m)
+         write(str,'(i10)') igr
+         iptgr(igr,m) = 2   ! This implies monomers to be formed of particle type 2!
+                            ! Why can one group not comprise more than one particle type?
+         grvar(igrpnt(m,igr))%label = "nw-gen:"//trim(adjustl(str))
+      end do
+
+      ! Set igrpn(ip,m) in order to know it for image generation - Group assignment of particles is fixed throughout the simulation
+      do ip = 1, np
+         igrpn(ip,m) = igencn(icnpn(ip))
+         grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+      end do
+
+   case (iSimulationStep)
+      return
+
+   end select
+
+contains
+
+!........................................................................
+
+recursive subroutine AssignChainGeneration(ic,jc,igencn)
+
+   implicit none
+
+   integer(4), intent(in)     :: ic, jc
+   integer(4), intent(inout)  :: igencn(0:nc)
+
+   integer(4)  :: jccl
+   integer(4)  :: icl, ibondcl
+   integer(4)  :: ipnode
+
+   if ((igencn(ic) > (igencn(jc)+1)) .or. (igencn(ic) == 0)) then
+      igencn(ic) = igencn(jc) + 1
+      do icl = 1, nclcn(ic)
+         ipnode = ipnclcn(icl,ic)
+         do ibondcl = 1, nbondcl(ipnode)
+            jccl = icnclpn(ibondcl,ipnode)
+            if (ic == jccl) cycle ! ... don't go back to where you came from
+            call AssignChainGeneration(jccl,ic,igencn)
+         end do
+      end do
+   else
+      continue
+   end if
+
+end subroutine AssignChainGeneration
+
+!........................................................................
+
+subroutine SetNetworkGenerationPointer
+
+   use MolModule
+   implicit none
+
+   integer(4)  :: ip
+   integer(4)  :: ibondcl
+   integer(4)  :: ic
+
+   do ip = 1, np
+      if ((nbondcl(ip) > Zero) .and. (icnpn(ip) == Zero)) then ! ip is a node: It got crosslinks but it's no part of a chain
+         do ibondcl = 1, nbondcl(ip)
+            ic = icnpn(bondcl(ibondcl,ip))
+            nclcn(ic) = nclcn(ic) + 1
+            icnclpn(ibondcl,ip) = ic
+            ipnclcn(nclcn(ic),ic) = ip
+         end do
+      end if
+   end do
+
+end subroutine SetNetworkGenerationPointer
+
+end subroutine GroupNetworkGenerations
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
