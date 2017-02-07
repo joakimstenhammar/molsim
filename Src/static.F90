@@ -205,6 +205,8 @@ subroutine StaticDriver(iStage)
          if (lcrystalformat)    write(uout,'(a)') '   crystalformat '
          if (ltrajectory)       write(uout,'(a)') '   trajectory    '
          if (lstaticuser)       write(uout,'(a)') '   staticuser    '
+         if (lnetworkdf)        write(uout,'(a)') '   networkdf     '
+         if (lnetworkradialdf)  write(uout,'(a)') '   networkradialdf'
          if (lsubstructuredf)   write(uout,'(a)') '   substructuredf'
       end if
 
