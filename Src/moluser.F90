@@ -2615,7 +2615,11 @@ subroutine GroupNetworkGenerations(iStage,m,txtype)
       end do
 
    case (iSimulationStep)
-      return
+
+      do ip = 1, np
+         igrpn(ip,m) = igencn(icnpn(ip))
+         grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+      end do
 
    end select
 
