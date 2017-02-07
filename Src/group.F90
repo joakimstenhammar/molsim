@@ -39,7 +39,7 @@ subroutine Group(iStage)
    character(20) :: field         ! text lable for selecting procedure of how to divide particles into field groups
    logical       :: lwref         !.true. => reference group data are written on file FGROUP
    character(20) :: txtype(2)     ! holds ref and field
-   character(1)  :: no(maxngr)    ! for internal reading
+   character(1), allocatable :: no(:)    ! for internal reading
    logical       :: lsetconf
    integer(4)    :: l20
    integer(4)    :: ip, ipt, igr, jgr,  m, ivar
@@ -139,10 +139,15 @@ subroutine Group(iStage)
          end if
       end do
 
+! ... allocate 'no' here
+      allocate(no(maxngr))
+      no = ""
+
 ! ... set ngrgr, igrgr, txgr, and txgrgr
 
       do igr = 1, maxngr
          write(no(igr),'(i1)') igr
+
       end do
       ngrgr = 0
       do igr = 1, ngr(1)
