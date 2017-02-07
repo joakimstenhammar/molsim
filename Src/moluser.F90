@@ -9486,7 +9486,7 @@ subroutine ElPot(iStage)
    case (iBeforeMacrostep)
 
       call DistFuncSample(iStage, nvar, var)
-      var(1)%nsampbin(-1:var(1)%nbin)=zero
+      var(1)%nsampbin2(-1:var(1)%nbin)=zero
 
     case (iSimulationStep)
 
@@ -9525,7 +9525,7 @@ subroutine ElPot(iStage)
          pot=pot/avNo*sclene
 
          ibin = max(-1,min(int(var(1)%bini*(dr-var(1)%min)),var(1)%nbin))
-         var(1)%nsampbin(ibin)=var(1)%nsampbin(ibin) + 1
+         var(1)%nsampbin2(ibin)=var(1)%nsampbin2(ibin) + 1
          var(1)%avs2(ibin) = var(1)%avs2(ibin)+pot
       end do
 
@@ -9533,9 +9533,9 @@ subroutine ElPot(iStage)
 
       do ibin=-1,var(1)%nbin
          norm =zero
-         if (var(1)%nsampbin(ibin) > 0) then
+         if (var(1)%nsampbin2(ibin) > 0) then
             nsamp1(ibin)=nsamp1(ibin) + 1
-            norm=one/var(1)%nsampbin(ibin)
+            norm=one/var(1)%nsampbin2(ibin)
          else
          end if
          var(1)%avs2(ibin)=var(1)%avs2(ibin)*norm
