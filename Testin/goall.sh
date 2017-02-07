@@ -285,6 +285,7 @@ $molsim  complexation.mc          $core
 
 #finite networks (fnw)
 $molsim fnw.nwt2.mc               $core
+$molsim fnw.nwgen.df.mc           $core
 
 echo
 echo "Remove group and dump files"
