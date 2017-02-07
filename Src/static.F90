@@ -8536,17 +8536,17 @@ end subroutine NetworkDF
 
 ! ... calculate radial distribution functions of properties of networks
 
-!     type  label     quantity
-!     ----  -----     --------
-!      1    rdens     particle number density
-!      2    rrden     reduced particle number density
-!      3    rgchain   chain radius of gyration
-!      4    z(r)      sum of all charges
-!      5    zcum(r)   cumulative sum of all charges
-!      6    a(r)      reduced degree of ionization
-!      7    rdensc(r) chain number density
-!      8    isegdist  average distance of particle segment iseg belonging to chains of group igr to COM
-!      9    icdist    average distance of chains ic belonging to group igr to COM
+!     type  label       quantity
+!     ----  -----       --------
+!      1    rpart(r)    radial particle number distribution
+!      2    rdens(r)    radial particle density distribution
+!      3    rgchain(r)  radial chain radius of gyration
+!      4    q(r)        radial sum of all charges
+!      5    qcum(r)     cumulative radial sum of all charges
+!      6    alpha(r)    reduced degree of ionization
+!      7    rchain(r)   radial chain number distribution
+!      8    isegdist    average distance of particle segment iseg belonging to chains of group igr to COM
+!      9    icdist      average distance of chains ic belonging to group igr to COM
 
 subroutine NetworkRadialDF(iStage)
 
@@ -8594,6 +8594,15 @@ subroutine NetworkRadialDF(iStage)
       rewind(uin)
       read(uin,nmlNetworkRadialDF)
 
+! ... condition: vtype(2) needs vtype(1) to be evaluated
+
+      if (vtype(2)%l .and. (.not. vtype(1)%l)) then
+         call Warn(txroutine,'vtype(2)%l .and. (.not. vtype(1)%l): vtype(1) = .true.',uout)
+         vtype(1) = vtype(2)
+      else if (vtype(1)%l .and. vtype(2)%l) then
+         vtype(2) = vtype(1)
+      end if
+
 ! ... condition: vtype(5) needs vtype(4) to be evaluated
 
       if (vtype(5)%l .and. (.not. vtype(4)%l)) then
@@ -8609,9 +8618,9 @@ subroutine NetworkRadialDF(iStage)
 
 ! ... set remaining elements of vtype and ngrloc
 
-      vtype%label = ['<rdens>   ','<rrden>   ','<Rg_chain>', &
-                    &'<Z(r)>    ','<Z_cum(r)>','<a(r)>    ', &
-                    &'<rdensc>  ','<isegdist>','<icdist>  '   ]
+      vtype%label = ['<rpart>   ','<rdens>   ','<rgchain> ', &
+                    &'<sum(q)>  ','<q_cum>   ','<alpha>   ', &
+                    &'<rchain>  ','<isegdist>','<icdist>  '   ]
 
       vtype%nvar  = [ ngr(1)*nnw,   ngr(1)*nnw,     nct*nnw, &
                     &        nnw,          nnw,         nnw, &
@@ -8672,9 +8681,9 @@ subroutine NetworkRadialDF(iStage)
       var%nsamp2 = var%nsamp2 + 1
 
       do inw = 1, nnw
+         inwt = inwtnwn(inw)
 
 ! ... get center of mass of network inw and network type inwt
-         inwt = inwtnwn(inw)
          call CalcNetworkProperty(inw,NetworkProperty)
 
          rcom(1:3) = NetworkProperty%ro(1:3)
@@ -8694,6 +8703,8 @@ subroutine NetworkRadialDF(iStage)
             end do
          end if
 
+! ... sample type 2 in iStage == 'iAfterMacrostep'
+
 ! ... sample type 3
 
          itype = 3
@@ -8702,13 +8713,13 @@ subroutine NetworkRadialDF(iStage)
                ic  = icnclocnwn(icloc,inw)
                ict = ictcn(ic)
                ivar = ipnt(ict,inw,itype)
-               call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-               call CalcChainProperty(ic, vaux, ChainProperty)
-               call PBCr2(ChainProperty%ro(1)-rcom(1), ChainProperty%ro(2)-rcom(2), ChainProperty%ro(3)-rcom(3), r2)
+               call UndoPBCChain(ro(1,ipnsegcn(1,ic)),ic,1,vaux)
+               call CalcChainProperty(ic,vaux,ChainProperty)
+               call PBCr2(ChainProperty%ro(1)-rcom(1),ChainProperty%ro(2)-rcom(2),ChainProperty%ro(3)-rcom(3),r2)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + sqrt(ChainProperty%rg2)
-               var(ivar)%nsampbin2(ibin)=var(ivar)%nsampbin2(ibin) + One
+               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
             end do
          end if
 
@@ -8817,7 +8828,7 @@ subroutine NetworkRadialDF(iStage)
 
    case (iAfterMacrostep)
 
-! ... sample type 2
+! ... sample type 2 by copying data from type 1
 
          itype = 2
          if (vtype(itype)%l) then
@@ -8832,8 +8843,6 @@ subroutine NetworkRadialDF(iStage)
          end if
 
 ! ... normalisation
-
-!       call DistFuncNorm(1,sum(vtype(1:1)%nvar,1,vtype(1:1)%l), var)   ! type 1
 
       do inw = 1, nnw
          itype = 2
