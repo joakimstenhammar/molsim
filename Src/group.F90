@@ -40,7 +40,6 @@ subroutine Group(iStage)
    logical       :: lwref         !.true. => reference group data are written on file FGROUP
    character(20) :: txtype(2)     ! holds ref and field
    character(1)  :: no(maxngr)    ! for internal reading
-   integer(4)    :: ngrvar        ! number of group variables (2+ngr(1)+ngr(2))
    logical       :: lsetconf
    integer(4)    :: l20
    integer(4)    :: ip, ipt, igr, jgr,  m, ivar
