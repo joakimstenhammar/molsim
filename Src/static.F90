@@ -8343,7 +8343,7 @@ subroutine NetworkDF(iStage)
    type(chainprop_var)              :: ChainProperty
    integer(4), save                 :: ngrloc(ntype)
 
-   integer(4)     :: itype, ivar, ivar2, ibin, inw, inwt, igrloc, ic, ip
+   integer(4)     :: itype, ivar, ivar2, ibin, inw, inwt, igrloc, ic
    real(8)        :: value
    character(3)   :: txnwn
 
@@ -8566,9 +8566,9 @@ subroutine NetworkRadialDF(iStage)
    type(chainprop_var)             :: ChainProperty
 
    character(3)                    :: txinw
-   integer(4)                      :: itype, ivar, ibin, nref
-   integer(4)                      :: inwt, inw, ict, ic, icloc, ipt, ip, iploc, ia, igr, igrloc, iseg
-   real(8)                         :: InvFlt, InvInt
+   integer(4)                      :: itype, ivar, ibin
+   integer(4)                      :: inwt, inw, ict, ic, icloc, ipt, ip, iploc, igr, igrloc
+   real(8)                         :: InvFlt
    real(8)                         :: rcom(1:3), r2, r1, vsum, norm, dvol
 
    namelist /nmlNetworkRadialDF/ vtype
@@ -8890,4 +8890,3 @@ subroutine NetworkRadialDF(iStage)
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine NetworkRadialDF
-
