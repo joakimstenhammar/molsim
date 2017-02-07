@@ -256,6 +256,8 @@ subroutine StaticDriverSub
    if (lcrystalformat)    call Crystalformat(iStage)
    if (ltrajectory)       call Trajectory(iStage)
    if (lsubstructuredf)   call SubStructureDF(iStage)
+   if (lnetworkdf)        call NetworkDF(iStage)
+   if (lnetworkradialdf)  call NetworkRadialDF(iStage)
    if (lstaticuser)       call StaticUser(iStage)
 end subroutine StaticDriverSub
 
