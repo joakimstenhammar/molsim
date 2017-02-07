@@ -691,11 +691,11 @@ subroutine SetObjectParam1
          icnclpn = 0
       end if
       if (.not.allocated(nclcn)) then
-         allocate(nclcn(nc_alloc))
+         allocate(nclcn(nc))
          nclcn = 0
       end if
       if (.not.allocated(ipnclcn)) then
-         allocate(ipnclcn(2,nc_alloc))
+         allocate(ipnclcn(2,nc))
          ipnclcn = 0
       end if
    end if
