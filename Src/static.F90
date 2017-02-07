@@ -511,7 +511,7 @@ subroutine SPDF(iStage)
             end if                                                         ! to here  /Per
             ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
             var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + pot
-            var(ivar)%nsampbin(ibin)=var(ivar)%nsampbin(ibin) + One
+            var(ivar)%nsampbin2(ibin)=var(ivar)%nsampbin2(ibin) + One
          end if
 
 ! ... sample type 10
@@ -587,7 +587,7 @@ subroutine SPDF(iStage)
             ivar = ipnt(igr,itype)
             norm = var(ivar)%nsamp2              ! factor too counteract the normalization in DistFuncSample
             do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin(ibin))
+               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin2(ibin))
             end do
          end if
          itype = 10
@@ -907,7 +907,7 @@ subroutine RDF(iStage)
                         ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                         var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
                         tauvar(ivar)%avs2(ibin) = tauvar(ivar)%avs2(ibin) + (dxo*dx+dyo*dy+dzo*dz)/r1  ! tau = dro.dr/r1
-                        tauvar(ivar)%nsampbin(ibin) = tauvar(ivar)%nsampbin(ibin) + One
+                        tauvar(ivar)%nsampbin2(ibin) = tauvar(ivar)%nsampbin2(ibin) + One
                      end do
                   end do
                end if
@@ -969,7 +969,7 @@ subroutine RDF(iStage)
             do ibin = 0, var(ivar)%nbin
                if (ndim == 3) then
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)*var(ivar)%norm/dvol(ibin,var(ivar)%min,var(ivar)%bin)
-                  tauvar(ivar)%avs2(ibin) = tauvar(ivar)%avs2(ibin)*InvFlt(tauvar(ivar)%nsampbin(ibin))
+                  tauvar(ivar)%avs2(ibin) = tauvar(ivar)%avs2(ibin)*InvFlt(tauvar(ivar)%nsampbin2(ibin))
                end if
                if (ndim == 2) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)*var(ivar)%norm/darea(ibin,var(ivar)%min,var(ivar)%bin)
             end do
@@ -8048,7 +8048,7 @@ subroutine SubStructureDF(iStage)
    case (iBeforeMacrostep)
 
       call DistFuncSample(iStage, nvar, var)    ! iStage: iBeforeMacrostep
-      ! -> Initiate nsamp2, avs2, nsampbin
+      ! -> Initiate nsamp2, avs2, nsampbin2
       call ScalarSample(iStage, 1, nvar, sclvar)! iStage: iBeforeMacrostep
       ! -> Inititate nsamp2, avs2, fls2
 
@@ -8152,7 +8152,7 @@ subroutine SubStructureDF(iStage)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + sqrt(ChainProperty%rg2)
                sclvar(ivar)%value = sclvar(ivar)%value + sqrt(ChainProperty%rg2)
-               var(ivar)%nsampbin(ibin)=var(ivar)%nsampbin(ibin) + One
+               var(ivar)%nsampbin2(ibin)=var(ivar)%nsampbin2(ibin) + One
             end if
          end do
       end if
@@ -8170,7 +8170,7 @@ subroutine SubStructureDF(iStage)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + zat(iatpt(iptpn(ip)))
-               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
+               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
                sclvar(ivar)%value = sclvar(ivar)%value + zat(iatpt(iptpn(ip)))
             end do
          end do
@@ -8183,7 +8183,7 @@ subroutine SubStructureDF(iStage)
          ivar = ipnt(1,itype)
          do ibin = -1, var(ivar)%nbin
             var(ivar)%avs2(ibin) = sum(var(ivar-1)%avs2(-1:ibin))
-            var(ivar)%nsampbin(ibin) = sum(var(ivar-1)%nsampbin(-1:ibin))
+            var(ivar)%nsampbin2(ibin) = sum(var(ivar-1)%nsampbin2(-1:ibin))
             sclvar(ivar)%value = sclvar(ivar-1)%value
          end do
       end if
@@ -8217,10 +8217,10 @@ subroutine SubStructureDF(iStage)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                if (laz(ip)) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
+               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
             end do
          end do
-         sclvar(ivar)%value = sclvar(ivar)%value + sum(var(ivar)%avs2(-1:var(ivar)%nbin)/var(ivar)%nsampbin(-1:var(ivar)%nbin))
+         sclvar(ivar)%value = sclvar(ivar)%value + sum(var(ivar)%avs2(-1:var(ivar)%nbin)/var(ivar)%nsampbin2(-1:var(ivar)%nbin))
       end if
 
       call ScalarSample(iStage, 1, nvar, sclvar)! iStage: iSimulationStep
@@ -8252,7 +8252,7 @@ subroutine SubStructureDF(iStage)
             ivar = ipnt(ict,itype)
             norm = var(ivar)%nsamp2             ! factor to counteract the normalization in DistFuncSample
             do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin(ibin))
+               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin2(ibin))
             end do
          end do
       end if
@@ -8261,9 +8261,9 @@ subroutine SubStructureDF(iStage)
       if (vtype(itype)%l) then
          ivar = ipnt(1,itype)
          vsum = sum(var(ivar)%avs2(-1:var(ivar)%nbin))
-         norm = var(ivar)%nsamp2 * sum(var(ivar)%nsampbin(-1:var(ivar)%nbin)) * InvFlt(vsum) ! *nsamp2 in order to counteract wrong normalization in distfuncsample
+         norm = var(ivar)%nsamp2 * sum(var(ivar)%nsampbin2(-1:var(ivar)%nbin)) * InvFlt(vsum) ! *nsamp2 in order to counteract wrong normalization in distfuncsample
          do ibin = -1, var(ivar)%nbin
-            if (var(ivar)%nsampbin(ibin) /= Zero) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin(ibin)
+            if (var(ivar)%nsampbin2(ibin) /= Zero) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin)
          end do
       end if
 
