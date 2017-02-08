@@ -2542,8 +2542,9 @@ subroutine GroupNetworkGenerations(iStage,m,txtype)
 
    case (iReadInput)
 
-      ! ... temporarily set ngr = 1: Adjust value as network configuration data is available
-      ngr(m) = 1
+      ! ... for the allocations in subroutine Group: Set ngr(m) high enough
+      ! ... the actual number of generations cannot exceed nc/4
+      ngr(m) = nc/4
 
    case (iWriteInput)
 
@@ -2560,44 +2561,6 @@ subroutine GroupNetworkGenerations(iStage,m,txtype)
       end do
 
       ngr(m) = maxval(igencn(1:nc))
-
-      ! ... update maxngr, ngrgr and ngrvar according to the determined ngr(m)
-      maxngr = maxval(ngr(1:2))
-      ngrgr = ngr(1)*ngr(2)
-      ngrvar = 2+sum(ngr(1:2))
-
-      ! ... reallocate parameters with updated values for maxngr and ngrgr
-      deallocate(grvar,iptgr,iatgr,natgr,igrgr,igrpnt,txgr,txgrgr)
-      allocate(grvar(ngrvar),iptgr(maxngr,2),iatgr(maxngr,2),natgr(maxngr,2),igrgr(maxngr,maxngr),igrpnt(2,0:maxngr),txgr(maxngr),txgrgr(ngrgr))
-
-      ! ... set igrpnt according to the determined ngr(m)
-      ivar = 0
-      do n = 1, 2
-         do igr = 0, ngr(n)
-            ivar = ivar + 1
-            igrpnt(n,igr) = ivar
-         end do
-      end do
-
-      ! ... after reallocation resetting variables of other global group (m) ref or field may be required
-      do n = 1, 2
-         grvar(igrpnt(n,0))%label = 'not in any group'
-      end do
-
-      ! If m == 2, then all parameters for m == 1 had already been set. This setting has then been undone by reallocation and needs to be redone
-      if (m == 2) then
-         n = 1
-         if (txtype(n)(1:8) == 'type=all') then
-            call GroupAll(iStage,n)
-         else if (txtype(n)(1:5) == 'type=') then
-            call GroupType(iStage,n,txtype)
-         else
-            if (txtype(n) == 'networkgenerations') then
-               call Stop(txroutine,'ref = "networkgenerations" .and. field = "networkgenerations"',uout)
-            end if
-            call GroupUser(iStage,n,txtype,ldum)
-         end if
-      end if
 
       ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
       str = '      '
