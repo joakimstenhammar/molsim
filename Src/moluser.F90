@@ -2543,8 +2543,12 @@ subroutine GroupNetworkGenerations(iStage,m,txtype)
    case (iReadInput)
 
       ! ... for the allocations in subroutine Group: Set ngr(m) high enough
-      ! ... the actual number of generations cannot exceed nc/4
+      ! ... the actual number of generations cannot exceed nc/4 for networks as set by SetNetwork
       ngr(m) = nc/4
+
+      if (.not.lnetwork) then
+         call Warn(txroutine,'ref/field == ''networkgenerations'' .and. .not.lnetwork',uout)
+      end if
 
    case (iWriteInput)
 
