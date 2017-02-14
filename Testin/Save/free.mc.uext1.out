@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:29:19
+2017-01-05     15:49:52
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -269,16 +269,16 @@ total cpu time since start (s)        0.01
 
  
   step/pass   pot. energy    temperature    pressure       volume
-   100          0.123        120.300          0.050      33510.322
-   200          0.273        120.300          0.050      33510.322
-   300          0.188        120.300          0.050      33510.322
-   400          0.166        120.300          0.050      33510.322
-   500          0.234        120.300          0.050      33510.322
-   600          0.243        120.300          0.050      33510.322
-   700          0.218        120.300          0.050      33510.322
-   800          0.214        120.300          0.050      33510.322
-   900          0.197        120.300          0.050      33510.322
-  1000          0.196        120.300          0.050      33510.322
+   100          0.217        120.300          0.050      33510.322
+   200          0.281        120.300          0.050      33510.322
+   300          0.225        120.300          0.050      33510.322
+   400          0.176        120.300          0.050      33510.322
+   500          0.154        120.300          0.050      33510.322
+   600          0.156        120.300          0.050      33510.322
+   700          0.136        120.300          0.050      33510.322
+   800          0.133        120.300          0.050      33510.322
+   900          0.124        120.300          0.050      33510.322
+  1000          0.118        120.300          0.050      33510.322
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -287,8 +287,8 @@ total cpu time since start (s)        0.01
 single-particle move                             total          mol1      
 -------------------                              -----          ----------
 total number of conf.          =             1000 1.00           1000 1.00
-accepted number of conf.       =              934 0.93            934 0.93
-energy rejected conf.          =               66 0.07             66 0.07
+accepted number of conf.       =              951 0.95            951 0.95
+energy rejected conf.          =               49 0.05             49 0.05
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -300,28 +300,28 @@ average no of net joining part.=                                      0.00
 quantity                                    mol1      
 --------                                    ----------
 
-<dr**2>/step (macrostep)       =            0.1271E-02
+<dr**2>/step (macrostep)       =            0.1828E-02
 precision                      =            0.0000E+00
-<dr**2>/step (from start)      =            0.1271E-02
+<dr**2>/step (from start)      =            0.1828E-02
 precision                      =            0.0000E+00
 
-orientation order, x'-axis     =                0.4525
-orientation order, y'-axis     =                0.1646
-orientation order, z'-axis     =                0.5951
+orientation order, x'-axis     =               -0.0803
+orientation order, y'-axis     =               -0.4481
+orientation order, z'-axis     =               -0.3727
 
-<ro> (x,y,z)                   =     1.182 0.213-0.487
-<x'> (x,y,z)                   =      0.69 -0.14  0.62
-<y'> (x,y,z)                   =      0.58  0.02 -0.62
-<z'> (x,y,z)                   =      0.08  0.85  0.13
+<ro> (x,y,z)                   =    -0.519-0.605-0.288
+<x'> (x,y,z)                   =      0.80 -0.35  0.00
+<y'> (x,y,z)                   =     -0.32 -0.71 -0.46
+<z'> (x,y,z)                   =      0.19  0.50 -0.73
 
 ..............................................................................................................
 .                                               TestUExternal                                                .
 ..............................................................................................................
 
-u%external     0.0000000
+u%external     0.0000159
 atom                   force
     1     0.0000000   0.0000000   0.0000000
-    2     0.0000000   0.0000000   0.0000000
+    2    -0.0002330   0.0002935  -0.0004719
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -329,18 +329,18 @@ atom                   force
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          0.19582        0.53317      0.000E+00
+total potential energy         =          0.11800        0.33633      0.645E-11
  total two-body energy         =          0.00000        0.00000      0.000E+00
   mol1-mol1                    =          0.00000        0.00000      0.000E+00
- external potential            =          0.19582        0.53317      0.000E+00
-enthalpy                       =          1.19605        0.53317
-cv                             =          2.36246
+ external potential            =          0.11800        0.33633      0.645E-11
+enthalpy                       =          1.11823        0.33633
+cv                             =          0.94007
 temperature                    =        120.30000        0.00000
 pressure (excl. cont. contr.)  =          0.04956        0.00000
 number of particles            =          1.00000        0.00000
 volume                         =      3.35103E+04    6.92258E-03
 
-total potential energy (NkT)   =          0.19578
+total potential energy (NkT)   =          0.11797
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      2.98416E-05
 number density                 =      2.98416E-05
@@ -351,7 +351,7 @@ number density                 =      2.98416E-05
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:29:19
+2017-01-05     15:49:52
 
 title   : free translation and rotation                                                             
 
@@ -369,7 +369,7 @@ pressure                       =       0.050
 spherical cell radius          =      20.000
 volume                         =   0.335E+05
 
-seed of random generator       =   300804385
+seed of random generator       =        1000
 
 
 **************************************************************************************************************
@@ -381,14 +381,14 @@ particle coordinates
 --------------------
 particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
 -----------   -------------       -----------              ---------------        ---------------        ---------------
-     1        mol1            0.450    0.748   -0.713   0.797  0.056  0.602    0.539 -0.517 -0.666    0.274  0.854 -0.442
+     1        mol1            0.306   -1.012    0.843   0.529 -0.039  0.848    0.228 -0.956 -0.186    0.818  0.291 -0.497
 
 atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        k1                  1         mol1               -0.34668     0.69209    -1.31487
-     2        k1                  1         mol1                1.24707     0.80387    -0.11177
+     1        k1                  1         mol1               -0.22315    -0.97331    -0.00512
+     2        k1                  1         mol1                0.83477    -1.05140     1.69038
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -397,8 +397,8 @@ atom no       atom type      particle no    particle type            coordinate 
 single-particle move                             total          mol1      
 -------------------                              -----          ----------
 total number of conf.          =             1000 1.00           1000 1.00
-accepted number of conf.       =              934 0.93            934 0.93
-energy rejected conf.          =               66 0.07             66 0.07
+accepted number of conf.       =              951 0.95            951 0.95
+energy rejected conf.          =               49 0.05             49 0.05
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -434,19 +434,19 @@ maximum              1.0                      0.0                           0.0 
 quantity                                    mol1      
 --------                                    ----------
 
-<dr**2>/step (from start)      =            0.1271E-02
+<dr**2>/step (from start)      =            0.1828E-02
 precision                      =            0.0000E+00
-sqrt(<dr**2>)(from start)      =                1.1274
+sqrt(<dr**2>)(from start)      =                1.3522
 precision                      =                0.0000
 
-orientation order, x'-axis     =                0.4525
-orientation order, y'-axis     =                0.1646
-orientation order, z'-axis     =                0.5951
+orientation order, x'-axis     =               -0.0803
+orientation order, y'-axis     =               -0.4481
+orientation order, z'-axis     =               -0.3727
 
-<ro> (x,y,z)                   =     1.182 0.213-0.487
-<x'> (x,y,z)                   =      0.69 -0.14  0.62
-<y'> (x,y,z)                   =      0.58  0.02 -0.62
-<z'> (x,y,z)                   =      0.08  0.85  0.13
+<ro> (x,y,z)                   =    -0.519-0.605-0.288
+<x'> (x,y,z)                   =      0.80 -0.35  0.00
+<y'> (x,y,z)                   =     -0.32 -0.71 -0.46
+<z'> (x,y,z)                   =      0.19  0.50 -0.73
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -454,18 +454,18 @@ orientation order, z'-axis     =                0.5951
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =          0.19582        0.05426        0.65925        0.10821            10.
+total potential energy         =          0.11800        0.05063        0.44055        0.08350            23.
  total two-body energy         =          0.00000        0.00000        0.00000        0.00000             0.
   mol1-mol1                    =          0.00000        0.00000        0.00000        0.00000             0.
- external potential            =          0.19582        0.05426        0.65925        0.10821            10.
-enthalpy                       =          1.19605        0.05426        0.65925        0.10821            10.
-cv                             =          2.36246
+ external potential            =          0.11800        0.05063        0.44055        0.08350            23.
+enthalpy                       =          1.11823        0.05063        0.44055        0.08350            23.
+cv                             =          0.94007
 temperature                    =        120.30000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.04956        0.00000        0.00000        0.00000             0.
 number of particles            =          1.00000        0.00000        0.00000        0.00000             0.
 volume                         =      3.35103E+04    0.00000E+00    0.00000E+00    7.51087E-12             0.
 
-total potential energy (NkT)   =          0.19578        0.00000
+total potential energy (NkT)   =          0.11797        0.00000
 pressure (NkT/V)(excl. contact)=          1.00000        0.00000
 pressure (kT) (excl. contact)  =      2.98416E-05    0.00000E+00
 number density                 =      2.98416E-05    0.00000E+00
@@ -478,14 +478,14 @@ number density                 =      2.98416E-05    0.00000E+00
          section         cpu time (s)     fraction
          -------         ------------     --------
          Coordinate            0.00         0.01 
-         ControlAver           0.00         0.09 
-         MainAver              0.00         0.13 
-         IOMolsim              0.00         0.05 
+         ControlAver           0.00         0.03 
+         MainAver              0.00         0.10 
+         IOMolsim              0.00         0.09 
          SetVList              0.00         0.00 
-         MCPass                0.02         0.72 
+         MCPass                0.02         0.76 
           SPartMove            0.00         0.11  
           DUTotal              0.01         0.49  
-           DUTwoBody           0.00         0.08   
-           DUExternal          0.00         0.14   
+           DUTwoBody           0.00         0.04   
+           DUExternal          0.00         0.11   
  
 total cpu time since start (s)        0.04

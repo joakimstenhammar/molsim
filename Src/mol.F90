@@ -31,6 +31,7 @@ module MolModule
 
    use StatisticsModule
    use MeshModule
+   use Random_Module, only: k4b
 
 ! ... parameters
 
@@ -186,7 +187,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v2.1.2'
+   character(29) :: txVersionDate = 'version 6.4.7, v2.2.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -565,7 +566,7 @@ module MolModule
 
 ! ... random number
 
-   integer(4)    :: iseed                  ! seed of random number generator
+   integer(k4b)  :: iseed                  ! seed of random number generator
    integer(4)    :: maxcpu                 ! maximum number of cpu time (seconds)
 
 ! ... configuration

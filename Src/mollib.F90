@@ -2600,19 +2600,59 @@ end subroutine QuaVelToAngVel
 !*                                                                      *
 !************************************************************************
 
+! ... return a random number in the range of 0 < ran < 1
+!     iseed should not be equal to zero, and the first seed should be negative
+!     "Numerical recipes in Fortran 90" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1992.
+!     modified from function ran
+
+!“Minimal” random number generator of Park and Miller combined with a Marsaglia shift sequence. Returns a uniform random deviate between 0.0 and 1.0 (exclusive of the endpoint values). This fully portable, scalar generator has the “traditional” (not Fortran 90) calling sequence with a random deviate as the returned function value: call with idum a negative integer to initialize; thereafter, do not alter idum except to reinitialize. The period of this generator is about 3.1 × 10^18 .
+
+module Random_Module
+   integer, parameter :: k4b=selected_int_kind(9) ! = 4 on intel fortran and gfortran
+   real(8) :: am
+   integer(k4b) :: ix=-1,iy=-1
+end module Random_Module
+
+function Random(idum)
+   use Random_Module
+   implicit none
+   integer(k4b), intent(inout) :: idum
+   real(8) :: Random
+   integer(k4b), parameter :: ia=16807,im=2147483647,iq=127773,ir=2836
+   integer(k4b)   :: k
+   if (idum <= 0 .or. iy < 0) then           !initialize.
+      am=nearest(1.0,-1.0)/im
+      iy=ior(ieor(888889999,abs(idum)),1)
+      ix=ieor(777755555,abs(idum))
+      idum=abs(idum)+1                          !set idum positive.
+   end if
+   ix=ieor(ix,ishft(ix,13))                  !marsaglia shift sequence with period 2^32 − 1.
+   ix=ieor(ix,ishft(ix,-17))
+   ix=ieor(ix,ishft(ix,5))
+   k=iy/iq                                   !park-miller sequence by schrage’s method, period 2^31 − 2.
+   iy=ia*(iy-k*iq)-ir*k
+   if (iy < 0) iy=iy+im
+   Random=am*ior(iand(im,ieor(ix,iy)),1)     !combine the two generators with masking to ensure nonzero value.
+end function Random
+
+!************************************************************************
+!*     Random                                                           *
+!*                                                                      *
+!************************************************************************
+
 ! ... return a random number in the range of 0 to 1
 !     iseed should not be equal to zero
 !     by Learmonth and Lewis 1973 (32 bits integer)
 
-real(8) function Random(iseed)
-   implicit none
-   integer(4), parameter :: k = 16087, l = 0, nb = 31
-   real(8), parameter :: f = 2.0d0**(-nb)
-   integer(4), intent(inout) :: iseed
-   iseed = iseed*k+l
-   iseed = ibclr(iseed,nb)
-   Random = f*iseed
-end function Random
+!real(8) function Random(iseed)
+   !implicit none
+   !integer(4), parameter :: k = 16087, l = 0, nb = 31
+   !real(8), parameter :: f = 2.0d0**(-nb)
+   !integer(4), intent(inout) :: iseed
+   !iseed = iseed*k+l
+   !iseed = ibclr(iseed,nb)
+   !Random = f*iseed
+!end function Random
 
 !************************************************************************
 !*                                                                      *
@@ -3662,13 +3702,12 @@ end function BrentMod
 !     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
 
 
-subroutine KnuthShuffle(a,asize)
-
-   use MolModule
+subroutine KnuthShuffle(a,asize, iseed)
    implicit none
 
    integer, intent(in) :: asize !size needed to cope with allocatable arrays
    integer, intent(inout) :: a(asize)
+   integer, intent(inout) :: iseed
    integer :: i, randpos, itmp
    real(8) :: Random
 
