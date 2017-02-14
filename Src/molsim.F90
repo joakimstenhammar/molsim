@@ -215,9 +215,9 @@ subroutine IOMolsim(iStage)
          call WriteFront('Molsim', 'integrated md/mc/bd simulation program belonging to the molsim package', &
                          txVersionDate, txAuthor,'&
                          & Anna Akinchina, Fredrik Carlsson, Samuel Edgecombe, Yoshikatsu Hayashi \&
-                         & Pascal Hebbeker, Cornelius Hofzumahaus, Niklas Kllrot, Bjrn Linse, Vladimir Lobaskin \&
-                         & Thomas M. Nymand, Alberto Pais, Jurij Rescic, Stefanie Schneider, Marie Skep \&
-                         & Joakim Stenhammar, Anders Wallqvist, Jos van Rijssel, Erik Wernersson, Per-Olof strand &
+                         & Pascal Hebbeker, Cornelius Hofzumahaus, Niklas Källrot, Björn Linse, Vladimir Lobaskin \&
+                         & Thomas M. Nymand, Alberto Pais, Jurij Rescic, Stefanie Schneider, Marie Skepö \&
+                         & Joakim Stenhammar, Anders Wallqvist, Jos van Rijssel, Erik Wernersson, Per-Olof Åstrand &
                          &', uout)
          call WriteDateTime(uout)
          call WriteHead(1, 'input data', uout)
