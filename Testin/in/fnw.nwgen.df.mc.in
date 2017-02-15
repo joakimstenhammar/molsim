@@ -59,7 +59,7 @@
 /
 &nmlSetConfiguration
  rnwt(1)         =       88 ,
- txoriginnwt(1)  =  'center',
+ txoriginnwt(1)  =  'origin',
  txsetconf(1)    = 'network',
  txsetconf(2)    = 'network',
  txsetconf(3)    =  'random',
