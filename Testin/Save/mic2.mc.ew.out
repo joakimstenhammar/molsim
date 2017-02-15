@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:22:54
+2017-01-05     15:50:50
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -293,7 +293,7 @@ particle coordinates
 --------------------
 particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
 -----------   -------------       -----------              ---------------        ---------------        ---------------
-     1        micelle1      181.149  -20.320  -67.452   0.373  0.850  0.373   -0.263  0.482 -0.836   -0.890  0.213  0.403
+     1        micelle1      174.065   95.278  -46.297  -0.319  0.907 -0.274   -0.693 -0.026  0.720    0.647  0.420  0.637
 
 **************************************************************************************************************
 *                                                  mc data                                                   *
@@ -325,30 +325,30 @@ maximal number of neighbours   =          2000
 
 quantity                            initial value
 &-------                            -------------
-total potential energy         =         -1.00419
- total two-body energy         =         -0.05071
-  micelle1-micelle1            =          0.05503
-  micelle1-ion2                =         -0.10715
-  micelle1-micelle3            =         -0.07394
-  micelle1-ion4                =          0.10506
-  ion2-ion2                    =          0.06252
-  ion2-micelle3                =          0.10314
-  ion2-ion4                    =         -0.14074
-  micelle3-micelle3            =          0.01222
-  micelle3-ion4                =         -0.13631
-  ion4-ion4                    =          0.06945
- pot. energy from rec. space   =         -0.95348
-enthalpy                       =          1.13880
+total potential energy         =         -0.99459
+ total two-body energy         =         -0.05241
+  micelle1-micelle1            =          0.02902
+  micelle1-ion2                =         -0.13528
+  micelle1-micelle3            =         -0.08462
+  micelle1-ion4                =          0.10351
+  ion2-ion2                    =          0.09017
+  ion2-micelle3                =          0.12369
+  ion2-ion4                    =         -0.16010
+  micelle3-micelle3            =          0.01467
+  micelle3-ion4                =         -0.11097
+  ion4-ion4                    =          0.07750
+ pot. energy from rec. space   =         -0.94218
+enthalpy                       =          1.15160
 temperature                    =        298.00000
-pressure (excl. cont. contr.)  =          0.02936
+pressure (excl. cont. contr.)  =          0.02940
 number of particles            =        440.00000
 volume                         =      5.33357E+07
 
-total potential energy (NkT)   =         -0.40529
-pressure (NkT/V)(excl. contact)=          0.86491
-pressure (kT) (excl. contact)  =      7.13517E-06
+total potential energy (NkT)   =         -0.40142
+pressure (NkT/V)(excl. contact)=          0.86620
+pressure (kT) (excl. contact)  =      7.14583E-06
  
-total cpu time since start (s)        0.03
+total cpu time since start (s)        0.04
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -363,27 +363,27 @@ total cpu time since start (s)        0.03
 .                                                TestCluster                                                 .
 ..............................................................................................................
 
-nsize(icluster) =    1   1   1   1   2   1   3   1   1   1   2   1   2   2   0   0   1   1   0   1
-   1   1   1   1   1   1   2   0   1   1   0   1   0   1   1   1   1   1   0   1
-ncluster =   33
+nsize(icluster) =    1   1   1   3   1   0   1   0   1   2   1   0   1   1   1   1   2   1   1   2
+   1   1   1   3   0   1   2   0   1   0   1   1   0   1   1   1   1   1   1   0
+ncluster =   32
 nsizemax =    3
-nsizedist =   27   5   1
+nsizedist =   26   4   2
 iobjprop =    1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
    2   2   2   2   2   2   2   2   2   2   2   2   2   2   2   2   2   2   2   2
-nobjpropcluster(1,:) =    1   1   1   1   1   1   3   1   1   1   1   1   1   2   0   0   1   1   0   1
-   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
-nobjpropcluster(2,:) =    0   0   0   0   1   0   0   0   0   0   1   0   1   0   0   0   0   0   0   0
-   1   1   1   1   1   1   2   0   1   1   0   1   0   1   1   1   1   1   0   1
+nobjpropcluster(1,:) =    1   1   1   3   1   0   1   0   1   1   1   0   1   1   1   1   1   1   1   1
+   0   0   0   1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+nobjpropcluster(2,:) =    0   0   0   0   0   0   0   0   0   1   0   0   0   0   0   0   1   0   0   1
+   1   1   1   2   0   1   2   0   1   0   1   1   0   1   1   1   1   1   1   0
 nsizemax2d(1:2) =    3   2
  nsizedist2d(0:nsizemax2d(1),0:nsizemax2d(2))
-   0  15   1
-  12   3   0
-   1   0   0
+   0  13   1
+  13   3   1
+   0   0   0
    1   0   0
 2d cluster size distribution
-   0  15   2
-  12   6   0
-   2   0   0
+   0  13   2
+  13   6   3
+   0   0   0
    3   0   0
 
 **************************************************************************************************************
@@ -392,10 +392,10 @@ nsizemax2d(1:2) =    3   2
 
 single-particle move                             total          micelle1            ion2                micelle3            ion4      
 -------------------                              -----          ----------          ----------          ----------          ----------
-total number of conf.          =              440 1.00             19 1.00            196 1.00             19 1.00            206 1.00
-accepted number of conf.       =              414 0.94             17 0.89            186 0.95             17 0.89            194 0.94
-energy rejected conf.          =               23 0.05              2 0.11              9 0.05              1 0.05             11 0.05
-hard-core rejected conf.       =                3 0.01              0 0.00              1 0.01              1 0.05              1 0.00
+total number of conf.          =              440 1.00             16 1.00            204 1.00             16 1.00            204 1.00
+accepted number of conf.       =              411 0.93             14 0.88            191 0.94             11 0.69            195 0.96
+energy rejected conf.          =               26 0.06              2 0.12             12 0.06              4 0.25              8 0.04
+hard-core rejected conf.       =                3 0.01              0 0.00              1 0.00              1 0.06              1 0.00
 
 average no of displaced part.  =                                      1.00                1.00                1.00                1.00
 average no of net joining part.=                                      0.00                0.00                0.00                0.00
@@ -407,19 +407,19 @@ average no of net joining part.=                                      0.00      
 quantity                                    micelle1            ion2                micelle3            ion4      
 --------                                    ----------          ----------          ----------          ----------
 
-<dr**2>/step (macrostep)       =            0.2040E+02          0.2546E+02          0.1737E+02          0.2328E+02
-precision                      =            0.3778E+01          0.2642E+01          0.3532E+01          0.2210E+01
-<dr**2>/step (from start)      =            0.2040E+02          0.2546E+02          0.1737E+02          0.2328E+02
-precision                      =            0.3778E+01          0.2642E+01          0.3532E+01          0.2210E+01
+<dr**2>/step (macrostep)       =            0.1603E+02          0.2365E+02          0.1365E+02          0.2355E+02
+precision                      =            0.4406E+01          0.2354E+01          0.4217E+01          0.2032E+01
+<dr**2>/step (from start)      =            0.1603E+02          0.2365E+02          0.1365E+02          0.2355E+02
+precision                      =            0.4406E+01          0.2354E+01          0.4217E+01          0.2032E+01
 
 orientation order, x'-axis     =                1.0000              1.0000              1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000              1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000              1.0000              1.0000
 
-<ro> (x,y,z)                   =     21.00 -5.38-18.35    2.63  0.49 -6.04    3.53-16.19 -8.68    0.69  1.19 12.68
-<x'> (x,y,z)                   =     -0.05  0.21 -0.01   -0.03  0.02  0.01    0.15 -0.08  0.02   -0.03  0.01 -0.00
-<y'> (x,y,z)                   =     -0.01 -0.08 -0.12    0.01 -0.06 -0.08   -0.01  0.16 -0.27   -0.04 -0.04  0.01
-<z'> (x,y,z)                   =     -0.02 -0.02 -0.00   -0.02  0.02  0.06    0.08  0.09  0.05    0.03  0.00  0.05
+<ro> (x,y,z)                   =    -11.70 34.64 -4.35   -2.17  8.86 -7.94   17.51-13.81 35.81    1.38 -9.98 -1.69
+<x'> (x,y,z)                   =     -0.27  0.24  0.06   -0.00  0.01 -0.00   -0.12  0.03 -0.24    0.07  0.02 -0.04
+<y'> (x,y,z)                   =      0.11  0.09 -0.02    0.06 -0.01 -0.00   -0.04 -0.03 -0.02    0.01  0.00 -0.01
+<z'> (x,y,z)                   =      0.05  0.01  0.07   -0.08  0.05  0.01    0.11  0.05 -0.09   -0.04  0.02  0.00
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -427,31 +427,31 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -1.02972        0.00000     -0.878E-15
- total two-body energy         =         -0.08044        0.00000      0.241E-14
-  micelle1-micelle1            =          0.05001        0.00000      0.161E-15
-  micelle1-ion2                =         -0.11918        0.00000     -0.949E-15
-  micelle1-micelle3            =         -0.06696        0.00000      0.121E-15
-  micelle1-ion4                =          0.10069        0.00000     -0.481E-15
-  ion2-ion2                    =          0.06019        0.00000     -0.174E-14
-  ion2-micelle3                =          0.10104        0.00000     -0.112E-14
-  ion2-ion4                    =         -0.14381        0.00000      0.112E-14
-  micelle3-micelle3            =          0.01154        0.00000      0.525E-15
-  micelle3-ion4                =         -0.14198        0.00000     -0.341E-15
-  ion4-ion4                    =          0.06803        0.00000      0.309E-14
- pot. energy from rec. space   =         -0.94928        0.00000     -0.259E-14
-enthalpy                       =          1.11327        0.00000
+total potential energy         =         -1.08245        0.00000      0.573E-14
+ total two-body energy         =         -0.09883        0.00000     -0.654E-15
+  micelle1-micelle1            =          0.02030        0.00000      0.000E+00
+  micelle1-ion2                =         -0.13644        0.00000     -0.130E-14
+  micelle1-micelle3            =         -0.08532        0.00000      0.379E-15
+  micelle1-ion4                =          0.10936        0.00000      0.738E-15
+  ion2-ion2                    =          0.07953        0.00000      0.102E-14
+  ion2-micelle3                =          0.11703        0.00000      0.414E-15
+  ion2-ion4                    =         -0.16908        0.00000     -0.382E-15
+  micelle3-micelle3            =          0.01531        0.00000     -0.396E-15
+  micelle3-ion4                =         -0.11922        0.00000      0.948E-15
+  ion4-ion4                    =          0.06970        0.00000      0.116E-15
+ pot. energy from rec. space   =         -0.98362        0.00000      0.670E-14
+enthalpy                       =          1.06375        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
-pressure (excl. cont. contr.)  =          0.02936        0.00000
+pressure (excl. cont. contr.)  =          0.02940        0.00000
 number of particles            =        440.00000        0.00000
 volume                         =      5.33357E+07    0.00000E+00
 
-total potential energy (NkT)   =         -0.41559
-pressure (NkT/V)(excl. contact)=          0.86491
-pressure (kT) (excl. contact)  =      7.13517E-06
+total potential energy (NkT)   =         -0.43687
+pressure (NkT/V)(excl. contact)=          0.86620
+pressure (kT) (excl. contact)  =      7.14583E-06
 number density                 =      8.24963E-06
-Average cluster size 1    1d: micelle1 micelle3          1.40000
+Average cluster size 1    1d: micelle1 micelle3          1.50000
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -459,7 +459,7 @@ Average cluster size 1    1d: micelle1 micelle3          1.40000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:22:54
+2017-01-05     15:50:50
 
 title   : binary mixture of oppositly charged macroions                                             
 
@@ -477,7 +477,7 @@ pressure                       =       0.029
 box lengths (x,y,z)            =     376.420     376.420     376.420
 volume                         =   0.533E+08
 
-seed of random generator       =   159171983
+seed of random generator       =     9876544
 
 
 **************************************************************************************************************
@@ -489,7 +489,7 @@ particle coordinates
 --------------------
 particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
 -----------   -------------       -----------              ---------------        ---------------        ---------------
-     1        micelle1      179.414  -19.266  -70.305   0.373  0.850  0.373   -0.263  0.482 -0.836   -0.890  0.213  0.403
+     1        micelle1      174.065   95.278  -46.297  -0.319  0.907 -0.274   -0.693 -0.026  0.720    0.647  0.420  0.637
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -497,10 +497,10 @@ particle no   particle type       com (x,y,z)              x'-axis (x,y,z)      
 
 single-particle move                             total          micelle1            ion2                micelle3            ion4      
 -------------------                              -----          ----------          ----------          ----------          ----------
-total number of conf.          =              440 1.00             19 1.00            196 1.00             19 1.00            206 1.00
-accepted number of conf.       =              414 0.94             17 0.89            186 0.95             17 0.89            194 0.94
-energy rejected conf.          =               23 0.05              2 0.11              9 0.05              1 0.05             11 0.05
-hard-core rejected conf.       =                3 0.01              0 0.00              1 0.01              1 0.05              1 0.00
+total number of conf.          =              440 1.00             16 1.00            204 1.00             16 1.00            204 1.00
+accepted number of conf.       =              411 0.93             14 0.88            191 0.94             11 0.69            195 0.96
+energy rejected conf.          =               26 0.06              2 0.12             12 0.06              4 0.25              8 0.04
+hard-core rejected conf.       =                3 0.01              0 0.00              1 0.00              1 0.06              1 0.00
 
 average no of displaced part.  =                                      1.00                1.00                1.00                1.00
 average no of net joining part.=                                      0.00                0.00                0.00                0.00
@@ -524,11 +524,11 @@ no of steps/passes per call    =         1.0
 
            no of part per proc   no of neighbours per part and proc  load of proc   load(max)-load(aver)
            -------------------   ----------------------------------  ------------   --------------------
-average            440.0                    116.2                       51110.0            0.0
-one sd               0.0                      8.6                           0.0            0.0
-minimum            440.0                     89.0                       51110.0            0.0
-maximum            440.0                    139.0                       51110.0            0.0
-     51046 site-site interactions / step
+average            440.0                    116.4                       51234.0            0.0
+one sd               0.0                      8.9                           0.0            0.0
+minimum            440.0                     92.0                       51234.0            0.0
+maximum            440.0                    142.0                       51234.0            0.0
+     51188 site-site interactions / step
  
 
 **************************************************************************************************************
@@ -538,19 +538,19 @@ maximum            440.0                    139.0                       51110.0 
 quantity                                    micelle1            ion2                micelle3            ion4      
 --------                                    ----------          ----------          ----------          ----------
 
-<dr**2>/step (from start)      =            0.2040E+02          0.2546E+02          0.1737E+02          0.2328E+02
-precision                      =            0.3778E+01          0.2642E+01          0.3532E+01          0.2210E+01
-sqrt(<dr**2>)(from start)      =                4.5164              5.0462              4.1677              4.8247
-precision                      =                0.4005              0.2553              0.4042              0.2238
+<dr**2>/step (from start)      =            0.1603E+02          0.2365E+02          0.1365E+02          0.2355E+02
+precision                      =            0.4406E+01          0.2354E+01          0.4217E+01          0.2032E+01
+sqrt(<dr**2>)(from start)      =                4.0040              4.8632              3.6947              4.8531
+precision                      =                0.5169              0.2362              0.5323              0.2050
 
 orientation order, x'-axis     =                1.0000              1.0000              1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000              1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000              1.0000              1.0000
 
-<ro> (x,y,z)                   =     21.00 -5.38-18.35    2.63  0.49 -6.04    3.53-16.19 -8.68    0.69  1.19 12.68
-<x'> (x,y,z)                   =     -0.05  0.21 -0.01   -0.03  0.02  0.01    0.15 -0.08  0.02   -0.03  0.01 -0.00
-<y'> (x,y,z)                   =     -0.01 -0.08 -0.12    0.01 -0.06 -0.08   -0.01  0.16 -0.27   -0.04 -0.04  0.01
-<z'> (x,y,z)                   =     -0.02 -0.02 -0.00   -0.02  0.02  0.06    0.08  0.09  0.05    0.03  0.00  0.05
+<ro> (x,y,z)                   =    -11.70 34.64 -4.35   -2.17  8.86 -7.94   17.51-13.81 35.81    1.38 -9.98 -1.69
+<x'> (x,y,z)                   =     -0.27  0.24  0.06   -0.00  0.01 -0.00   -0.12  0.03 -0.24    0.07  0.02 -0.04
+<y'> (x,y,z)                   =      0.11  0.09 -0.02    0.06 -0.01 -0.00   -0.04 -0.03 -0.02    0.01  0.00 -0.01
+<z'> (x,y,z)                   =      0.05  0.01  0.07   -0.08  0.05  0.01    0.11  0.05 -0.09   -0.04  0.02  0.00
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -558,29 +558,29 @@ orientation order, z'-axis     =                1.0000              1.0000      
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =         -1.02972        0.00000        0.00000        0.00000             0.
- total two-body energy         =         -0.08044        0.00000        0.00000        0.00000             0.
-  micelle1-micelle1            =          0.05001        0.00000        0.00000        0.00000             0.
-  micelle1-ion2                =         -0.11918        0.00000        0.00000        0.00000             0.
-  micelle1-micelle3            =         -0.06696        0.00000        0.00000        0.00000             0.
-  micelle1-ion4                =          0.10069        0.00000        0.00000        0.00000             0.
-  ion2-ion2                    =          0.06019        0.00000        0.00000        0.00000             0.
-  ion2-micelle3                =          0.10104        0.00000        0.00000        0.00000             0.
-  ion2-ion4                    =         -0.14381        0.00000        0.00000        0.00000             0.
-  micelle3-micelle3            =          0.01154        0.00000        0.00000        0.00000             0.
-  micelle3-ion4                =         -0.14198        0.00000        0.00000        0.00000             0.
-  ion4-ion4                    =          0.06803        0.00000        0.00000        0.00000             0.
- pot. energy from rec. space   =         -0.94928        0.00000        0.00000        0.00000             0.
-enthalpy                       =          1.11327        0.00000        0.00000        0.00000             0.
+total potential energy         =         -1.08245        0.00000        0.00000        0.00000             0.
+ total two-body energy         =         -0.09883        0.00000        0.00000        0.00000             0.
+  micelle1-micelle1            =          0.02030        0.00000        0.00000        0.00000             0.
+  micelle1-ion2                =         -0.13644        0.00000        0.00000        0.00000             0.
+  micelle1-micelle3            =         -0.08532        0.00000        0.00000        0.00000             0.
+  micelle1-ion4                =          0.10936        0.00000        0.00000        0.00000             0.
+  ion2-ion2                    =          0.07953        0.00000        0.00000        0.00000             0.
+  ion2-micelle3                =          0.11703        0.00000        0.00000        0.00000             0.
+  ion2-ion4                    =         -0.16908        0.00000        0.00000        0.00000             0.
+  micelle3-micelle3            =          0.01531        0.00000        0.00000        0.00000             0.
+  micelle3-ion4                =         -0.11922        0.00000        0.00000        0.00000             0.
+  ion4-ion4                    =          0.06970        0.00000        0.00000        0.00000             0.
+ pot. energy from rec. space   =         -0.98362        0.00000        0.00000        0.00000             0.
+enthalpy                       =          1.06375        0.00000        0.00000        0.00000             0.
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
-pressure (excl. cont. contr.)  =          0.02936        0.00000        0.00000        0.00000             0.
+pressure (excl. cont. contr.)  =          0.02940        0.00000        0.00000        0.00000             0.
 number of particles            =        440.00000        0.00000        0.00000        0.00000             0.
 volume                         =      5.33357E+07    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =         -0.41559        0.00000
-pressure (NkT/V)(excl. contact)=          0.86491        0.00000
-pressure (kT) (excl. contact)  =      7.13517E-06    0.00000E+00
+total potential energy (NkT)   =         -0.43687        0.00000
+pressure (NkT/V)(excl. contact)=          0.86620        0.00000
+pressure (kT) (excl. contact)  =      7.14583E-06    0.00000E+00
 number density                 =      8.24963E-06    0.00000E+00
 
 **************************************************************************************************************
@@ -598,8 +598,8 @@ average volume                 =      5.33357E+07    0.00000E+00
 contact values                 =             0.00           0.00           0.00           0.00           0.00           0.00           0.00           0.00           0.00           0.00
 
 pressure (NkT/V)(contact cont.)=          0.00000        0.00000
-pressure (NkT/V)(total)        =          0.86491        0.00000
-pressure (kT) (total)          =      7.13517E-06    0.00000E+00
+pressure (NkT/V)(total)        =          0.86620        0.00000
+pressure (kT) (total)          =      7.14583E-06    0.00000E+00
 
 no    function                         min            max            nbin           step
 --    --------                         ---            ---            ----           ----
@@ -2485,15 +2485,21 @@ no    function                         min            max            nbin       
          1d: micelle1 micelle3      
  bin     x       y       dy
   -1   below    0.0000  0.0000
-   0    1.00    0.6750  0.0000
-   1    2.00    0.2500  0.0000
-   2    3.00    0.0750  0.0000
+   0    1.00    0.6500  0.0000
+   1    2.00    0.2000  0.0000
+   2    3.00    0.1500  0.0000
    3   above    0.0000  0.0000
  
  
-      1d: micelle1 micelle3           y-min =  0.750E-01     y-max =  0.675E+00
+      1d: micelle1 micelle3           y-min =  0.150E+00     y-max =  0.650E+00
  
    !*********************************
+   !
+   !
+   !
+   !
+   !
+   !
    !
    !
    !
@@ -2521,16 +2527,10 @@ no    function                         min            max            nbin       
    !
    !
    !
+   !
    !                                  ********************************
    !
-   !
-   !
    !                                                                  *
-   !
-   !
-   !
-   !
-   !
    !
    !                                                                   *********************************
    !----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
@@ -2546,9 +2546,9 @@ no    function                    min1      max1      nbin1     step1     min2  
 2d: micelle1 micelle3      
       -1       0       1       2
  -1  0.0000  0.0000  0.0000  0.0000
-  0  0.0000  0.0000  0.3750  0.0500
-  1  0.0000  0.3000  0.1500  0.0000
-  2  0.0000  0.0500  0.0000  0.0000
+  0  0.0000  0.0000  0.3250  0.0500
+  1  0.0000  0.3250  0.1500  0.0750
+  2  0.0000  0.0000  0.0000  0.0000
   3  0.0000  0.0750  0.0000  0.0000
 
 s.d. of 2d: micelle1 micelle3      
@@ -2566,17 +2566,17 @@ s.d. of 2d: micelle1 micelle3
          -------            ------------     --------
          Coordinate               0.01         0.06
          ControlAver              0.00         0.00
-         MainAver                 0.00         0.00
-         DistFunc                 0.02         0.27
-         StaticDriver             0.00         0.01
-          ClusterSD               0.00         0.01
+         MainAver                 0.00         0.01
+         DistFunc                 0.03         0.26
+         StaticDriver             0.00         0.02
+          ClusterSD               0.00         0.02
          IOMolsim                 0.01         0.11
-         SetVList                 0.01         0.07
-         MCPass                   0.04         0.47
+         SetVList                 0.01         0.06
+         MCPass                   0.05         0.47
           SPartMove               0.00         0.00
-          DUTotal                 0.04         0.43
+          DUTotal                 0.05         0.43
            DUTwoBody              0.01         0.07
-           DUTwoBodyEwald         0.03         0.33
-            UEwaldRecStd          0.03         0.33 
+           DUTwoBodyEwald         0.04         0.34
+            UEwaldRecStd          0.04         0.33 
  
-total cpu time since start (s)        0.12
+total cpu time since start (s)        0.15

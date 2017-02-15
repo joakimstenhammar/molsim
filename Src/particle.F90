@@ -987,7 +987,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
             end do
 
             !shuffle iptiseg
-            call KnuthShuffle(iptiseg, size(iptiseg))
+            call KnuthShuffle(iptiseg, size(iptiseg), iseed)
 
             !assign particles
             do iseg = 1, npct(ict)
