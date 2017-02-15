@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:29:35
+2017-01-05     15:50:16
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -679,9 +679,9 @@ atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        site1               1         jon1              -49.49926   -37.56959    13.04269
-   101        site1             101         jon1               -3.12776   -24.34665   -20.49328
-   201        site2             201         jon2              -40.12046   -36.86042    36.48036
+     1        site1               1         jon1              -27.20657   -17.26179     4.66966
+   101        site1             101         jon1              -30.75670   -31.88456    12.89824
+   201        site2             201         jon2              -33.58619   -38.43737    39.51594
 
 **************************************************************************************************************
 *                                                  mc data                                                   *
@@ -713,21 +713,21 @@ maximal number of neighbours   =          2000
 
 quantity                            initial value
 &-------                            -------------
-total potential energy         =         -0.32656
- total two-body energy         =         -0.08360
-  jon1-jon1                    =          0.23850
-  jon1-jon2                    =         -0.55699
-  jon2-jon2                    =          0.23489
- pot. energy from rec. space   =         -0.24297
-enthalpy                       =          2.05620
+total potential energy         =         -0.17550
+ total two-body energy         =         -0.03573
+  jon1-jon1                    =          0.20481
+  jon1-jon2                    =         -0.45103
+  jon2-jon2                    =          0.21050
+ pot. energy from rec. space   =         -0.13977
+enthalpy                       =          2.25724
 temperature                    =        298.00000
-pressure (excl. cont. contr.)  =          0.98917
+pressure (excl. cont. contr.)  =          1.00992
 number of particles            =        250.00000
 volume                         =      1.00000E+06
 
-total potential energy (NkT)   =         -0.13180
-pressure (NkT/V)(excl. contact)=          0.96168
-pressure (kT) (excl. contact)  =      2.40420E-04
+total potential energy (NkT)   =         -0.07083
+pressure (NkT/V)(excl. contact)=          0.98185
+pressure (kT) (excl. contact)  =      2.45462E-04
  
 total cpu time since start (s)        0.02
 
@@ -746,10 +746,10 @@ total cpu time since start (s)        0.02
 
 single-particle move                             total          jon1                jon2      
 -------------------                              -----          ----------          ----------
-total number of conf.          =             2500 1.00           1229 1.00           1271 1.00
-accepted number of conf.       =             2005 0.80            987 0.80           1018 0.80
-energy rejected conf.          =              355 0.14            165 0.13            190 0.15
-hard-core rejected conf.       =              140 0.06             77 0.06             63 0.05
+total number of conf.          =             2500 1.00           1248 1.00           1252 1.00
+accepted number of conf.       =             2029 0.81           1025 0.82           1004 0.80
+energy rejected conf.          =              343 0.14            166 0.13            177 0.14
+hard-core rejected conf.       =              128 0.05             57 0.05             71 0.06
 
 average no of displaced part.  =                                      1.00                1.00
 average no of net joining part.=                                      0.00                0.00
@@ -761,19 +761,19 @@ average no of net joining part.=                                      0.00      
 quantity                                    jon1                jon2      
 --------                                    ----------          ----------
 
-<dr**2>/step (macrostep)       =            0.1878E+02          0.2026E+02
-precision                      =            0.1693E+01          0.1650E+01
-<dr**2>/step (from start)      =            0.1878E+02          0.2026E+02
-precision                      =            0.1693E+01          0.1650E+01
+<dr**2>/step (macrostep)       =            0.2106E+02          0.1961E+02
+precision                      =            0.1752E+01          0.1476E+01
+<dr**2>/step (from start)      =            0.2106E+02          0.1961E+02
+precision                      =            0.1752E+01          0.1476E+01
 
 orientation order, x'-axis     =                1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000
 
-<ro> (x,y,z)                   =     0.005-1.404-0.986  -2.105 0.057-1.555
-<x'> (x,y,z)                   =     -0.04  0.06 -0.02   -0.05 -0.00 -0.08
-<y'> (x,y,z)                   =      0.01  0.02 -0.04   -0.01 -0.04  0.01
-<z'> (x,y,z)                   =     -0.08 -0.08 -0.04   -0.06 -0.00  0.02
+<ro> (x,y,z)                   =     0.792-2.914 1.260   0.007-2.093 0.303
+<x'> (x,y,z)                   =      0.00 -0.01  0.02    0.05 -0.01  0.09
+<y'> (x,y,z)                   =      0.05 -0.04 -0.06   -0.05 -0.01 -0.10
+<z'> (x,y,z)                   =      0.07  0.00  0.01    0.03 -0.02  0.01
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -781,22 +781,22 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -0.67228        0.07968     -0.490E-04
- total two-body energy         =         -0.23567        0.03808     -0.162E-03
-  jon1-jon1                    =          0.18725        0.01710     -0.197E-04
-  jon1-jon2                    =         -0.59826        0.02254     -0.464E-04
-  jon2-jon2                    =          0.17534        0.01344     -0.246E-04
- pot. energy from rec. space   =         -0.43661        0.05032     -0.180E-14
-enthalpy                       =          1.71049        0.07968
-cv                             =          2.14975
+total potential energy         =         -0.66548        0.12306     -0.461E-04
+ total two-body energy         =         -0.22690        0.05826     -0.125E-03
+  jon1-jon1                    =          0.17644        0.01577     -0.279E-04
+  jon1-jon2                    =         -0.59746        0.03689     -0.470E-04
+  jon2-jon2                    =          0.19412        0.02117     -0.259E-04
+ pot. energy from rec. space   =         -0.43858        0.06713     -0.441E-15
+enthalpy                       =          1.76726        0.12306
+cv                             =          5.12767
 temperature                    =        298.00000        0.00000
-pressure (excl. cont. contr.)  =          0.98917        0.00000
+pressure (excl. cont. contr.)  =          1.00992        0.00000
 number of particles            =        250.00000        0.00000
 volume                         =      1.00000E+06    0.00000E+00
 
-total potential energy (NkT)   =         -0.27133
-pressure (NkT/V)(excl. contact)=          0.96168
-pressure (kT) (excl. contact)  =      2.40420E-04
+total potential energy (NkT)   =         -0.26859
+pressure (NkT/V)(excl. contact)=          0.98185
+pressure (kT) (excl. contact)  =      2.45462E-04
 number density                 =      2.50000E-04
 
 **************************************************************************************************************
@@ -805,7 +805,7 @@ number density                 =      2.50000E-04
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:29:36
+2017-01-05     15:50:16
 
 title   : 1:1 salt solution, development of ewald summation + square well                           
 
@@ -819,11 +819,11 @@ key data: mode           : simulation
 number of time steps/passes           1  *        10  =         10
 
 temperature                    =     298.000
-pressure                       =       0.934
+pressure                       =       0.921
 box lengths (x,y,z)            =     100.000     100.000     100.000
 volume                         =   0.100E+07
 
-seed of random generator       =  2054705649
+seed of random generator       =           2
 
 
 **************************************************************************************************************
@@ -835,9 +835,9 @@ atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        site1               1         jon1              -47.99860   -36.46147     9.40127
-   101        site1             101         jon1               -7.53227   -29.59929   -19.79627
-   201        site2             201         jon2              -47.35538   -34.92621    42.11223
+     1        site1               1         jon1              -15.73396   -22.79216     0.75399
+   101        site1             101         jon1              -24.84205    49.21007    30.79276
+   201        site2             201         jon2              -26.58055   -33.65772    36.60671
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -845,10 +845,10 @@ atom no       atom type      particle no    particle type            coordinate 
 
 single-particle move                             total          jon1                jon2      
 -------------------                              -----          ----------          ----------
-total number of conf.          =             2500 1.00           1229 1.00           1271 1.00
-accepted number of conf.       =             2005 0.80            987 0.80           1018 0.80
-energy rejected conf.          =              355 0.14            165 0.13            190 0.15
-hard-core rejected conf.       =              140 0.06             77 0.06             63 0.05
+total number of conf.          =             2500 1.00           1248 1.00           1252 1.00
+accepted number of conf.       =             2029 0.81           1025 0.82           1004 0.80
+energy rejected conf.          =              343 0.14            166 0.13            177 0.14
+hard-core rejected conf.       =              128 0.05             57 0.05             71 0.06
 
 average no of displaced part.  =                                      1.00                1.00
 average no of net joining part.=                                      0.00                0.00
@@ -872,11 +872,11 @@ no of steps/passes per call    =         0.9
 
            no of part per proc   no of neighbours per part and proc  load of proc   load(max)-load(aver)
            -------------------   ----------------------------------  ------------   --------------------
-average            250.0                    167.7                       41936.0            0.0
-one sd               0.0                      7.0                           0.0            0.0
-minimum            250.0                    151.0                       41936.0            0.0
-maximum            250.0                    184.0                       41936.0            0.0
-     41936 site-site interactions / step
+average            250.0                    167.0                       41744.0            0.0
+one sd               0.0                      5.8                           0.0            0.0
+minimum            250.0                    153.0                       41744.0            0.0
+maximum            250.0                    186.0                       41744.0            0.0
+     41744 site-site interactions / step
  
 
 **************************************************************************************************************
@@ -886,19 +886,19 @@ maximum            250.0                    184.0                       41936.0 
 quantity                                    jon1                jon2      
 --------                                    ----------          ----------
 
-<dr**2>/step (from start)      =            0.1878E+02          0.2026E+02
-precision                      =            0.1693E+01          0.1650E+01
-sqrt(<dr**2>)(from start)      =               13.7022             14.2325
-precision                      =                0.6045              0.5684
+<dr**2>/step (from start)      =            0.2106E+02          0.1961E+02
+precision                      =            0.1752E+01          0.1476E+01
+sqrt(<dr**2>)(from start)      =               14.5105             14.0024
+precision                      =                0.5915              0.5175
 
 orientation order, x'-axis     =                1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000
 
-<ro> (x,y,z)                   =     0.005-1.404-0.986  -2.105 0.057-1.555
-<x'> (x,y,z)                   =     -0.04  0.06 -0.02   -0.05 -0.00 -0.08
-<y'> (x,y,z)                   =      0.01  0.02 -0.04   -0.01 -0.04  0.01
-<z'> (x,y,z)                   =     -0.08 -0.08 -0.04   -0.06 -0.00  0.02
+<ro> (x,y,z)                   =     0.792-2.914 1.260   0.007-2.093 0.303
+<x'> (x,y,z)                   =      0.00 -0.01  0.02    0.05 -0.01  0.09
+<y'> (x,y,z)                   =      0.05 -0.04 -0.06   -0.05 -0.01 -0.10
+<z'> (x,y,z)                   =      0.07  0.00  0.01    0.03 -0.02  0.01
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -906,22 +906,22 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =         -0.67228        0.02371        0.08486        3.66148             1.
- total two-body energy         =         -0.23567        0.01509        0.04191        0.96877             2.
-  jon1-jon1                    =          0.18725        0.00807        0.01776        0.46514             2.
-  jon1-jon2                    =         -0.59826        0.00000        0.02502        0.55830             0.
-  jon2-jon2                    =          0.17534        0.00671        0.01488        0.09542             2.
- pot. energy from rec. space   =         -0.43661        0.00832        0.04781        2.17528             0.
-enthalpy                       =          1.71049        0.02371        0.08486        3.66148             1.
-cv                             =          2.14975
+total potential energy         =         -0.66548        0.03652        0.10982        5.30235             1.
+ total two-body energy         =         -0.22690        0.01411        0.05273        2.39042             1.
+  jon1-jon1                    =          0.17644        0.00449        0.01305        0.65678             1.
+  jon1-jon2                    =         -0.59746        0.00268        0.03983        2.54248             0.
+  jon2-jon2                    =          0.19412        0.00646        0.01770        0.31540             1.
+ pot. energy from rec. space   =         -0.43858        0.02234        0.06019        3.14745             1.
+enthalpy                       =          1.76726        0.03652        0.10982        5.30235             1.
+cv                             =          5.12767
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
-pressure (excl. cont. contr.)  =          0.98917        0.00000        0.00000        0.00000             0.
+pressure (excl. cont. contr.)  =          1.00992        0.00000        0.00000        0.00000             0.
 number of particles            =        250.00000        0.00000        0.00000        0.00000             0.
 volume                         =      1.00000E+06    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =         -0.27133        0.00000
-pressure (NkT/V)(excl. contact)=          0.96168        0.00000
-pressure (kT) (excl. contact)  =      2.40420E-04    0.00000E+00
+total potential energy (NkT)   =         -0.26859        0.00000
+pressure (NkT/V)(excl. contact)=          0.98185        0.00000
+pressure (kT) (excl. contact)  =      2.45462E-04    0.00000E+00
 number density                 =      2.50000E-04    0.00000E+00
 
 **************************************************************************************************************
@@ -934,13 +934,13 @@ number density                 =      2.50000E-04    0.00000E+00
          Coordinate               0.00         0.02
          ControlAver              0.00         0.00
          MainAver                 0.00         0.00
-         IOMolsim                 0.01         0.04
-         SetVList                 0.02         0.11
-         MCPass                   0.12         0.83
-          SPartMove               0.00         0.03
-          DUTotal                 0.10         0.69
-           DUTwoBody              0.05         0.33
-           DUTwoBodyEwald         0.03         0.24
-            UEwaldRecStd          0.02         0.17 
+         IOMolsim                 0.00         0.03
+         SetVList                 0.02         0.10
+         MCPass                   0.13         0.85
+          SPartMove               0.01         0.03
+          DUTotal                 0.12         0.74
+           DUTwoBody              0.06         0.39
+           DUTwoBodyEwald         0.04         0.24
+            UEwaldRecStd          0.03         0.16 
  
-total cpu time since start (s)        0.16
+total cpu time since start (s)        0.17

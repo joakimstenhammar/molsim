@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:43
+2017-01-05     15:53:10
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -214,12 +214,12 @@ number of desired points       =     100000
 *                                                  results                                                   *
 **************************************************************************************************************
 
-second virial coeff.                        =          2.0932
-sd of the second virial coeff.              =          0.0105
-second virial coeff. (cm**3/mole)           =          1.2606
-sd of the second virial coeff. (cm**3/mole) =          0.0063
+second virial coeff.                        =          2.0927
+sd of the second virial coeff.              =          0.0099
+second virial coeff. (cm**3/mole)           =          1.2603
+sd of the second virial coeff. (cm**3/mole) =          0.0059
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.06
 
 **************************************************************************************************************
 *                                               neighbour list                                               *
@@ -230,17 +230,8 @@ automatic control of update frequency
 layer thickness                =         1.000
 factor used to calculate nneigh=         2.000
 maximal number of neighbours   =          2000
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                                                            %
-%                            w a r n i n g   f r o m   W a r n H C O v e r l a p                             %
-%                                                                                                            %
-%                                      hard-core overlap between atoms                                       %
-%                                                                                                            %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-particle no     atom no     atom type                                   coordinates                         separation
-    1    2        1    2   hs         hs            0.349  -0.662  -0.015        0.000   0.000   0.000        0.748
  
-total cpu time since start (s)        0.04
+total cpu time since start (s)        0.06
 
 **************************************************************************************************************
 *                                         image preparation: general                                         *

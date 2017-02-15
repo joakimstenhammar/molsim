@@ -34,51 +34,51 @@ Shape {appearance Appearance {material Material {
  ]}}
 
 # ... object: elliposid
-Transform { translation        8.162       0.272       3.513
+Transform { translation       -9.504      -9.065       7.077
  scale        1.000       1.000       0.500
- rotation     0.3372    0.1477    0.0000    2.7646
+ rotation     0.2187   -0.1184    0.0000    0.2513
  children [ DEF a Shape{ appearance Appearance { material
  Material {diffuseColor        1.000       0.000       0.000}}
  geometry Sphere { radius  3.00} } ] }
-Transform { translation        8.162       0.272       3.513
+Transform { translation       -9.504      -9.065       7.077
  scale        1.000       1.000       0.500
- rotation     0.3372    0.1477    0.0000    2.7646
+ rotation     0.2187   -0.1184    0.0000    0.2513
  children [ USE a]}
-Transform { translation        4.143       8.410      -7.582
+Transform { translation        8.912       4.119       4.535
  scale        1.000       1.000       0.500
- rotation    -0.6638   -0.4014    0.0000    2.2537
+ rotation     0.9785   -0.1783    0.0000    1.6747
  children [ USE a]}
-Transform { translation        5.415       7.454      -0.835
+Transform { translation        4.359      -3.231       8.516
  scale        1.000       1.000       0.500
- rotation    -0.4773    0.8319    0.0000    1.2837
+ rotation    -0.1019    0.9467    0.0000    1.2601
  children [ USE a]}
-Transform { translation        0.709       0.873       7.500
+Transform { translation       -1.557       9.211       2.386
  scale        1.000       1.000       0.500
- rotation     0.6617   -0.2613    0.0000    2.3501
+ rotation     0.8403   -0.4625    0.0000    1.8577
  children [ USE a]}
-Transform { translation       -4.242      -6.199       9.288
+Transform { translation       -6.372      -4.498      -1.617
  scale        1.000       1.000       0.500
- rotation     0.0629    0.5266    0.0000    0.5590
+ rotation    -0.5101   -0.8600    0.0000    1.5851
  children [ USE a]}
-Transform { translation       -6.763       3.015       5.927
+Transform { translation        1.252       1.393      -4.300
  scale        1.000       1.000       0.500
- rotation     0.4031   -0.4527    0.0000    2.4903
+ rotation    -0.7934   -0.3266    0.0000    2.1103
  children [ USE a]}
-Transform { translation        4.949      -6.501       8.074
+Transform { translation       -0.829      -1.489       3.022
  scale        1.000       1.000       0.500
- rotation     0.6223    0.3334    0.0000    2.3578
+ rotation    -0.5328    0.7790    0.0000    1.9078
  children [ USE a]}
-Transform { translation        9.647      -9.038      -5.408
+Transform { translation       -7.550      -3.405      -7.410
  scale        1.000       1.000       0.500
- rotation    -0.2018    0.1031    0.0000    2.9130
+ rotation     0.1497    0.0083    0.0000    0.1505
  children [ USE a]}
-Transform { translation        1.810      -7.577       1.028
+Transform { translation       -8.638       3.192      -3.137
  scale        1.000       1.000       0.500
- rotation    -0.5212   -0.1771    0.0000    2.5587
+ rotation    -0.3412    0.9399    0.0000    1.5843
  children [ USE a]}
-Transform { translation        9.755      -0.424      -3.710
+Transform { translation        5.028      -7.380       0.743
  scale        1.000       1.000       0.500
- rotation     0.2694    0.8291    0.0000    2.0827
+ rotation     0.7053   -0.3819    0.0000    0.9308
  children [ USE a]}
 
 #-------------------------------------------

@@ -353,9 +353,9 @@ testmesh       : testmesh.o mesh.o
 	$(COMP_SER) $(FLAG_SER) -o testmesh.exe testmesh.o mesh.o
 	./testmesh.exe
 
-mol.o           : mol.F90         statistics.o mesh.o
+mol.o           : mol.F90         statistics.o mesh.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c mol.F90
-molsim.o        : molsim.F90      mol.o      statistics.o
+molsim.o        : molsim.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c molsim.F90
 moldyn.o        : moldyn.F90	statistics.o
 	$(COMP_SER) $(FLAG_SER) -c moldyn.F90
@@ -403,7 +403,7 @@ sso.o      : sso.F90  mc.o	mol.o
 	$(COMP_SER) $(FLAG_SER) -c sso.F90
 testmesh.o      : testmesh.F90  mesh.o
 	$(COMP_SER) $(FLAG_SER) -c testmesh.F90
-molsim_par.o    : molsim.F90      mol.o      statistics_par.o
+molsim_par.o    : molsim.F90      mol.o      statistics_par.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o molsim_par.o -c molsim.F90
 particle_par.o  : particle.F90    mol.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90

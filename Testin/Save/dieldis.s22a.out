@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:22:56
+2017-01-05     15:50:56
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -286,10 +286,10 @@ total cpu time since start (s)        0.01
 single-particle move                             total          jon1                jon2      
 -------------------                              -----          ----------          ----------
 total number of conf.          =                2 1.00              1 1.00              1 1.00
-energy rejected conf.          =                1 0.50              1 1.00              0 0.00
-hard-core rejected conf.       =                1 0.50              0 0.00              1 1.00
+accepted number of conf.       =                1 0.50              1 1.00              0 0.00
+energy rejected conf.          =                1 0.50              0 0.00              1 1.00
 
-average no of displaced part.  =                                      0.00                0.00
+average no of displaced part.  =                                      1.00                0.00
 average no of net joining part.=                                      0.00                0.00
 
 **************************************************************************************************************
@@ -299,16 +299,16 @@ average no of net joining part.=                                      0.00      
 quantity                                    jon1                jon2      
 --------                                    ----------          ----------
 
-<dr**2>/step (macrostep)       =            0.0000E+00          0.0000E+00
+<dr**2>/step (macrostep)       =            0.8153E+01          0.0000E+00
 precision                      =            0.0000E+00          0.0000E+00
-<dr**2>/step (from start)      =            0.0000E+00          0.0000E+00
+<dr**2>/step (from start)      =            0.8153E+01          0.0000E+00
 precision                      =            0.0000E+00          0.0000E+00
 
 orientation order, x'-axis     =                1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000
 
-<ro> (x,y,z)                   =       0.0   2.0 102.0     0.0  -2.0 102.0
+<ro> (x,y,z)                   =      -1.7   2.5 104.2     0.0  -2.0 102.0
 <x'> (x,y,z)                   =      1.00  0.00  0.00    1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00    0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00    0.00  0.00  1.00
@@ -319,22 +319,22 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -1.59197        0.00000      0.000E+00
- total two-body energy         =         -3.39531        0.00000      0.000E+00
+total potential energy         =         -1.19665        0.00000      0.000E+00
+ total two-body energy         =         -2.47918        0.00000      0.000E+00
   jon1-jon1                    =          0.00000        0.00000      0.000E+00
-  jon1-jon2                    =         -3.39531        0.00000      0.000E+00
+  jon1-jon2                    =         -2.47918        0.00000      0.000E+00
   jon2-jon2                    =          0.00000        0.00000      0.000E+00
- total one-body energy         =          1.80334        0.00000      0.000E+00
-  jon1                         =          0.90167        0.00000      0.000E+00
+ total one-body energy         =          1.28254        0.00000      0.000E+00
+  jon1                         =          0.38086        0.00000     -0.146E-15
   jon2                         =          0.90167        0.00000      0.000E+00
-enthalpy                       =          0.88575        0.00000
+enthalpy                       =          1.28106        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
 pressure (excl. cont. contr.)  =          0.00025        0.00000
 number of particles            =          2.00000        0.00000
 volume                         =      3.35103E+07    0.00000E+00
 
-total potential energy (NkT)   =         -0.64251
+total potential energy (NkT)   =         -0.48297
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      5.96831E-08
 number density                 =      5.96831E-08
@@ -345,7 +345,7 @@ number density                 =      5.96831E-08
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:22:56
+2017-01-05     15:50:56
 
 title   : two charges near a spherical dielectric boundary, check of energy evaulation              
 
@@ -364,7 +364,7 @@ pressure                       =       0.000
 spherical cell radius          =     200.000
 volume                         =   0.335E+08
 
-seed of random generator       =  1315187863
+seed of random generator       =           2
 
 
 **************************************************************************************************************
@@ -376,7 +376,7 @@ atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        site1               1         jon1                0.00000     2.00000   102.00000
+     1        site1               1         jon1               -1.74362     2.47168   104.21135
      2        site2               2         jon2                0.00000    -2.00000   102.00000
 
 **************************************************************************************************************
@@ -386,10 +386,10 @@ atom no       atom type      particle no    particle type            coordinate 
 single-particle move                             total          jon1                jon2      
 -------------------                              -----          ----------          ----------
 total number of conf.          =                2 1.00              1 1.00              1 1.00
-energy rejected conf.          =                1 0.50              1 1.00              0 0.00
-hard-core rejected conf.       =                1 0.50              0 0.00              1 1.00
+accepted number of conf.       =                1 0.50              1 1.00              0 0.00
+energy rejected conf.          =                1 0.50              0 0.00              1 1.00
 
-average no of displaced part.  =                                      0.00                0.00
+average no of displaced part.  =                                      1.00                0.00
 average no of net joining part.=                                      0.00                0.00
 
 **************************************************************************************************************
@@ -425,16 +425,16 @@ maximum              2.0                      1.0                           2.0 
 quantity                                    jon1                jon2      
 --------                                    ----------          ----------
 
-<dr**2>/step (from start)      =            0.0000E+00          0.0000E+00
+<dr**2>/step (from start)      =            0.8153E+01          0.0000E+00
 precision                      =            0.0000E+00          0.0000E+00
-sqrt(<dr**2>)(from start)      =                0.0000              0.0000
+sqrt(<dr**2>)(from start)      =                2.8553              0.0000
 precision                      =                0.0000              0.0000
 
 orientation order, x'-axis     =                1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000
 
-<ro> (x,y,z)                   =       0.0   2.0 102.0     0.0  -2.0 102.0
+<ro> (x,y,z)                   =      -1.7   2.5 104.2     0.0  -2.0 102.0
 <x'> (x,y,z)                   =      1.00  0.00  0.00    1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00    0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00    0.00  0.00  1.00
@@ -445,22 +445,22 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =         -1.59197        0.00000        0.00000        0.00000             0.
- total two-body energy         =         -3.39531        0.00000        0.00000        0.00000             0.
+total potential energy         =         -1.19665        0.00000        0.00000        0.00000             0.
+ total two-body energy         =         -2.47918        0.00000        0.00000        0.00000             0.
   jon1-jon1                    =          0.00000        0.00000        0.00000        0.00000             0.
-  jon1-jon2                    =         -3.39531        0.00000        0.00000        0.00000             0.
+  jon1-jon2                    =         -2.47918        0.00000        0.00000        0.00000             0.
   jon2-jon2                    =          0.00000        0.00000        0.00000        0.00000             0.
- total one-body energy         =          1.80334        0.00000        0.00000        0.00000             0.
-  jon1                         =          0.90167        0.00000        0.00000        0.00000             0.
+ total one-body energy         =          1.28254        0.00000        0.00000        0.00000             0.
+  jon1                         =          0.38086        0.00000        0.00000        0.00000             0.
   jon2                         =          0.90167        0.00000        0.00000        0.00000             0.
-enthalpy                       =          0.88575        0.00000        0.00000        0.00000             0.
+enthalpy                       =          1.28106        0.00000        0.00000        0.00000             0.
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.00025        0.00000        0.00000        0.00000             0.
 number of particles            =          2.00000        0.00000        0.00000        0.00000             0.
 volume                         =      3.35103E+07    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =         -0.64251        0.00000
+total potential energy (NkT)   =         -0.48297        0.00000
 pressure (NkT/V)(excl. contact)=          1.00000        0.00000
 pressure (kT) (excl. contact)  =      5.96831E-08    0.00000E+00
 number density                 =      5.96831E-08    0.00000E+00
@@ -472,10 +472,10 @@ number density                 =      5.96831E-08    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.07 
-         ControlAver           0.00         0.33 
-         MainAver              0.00         0.22 
-         IOMolsim              0.00         0.38 
+         Coordinate            0.00         0.04 
+         ControlAver           0.00         0.20 
+         MainAver              0.00         0.23 
+         IOMolsim              0.00         0.53 
          SetVList              0.00         0.00 
          MCPass                0.00         0.00 
           SPartMove            0.00         0.00  

@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:22:56
+2017-01-05     15:50:55
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -278,16 +278,16 @@ average no of net joining part.=                                      0.00
 quantity                                    jon1      
 --------                                    ----------
 
-<dr**2>/step (macrostep)       =            0.2994E+02
+<dr**2>/step (macrostep)       =            0.8153E+01
 precision                      =            0.0000E+00
-<dr**2>/step (from start)      =            0.2994E+02
+<dr**2>/step (from start)      =            0.8153E+01
 precision                      =            0.0000E+00
 
 orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =       -4.    1.10006.
+<ro> (x,y,z)                   =       -2.    0.10004.
 <x'> (x,y,z)                   =      1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00
@@ -298,19 +298,19 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =          0.73496        0.00000      0.000E+00
+total potential energy         =          0.99932        0.00000     -0.111E-15
  total two-body energy         =          0.00000        0.00000      0.000E+00
   jon1-jon1                    =          0.00000        0.00000      0.000E+00
- total one-body energy         =          0.73496        0.00000      0.000E+00
-  jon1                         =          0.73496        0.00000      0.000E+00
-enthalpy                       =          3.21268        0.00000
+ total one-body energy         =          0.99932        0.00000     -0.111E-15
+  jon1                         =          0.99932        0.00000     -0.111E-15
+enthalpy                       =          3.47703        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
 pressure (excl. cont. contr.)  =          0.00000        0.00000
 number of particles            =          1.00000        0.00000
 volume                         =      3.35103E+13    0.00000E+00
 
-total potential energy (NkT)   =          0.29663
+total potential energy (NkT)   =          0.40332
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      2.98416E-14
 number density                 =      2.98416E-14
@@ -321,7 +321,7 @@ number density                 =      2.98416E-14
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:22:56
+2017-01-05     15:50:55
 
 title   : one charge near a spherical dielectric boundary, check of energy evaulation               
 
@@ -340,7 +340,7 @@ pressure                       =       0.000
 spherical cell radius          =   20000.000
 volume                         =   0.335E+14
 
-seed of random generator       =  1871512097
+seed of random generator       =           2
 
 
 **************************************************************************************************************
@@ -352,7 +352,7 @@ atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        site1               1         jon1               -3.79491     1.31744 10005.71491
+     1        site1               1         jon1               -1.74362     0.47168 10004.21135
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -397,16 +397,16 @@ maximum              1.0                      0.0                           0.0 
 quantity                                    jon1      
 --------                                    ----------
 
-<dr**2>/step (from start)      =            0.2994E+02
+<dr**2>/step (from start)      =            0.8153E+01
 precision                      =            0.0000E+00
-sqrt(<dr**2>)(from start)      =                5.4715
+sqrt(<dr**2>)(from start)      =                2.8553
 precision                      =                0.0000
 
 orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =       -4.    1.10006.
+<ro> (x,y,z)                   =       -2.    0.10004.
 <x'> (x,y,z)                   =      1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00
@@ -417,19 +417,19 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =          0.73496        0.00000        0.00000        0.00000             0.
+total potential energy         =          0.99932        0.00000        0.00000        0.00000             0.
  total two-body energy         =          0.00000        0.00000        0.00000        0.00000             0.
   jon1-jon1                    =          0.00000        0.00000        0.00000        0.00000             0.
- total one-body energy         =          0.73496        0.00000        0.00000        0.00000             0.
-  jon1                         =          0.73496        0.00000        0.00000        0.00000             0.
-enthalpy                       =          3.21268        0.00000        0.00000        0.00000             0.
+ total one-body energy         =          0.99932        0.00000        0.00000        0.00000             0.
+  jon1                         =          0.99932        0.00000        0.00000        0.00000             0.
+enthalpy                       =          3.47703        0.00000        0.00000        0.00000             0.
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =          0.00000        0.00000        0.00000        0.00000             0.
 number of particles            =          1.00000        0.00000        0.00000        0.00000             0.
 volume                         =      3.35103E+13    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =          0.29663        0.00000
+total potential energy (NkT)   =          0.40332        0.00000
 pressure (NkT/V)(excl. contact)=          1.00000        0.00000
 pressure (kT) (excl. contact)  =      2.98416E-14    0.00000E+00
 number density                 =      2.98416E-14    0.00000E+00
@@ -441,14 +441,14 @@ number density                 =      2.98416E-14    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.00 
-         ControlAver           0.00         0.00 
-         MainAver              0.00         0.43 
-         IOMolsim              0.00         0.56 
+         Coordinate            0.00         0.11 
+         ControlAver           0.00         0.11 
+         MainAver              0.00         0.24 
+         IOMolsim              0.00         0.51 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.00 
-          SPartMove            0.00         0.00  
-          DUTotal              0.00         0.00  
+         MCPass                0.00         0.03 
+          SPartMove            0.00         0.01  
+          DUTotal              0.00         0.01  
            DUDielDis           0.00         0.00   
  
 total cpu time since start (s)        0.01
