@@ -2222,7 +2222,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
          if (txoriginnwt(inwt) == 'origin') then
             rorigin = Zero
-         else if (txorigin(inwt) == 'random') then
+         else if (txoriginnwt(inwt) == 'random') then
             if (lbcsph) then
                do
                   rorigin(1) = Two*sphrad*(Random(iseed) - Half)
