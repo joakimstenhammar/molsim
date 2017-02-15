@@ -2517,24 +2517,20 @@ end subroutine GroupAds_layer1_ramp
 
 ! ... group division according to generations of non-periodic network
 
-subroutine GroupNetworkGenerations(iStage,m,txtype)
+subroutine GroupNetworkGenerations(iStage,m)
 
    use MolModule
    implicit none
 
    integer(4),    intent(in)     :: iStage
    integer(4),    intent(in)     :: m
-   character(20), intent(in)     :: txtype(2)
 
    character(len=*), parameter   :: txroutine = 'GroupNetworkGenerations'
 
    integer(4), allocatable, save :: igencn(:)
-   logical                       :: lassigned(0:nc)
 
-   integer(4)                    :: ivar, ip, igr, ic, jc
-   integer(4)                    :: n ! n is being used as a subsitute for where "m" is usually being used in this context
+   integer(4)                    :: ip, igr, ic
 
-   logical                       :: ldum
    character(10)                 :: str
 
 
