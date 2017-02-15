@@ -412,7 +412,7 @@ subroutine SetConfiguration
 
    if (lnetwork) then
       rnwt(1:nnwt)         = 10.0
-      txoriginnwt(1:nnwt)  = 'origin'
+      txoriginnwt(1:nnwt)  = 'random'
       shiftnwt(1:3,1:nnwt) = Zero
    end if
 
@@ -2222,7 +2222,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
          if (txoriginnwt(inwt) == 'origin') then
             rorigin = Zero
-         else
+         else if (txorigin(inwt) == 'random') then
             if (lbcsph) then
                do
                   rorigin(1) = Two*sphrad*(Random(iseed) - Half)
@@ -2238,6 +2238,8 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
             else
                call Stop (txroutine, 'txbc is not compatible with origin position of network', uout)
             end if
+         else
+            call Stop(txroutine,'invalid choice of txoriginnwt',uout)
          end if
 
 ! ... set node particles
