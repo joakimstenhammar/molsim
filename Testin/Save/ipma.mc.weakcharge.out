@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.2.0                                           **
+**                                          version 6.4.7, v2.3.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-05     15:52:26
+2017-02-15     11:40:58
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -124,6 +124,12 @@ number of atom types           =       5     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)  npptct(3,ict)
 ----------         ------------             --------  -------------  -------------  -------------
 iPMA                   2                    regular      24            24             0
+
+- - - - - - - - - - - - - sequence of chain type 1 'iPMA' - - - - - - - - - - - - -
+
+1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2-1-2
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -1372,7 +1378,7 @@ asphericity (<2:nd moments>)   =          0.53916
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-05     15:52:34
+2017-02-15     11:41:06
 
 title   : salt free iPMA cm=0.1 25-mer                                                              
 
@@ -2953,18 +2959,18 @@ number of images made          =    1
          -------          ------------     --------
          Coordinate             0.01         0.00
          ControlAver            0.00         0.00
-         MainAver               0.02         0.00
+         MainAver               0.01         0.00
          DistFunc               0.05         0.01
          ImageDriver            0.00         0.00
          IOMolsim               0.01         0.00
          SetVList               0.01         0.00
-         MCPass                 7.41         0.99
-          PivotMove             0.04         0.01 
-          DUTotal               6.90         0.92 
-           DUTwoBody            6.65         0.89  
-           DUBond               0.07         0.01  
+         MCPass                 8.09         0.99
+          PivotMove             0.05         0.01 
+          DUTotal               7.50         0.92 
+           DUTwoBody            7.23         0.88  
+           DUBond               0.08         0.01  
           ChainMove             0.05         0.01 
           ChargeChange          0.01         0.00 
           SPartMove             0.03         0.00 
  
-total cpu time since start (s)        7.52
+total cpu time since start (s)        8.20

@@ -46,6 +46,8 @@ module ParticleModule
    type(block_type), allocatable :: rep_iblock_ict(:,:)
    integer(4)  :: nblockict(mnct)
 
+   integer(4), allocatable :: iptsegct(:,:) ! particle type ipt of segment number iseg of chain type ict
+
 end module ParticleModule
 
 !************************************************************************
@@ -65,8 +67,9 @@ subroutine Particle(iStage)
 
    character(40), parameter :: txroutine ='Particle'
    character(80), parameter :: txheading ='particle data'
-   integer(4) :: igen, ialoc, inwt, ict, ipt, iat, iatloc, m
-   character(3)             :: txnxt   ! txnxt is being used to store the number of an object type as a string (dynamic formatting)
+   integer(4) :: igen, ialoc, inwt, ict, ic, jc, iseg, ipt, iat, iatloc, m
+   logical                   :: luniformsequence
+   character(10)             :: txhelp  ! auxiliary
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
@@ -80,6 +83,8 @@ subroutine Particle(iStage)
                           lradatbox, itestpart
 
    namelist /nmlRepeating/  rep_iblock_ict
+
+   namelist /nmlCopolymerSequence/ iptsegct
 
    namelist /nmlNetworkConfiguration/ nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt
 
@@ -142,6 +147,20 @@ subroutine Particle(iStage)
          rep_iblock_ict = block_type(0,0)
          rewind(uin)
          read(uin,nmlRepeating)
+      end if
+
+! ... read input data (nmlCopolymerSequence)
+
+      if(any(txcopolymer(1:nct) == 'sequence')) then
+         do ict = 1, nct
+            npct(ict) = sum(npptct(1:npt,ict))  ! npct needed for following allocation
+         end do
+         if(.not. allocated(iptsegct)) then
+            allocate(iptsegct(maxval(npct(1:nct)),nct))
+         end if
+         iptsegct = 0
+         rewind(uin)
+         read(uin,nmlCopolymerSequence)
       end if
 
 ! ... read input data (nmlNetworkConfiguration)
@@ -382,14 +401,14 @@ subroutine Particle(iStage)
          end if
 
          if (lnetwork) then
-            write(txnxt,'(i3)') nct
+            write(txhelp,'(i3)') nct
             write(uout,'()')
-            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txnxt))//'(a8,i0,a6,2x))') &
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txhelp))//'(a8,i0,a6,2x))') &
             ' network  ',' type ', ' no ', ' topology ', ('ncctnwt(',ict,',inwt)',ict = 1, nct)
-            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txnxt))//'(a15,2x))')       &
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txhelp))//'(a15,2x))')       &
             '----------','------', '----', '----------', ('---------------',ict = 1, nct)
             do inwt = 1, nnwt
-               write(uout,'(1x,a,t14,1x,i2,t24,i2,t32,a,t46,'//trim(adjustl(txnxt))//'(i5,11x))') &
+               write(uout,'(1x,a,t14,1x,i2,t24,i2,t32,a,t46,'//trim(adjustl(txhelp))//'(i5,11x))') &
                txnwt(inwt), inwt, nnwnwt(inwt), txtoponwt(inwt), ncctnwt(1:nct,inwt)
             end do
             write(uout,'()')
@@ -409,15 +428,48 @@ subroutine Particle(iStage)
          end if
 
          if (lchain) then
-            write(txnxt,'(i3)') npt
+            write(txhelp,'(i3)') npt
             write(uout,'()')
-            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txnxt))//'(a7,i0,a5,2x))') &
+            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txhelp))//'(a7,i0,a5,2x))') &
             'chain type', 'no of chains', 'topology', ('npptct(',ipt,',ict) ',ipt = 1, npt)
-            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txnxt))//'(a13,2x))')       &
+            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txhelp))//'(a13,2x))')       &
             '----------', '------------', '--------', ('-------------', ipt = 1, npt)
             do ict = 1, nct
-               write(uout,'(a,t20,i5,t45,a,t55,'//trim(adjustl(txnxt))//'(i5,9x))') &
+               write(uout,'(a,t20,i5,t45,a,t55,'//trim(adjustl(txhelp))//'(i5,9x))') &
                txct(ict), ncct(ict), txcopolymer(ict), npptct(1:npt,ict)
+            end do
+            write(uout,'()')
+            do ict = 1, nct
+               if (txcopolymer(ict) == 'block') cycle ! No sequence output for block-like chain types
+               write(txhelp,'(i3)') ict
+               write(uout,'(a)') repeat('- ',13)//'sequence of chain type '//trim(adjustl(txhelp))&
+                                 &//' '''//trim(adjustl(txct(ict)))//''''//repeat(' -',13)
+               write(uout,'()')
+               luniformsequence = .true.
+  testuniform: do ic = icnct(ict), icnct(ict) + ncct(ict) - 1
+                  do jc = ic + 1, icnct(ict) + ncct(ict) - 1
+                     if (any(iptpn(ipnsegcn(1:npct(ict),ic)) /= iptpn(ipnsegcn(1:npct(ict),jc)))) then
+                        luniformsequence = .false.
+                        exit testuniform
+                     end if
+                  end do
+               end do testuniform
+               do ic = icnct(ict), icnct(ict)+ncct(ict)-1
+                  if (.not. luniformsequence) write(uout,'(a5,i0)') 'ic = ', ic
+                  do iseg = 1, npct(ict)
+                     write(txhelp,'(i10)') iptpn(ipnsegcn(iseg,ic))
+                     txhelp = merge(trim(adjustl(txhelp))//' ',trim(adjustl(txhelp))//'-',iseg == npct(ict))
+                     if (modulo(iseg,50) == 0 .or. iseg == npct(ict)) then
+                        write(uout,fmt='(a)',advance='yes') trim(adjustl(txhelp))
+                     else
+                        write(uout,fmt='(a)',advance='no')  trim(adjustl(txhelp))
+                     end if
+                  end do
+                  if (luniformsequence) exit
+                  write (uout,'()')
+               end do
+               write (uout,'()')
+               if (ict == nct) write(uout,'(a)') repeat('- ',45)
             end do
             if (lspma) write(uout,'(a)')
             if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
@@ -579,6 +631,22 @@ subroutine SetObjectParam1
          write(uout,'(a,i5)') 'sum(ncct(1:nct)*npptct(ipt,1:nct)) = ', sum(ncct(1:nct)*npptct(ipt,1:nct))
          write(uout,'(a,i5)') 'nppt(ipt) = ', nppt(ipt)
          call Stop(txroutine, 'inconsistency among ncct, npptct, and nppt', uout)
+      end if
+   end do
+
+! ... check consistence of npptct and iptsegct (only if txcopolymer = 'sequence')
+   do ict = 1, nct
+      if (txcopolymer(ict) == 'sequence') then
+         do ipt = 1, npt
+            if (npptct(ipt,ict) /= count(iptsegct(1:npct(ict),ict) == ipt)) then
+               write(uout,'(a,i5)') 'ict = ', ict
+               write(uout,'(a,i5)') 'ipt = ', ipt
+               write(uout,'(a,i5)') 'count(iptsegct(1:npct(ict),ict) == ipt) = ', &
+                                     count(iptsegct(1:npct(ict),ict) == ipt)
+               write(uout,'(a,i5)') 'npptct(ipt,ict) = ', npptct(ipt,ict)
+               call Stop(txroutine, 'copolymer sequence: inconsistency among npptct and iptsegct', uout)
+            end if
+         end do
       end if
    end do
 
@@ -880,6 +948,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    integer(4) :: nrep, irep, nreplen
    integer(4) :: iblock
    integer(4) :: iplow
+   integer(4) :: ipt
    integer(4), allocatable :: npset(:)
    integer(4), allocatable :: ipstart(:)
    integer(4), allocatable :: iptiseg(:)
@@ -987,6 +1056,30 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
          end do
 
          deallocate(iptiseg, ipstart)
+
+      else if (txcopolymer(ict) == 'sequence') then
+
+         ! ... prepare allocatable var
+         if(.not. allocated(ipstart))  then
+            allocate(ipstart(npt))
+            ipstart = 0
+         end if
+
+         ! ... loop over chains of type ict
+         do icloc = 1, ncct(ict)
+            ic = ic+1                            ! global chain number
+            do ipt = 1, npt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+            end do
+            do iseg = 1, npct(ict)               ! loop over chain segments
+               ipt = iptsegct(iseg,ict)          ! particle type of segment iseg
+               ipstart(ipt) = ipstart(ipt) + 1   ! increment ipstart
+               ipnsegcn(iseg,ic) = ipstart(ipt)  ! set ipnsegcn
+            end do
+         end do
+
+         deallocate(ipstart)
+
       end if
     end do
 
