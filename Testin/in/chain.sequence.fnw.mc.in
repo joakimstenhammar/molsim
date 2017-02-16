@@ -1,0 +1,108 @@
+&nmlSystem
+ txtitle   = 'finite network and sequence copolymer',
+ txmode    = 'simulation',
+ txmethod  =         'mc',
+ txensemb  =        'nvt',
+ txbc      =        'xyz',
+ txstart   =    'setconf',
+ boxlen(1) =        1500 ,
+ boxlen(2) =        1500 ,
+ boxlen(3) =        1500 ,
+ temp      =      298.15 ,
+ prsr      =       1.013 ,
+ iseed     =           1 ,
+ nstep1    =           1 ,
+ nstep2    =          10 ,
+ lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .t.,  ldynamic = .f.,  limage = .f. ,
+ itest     =  0 ,  ipart =  1 ,  iatom =  0 ,  iaver =  0 ,  ishow  =  1 ,  iplot   =  1 ,  ilist    =  1 ,  ltrace = .f. ,
+ lblockaver = .f.,
+/
+&nmlScale
+/
+&nmlParticle
+ lclink         =     .true.,
+ nnwt           =         1 ,
+ nct            =         3 ,
+ txcopolymer(1) = 'sequence', txcopolymer(2) =    'block', txcopolymer(3) = 'sequence',
+ txct(1)        =  'strand1', txct(2)        =  'strand2', txct(3)        =  'strand3',
+ ncct(1)        =        16 , ncct(2)        =         4 , ncct(3)        =        32 ,
+ npt            =         7 ,
+ txpt(1)        =     'node', txpt(2)       =  'mon1', txpt(3)       =  'mon2', txpt(4)       =  'mon3', txpt(5)       =  'mon4', txpt(6)       =  'mon5', txpt(7)       =  'mon6',
+ nppt(1)        =         5 , nppt(2)       =    128 , nppt(3)       =     64 , nppt(4)       =    200 , nppt(5)       =     64 , nppt(6)       =     96 , nppt(7)       =    128 ,
+ natpt(1)       =         1 , natpt(2)      =      1 , natpt(3)      =      1 , natpt(4)      =      1 , natpt(5)      =      1 , natpt(6)      =      1 , natpt(7)      =      1 ,
+ txat(1)        =     'node', txat(2)       =  'mon1', txat(3)       =  'mon2', txat(4)       =  'mon3', txat(5)       =  'mon4', txat(6)       =  'mon5', txat(7)       =  'mon6',
+ radat(1)       =       2.0 , radat(2)      =    2.0 , radat(3)      =    2.0 , radat(4)      =    2.0 , radat(5)      =    2.0 , radat(6)      =    2.0 , radat(7)      =    2.0 ,
+ zat(1)         =       0.0 , zat(2)        =    1.0 , zat(3)        =    0.0 , zat(4)        =    1.0 , zat(5)        =   -1.0 , zat(6)        =    0.0 , zat(7)        =   -2.0 ,
+ npptct(1,1)    =         0 , npptct(2,1)   =      8 , npptct(3,1)   =      4 , npptct(4,2)   =     50 , npptct(5,3)   =      2 , npptct(6,3)   =      3 , npptct(7,3)   =      4 ,
+ maxnbondcl(1)  =         4 , maxnbondcl(2) =      2 , maxnbondcl(3) =      2 , maxnbondcl(4) =      0 , maxnbondcl(5) =      0 , maxnbondcl(6) =      0 , maxnbondcl(7) =      0 ,
+ naatpt(1,1)    =         1 , naatpt(1,2)   =      1 , naatpt(1,3)   =      1 , naatpt(1,4)   =      1 , naatpt(1,5)   =      1 , naatpt(1,6)   =      1 , naatpt(1,7)   =      1 ,
+ txaat(1,1)     =     'node', txaat(1,2)    =  'mon1', txaat(1,3)    =  'mon2', txaat(1,4)    =  'mon3', txaat(1,5)    =  'mon4', txaat(1,6)    =  'mon5', txaat(1,7)    =  'mon6',
+ itestpart = 10 ,
+/
+&nmlNetworkConfiguration
+ nnwnwt(1)     =           1 ,
+ iptclnwt(1)   =           1 ,
+ ncctnwt(1,1)  =          16 ,
+ txnwt(1)      =   'microgel',
+ txtoponwt(1)  =    'default',
+/
+&nmlCopolymerSequence
+ iptsegct(1,1)  = 2 , iptsegct(1,3)  = 7 ,
+ iptsegct(2,1)  = 2 , iptsegct(2,3)  = 5 ,
+ iptsegct(3,1)  = 3 , iptsegct(3,3)  = 7 ,
+ iptsegct(4,1)  = 2 , iptsegct(4,3)  = 6 ,
+ iptsegct(5,1)  = 2 , iptsegct(5,3)  = 6 ,
+ iptsegct(6,1)  = 3 , iptsegct(6,3)  = 6 ,
+ iptsegct(7,1)  = 2 , iptsegct(7,3)  = 7 ,
+ iptsegct(8,1)  = 2 , iptsegct(8,3)  = 5 ,
+ iptsegct(9,1)  = 3 , iptsegct(9,3)  = 7 ,
+ iptsegct(10,1) = 2 ,
+ iptsegct(11,1) = 2 ,
+ iptsegct(12,1) = 3 ,
+/
+&nmlPotential
+/
+&nmlPotentialChain
+ bond(1) = 2.4, 2, 5.0 ,
+ bond(2) = 2.4, 2, 5.0 ,
+ bond(3) = 2.4, 2, 5.0 ,
+ clink   = 2.4, 2, 5.0 ,
+/
+&nmlSetConfiguration
+ txsetconf(1) = 'network',     txsetconf(2) = 'network',     txsetconf(3) = 'network',
+ txsetconf(4) = 'chainrandom',
+ txsetconf(5) = 'chainrandom', txsetconf(6) = 'chainrandom', txsetconf(7) = 'chainrandom',
+ rnwt(1) =  65.0 ,
+ txoriginnwt(1) = 'origin',
+/
+&nmlMC
+ isamp = 1,
+ pspart(1) =  1.00 , pspart(2) =  1.00 , pspart(3) =  1.00 , pspart(4) =   1.00 , pspart(5) =   1.00 , pspart(6) =   1.00 , pspart(7) =   1.00 ,
+ dtran(1)  = -5.00 , dtran(2)  = -8.00 , dtran(3)  = -8.00 , dtran(4)  = -10.00 , dtran(5)  = -10.00 , dtran(6)  = -10.00 , dtran(7)  = -10.00 ,
+/
+&nmlIntList
+ inlist  =    10 ,
+ drnlist = 600.0 ,
+/
+&nmlGroup
+ ref   = 'type=all',
+ field = 'type=all',
+ lwref =        .f.,
+/
+&nmlStatic
+ istatic          =  1 ,
+/
+&nmlImage
+ iimage =  1 ,
+ lvtf   = .t.,
+/
+&nmlVTF
+ txwhen  = 'after_iimage',
+ bondr   =          0.3 ,
+ bondres =           50 ,
+ sphres  =           50 ,
+ tximage = 'frame','','','',
+ rgbcolor(1,1) = 1.00 , rgbcolor(1,2) = 0.00 , rgbcolor(1,3) = 0.00 , rgbcolor(1,4) = 0.50 , rgbcolor(1,5) = 0.50 , rgbcolor(1,6) = 0.00 , rgbcolor(1,7) = 0.65 ,
+ rgbcolor(2,1) = 0.00 , rgbcolor(2,2) = 1.00 , rgbcolor(2,3) = 0.00 , rgbcolor(2,4) = 0.50 , rgbcolor(2,5) = 0.00 , rgbcolor(2,6) = 0.50 , rgbcolor(2,7) = 0.35 ,
+ rgbcolor(3,1) = 0.00 , rgbcolor(3,2) = 0.00 , rgbcolor(3,3) = 1.00 , rgbcolor(3,4) = 0.00 , rgbcolor(3,5) = 0.50 , rgbcolor(3,6) = 0.50 , rgbcolor(3,7) = 0.00 ,
+/
