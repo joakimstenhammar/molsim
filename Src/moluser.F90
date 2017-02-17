@@ -9658,7 +9658,7 @@ module ComplexationModule
       !************************************************************************
 
       ! ... Driver for the Complexation Analysis
-      
+
       subroutine ComplexationDriver(iStage)
          use MolModule, only: ltrace, ltime, uout, master, uin
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
@@ -9667,7 +9667,7 @@ module ComplexationModule
          integer(4), intent(in)  :: iStage
          character(40), parameter :: txroutine ='ComplexationDriver'
          character(80), parameter :: txheading ='complexation Analysis'
-         logical,       save :: lClusterDF, lComplexFraction
+         logical,       save :: lClusterDF, lComplexFraction, lSegmentComplex
 
          namelist /nmlComplexation/ rcut_complexation, lClusterDF, lComplexFraction
 
@@ -9679,6 +9679,7 @@ module ComplexationModule
             rcut_complexation = 0.0
             lClusterDF = .false.
             lComplexFraction = .false.
+            lSegmentComplex = .false.
             rewind(uin)
             read(uin,nmlComplexation)
 
@@ -9723,6 +9724,7 @@ module ComplexationModule
          contains
             subroutine ComplexationDriverSub
                if (lComplexFraction)  call ComplexFraction(iStage)
+               if (lSegmentComplex)   call SegmentComplex(iStage)
                if (lClusterDF)        call ClusterDF(iStage)
                continue
             end subroutine ComplexationDriverSub
@@ -9769,7 +9771,7 @@ module ComplexationModule
 
       !************************************************************************
       !*                                                                      *
-      !*     ComplexFraction
+      !*     ComplexFraction                                                  *
       !*                                                                      *
       !************************************************************************
 
@@ -9794,7 +9796,7 @@ module ComplexationModule
          character(80), parameter :: txheading ='Fraction of Complexation'
          integer(4), save         :: nvar
          type(scalar_var), allocatable, save :: var(:)
-         
+
          integer(4)  :: ipt, jpt, ivar, ip
 
          if (ltrace) call WriteTrace(3, txroutine, iStage)
@@ -9874,6 +9876,122 @@ module ComplexationModule
          end function ivar_ptpt
 
       end subroutine ComplexFraction
+
+      !************************************************************************
+      !*                                                                      *
+      !*     SegmentComplex                                                   *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... calculate how many particles are complexed
+
+      subroutine SegmentComplex(iStage)
+
+         use MolModule, only: ltrace, ltime, uout, master, lsim, txstart, ucnf, ulist
+         use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+         use MolModule, only: nct, npct, ncct, nc, ictcn, ipnsegcn
+         use MolModule, only: npt, ipnpt, nppt, txct
+         use StatisticsModule, only: df2d_var
+         implicit none
+
+         integer(4), intent(in) :: iStage
+
+         character(40), parameter :: txroutine ='SegmentComplex'
+         character(80), parameter :: txheading ='Fraction of Complexation of each segment of the chains'
+         integer(4), save         :: nvar
+         type(df2d_var), allocatable, save :: var(:)
+
+         integer(4)  :: ict, ic, iseg, ip, jpt
+         real(8)    :: InvInt
+
+         if (ltrace) call WriteTrace(3, txroutine, iStage)
+         if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+         select case (iStage)
+         case (iReadInput)
+            nvar = nct
+            if(.not. allocated(var)) then
+               allocate(var(nvar))
+            end if
+
+         case (iWriteInput)
+
+            do ict = 1, nct
+               var(ict)%label = 'chain: '//txct(ict)
+               var(ict)%min(1) = 0.5d0
+               var(ict)%max(1) = npct(ict) + 0.5d0
+               var(ict)%nbin(1)= npct(ict)
+               var(ict)%min(2) = 0.5d0
+               var(ict)%max(2) = npt + 0.5d0
+               var(ict)%nbin(2)= npt
+               var(ict)%norm = InvInt(ncct(ict))
+            end do
+            call DistFunc2DSample(iStage, nvar, var)
+
+         case (iBeforeSimulation)
+
+            call DistFunc2DSample(iStage, nvar, var)
+            if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+
+         case (iBeforeMacrostep)
+
+            call ScalarSample(iStage, 1, nvar, var)
+
+         case (iSimulationStep)
+
+            !var(:)%avs2(:) = 0.0d0
+            var%nsamp2 = var%nsamp2 + 1
+
+            do ic = 1, nc
+               ict = ictcn(ic)
+               do iseg = 1, npct(ict)
+                  ip = ipnsegcn(iseg, ic)
+                  do jpt = 1, npt
+                     if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed withparticle ip
+                        var(ict)%avs2(iseg,jpt) = var(ict)%avs2(iseg,jpt) + 1.0d0
+                     end if
+                  end do
+               end do
+            end do
+
+         case (iAfterMacrostep)
+
+            do ict = 1, nct
+               var(ict)%avs2(:,:) = var(ict)%avs2(:,:)*var(ict)%norm
+            end do
+
+            call DistFunc2DSample(iStage, nvar, var)
+            if (lsim .and. master) write(ucnf) var
+
+         case (iAfterSimulation)
+
+            call DistFunc2DSample(iStage, nvar, var)
+            call WriteHead(2, txheading, uout)
+            write(uout,'(a                     )') 'first dimension (column) is the segment number'
+            write(uout,'(a                     )') 'second dimension (row) is the particle type'
+            call DistFunc2DHead(nvar, var, uout)
+            call DistFunc2DShow(1, txheading, nvar, var, uout)
+            call DistFunc2DList(1, txheading, nvar, var, ulist)
+
+            deallocate(var)
+
+         end select
+
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+      contains
+
+         pure function ivar_ptpt(ipt, jpt) result(ivar)
+            use MolModule, only: npt
+            implicit none
+            integer(4), intent(in)  :: ipt
+            integer(4), intent(in)  :: jpt
+            integer(4)  :: ivar
+            ivar = (ipt-1)*npt + jpt
+         end function ivar_ptpt
+
+      end subroutine SegmentComplex
+
 
       !************************************************************************
       !*                                                                      *
@@ -10061,4 +10179,3 @@ subroutine DoComplexation(iStage)
    integer(4), intent(in)  :: iStage      ! event of SSO-Move
    call ComplexationDriver(iStage)
 end subroutine
-
