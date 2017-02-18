@@ -745,6 +745,10 @@ subroutine IOCnf(str)
          call par_bc_ints(nbondcl ,   np)
          call par_bc_ints(bondcl  , maxvalnbondcl*np)
       end if
+      if (lweakcharge) then
+         call par_bc_logicals(laz ,   np)
+         call par_bc_reals(az     ,   np)
+      end if
       if (lmd .and. .not.GetlSetVel()) then
          call par_bc_reals(rod    , 3*np)
          call par_bc_reals(quad   , 4*np)
