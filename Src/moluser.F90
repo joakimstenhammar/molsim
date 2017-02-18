@@ -1970,7 +1970,7 @@ subroutine GroupUser(iStage, m, txtype, lsetconf)
    else if (txtype(m) == 'ads_layer1_ramp') then
       call GroupAds_layer1_ramp(iStage, m)
    else if (txtype(m) == 'networkgenerations') then
-      call GroupNetworkGenerations(iStage, m, txtype)
+      call GroupNetworkGenerations(iStage, m)
    else
       lsetconf =.false.
    end if
