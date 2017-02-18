@@ -347,6 +347,10 @@ subroutine Particle(iStage)
          allocate(laztm(na_alloc))
          laztm = .false.
       end if
+      if (.not.allocated(aztm)) then 
+         allocate(aztm(na_alloc))
+         aztm = 0.0E+00
+      end if
 
 ! ... set object parameters
 
