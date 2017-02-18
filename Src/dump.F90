@@ -296,7 +296,8 @@ subroutine DoDump(str)
       if (ldfor) call par_bc_reals(forceo , 3*(ipupp-iplow+1))
       if (ldtor) call par_bc_reals(torqueo, 3*(ipupp-iplow+1))
       if (ldidm) call par_bc_reals(idmo   , 3*(ipupp-iplow+1))
-      if (ldlaz) call Stop("DoDump",'ldlaz .and. _par_ not supported',uout)
+      if (ldlaz) call par_bc_reals(az     ,   (ipupp-iplow+1))
+      if (ldlaz) call par_bc_logicals(laz ,   (ipupp-iplow+1))
       if (ldutot) call par_bc_reals(u%tot*sclene/(np*GasConstant*temp*scltem), 1)
 #endif
 
