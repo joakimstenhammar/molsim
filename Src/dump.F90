@@ -233,7 +233,8 @@ subroutine DoDump(str)
    character(*), intent(in) :: str
 
    integer(4)   :: ip, ia, m, idum = 0, ierr, ipp, ipo
-   real(8)      :: dum, ldum
+   real(8)      :: dum
+   logical      :: ldum
 
    if (str(1:4) == 'open' .and. master) then
 
@@ -258,9 +259,8 @@ subroutine DoDump(str)
          if (ldfor) read(ufor) (dum,dum,dum,ip = iplow,ipupp)
          if (ldtor) read(utor) (dum,dum,dum,ip = iplow,ipupp)
          if (ldidm) read(uidm) (dum,dum,dum,ip = iplow,ipupp)
-         if (ldlaz) read(ulaz) (dum,ia = ialow,iaupp)
+         if (ldlaz) read(ulaz) (ldum,ia = ialow,iaupp)
          if (ldutot) read(uutot,*) dum
-
       end do
 
    else if (str == 'read') then
