@@ -423,9 +423,6 @@ module MolModule
    integer(4), allocatable :: nbondcl(:)   ! actual number of crosslinks to/from particle ip
    integer(4)    :: maxvalnbondcl          ! maxval(nbondcl(:))
    integer(4), allocatable :: bondcl(:,:)  ! crosslink and particle        -> crosslinked particle
-   integer(4), allocatable :: icnclpn(:,:) ! crosslink and particle        -> crosslinked chain
-   integer(4), allocatable :: ipnclcn(:,:) ! crosslink and chain           -> crosslinked particle
-   integer(4), allocatable :: nclcn(:)     ! chain number                  -> its number of cross-links
 
    logical       :: lmultigraft            ! flag for multigrafted chains
 

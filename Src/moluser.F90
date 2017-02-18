@@ -2527,12 +2527,14 @@ subroutine GroupNetworkGenerations(iStage,m)
 
    character(len=*), parameter   :: txroutine = 'GroupNetworkGenerations'
 
-   integer(4), allocatable, save :: igencn(:)
+   integer(4), allocatable, save :: igencn(:)    ! chain                   -> its generation
+   integer(4), allocatable, save :: icnclpn(:,:) ! crosslink and particle  -> crosslinked chain
+   integer(4), allocatable, save :: ipnclcn(:,:) ! crosslink and chain     -> crosslinked particle
+   integer(4), allocatable, save :: nclcn(:)     ! chain number            -> its number of cross-links
 
    integer(4)                    :: ip, igr, ic
 
    character(10)                 :: str
-
 
    select case (iStage)
 
@@ -2544,6 +2546,20 @@ subroutine GroupNetworkGenerations(iStage,m)
 
       if (.not.lnetwork) then
          call Warn(txroutine,'ref/field == ''networkgenerations'' .and. .not.lnetwork',uout)
+      end if
+
+      ! ... alloctate cross-link related pointers
+      if (.not.allocated(icnclpn)) then
+         allocate(icnclpn(maxvalnbondcl,np_alloc))
+         icnclpn = 0
+      end if
+      if (.not.allocated(nclcn)) then
+         allocate(nclcn(nc))
+         nclcn = 0
+      end if
+      if (.not.allocated(ipnclcn)) then
+         allocate(ipnclcn(2,nc))
+         ipnclcn = 0
       end if
 
    case (iWriteInput)

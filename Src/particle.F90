@@ -754,18 +754,6 @@ subroutine SetObjectParam1
          allocate(bondcl(maxvalnbondcl,np_alloc))
          bondcl = 0
       end if
-      if (.not.allocated(icnclpn)) then
-         allocate(icnclpn(maxvalnbondcl,np_alloc))
-         icnclpn = 0
-      end if
-      if (.not.allocated(nclcn)) then
-         allocate(nclcn(nc))
-         nclcn = 0
-      end if
-      if (.not.allocated(ipnclcn)) then
-         allocate(ipnclcn(2,nc))
-         ipnclcn = 0
-      end if
    end if
 
    if (master .and. itestpart == 10) then
