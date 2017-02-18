@@ -274,7 +274,14 @@ subroutine DoDump(str)
          if (ldfor) read(ufor) forceo(1:3,iplow:ipupp)
          if (ldtor) read(utor) torqueo(1:3,iplow:ipupp)
          if (ldidm) read(uidm) idmo(1:3,iplow:ipupp)
-         if (ldlaz) read(ulaz) laz(ialow:iaupp)
+         if (ldlaz) then
+            read(ulaz) laz(ialow:iaupp)
+            where (laz(ialow:iaupp))
+               az(ialow:iaupp) = zat(iatan(ialow:iaupp))
+            elsewhere
+               az(ialow:iaupp) = Zero
+            end where
+         end if
          if (ldutot) read(uutot,*) u%tot
          if (ldutot) u%tot = u%tot/(sclene/(np*GasConstant*temp*scltem))
 
