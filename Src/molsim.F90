@@ -721,7 +721,10 @@ subroutine IOCnf(str)
          if (lmvt) np = npread
          read(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
          if (lclink) read(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
-         if (lweakcharge) read(ucnf) laz(1:np)
+         if (lweakcharge) then
+            read(ucnf) laz(1:np)
+            where (.not. laz(1:np)) az(1:np) = Zero
+         end if
          if (lmd .and. .not.GetlSetVel()) then
             read(ucnf,end = 998) (rod(1:3,ip),quad(0:3,ip),ip = 1,np)
  998        continue
