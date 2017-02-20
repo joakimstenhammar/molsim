@@ -651,15 +651,17 @@ subroutine SetObjectParam1
 
 ! ... check consistence among nnwnwt and ncct
 
-   do ict = 1, nct
-      nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
-      if (.not.((nctemp == 0).or.(nctemp == ncct(ict)))) then
-         write(uout,'(a,i5)') 'ict = ', ict
-         write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
-         write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
-         call Stop(txroutine, 'inconsistency among nnwnwt, ncctnwt, and ncct', uout)
-      end if
-   end do
+   if(lnetwork) then
+      do ict = 1, nct
+         nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+         if (.not.((nctemp == 0).or.(nctemp == ncct(ict)))) then
+            write(uout,'(a,i5)') 'ict = ', ict
+            write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+            write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
+            call Stop(txroutine, 'inconsistency among nnwnwt, ncctnwt, and ncct', uout)
+         end if
+      end do
+   end if
 
 ! ... check whether nppt(iptclnwt(inwt)) is a multiple of nnwnwt(inwt)
 
