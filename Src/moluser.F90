@@ -9970,6 +9970,20 @@
             write(uout,'(a                     )') 'first dimension (column) is the segment number'
             write(uout,'(a                     )') 'second dimension (row) is the particle type'
             call DistFunc2DHead(nvar, var, uout)
+
+            do i = 1, nvar
+               write(uout,'(a)') var(i)%label
+               write(uout,'(a,*(i8))') 'pt: ',(ibin2,ibin2 = 1,var(i)%nbin(2))
+               do ibin1 = 1, var(i)%nbin(1), il
+                  write(unit,'(i3,(42f8.4))') ibin1, var(i)%avs1(ibin1,1:var(i)%nbin(2):il)
+               end do
+               write(unit,'()')
+               write(unit,'(a)') 's.d. of '//var(i)%label
+               write(unit,'((42i8))') (ibin2,ibin2 = 0,var(i)%nbin(2)-1,il)
+               do ibin1 = 0, var(i)%nbin(1)-1, il
+                  write(unit,'(i3,(42f8.4))') ibin1, var(i)%avsd(ibin1,0:var(i)%nbin(2)-1:il)
+               end do
+            end do
             call DistFunc2DShow(1, txheading, nvar, var, uout)
             call DistFunc2DList(1, txheading, nvar, var, ulist)
 
