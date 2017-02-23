@@ -56,18 +56,18 @@ module MollibModule !Starting to migrate to Module
 
 ! ... return the inverse of an integer
 
-   elemental real(8) function InvInt_single(i)
+   pure elemental real(8) function InvInt_single(i)
       implicit none
       integer(4), intent(in) :: i
       InvInt_single = 0.0d0
-      if (i > 0) InvInt_single = 1.0d0/real(i)
+      if (i .ne. 0) InvInt_single = 1.0d0/real(i)
    end function InvInt_single
 
-   elemental real(8) function InvInt_double(i)
+   pure elemental real(8) function InvInt_double(i)
       implicit none
       integer(8), intent(in) :: i
       InvInt_double = 0.0d0
-      if (i > 0) InvInt_double = 1.0d0/real(i)
+      if (i .ne. 0) InvInt_double = 1.0d0/real(i)
    end function InvInt_double
 
 end module MollibModule
