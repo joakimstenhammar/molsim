@@ -10309,8 +10309,8 @@ module ComplexationModule
 end module ComplexationModule
 
 subroutine DoComplexation(iStage)
-use ComplexationModule, only: ComplexationDriver
-implicit none
-integer(4), intent(in)  :: iStage      ! event of SSO-Move
-call ComplexationDriver(iStage)
+   use ComplexationModule, only: ComplexationDriver
+   implicit none
+   integer(4), intent(in)  :: iStage      ! event of SSO-Move
+   call ComplexationDriver(iStage)
 end subroutine
