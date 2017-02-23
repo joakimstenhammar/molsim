@@ -28,7 +28,7 @@ endif
 
 BINDIR:=$(abspath ../Bin)
 
- 
+
 #*****************************************************************
 #*                        Architecture                           *
 #*****************************************************************
@@ -55,7 +55,7 @@ CBIND = TRUE
 #*****************************************************************
 
 ifeq ($(CBIND), TRUE)          #F03 c-bindings
- 
+
   ifeq ($(ARCH), LOCAL_INTEL)
     FFTW_PATH=/home/$(USER)/.fftw
   endif
@@ -71,13 +71,13 @@ endif
 #*****************************************************************
 #*                        Compile                                *
 #*****************************************************************
- 
+
 #--------------
 #     LOCAL_INTEL
 #--------------
- 
+
 ifeq ($(ARCH), LOCAL_INTEL)
-  
+
   COMP_SER = ifort
   LINK_SER = $(COMP_SER)
 
@@ -115,26 +115,26 @@ ifeq ($(ARCH), LOCAL_INTEL)
   ifeq ($(mode),warn)
      	OPT_SER = $(OPT_warn)
   endif
-  
+
   COMP_PAR = $(MPIFC)
 
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
-   
+
    LLIB =
-  
+
 endif
 
 #--------------
 #    LOCAL_GFORTRAN
 #--------------
- 
+
 ifeq ($(ARCH), LOCAL_GFORTRAN)
-  
+
   COMP_SER = gfortran
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none
-   
+
   OPT_format = -ffree-form -ffree-line-length-none
   OPT_normal = $(OPT_format) -fast
   OPT_quick := $(OPT_format) -O0	#quick compilation
@@ -159,7 +159,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
      	OPT_SER = $(OPT_warn)
   endif
   LLIB =
-  
+
 endif
 
 #--------------
@@ -175,14 +175,14 @@ ifeq ($(ARCH), ALARIK_INTEL)
   COMP_PAR = $(MPIFC)
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
- 
+
   LLIB =
 
 # for Intel compiler on Alarik we need static linking for FFTW3 to work
 #    LINK_SER += -Bstatic
 #    LINK_PAR += -Bstatic
 
-endif  
+endif
 
 #--------------
 #     ALARIK_GFORTRAN  (Keep ARCH = ALARIK_INTEL for NOW)
@@ -197,7 +197,7 @@ ifeq ($(ARCH), ALARIK_GFORTRAN)
   COMP_PAR = $(MPIFC)
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
- 
+
   LLIB =
 
 endif
@@ -205,15 +205,15 @@ endif
 #--------------
 #     MAC_GFORTRAN
 #--------------
- 
+
 ifeq ($(ARCH), MAC_GFORTRAN)
-  
+
   COMP_SER = gfortran
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none
-   
+
   LLIB =
-  
+
 endif
 #-----------------------------------------------------------------
 #                          Defines
@@ -231,12 +231,12 @@ endif
 
 DEFINES_SER  = $(DEFINES_BASE)
 DEFINES_PAR  = $(DEFINES_BASE) -D_PAR_
- 
+
 #-----------------------------------------------------------------
 #                          Compiler flags
 #-----------------------------------------------------------------
- 
-FLAG_SER  = $(DEFINES_SER) $(OPT_SER)  
+
+FLAG_SER  = $(DEFINES_SER) $(OPT_SER)
 FLAG_PAR  = $(DEFINES_PAR) $(OPT_PAR)
 
 ifeq ($(ARCH), LOCAL_INTEL)
@@ -273,7 +273,7 @@ endif
 
 
 #-----------------------------------------------------------------
- 
+
 OBJS1=mol.o           \
       particle.o      \
       potential.o     \
@@ -296,7 +296,7 @@ OBJS1=mol.o           \
       moluser.o       \
       sso.o	      \
       mesh.o
- 
+
 OBJS2=mol.o           \
       particle_par.o  \
       potential_par.o \
@@ -320,13 +320,13 @@ OBJS2=mol.o           \
       moluser_par.o   \
       sso_par.o       \
       mesh_par.o
- 
+
 OBJS3=mol.o           \
       statistics.o    \
       molaux.o        \
       mollib.o        \
       mesh.o
- 
+
 default : def
 def     :
 	@echo Specify any one of: all, ser, par, molsim_ser, molsim_par, moldyn
@@ -336,14 +336,14 @@ par     : molsim_par
 ver	:
 	@echo Version is specified as \"$(VER)\"
 	@echo bindir is \"$(BINDIR)\"
- 
+
 molsim_ser     : molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
-	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe; 
+	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe;
 	cp molsim_ser $(HOME)/bin/molsim_ser$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_ser$(VER)
 molsim_par     : molsim_par.o $(OBJS2)
 	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
-	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe; 
+	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe;
 	cp molsim_par $(HOME)/bin/molsim_par$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_par$(VER)
 moldyn         : moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
@@ -452,18 +452,18 @@ sso_par.o      : sso.F90  mc_par.o	mol.o
 
 tidy 	:
 	rm -f *.o *.mod
- 
+
 #*****************************************************************
 #*                         Clean                                 *
 #*****************************************************************
 
 clean 	:
 	rm -f *.o *.mod *.i90 ../bin/*.exe *__genmod*
- 
+
 #*****************************************************************
 #*                         Print                                 *
 #*****************************************************************
- 
+
 PrintCom = lw
 print	:
 	$(PrintCom) *90
