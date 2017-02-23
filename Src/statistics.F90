@@ -63,7 +63,7 @@ module StatisticsModule
 
 ! ... data structure for two-dimensional distribution functions
 
-   integer(4), parameter :: mnbin_df2d = 200
+   integer(4), parameter :: mnbin_df2d = 40
 !   integer(4), parameter :: mnbin_df2d = 100            ! Elliposids (Erik W)
 
    type df2d_var
