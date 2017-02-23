@@ -9672,7 +9672,7 @@
             character(80), parameter :: txheading ='complexation Analysis'
             logical,       save :: lClusterDF, lComplexFraction, lSegmentComplex, lComplexDist
 
-            namelist /nmlComplexation/ rcut_complexation, lClusterDF, lComplexFraction, lSegmentComplex, lComplexDist
+            namelist /nmlComplexation/ rcut_complexation, lClusterDF, lComplexFraction, lComplexDist, lSegmentComplex
 
             if (ltrace) call WriteTrace(2, txroutine, iStage)
             if (ltime) call CpuAdd('start', txroutine, 0, uout)
@@ -9897,8 +9897,7 @@
 
             use MolModule, only: ltrace, ltime, uin, uout, master, lsim, txstart, ucnf, ulist, ishow, iplot, ilist
             use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-            !use MolModule, only: nct, npct, ncct, nc, ictcn, ipnsegcn, txct
-            use MolModule, only: npt, ipnpt, nppt, txpt, np
+            use MolModule, only: npt, ipnpt, nppt, txpt
             use StatisticsModule, only: df_var, mnbin_df
             use MolModule, only: static1D_var
             use MollibModule, only: InvInt
@@ -9914,7 +9913,7 @@
             type(df_var), allocatable, save :: var(:)
             integer(4), allocatable, save :: ivariptjptitype(:,:,:)
 
-            integer(4)  :: ip, ipt, jpt
+            integer(4)  :: ipt, jpt
             integer(4)  :: itype, ivar, ibin
             real(8)  :: w !fraction of complexation
 
