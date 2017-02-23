@@ -835,6 +835,7 @@ end subroutine MemoryDynamic
 subroutine CFCalc(iStage, txfunc, sfdata, sf, cf)
 
    use DynamicModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4),   intent(in) :: iStage
@@ -844,7 +845,6 @@ subroutine CFCalc(iStage, txfunc, sfdata, sf, cf)
    type(cf_var), intent(inout) :: cf     ! correlation data
 
    character(40), parameter :: txroutine ='CFCalc'
-   real(8) :: InvInt
    integer(4) :: ndim, ilev, idata, igr, ip, ishift
 
    select case (iStage)
@@ -1060,6 +1060,7 @@ end subroutine CFCalcSub
 subroutine CFWrite(txheading, sf, cf)
 
    use DynamicModule
+   use MollibModule, only: InvInt
    implicit none
 
    character(*), intent(in) :: txheading ! heading
@@ -1068,7 +1069,7 @@ subroutine CFWrite(txheading, sf, cf)
 
    real(8), allocatable :: CF0(:), CF0sd(:), CFinf(:),  CFinfsd(:), CFnorm(:), CFnormsd(:)
    real(8) :: CFsub, CFsubsd, value, valuesd
-   real(8) :: InvInt, InvFlt
+   real(8) :: InvFlt
    real(8) :: t_low, t_mid, t_upp
    integer(4), allocatable :: nbin(:)
    integer(4) :: ntot, ilev, idata, igr, nzero, unit, i

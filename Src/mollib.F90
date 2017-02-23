@@ -37,6 +37,41 @@
 !                 plot : SignMagn   , Plot
 !               powell : BrentMod
 
+module MollibModule !Starting to migrate to Module
+
+   implicit none
+   private
+   public InvInt
+
+   interface InvInt
+      module procedure InvInt_single, InvInt_double
+   end interface InvInt
+
+   contains
+!************************************************************************
+!*                                                                      *
+!*     InvInt                                                           *
+!*                                                                      *
+!************************************************************************
+
+! ... return the inverse of an integer
+
+   elemental real(8) function InvInt_single(i)
+      implicit none
+      integer(4), intent(in) :: i
+      InvInt_single = 0.0d0
+      if (i > 0) InvInt_single = 1.0d0/real(i)
+   end function InvInt_single
+
+   elemental real(8) function InvInt_double(i)
+      implicit none
+      integer(8), intent(in) :: i
+      InvInt_double = 0.0d0
+      if (i > 0) InvInt_double = 1.0d0/real(i)
+   end function InvInt_double
+
+end module MollibModule
+
 !************************************************************************
 !*                                                                      *
 !*     ErfLocal                                                         *
@@ -2696,28 +2731,6 @@ end subroutine SphRandom
 
 !************************************************************************
 !*                                                                      *
-!*     InvInt                                                           *
-!*                                                                      *
-!************************************************************************
-
-! ... return the inverse of an integer
-
-elemental real(8) function InvInt(i)
-   implicit none
-   integer(4), intent(in) :: i
-   InvInt = 0.0d0
-   if (i > 0) InvInt = 1.0d0/real(i)
-end function InvInt
-
-elemental real(8) function InvInt_dbl(i)
-   implicit none
-   integer(8), intent(in) :: i
-   InvInt_dbl = 0.0d0
-   if (i > 0) InvInt_dbl = 1.0d0/real(i)
-end function InvInt_dbl
-
-!************************************************************************
-!*                                                                      *
 !*     InvFlt                                                           *
 !*                                                                      *
 !************************************************************************
@@ -3662,13 +3675,13 @@ end function BrentMod
 !     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
 
 
-subroutine KnuthShuffle(a,asize)
+subroutine KnuthShuffle(a,asize, iseed)
 
-   use MolModule
    implicit none
 
-   integer, intent(in) :: asize !size needed to cope with allocatable arrays
-   integer, intent(inout) :: a(asize)
+   integer(4), intent(in) :: asize !size needed to cope with allocatable arrays
+   integer(4), intent(inout) :: a(asize)
+   integer(4), intent(inout) :: iseed   ! seed to random number generator
    integer :: i, randpos, itmp
    real(8) :: Random
 
@@ -3680,4 +3693,3 @@ subroutine KnuthShuffle(a,asize)
    end do
 
 end subroutine KnuthShuffle
-

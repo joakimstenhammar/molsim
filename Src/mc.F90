@@ -4952,23 +4952,23 @@ contains
 
 subroutine MCAverWrite(ny, npcl, nprimpartcl)
 
+   use MollibModule, only: InvInt
    integer(8), intent(in) :: ny(0:nevent,0:npt,1:nmovetype)
    integer(8), intent(in) :: npcl(2,npt,1:nmovetype)
    integer(8), intent(in) :: nprimpartcl(2,npt)
 
    integer(4) :: ipt
    real(8)    :: any(0:nevent,0:npt), ancl1(2,npt), ancl2(2,npt)
-   real(8)    :: InvInt_dbl
 
    call WriteHead(2, 'mc statistics', uout)
    do imovetype = 1, nmovetype
       if (ny(0,0,imovetype) == 0) cycle
       if (imovetype > 1) write(uout,'()')
       do ipt = 0, npt
-         any(0:nevent,ipt) = ny(0:nevent,ipt,imovetype)*InvInt_dbl(ny(0,ipt,imovetype))
+         any(0:nevent,ipt) = ny(0:nevent,ipt,imovetype)*InvInt(ny(0,ipt,imovetype))
       end do
       do ipt = 1, npt
-         ancl1(1:2,ipt) = npcl(1:2,ipt,imovetype)*InvInt_dbl(ny(imcaccept,ipt,imovetype))
+         ancl1(1:2,ipt) = npcl(1:2,ipt,imovetype)*InvInt(ny(imcaccept,ipt,imovetype))
       end do
       write(uout,'(a,t50,a,6(10x,a))') txmovetype(imovetype), 'total', txpt(1:npt)
       write(uout,'(a,t50,a,6(10x,a))') '-------------------', '-----', ('----------',ipt = 1,npt)
@@ -4983,7 +4983,7 @@ subroutine MCAverWrite(ny, npcl, nprimpartcl)
 
    if (ny(0,0,ispartcl2move) > 0) then
       do ipt = 1, npt
-         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt_dbl(ny(imcaccept,ipt,ispartcl2move))
+         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt(ny(imcaccept,ipt,ispartcl2move))
       end do
       write(uout,'()')
       write(uout,'(a,t60,5(5x,f10.2,5x))') 'average no of diplacad part.   = ', ancl2(1,1:npt)
@@ -4991,7 +4991,7 @@ subroutine MCAverWrite(ny, npcl, nprimpartcl)
    end if
    if (ny(0,0,ibrushcl2move) > 0) then
       do ipt = 1, npt
-         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt_dbl(ny(imcaccept,ipt,ibrushcl2move))
+         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt(ny(imcaccept,ipt,ibrushcl2move))
       end do
       write(uout,'()')
       write(uout,'(a,t60,5(5x,f10.2,5x))') 'average no of diplacad part.   = ', ancl2(1,1:npt)
@@ -5003,11 +5003,11 @@ end subroutine MCAverWrite
 !........................................................................
 
 subroutine MCAverData
-   real(8) :: InvInt_dbl
+   use MollibModule, only: InvInt
    open(90, file = 'mcaver.data', position = 'append')
    write(90,'(15g10.3)') dtran(1:npt), pspart(1:npt), radcl1(1:npt), &
-                         nys1(imcaccept,1:npt,ispartmove)*InvInt_dbl(nys1(0,1:npt,ispartmove)), &
-                         npcl1s1(1,1:npt,ispartmove)*InvInt_dbl(nys1(imcaccept,1:npt,ispartmove))
+                         nys1(imcaccept,1:npt,ispartmove)*InvInt(nys1(0,1:npt,ispartmove)), &
+                         npcl1s1(1,1:npt,ispartmove)*InvInt(nys1(imcaccept,1:npt,ispartmove))
    close(90)
 end subroutine MCAverData
 
@@ -5072,9 +5072,9 @@ contains
 
 subroutine MCAllAversub(ny)
 
+   use MollibModule, only: InvInt
    integer(4), intent(in) :: ny(0:nevent)
    real(8)    :: any(0:nevent)
-   real(8)    :: InvInt
    integer(4) :: ievent
 
    any = ny*InvInt(ny(0))

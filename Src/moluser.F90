@@ -4558,6 +4558,7 @@
    subroutine MeanElFieldZCyl(iStage)
 
       use MolModule
+      use MollibModule, only: InvInt
       implicit none
 
       integer(4), intent(in) :: iStage
@@ -4576,7 +4577,7 @@
       character(4) :: chila, chipn, chidir
       integer(4) :: iptmacroion, ipoint, ip, ilayer, ivar, idir
       real(8) :: elfield(3), elfieldsum(3), integrand(nlayer,npoint), mffelec(nlayer), dmffelec(2), fac
-      real(8) :: dx, dy, dz, dr2, dr, norm, InvInt
+      real(8) :: dx, dy, dz, dr2, dr, norm
 
       select case (iStage)
       case (iReadInput)
@@ -5364,6 +5365,7 @@
    subroutine TCFDipDomain(iStage)
 
       use DomainModule
+      use MollibModule, only: InvInt
       implicit none
 
       integer(4), intent(in) :: iStage
@@ -5379,7 +5381,7 @@
       real(8),    allocatable, save :: c0(:), c(:,:), ctemp(:,:)
       integer(4), allocatable, save :: norm(:)
       real(8),    save :: rlow, rupp, dr, dri, dx, dy, dz, r2
-      real(8) :: dipdomt(1:3,mndommax), anorm, InvInt
+      real(8) :: dipdomt(1:3,mndommax), anorm
       integer(4) :: idom, ip, jp, ivar
 
       if (slave) return   ! only master
@@ -6450,6 +6452,7 @@
    subroutine AdsEventDyn(iStage)
 
       use Molmodule
+      use MollibModule, only: InvInt
       implicit none
 
       integer(4), intent(in) :: iStage
@@ -6469,7 +6472,7 @@
       real(8), allocatable, save :: AdsStart(:,:), AdsLength(:,:)
       integer(4)               :: i, ic, ict, icnlow, icnupp
       real(8), allocatable, save :: ResTime(:)
-      real(8)                  :: GetTime, MomTime, InvInt
+      real(8)                  :: GetTime, MomTime
 
       namelist /nmlAdsEventDyn/ adscond, iinterval
 
@@ -9892,6 +9895,7 @@
             use MolModule, only: nct, npct, ncct, nc, ictcn, ipnsegcn, txct
             use MolModule, only: npt, ipnpt, nppt, txpt
             use StatisticsModule, only: df_var
+            use MollibModule, only: InvInt
             implicit none
 
             integer(4), intent(in) :: iStage
@@ -9905,7 +9909,6 @@
             integer(4)  :: ict, ic, iseg
             integer(4)  :: ip, ipt, jpt
             integer(4)  :: ivar
-            real(8)    :: InvInt
 
             if (ltrace) call WriteTrace(3, txroutine, iStage)
             if (ltime) call CpuAdd('start', txroutine, 1, uout)

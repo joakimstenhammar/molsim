@@ -355,7 +355,7 @@ testmesh       : testmesh.o mesh.o
 
 mol.o           : mol.F90         statistics.o mesh.o
 	$(COMP_SER) $(FLAG_SER) -c mol.F90
-molsim.o        : molsim.F90      mol.o      statistics.o
+molsim.o        : molsim.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c molsim.F90
 moldyn.o        : moldyn.F90	statistics.o
 	$(COMP_SER) $(FLAG_SER) -c moldyn.F90
@@ -367,7 +367,7 @@ coordinate.o    : coordinate.F90  mol.o
 	$(COMP_SER) $(FLAG_SER) -c coordinate.F90
 md.o            : md.F90        mol.o
 	$(COMP_SER) $(FLAG_SER) -c md.F90
-mc.o            : mc.F90        mol.o	nlist.o
+mc.o            : mc.F90        mol.o	nlist.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c mc.F90
 bd.o            : bd.F90      mol.o	md.o
 	$(COMP_SER) $(FLAG_SER) -c bd.F90
@@ -381,21 +381,21 @@ dump.o		: dump.F90 	mol.o
 	$(COMP_SER) $(FLAG_SER) -c dump.F90
 group.o		: group.F90	mol.o
 	$(COMP_SER) $(FLAG_SER) -c group.F90
-static.o        : static.F90      mol.o      statistics.o
+static.o        : static.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c static.F90
-dynamic.o        : dynamic.F90      mol.o      statistics.o
+dynamic.o        : dynamic.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c dynamic.F90
 image.o         : image.F90      mol.o
 	$(COMP_SER) $(FLAG_SER) -c image.F90
-statistics.o    : statistics.F90
+statistics.o    : statistics.F90 mollib.o
 	$(COMP_SER) $(FLAG_SER) -c statistics.F90
 mixed.o        : mixed.F90      mol.o
 	$(COMP_SER) $(FLAG_SER) -c mixed.F90
-molaux.o        : molaux.F90      mol.o
+molaux.o        : molaux.F90      mol.o	mollib.o
 	$(COMP_SER) $(FLAG_SER) -c molaux.F90
 mollib.o        : mollib.F90
 	$(COMP_SER) $(FLAG_SER) -c mollib.F90
-moluser.o       : moluser.F90  mol.o   	   statistics.o	potential.o
+moluser.o       : moluser.F90  mol.o   	   statistics.o	potential.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c moluser.F90
 mesh.o          : mesh.F90
 	$(COMP_SER) $(FLAG_SER) -c mesh.F90
@@ -403,7 +403,7 @@ sso.o      : sso.F90  mc.o	mol.o
 	$(COMP_SER) $(FLAG_SER) -c sso.F90
 testmesh.o      : testmesh.F90  mesh.o
 	$(COMP_SER) $(FLAG_SER) -c testmesh.F90
-molsim_par.o    : molsim.F90      mol.o      statistics_par.o
+molsim_par.o    : molsim.F90      mol.o      statistics_par.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o molsim_par.o -c molsim.F90
 particle_par.o  : particle.F90    mol.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90
@@ -413,7 +413,7 @@ coordinate_par.o : coordinate.F90 mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o coordinate_par.o -c coordinate.F90
 md_par.o        : md.F90      mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o md_par.o -c md.F90
-mc_par.o        : mc.F90      mol.o	nlist.o
+mc_par.o        : mc.F90      mol.o	nlist.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o mc_par.o -c mc.F90
 bd_par.o        : bd.F90      mol.o	md_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o bd_par.o -c bd.F90
@@ -427,11 +427,11 @@ dump_par.o	: dump.F90 	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o dump_par.o -c dump.F90
 group_par.o	: group.F90	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o group_par.o -c group.F90
-static_par.o    : static.F90      mol.o      statistics_par.o
+static_par.o    : static.F90      mol.o      statistics_par.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o static_par.o -c static.F90
-dynamic_par.o    : dynamic.F90      mol.o      statistics_par.o
+dynamic_par.o    : dynamic.F90      mol.o      statistics_par.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o dynamic_par.o -c dynamic.F90
-statistics_par.o   : statistics.F90
+statistics_par.o   : statistics.F90 mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o statistics_par.o -c statistics.F90
 mixed_par.o     : mixed.F90      mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o mixed_par.o -c mixed.F90
@@ -439,13 +439,13 @@ mollib_par.o    : mollib.F90      mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o mollib_par.o -c mollib.F90
 parallel_par.o  : parallel.F90    mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o parallel_par.o -c parallel.F90
-moluser_par.o : moluser.F90  mol.o     potential_par.o    statistics_par.o
+moluser_par.o : moluser.F90  mol.o     potential_par.o    statistics_par.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o moluser_par.o -c moluser.F90
 mesh_par.o    : mesh.F90
 	$(COMP_PAR) $(FLAG_PAR) -o mesh_par.o -c mesh.F90
 sso_par.o      : sso.F90  mc_par.o	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o sso_par.o -c sso.F90
- 
+
 #*****************************************************************
 #*                         Tidy                                  *
 #*****************************************************************

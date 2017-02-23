@@ -83,7 +83,7 @@ program MolsimDriver
 
 ! ............... initiate one macrostep  ................
 
-      if (maxcpu > 0) call CpuLeft(maxcpu, master, uout)
+      if (maxcpu > 0) call CpuLeft(maxcpu, uout)
       call IOMolsim(iBeforeMacrostep)
       call IOSystem(iBeforeMacrostep)
       call MolsimDriverSub(iBeforeMacrostep)
@@ -823,6 +823,7 @@ end subroutine ControlAver
 subroutine MDAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -836,7 +837,7 @@ subroutine MDAver(iStage)
    real(8), allocatable, save :: ttras2(:),   ttras1(:)   ! translational temp
    real(8), allocatable, save :: trots2(:),   trots1(:)   ! rotational temp
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm, fac
+   real(8)    :: norm, fac
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -975,6 +976,7 @@ end subroutine MDAver
 subroutine DispAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -985,7 +987,7 @@ subroutine DispAver(iStage)
    real(8), allocatable, save :: rr2(:), rr2sd(:)       ! mean square displacement/step for particle type ipt
    real(8), allocatable, save :: rr3(:), rr3sd(:)       ! mean square displacement/step for particle type ipt
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm, term
+   real(8)    :: norm, term
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -1112,6 +1114,7 @@ end subroutine DispAver
 subroutine OriOrderAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1121,7 +1124,7 @@ subroutine OriOrderAver(iStage)
    real(8), allocatable, save :: orist(:,:,:)               ! initial orientation of particle ip
    real(8), allocatable, save :: oris2(:,:), oris1(:,:)     ! orientational order parameter (0 to 1)
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm
+   real(8)    :: norm
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -1201,6 +1204,7 @@ end subroutine OriOrderAver
 subroutine PosOriAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1210,7 +1214,7 @@ subroutine PosOriAver(iStage)
    real(8), allocatable, save :: roavs2(:,:), roavs1(:,:)       ! average of ro for particles of type ipt
    real(8), allocatable, save :: oriavs2(:,:,:), oriavs1(:,:,:) ! average of ori for particles of type ipt
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm
+   real(8)    :: norm
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
