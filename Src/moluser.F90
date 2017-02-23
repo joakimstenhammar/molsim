@@ -9670,9 +9670,9 @@
             integer(4), intent(in)  :: iStage
             character(40), parameter :: txroutine ='ComplexationDriver'
             character(80), parameter :: txheading ='complexation Analysis'
-            logical,       save :: lClusterDF, lComplexFraction, lSegmentComplex
+            logical,       save :: lClusterDF, lComplexFraction, lSegmentComplex, lComplexDist
 
-            namelist /nmlComplexation/ rcut_complexation, lClusterDF, lComplexFraction, lSegmentComplex
+            namelist /nmlComplexation/ rcut_complexation, lClusterDF, lComplexFraction, lSegmentComplex, lComplexDist
 
             if (ltrace) call WriteTrace(2, txroutine, iStage)
             if (ltime) call CpuAdd('start', txroutine, 0, uout)
@@ -9727,6 +9727,7 @@
             contains
                subroutine ComplexationDriverSub
                   if (lComplexFraction)  call ComplexFraction(iStage)
+                  if (lComplexDist)      call ComplexDist(istage)
                   if (lSegmentComplex)   call SegmentComplex(iStage)
                   if (lClusterDF)        call ClusterDF(iStage)
                   continue
@@ -9882,6 +9883,144 @@
 
          !************************************************************************
          !*                                                                      *
+         !*     ComplexDistribution                                              *
+         !*                                                                      *
+         !************************************************************************
+
+         ! ... calculate the distribution functions of the complexation
+
+         !     type  label  quantity
+         !     ----  -----  --------
+         !     1     w      fraction of complexation
+
+         subroutine ComplexDist(iStage)
+
+            use MolModule, only: ltrace, ltime, uin, uout, master, lsim, txstart, ucnf, ulist, ishow, iplot, ilist
+            use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
+            !use MolModule, only: nct, npct, ncct, nc, ictcn, ipnsegcn, txct
+            use MolModule, only: npt, ipnpt, nppt, txpt, np
+            use StatisticsModule, only: df_var, mnbin_df
+            use MolModule, only: static1D_var
+            use MollibModule, only: InvInt
+            implicit none
+
+            integer(4), intent(in) :: iStage
+
+            character(40), parameter :: txroutine ='ComplexDist'
+            character(80), parameter :: txheading ='Distribution of the rate of complexation'
+            integer(4), parameter    :: ntype = 1
+            type(static1D_var), save :: vtype(ntype)
+            integer(4), save         :: nvar
+            type(df_var), allocatable, save :: var(:)
+            integer(4), allocatable, save :: ivariptjptitype(:,:,:)
+
+            integer(4)  :: ip, ipt, jpt
+            integer(4)  :: itype, ivar, ibin
+            real(8)  :: w !fraction of complexation
+
+            namelist /nmlComplexDist/ vtype
+
+            if (ltrace) call WriteTrace(3, txroutine, iStage)
+            if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+            select case (iStage)
+            case (iReadInput)
+
+               vtype(1)%l      = .false.
+               vtype(1)%min    = 0.0d0
+               vtype(1)%max    = 1.0d0+epsilon(vtype(1)%max)
+               vtype(1)%nbin   = 100
+
+               rewind(uin)
+               read(uin,nmlComplexDist)
+
+               if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine, 'vtype%nbin > mnbin_df', uout)
+
+            case (iWriteInput)
+
+               vtype%label = ['w']
+               vtype(1)%nvar = npt**2
+               nvar = sum(vtype(:)%nvar, 1, vtype(:)%l)
+               if(.not. allocated(var)) then
+                  allocate(var(nvar))
+               end if
+               if(.not. allocated(ivariptjptitype)) then
+                  allocate(ivariptjptitype(npt,npt,ntype))
+               end if
+
+               ivar = 0
+               do itype = 1, ntype
+                  if (vtype(itype)%l) then
+                     do ipt = 1, npt
+                        do jpt = 1, npt
+                           ivar = ivar + 1
+                           ivariptjptitype(ipt,jpt,itype) = ivar
+                           var(ivar)%label = trim(vtype(itype)%label)//': pt: '//trim(txpt(ipt))//'; pt:'//trim(txpt(jpt))
+                           var(ivar)%min   = vtype(itype)%min
+                           var(ivar)%max   = vtype(itype)%max
+                           var(ivar)%nbin  = vtype(itype)%nbin
+                           var(ivar)%norm  = InvInt(nppt(ipt))
+                        end do
+                     end do
+                  end if
+               end do
+
+               call DistFuncSample(iStage, nvar, var)
+
+            case (iBeforeSimulation)
+
+               call DistFuncSample(iStage, nvar, var)
+               if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+
+            case (iBeforeMacrostep)
+
+               call DistFuncSample(iStage, nvar, var)
+
+            case (iSimulationStep)
+
+               var%nsamp2 = var%nsamp2 + 1
+
+               do ipt = 1, npt
+                  do jpt = 1, npt
+
+                     !sample of type 1
+                     itype = 1
+                     if (vtype(itype)%l) then
+                        ivar = ivariptjptitype(ipt,jpt,itype)
+                        w = count(any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ipnpt(ipt):(ipnpt(ipt)+nppt(ipt)-1)),DIM=1 ))
+                        w=w*var(ivar)%norm
+                        ibin = max(-1,min(floor(var(ivar)%bini*(w-var(ivar)%min)),var(ivar)%nbin))
+                        print *, ibin
+                        var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)+1.0d0
+                     end if
+
+                  end do
+               end do
+
+            case (iAfterMacrostep)
+
+               call DistFuncNorm(1, nvar, var)
+               call DistFuncSample(iStage, nvar, var)
+               if (lsim .and. master) write(ucnf) var
+
+            case (iAfterSimulation)
+
+               call DistFuncSample(iStage, nvar, var)
+               call WriteHead(2, txheading, uout)
+               call DistFuncHead(nvar, var, uout)
+               call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
+               call DistFuncAverValue(nvar, var, uout)
+
+            deallocate(var)
+
+         end select
+
+         if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+      end subroutine ComplexDist
+
+         !************************************************************************
+         !*                                                                      *
          !*     SegmentComplex                                                   *
          !*                                                                      *
          !************************************************************************
@@ -9890,7 +10029,7 @@
 
          subroutine SegmentComplex(iStage)
 
-            use MolModule, only: ltrace, ltime, uout, master, lsim, txstart, ucnf, ulist
+            use MolModule, only: ltrace, ltime, uout, master, lsim, txstart, ucnf, ulist, ishow, iplot, ilist
             use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
             use MolModule, only: nct, npct, ncct, nc, ictcn, ipnsegcn, txct
             use MolModule, only: npt, ipnpt, nppt, txpt
@@ -9907,7 +10046,7 @@
             integer(4), allocatable, save :: ivarictipt(:,:)
 
             integer(4)  :: ict, ic, iseg
-            integer(4)  :: ip, ipt, jpt
+            integer(4)  :: ip, ipt
             integer(4)  :: ivar
 
             if (ltrace) call WriteTrace(3, txroutine, iStage)
@@ -9951,17 +10090,16 @@
 
             case (iSimulationStep)
 
-               !var(:)%avs2(:) = 0.0d0
                var%nsamp2 = var%nsamp2 + 1
 
                do ic = 1, nc
                   ict = ictcn(ic)
                   do iseg = 1, npct(ict)
                      ip = ipnsegcn(iseg, ic)
-                     do jpt = 1, npt
-                        if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed with particle ip
+                     do ipt = 1, npt
+                        if( any(lcmplx_ipjp( ipnpt(ipt):(ipnpt(ipt) + nppt(ipt) - 1), ip ))) then !if any particle of type ipt is complexed with particle ip
                            ivar = ivarictipt(ict,ipt)
-                           var(ivar)%avs2(iseg) = var(ivar)%avs2(iseg) + 1.0d0
+                           var(ivar)%avs2(iseg-1) = var(ivar)%avs2(iseg-1) + 1.0d0
                         end if
                      end do
                   end do
@@ -9981,8 +10119,7 @@
             call DistFuncSample(iStage, nvar, var)
             call WriteHead(2, txheading, uout)
             call DistFuncHead(nvar, var, uout)
-            call DistFuncShow(1, txheading, nvar, var, uout)
-            call DistFuncList(1, txheading, nvar, var, ulist)
+            call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
 
             deallocate(var)
 
@@ -9991,7 +10128,6 @@
          if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
       end subroutine SegmentComplex
-
 
       !************************************************************************
       !*                                                                      *
