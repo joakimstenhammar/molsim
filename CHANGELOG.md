@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.3.0] - 2017-02-16 - Klikk
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.1.1] - 2016-12-12 - Tangoloss
 ### Fixed
-- when using `txpivot` as `short` or `lower`, all beads connected to the moved particles are also moved 
+- when using `txpivot` as `short` or `lower`, all beads connected to the moved particles are also moved
 
 ## [2.1.0] - 2016-11-29 - Tangoloss
 ### Changed

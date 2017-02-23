@@ -13,16 +13,16 @@
  iseed     =           1 ,
  nstep1    =           1 ,
  nstep2    =          10 ,
- lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .t.,  ldynamic = .f.,  limage = .t. , 
+ lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .t.,  ldynamic = .f.,  limage = .t. ,
  itest     =  0 ,  ipart =  1 ,  iatom =  0 ,  iaver =  0 ,  ishow  =  1 ,  iplot   =  1 ,  ilist    =  1 ,  ltrace = .f. ,
- lblockaver = .f., 
+ lblockaver = .f.,
 /
-&nmlScale 
+&nmlScale
 /
 &nmlParticle
  lclink        =       .true.,
  nnwt          =           2 ,
- nct           =           2 ,                                                        
+ nct           =           2 ,
  txct(1)       =   'strand_L',                           txct(2)       =   'strand_S',
  ncct(1)       =         184 ,                           ncct(2)       =       104   ,
  npt           =           4 ,
@@ -34,11 +34,11 @@
  npptct(1,1)   =           0 , npptct(2,1)   =     5 ,   npptct(3,2)   =           0 , npptct(4,2)   =     5 ,
  maxnbondcl(1) =           4 , maxnbondcl(2) =     1 ,   maxnbondcl(3) =           4 , maxnbondcl(4) =     1 ,
  naatpt(1,1)   =           1 , naatpt(1,2)   =     1 ,   naatpt(1,3)   =           1 , naatpt(1,4)   =     1 ,
- txaat(1,1)    =     'node_L', txaat(1,2)    = 'monL',   txaat(1,3)    =     'node_S', txaat(1,4)    = 'monS', 
+ txaat(1,1)    =     'node_L', txaat(1,2)    = 'monL',   txaat(1,3)    =     'node_S', txaat(1,4)    = 'monS',
  itestpart = 10,
 /
 &nmlNetworkConfiguration
- nnwnwt(1)     =           1 ,                           nnwnwt(2)     =         2   ,                               
+ nnwnwt(1)     =           1 ,                           nnwnwt(2)     =         2   ,
  iptclnwt(1)   =           1 ,                           iptclnwt(2)   =         3   ,
  ncctnwt(1,1)  =         184 ,                           ncctnwt(2,2)  =        52   ,
  txnwt(1)      = 'microgel_L',                           txnwt(2)      = 'microgel_S',
@@ -70,8 +70,8 @@
  istatic         =  1 ,
 /
 &nmlImage
- iimage =  1 , 
- lvtf   = .t., 
+ iimage =  1 ,
+ lvtf   = .t.,
 /
 &nmlVTF
  txwhen  = 'after_iimage',

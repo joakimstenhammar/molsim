@@ -2,11 +2,11 @@
   txtitle ='points in a sphere',
   txmethod='mc',    txensemb='nvt',     txbc ='sph',  txstart ='setconf',
   nstep1   = 1,     nstep2   = 1000,
- 
+
   sphrad= 50.0,
- 
+
   temp  = 298.,   prsr = 0.1013,
- 
+
   iseed = 9876543,
   lcont =.t.,  laver =.t.,  ldist =.f.,  ldump =.f.,  lgroup=.t.,  lstatic=.true.,limage =.f.,
   itest = 0,   ipart = 1,   iatom = 0,   iaver = 10000, ishow = 1,   iplot = 1,   ilist = 0,

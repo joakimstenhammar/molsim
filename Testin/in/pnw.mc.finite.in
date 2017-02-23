@@ -20,8 +20,8 @@
   nppt  =   71,    1656,
   natpt =    1,    1,
   txat  = 'node',   'strand',
-  massat= 10.0,      10.0,   
-  radat =  2.0,       2.0,  
+  massat= 10.0,      10.0,
+  radat =  2.0,       2.0,
   zat =    0.0,       0.0,
   naatpt(1,1) =  1,
   txaat(1,1) = 'node',
@@ -40,7 +40,7 @@
   rcut = 20,
   relpermitt = 78.4,
  /
- &nmlPotentialChain 
+ &nmlPotentialChain
  bond = 2.4088, 2, 5.0,
  angle = 0.00207,
  clink = 2.4, 2, 5.0,
@@ -48,7 +48,7 @@
  &nmlSetConfiguration
   txsetconf(1) = 2*'network',
   anglemin = 120.0,
-  rnwt(1)    = 145, 
+  rnwt(1)    = 145,
   txorigin(1)    = 'origin',
   shiftnwt(1:3,1) = 0.0,
  /
@@ -69,7 +69,7 @@
  &nmlSubStructureDF
  vtype(1) = .true., 0.0, 100.0, 100,
  vtype(2) = .true., 0.0, 100.0, 100,
- lptinsub = .true., .true., 
+ lptinsub = .true., .true.,
  /
  &nmlImage lvrml =.true. /
  &nmlVRML atsize =  2.0, 2.0, blmax = 5.0, bondr = 0.3 /

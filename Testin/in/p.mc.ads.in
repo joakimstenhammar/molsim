@@ -31,9 +31,9 @@
   txaat(1,1)  ='bead',
  /
  &nmlPotential
-  rcut  = 10,	
-  txpot  = '(1,6,12)',	
-  lljcut =.true.,	
+  rcut  = 10,
+  txpot  = '(1,6,12)',
+  lljcut =.true.,
   luext =.true.,
  /
  &nmlPotentialExternal txuext ='lj_wall_z', sigma_ext = 3.5d0, epsilon_ext = 25d-1, wall_z_ext = 120.0 /

@@ -14,9 +14,9 @@
   npt   = 1,
   txpt  = 'ellipsoid',
   nppt  =  2048,
-  natpt =  1,   
+  natpt =  1,
   txat  = 'site1'
-  massat= 10.0,    
+  massat= 10.0,
   radat = 0.0,
   dipain(1,1,1) = 0.277552801463072968205, ! unit e0*A
   naatpt(1,1)=  1,
@@ -46,8 +46,8 @@
  &nmlDist
   idist = 1,
   vtype(5)%l =.true.,
-  vtype(5)%min = 0.0,	
-  vtype(5)%max = 45.0,	
+  vtype(5)%min = 0.0,
+  vtype(5)%max = 45.0,
   vtype(5)%nbin = 180,
   rcutdist = 45.0d0,
  /
