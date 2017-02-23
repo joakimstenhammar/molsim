@@ -9990,17 +9990,6 @@
 
          if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
-      contains
-
-         pure function ivar_ptpt(ipt, jpt) result(ivar)
-            use MolModule, only: npt
-            implicit none
-            integer(4), intent(in)  :: ipt
-            integer(4), intent(in)  :: jpt
-            integer(4)  :: ivar
-            ivar = (ipt-1)*npt + jpt
-         end function ivar_ptpt
-
       end subroutine SegmentComplex
 
 
