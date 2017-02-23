@@ -349,7 +349,7 @@
       character(40), parameter :: txroutine ='ElstatScreen'
       real(8), save :: facscr
       integer(4) :: iatjat, m
-      real(8)    :: r1i, rni, w0, w1, w2, term, qq, fac, c0fac, c1fac, c2fac, expfac
+      real(8)    :: r1i, rni, w0, w1, w2, term, qq, expfac
 
       if (str(1:4) == 'init') then
 
@@ -430,7 +430,7 @@
       else if (txsetconf(ipt) == 'cubic2d2surf') then
          call SetCubic2D2Surf(ipt)
       else if (txsetconf(ipt) == 'random_trans') then
-         call SetChainRandomTrans(ipt)
+         call SetChainRandomTrans() !ipt is not needed
       else if (txsetconf(ipt) == 'capsid') then
          call SetCapsid(ipt)
       else if (txsetconf(ipt) == 'capsid_250') then
@@ -438,7 +438,7 @@
       else if (txsetconf(ipt) =='random_capsid_inside') then
          call SetInsideCapsid(ipt)
       else if (txsetconf(ipt) =='random_chain_inside') then
-         call SetChainInsideCapsid(ipt)
+         call SetChainInsideCapsid() !ipt is not needed
       else if (txsetconf(ipt) =='randomcapsid') then
          call SetCapsidRandom(ipt)
       else if (txsetconf(ipt) =='spool') then
@@ -452,7 +452,7 @@
       else if (txsetconf(ipt) =='randomcylindershell') then
          call SetRandomCylinderShell(ipt)
       else if (txsetconf(ipt) =='chainlinepma') then
-         call SetChainLinePMA(ipt)
+         call SetChainLinePMA() !ipt is not needed
       else
          lsetconf =.false.
       end if
@@ -644,16 +644,16 @@
    ! ... generate a random start configurations for chain particles + chain translation
    !     for Niklas
 
-   subroutine SetChainRandomTrans(iptset)
+   subroutine SetChainRandomTrans!(iptset) iptset is not needed
 
       use CoordinateModule
       implicit none
 
-      integer(4), intent(in) :: iptset
+      !integer(4), intent(in) :: iptset
 
       character(40), parameter :: txroutine ='SetChainRandomTrans'
-      integer(4) :: ntry, nset, itry, ic, ict, ip, ipt, jp, jpt
-      real(8)    :: Random, zaim, zlow
+      integer(4) :: ntry, nset, itry, ic, ict, ip, ipt, jp
+      real(8)    :: zaim, zlow
       logical    :: first =.true.
       logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -934,18 +934,18 @@
 
    ! ... generate a random chain configuration inside a capsid
 
-   subroutine SetChainInsideCapsid(iptset)
+   subroutine SetChainInsideCapsid!(iptset) iptset is not needed
 
       use CoordinateModule
       implicit none
 
-      integer(4), intent(in) :: iptset                ! type of particle type in chain
+      !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
       character(40), parameter :: txroutine ='SetChainInsideCapsid'
-      integer(4) :: ntry, nset, itry, ic, ict, ip, ipt, jp, jpt
+      integer(4) :: ntry, nset, itry, ic, ict, ip, ipt, jp
       real(8)    :: Random
       logical    :: first =.true.
-      logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
+      logical    :: CheckTooFoldedChain, lWarnHCOverlap
 
       if (.not.first) return                           ! should be called only once
       first =.false.
@@ -1254,7 +1254,7 @@
       logical      :: lWarnHCOverlap,CheckPartOutsideBox,first
       integer(4), save :: nx, nz
       integer(4)   :: ix, iz, ip, ipt, iplow, ipupp
-      real(8)      :: com(3), dalpha, lx, lz, tmprad, tmpang, scfac1, scfac2
+      real(8)      :: com(3), dalpha, lx, lz, tmprad, scfac1, scfac2
 
       namelist /nmlSheet/ nx, nz, tube, twoD
 
@@ -1437,19 +1437,19 @@
 
    ! ... generate a line configuration for PMA chain particles
 
-   subroutine SetChainLinePMA(iptset)
+   subroutine SetChainLinePMA!(iptset) iptset is not used
 
       use CoordinateModule
       implicit none
 
-      integer(4), intent(in) :: iptset                ! type of particle type in chain
+      !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
       character(40), parameter :: txroutine ='SetChainLinePMA'
-      integer(4) :: ntry, itry, iseg, isg,  ic, ict, ip, ipt, jp
+      integer(4) :: ntry, itry, iseg, ic, ict, ip, jp
       integer(4) :: n,i,j,k
       real(8)    :: dtranx(20),dtrany(20),dtranz(20)
-      real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc
-      real(8)    :: Random, alpha
+      real(8)    :: bondloc
+      real(8)    :: alpha
       logical    :: first =.true.
       logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -1724,7 +1724,7 @@
 
       real(8), allocatable :: ree(:,:)
       real(8)    :: dum
-      integer(4) :: m, idum, ic
+      integer(4) :: m, ic
       integer(4), save :: idumplocal
       type(chainprop_var) :: ChainProperty
 
@@ -1803,7 +1803,7 @@
       integer(4), intent(in) :: iStage
 
       real(8)    :: dum, dipmomtot(1:3)
-      integer(4) :: m, idum, ic
+      integer(4) :: m, ic
       integer(4), save :: idumplocal
 
       select case (iStage)
@@ -1867,7 +1867,7 @@
       integer(4), intent(in) :: iStage
 
       character(40), parameter :: txroutine ='xy_coordinates_Jasper'
-      integer(4), save :: npixel(1:2), idata, ip, ipt, iploc, ierr
+      integer(4), save :: npixel(1:2), ip, ipt, iploc, ierr
       real(8), save, allocatable :: xy(:,:)
 
       select case (iStage)
@@ -1992,7 +1992,7 @@
       integer(4),    intent(in) :: m
 
       integer(4) :: ip, igr
-      real(8)    :: dx, dy, dz, r2, acp, rmax1, rmax2
+      real(8)    :: dx, dy, dz, r2, rmax1, rmax2
 
       select case (iStage)
       case (iReadInput)
@@ -2212,7 +2212,7 @@
       integer(4),    intent(in) :: m
 
       integer(4) :: ip, jp, igr
-      real(8)    :: dx, dy, dz, r2, acp, angcos, absacp, absz, rho2
+      real(8)    :: dx, dy, dz, r2, acp, angcos, absz, rho2
 
       select case (iStage)
       case (iReadInput)
@@ -2483,7 +2483,7 @@
       integer(4), intent(in) :: iStage
       integer(4), intent(in) :: m
 
-      integer(4) :: ip, igr, ic
+      integer(4) :: ip, igr
 
       real(8)         , save :: adsoffset = One
 
@@ -2881,9 +2881,9 @@
       real(8),                    save :: rcontact
       type(df_var), allocatable,  save :: var(:)
       integer(4),   allocatable,  save :: ipnt(:,:)
-      integer(4) :: iseg, ic, ict, ip, iploc, jp, jploc, ivar, ibin
-      real(8) ::  dx, dy, dz, r2, norm
-      character(6) :: str1, str2
+      integer(4) :: iseg, ic, ict, ip, ivar, ibin
+      real(8) ::  r2
+      character(6) :: str1
 
       namelist /nmlCBCC/ rcontact
 
@@ -2993,7 +2993,7 @@
       use MolModule
       implicit none
 
-      integer(4) :: iStage, i, sgn
+      integer(4) :: iStage, sgn
       real(8) :: delta, scfac, U1, U2
 
       select case (iStage)
@@ -3403,9 +3403,8 @@
       integer(4),    parameter :: nvarS = 1
       type(scalar_var), save :: varS(nvarS)
 
-      integer(4)    :: ip, jp, ih, ic, ipt, itype, ibin1, ibin2, ivar
-      real(8)       :: dz,dx,dy,drho,dr,S2,C2,tmp,ratio,dratio,ratio2,dratio2, norm, InvFlt
-      logical       :: connected
+      integer(4)    :: ip, jp, ipt, itype, ibin1, ibin2, ivar
+      real(8)       :: dz,dx,dy,drho,S2,C2,tmp
 
       namelist /nmlCylDistFunc/ vtype
 
@@ -3624,12 +3623,11 @@
       type(df2d_var), allocatable, save :: var(:), Withff(:), ff(:)
       integer(4),     allocatable, save :: ipnt(:,:)
       real(8),        allocatable :: sfpar(:,:,:), sfparsd(:,:)
-      real(8)    :: norm, kx, ky, kz, kk, q(2*mnbin_df2d,2*mnbin_df2d)
-      integer(4) :: ip, ipt, jpt, ivar, iptjpt, ibin, jbin, itype, nq, m, dupp, dlow
+      real(8)    :: norm, kx, ky, kz, kk
+      integer(4) :: ip, ipt, jpt, ivar, iptjpt, ibin, jbin, itype, m, dupp, dlow
       real(8)    :: sffac(ntype),  uu, fff, ffstore(-1:mnbin_df2d,-1:mnbin_df2d,1:13,1:mnpt)
       complex(8) :: eikr(-1:mnbin_df2d,-1:mnbin_df2d,1:4,1:mnpt), eikrwff(-1:mnbin_df2d,-1:mnbin_df2d,1:4,1:mnpt), eikr1(1:4), eikrtemp, eikrz
       real(8), save :: scrad, scasp
-      logical :: connected
 
       namelist /nmlSF2D/ nbin, scrad, scasp
 
@@ -3858,15 +3856,15 @@
       integer(4), parameter :: mnvar = mntype*mnpt
 
       integer(4), intent(in) :: iStage
-      character(60), save :: head = '2D structure factor'
+      !character(60), save :: head = '2D structure factor'
       character(18),  save :: txtype(mntype) = [ "SI '10,1'         ", "SI (points) '10,1'", "SI (shape) '10,1' ", "SI '11,1'         ", "SI (points) '11,1'", "SI (shape) '11,1' " ]
       integer(4)   , save :: dirlow(mntype), dirupp(mntype)
       integer(4)   , save :: nbin(2), ntype, nvar
       integer(4), allocatable, save :: ipnt(:,:)
-      real(8)    :: norm, kx, ky, kz, kk, q(2*mnbin_df2d,2*mnbin_df2d)
+      real(8)    :: norm, kx, ky, kz, kk
       real(8), allocatable :: sfpar(:,:,:), sfparsd(:,:)
-      type(df2d_var),  save :: var(mnvar), Withff(mnvar), ff(mnvar)
-      integer(4) :: ip, ipt, jpt, ivar, iptjpt, ibin, jbin, itype, nq, m, dupp, dlow
+      type(df2d_var),  save :: var(mnvar)
+      integer(4) :: ip, ipt, jpt, ivar, iptjpt, ibin, jbin, itype, m, dupp, dlow
       real(8)       :: sffac(mntype),  uu, fff, ffstore(0:mnbin_df2d,0:mnbin_df2d,1:13,1:mnpt)
       complex(8) :: eikr(0:mnbin_df2d,0:mnbin_df2d,1:4,1:mnpt), eikrwff(0:mnbin_df2d,0:mnbin_df2d,1:4,1:mnpt), eikr1(1:4), eikrtemp, eikrz
       integer(4), save :: isf
@@ -4379,7 +4377,7 @@
       integer(4)   ,              save :: iptmacroion
       type(df_var),  allocatable, save :: var(:)
       integer(4),    allocatable, save :: ipnt(:,:)
-      integer(4) :: itype, ivar, ibin, ip, ipt, m
+      integer(4) :: itype, ivar, ibin, m
       real(8)    :: value, netcharge, idmv(1:3,2), idms(2), cosang
 
       namelist /nmlMacroionTwoCyl/ vtype, iptmacroion
@@ -4937,7 +4935,7 @@
       integer(4) :: nvar, ivar, ip, jp, ibin, i, idom, iptemp(1), maxbin(1)
       real(8), allocatable, save :: gmax(:), rmax(:)
       real(8)    :: dx, dy, dz, r2, ac, angcos, gmaxval(1)
-      integer(4) :: ipstep
+      !integer(4) :: ipstep
 
       nvar = 1
       allocate(var(nvar))
@@ -5949,8 +5947,8 @@
       integer(4),    allocatable, save :: bondlist(:,:), nq(:)
       real(8),       allocatable, save :: bondorder(:), rdir(:,:), rc(:,:), q(:,:)
       integer(4)                 :: ic, ict, itype, ivar, ibin, ib, nbond, isum
-      real(8)                    :: avbondorder
-      character(5)               :: txrad
+      !real(8)                    :: avbondorder
+      !character(5)               :: txrad
       type(scalar_var), allocatable, save :: var_s(:)
 
       namelist /nmlAdsBondOrder/ vtype, adscond, radius
@@ -6133,14 +6131,14 @@
       integer(4)          , save :: nblock               ! number of blocks sampled
       logical, allocatable, save :: ladschain(:)         ! .true. if chain is adsorbed
       logical, allocatable, save :: ladsseg(:)           ! .true. if segment is adsorbed
-      integer(4)  :: nseg                                ! number of segments in a chain
+      !integer(4)  :: nseg                                ! number of segments in a chain
       type(chainprop_var) :: ChainProperty
       integer(4)  :: nobj(3)                             ! number of objects
       integer(4)  :: lenobj(3,mnobj)                     ! length of objects
       integer(4)  :: nsegobj(3)                          ! number of segments involved
       real(8), save :: radius(3) = [ 10.0d0, 20.0d0, 50.0d0 ]
       real(8)     :: avbondorder
-      integer(4)  :: ic, ict, i, ivar, m
+      integer(4)  :: ic, ict, i, m
       real(8)     :: GetTime, MomTime
 
       namelist /nmlAdsPropDyn/ adscond, blocklen, facblocklen
@@ -6469,9 +6467,9 @@
       logical             , save :: ladschain
       integer(4), allocatable , save :: nAdsEvent(:)
       real(8), allocatable, save :: AdsStart(:,:), AdsLength(:,:)
-      integer(4)               :: i, ic, ict, icnlow, icnupp, idum, j
+      integer(4)               :: i, ic, ict, icnlow, icnupp
       real(8), allocatable, save :: ResTime(:)
-      real(8)                  :: GetTime, MomTime, InvInt, dum, TimeDone, GetTStep
+      real(8)                  :: GetTime, MomTime, InvInt
 
       namelist /nmlAdsEventDyn/ adscond, iinterval
 
@@ -7385,9 +7383,9 @@
       integer(4), parameter :: ntype = 1       ! maximum number of properties
       integer(4)      , save :: nvar
       type(scalar_var), allocatable, save :: var(:)
-      integer(4) :: ia, m, nrot
-      real(8) :: qr(3), qrr(3,3), diagonal(3), eivr(3,3), trace
-      real(8) :: rr, theta, phi
+      integer(4) :: nrot
+      real(8) :: qr(3), qrr(3,3), diagonal(3), eivr(3,3)
+      !real(8) :: rr, theta, phi
 
    !  namelist /nmlElMom/ xxxx
 
@@ -7664,9 +7662,9 @@
 
       integer(4) :: ivar, ibin, itype
       integer(4) :: ip, igr, ic, ict, n_ic(nh), iseg, ih, igen, n_chain
-      real(8)    :: r1, r11, r12, r13, r2, r21, r22, r23, norm, norm1, norm2,vsum, vsum1, vsum2, dvol
+      real(8)    :: r1, r12, r2, r22, norm, norm1, norm2,vsum, vsum1, vsum2, dvol
       real(8)    :: xcom1, ycom1, zcom1, xcom(nh), ycom(nh), zcom(nh)
-      real(8)    :: dropbc(3)
+      !real(8)    :: dropbc(3)
       real(8)    ::  dinf, dx, dy, dz, r_dist
       integer(4) ::  jct, jc, jseg, jp
 
@@ -7949,7 +7947,7 @@
          call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
 
          deallocate(var, ipnt,rotemp, ro_loc, ro_temp)
-           
+
       end select
 
       if (ltime) call CpuAdd('stop', txroutine, 1, uout)
@@ -7994,7 +7992,7 @@
       integer(4),   allocatable, save :: ipnt(:,:)
       real(8),      allocatable, save :: ro_loc(:,:), ro_temp(:,:)
 
-      integer(4)     :: ic, ip, ipt,ict, itype, ivar, ibin, iseg, nrot, ih, n_ic(nh), igen
+      integer(4)     :: ic, ip, ict, itype, ivar, ibin, iseg, nrot, ih, n_ic(nh), igen
       real(8)        :: properties(13), value, xcom(nh), ycom(nh), zcom(nh), dx(nh), dy(nh), dz(nh), r2, vsumr(nh)
       real(8)        :: l2_small2, l2_mid2, l2_large2, mimat(3,3,nh), mimat_loc(3,3), dummat_loc(3,3), diagonal(3)
 
@@ -8028,7 +8026,7 @@
          vmax(7) =   1.0
          vmin(8) =   0.0
          vmax(8) =   1.0
-           
+
          nbin  =  100
          rewind(uin)
          read(uin,nmlCOMB_DF)
@@ -8069,7 +8067,7 @@
 
         call DistFuncSample(iStage, nvar, var)
         if(lsim .and. master .and. txstart == 'continue') read(ucnf) var
-           
+
       case (iBeforeMacrostep)
 
          call DistFuncSample(iStage, nvar, var)
@@ -8084,7 +8082,7 @@
         n_ic(1:nh) = 0
             vaux(1:3,1:np) = 0.0
             ro_loc(1:3,np) = 0.0
-           
+
    !...  undo conditions for hierarchical structure
 
       do ih = 1, nh															! loop over number of hierarchic structures
@@ -8159,7 +8157,7 @@
 
    !... properties(3-5)    radius of gyration of each comb polymer
        if (nh >1 .AND. nh <=3) properties(3:5) = vsumr(1:3)
-           
+
    ! ... properties(2) asphericity, comb polymer, COM comb polymer
 
            properties(2) = Zero
@@ -8181,8 +8179,8 @@
            end do
 
            properties(2) = properties(2)/nh
-           
-                   
+
+
    ! ... summation of type 1 to type 8
 
             do itype = 1, 8
@@ -8263,7 +8261,7 @@
       real(8)         , allocatable, save :: mimat(:,:,:), ro_temp(:,:), ro_loc(:,:)
       integer(4)	 :: ic, ict, nrot, ih, n_ic(nh), jct, igen, jgen, iseg, jseg, jc, ip, im
       real(8)        :: xcom(nh), ycom(nh), zcom(nh), dx(nh), dy(nh), dz(nh), r2, vsumr(nh), vsum_rh(nh)
-      real(8)        :: mimat_loc(3,3), dummat_loc(3,3), l2_small2, l2_mid2, l2_large2, GetInv, diagonal(3)
+      real(8)        :: mimat_loc(3,3), dummat_loc(3,3), l2_small2, l2_mid2, l2_large2, diagonal(3)
 
 
       if (slave) return   ! master only
@@ -8278,7 +8276,7 @@
          mimat = 0.0E+00
          ro_temp = 0.0E+00
          ro_loc = 0.0E+00
-                           
+
          var(1)%label = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
          var(1)%norm = One
              var(2)%label = '<Asphericity>                  = ' ! asphericity
@@ -8297,7 +8295,7 @@
          var(8)%norm = One
              var(9)%label = '<Asphericity>   3rd comb       = ' ! asphericity
          var(9)%norm = One	
-           
+
       case (iBeforeSimulation)
 
          call ScalarSample(iStage, 1, nvar, var)
@@ -8306,7 +8304,7 @@
       case (iBeforeMacrostep)
 
          call ScalarSample(iStage, 1, nvar, var)
-           
+
       case (iSimulationStep)
    !..............................................
 
@@ -8318,7 +8316,7 @@
             ro_loc(1:3,1:np) = 0.0
 
    !...  undo conditions for hierarchical structure
-                           
+
       do ih = 1, nh															! loop over number of hierarchic structures
        do igen = 0, ngen                                                       ! loop over generations
          ict = ictgen(igen)                                                   ! chain type
@@ -8387,7 +8385,7 @@
       end do
 
            var(1)%value = sum(vsumr(1:nh))/nh
-           
+
     ! ... var(4:6)%value =    radius of gyration, 1st, 2nd and 3rd comb
            if (nh >1 .AND. nh <=3)  var(4:6)%value = vsumr(1:3) 	
 
@@ -8413,9 +8411,9 @@
            end do
 
            var(2)%value = var(2)%value/nh
-           
+
    ! ... var(3)%value = hydrodynamic radius, comb polymer, COM comb polymer
-           
+
       vsum_rh(1:nh) = Zero
       do ih = 1, nh															! loop over number of hierarchic structures	
            do igen = 0, ngen                                                       ! loop over generations
@@ -8604,7 +8602,7 @@
    !                i               i
 
        n_ic(1:nh) = 0
-           
+
       do ih = 1, nh															! loop over number of hierarchic structures
        do igen = 0, ngen                                                       ! loop over generations
          ict = ictgen(igen)                                                   ! chain type
@@ -8634,7 +8632,7 @@
                                    eikr1(3) = cmplx(cos(kx+ky),sin(kx+ky))        ! ( 1 1 0) direction
                                    eikr1(4) = cmplx(cos(kx-ky),sin(kx-ky))        ! ( 1-1 0) direction
                            end if
-                           
+
                            do m = 1, dirupp(ndim)
                                    eikrtemp = cmplx(One,Zero)
                                    do ibin = 0, nbin-1
@@ -8658,7 +8656,7 @@
                            eikr(ibin,m,2) = eikr(ibin,m,2) +eikr(ibin,m,1)
                    end do
          end do
-                   
+
    ! ... sum over different equivalent k-vectors
 
          do itype = 1, ndim
@@ -8716,7 +8714,7 @@
          if (.not.lqsorted) then
 
             call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
-           
+
          else
 
    ! ... store sf data in q-sorted order
@@ -8783,7 +8781,7 @@
             if (lsi) call ScatIntens(nq, q, sfpar)
 
          end if
-           
+
              deallocate(var, ipnt, eikr, q, sfpar, sfparsd)
 
       end select
@@ -8831,8 +8829,8 @@
       character(5),  parameter :: txtype(ntype) = ['cos_t','cos_t','cos_t']
 
       logical,       save :: ltype(ntype)
-      real(8),       save :: vmin(ntype), vmax(ntype)
-      integer(4),    save :: nbin, nvar
+      !real(8),       save :: vmax(ntype)
+      integer(4),    save :: nvar
 
       type(df_var),  allocatable, save :: var(:)
       integer(4),    allocatable, save :: ipnt(:,:), ip_loc(:,:), ip_low(:,:), ip_high(:,:)
@@ -8840,8 +8838,8 @@
       real(8),        allocatable, save :: n(:,:,:,:), corr(:,:,:), corrh(:,:,:), corr2(:,:,:), corrp(:,:,:,:), corrmed(:,:,:)
 
       integer(4),    save  ::  n_excl
-      integer(4) :: ivar, ibin, itype
-      integer(4) :: ip, igr, j, s,  k, p, ih, igen, ict, ic,iseg, p_macro
+      integer(4) :: itype
+      integer(4) :: ip, s,  k, ih, igen, ict, ic,iseg, p_macro
       integer(4) :: unit = 99
 
       namelist /nmlOCF/ ltype, n_excl
@@ -8865,7 +8863,7 @@
 
            allocate(var(nvar), ipnt(nptpt, ntype), ro_loc(3,np), ro_temp(3,na), n(3,np,nc,nc), corr(nct,nc,np), corrh(nct,nc,np), corr2(nc,nc,np), corrp(nc,nc,20,np), corrmed(nc,nc,np) )
        allocate (ip_loc(nc,nc), ip_low(nc,nc), ip_high(nc,nc))
-           
+
            do ict = 1, nct        				! loop over chain types,   ntype == nct!
                    if (ltype(ict) .eqv. .true.) then
                            do ic = icnct(ict), icnct(ict)+ncct(ict)-1		! loop over chains
@@ -8875,7 +8873,7 @@
                            end do
                    end if
            end do
-           
+
       case (iBeforeSimulation)
 
        if(lsim .and. master .and. txstart == 'continue')  read(ucnf)  var
@@ -8897,7 +8895,7 @@
 
             vaux(1:3,1:np) = 0.0
             ro_loc(1:3,1:np) = 0.0
-           
+
    !...  undo conditions for hierarchical structure
 
       do ih = 1, nh															! loop over number of hierarchic structures
@@ -8953,7 +8951,7 @@
                            ip_high(itype,ic) = ipnsegcn(1 + npct(itype) -2-n_excl,ic) 									
                            ip_loc(itype,ic) = 0
                    end do
-           
+
            do ic = icnct(itype), icnct(itype)+ncct(itype)-1
                     do ip = ip_low(itype,ic), ip_high(itype,ic)           ! calculate bond orientation
                            ip_loc(itype,ic) = ip_loc(itype,ic)+1		
@@ -8996,7 +8994,7 @@
                            end do
              end if
            end do
-           
+
       case (iAfterSimulation)
 
            do itype = 1, ntype
@@ -9025,7 +9023,7 @@
            end do
 
            deallocate(var,ipnt, ro_loc, ro_temp, n, corr, corrh, corr2,  corrp,  corrmed, ip_loc, ip_low, ip_high)
-           
+
       end select
 
       if (ltime) call CpuAdd('stop', txroutine, 1, uout)
@@ -9064,7 +9062,7 @@
       integer(4),    allocatable, save :: ipnt(:,:)
       real(8),       allocatable, save :: ro_temp(:,:), ro_loc(:,:), n(:,:), corr(:), corrh(:)
 
-      integer(4)     :: ic, ip, ipt,ict, itype, ivar, ibin
+      integer(4)     :: ic, ip, ict, itype, ivar, ibin
       real(8)        :: properties(13), value
       integer(4)     :: iseg, ih, igen, s,  k, ip_loc, ip_low, ip_high
 
@@ -9082,9 +9080,9 @@
          ltype(1:ntype) =.false.
          vmin(1:9) =   -1.0
          vmax(1:9) =   1.0
-           
+
          nbin  =  100
-           
+
          pipt = 1
              n_excl = 0
          rewind(uin)
@@ -9102,11 +9100,11 @@
          n = 0.0E+00
          corr = 0.0E+00
          corrh = 0.0E+00
-           
+
              do s = 1, np	
                    corr(s) = 0
          end do
-           
+
          nvar = 0
        do itype = 1, ntype
             if(ltype(itype)) then
@@ -9190,7 +9188,7 @@
            do s = 1, np	
                     corr(s) = 0	
                    end do
-                   
+
                    do s = 1, nppt(pipt)-2-2*n_excl + 1
                            do k = 1, nppt(pipt)-s-2*n_excl
                            corr(s)  = corr(s)  + n(1,k)*n(1,s+k-1)+n(2,k)*n(2,s+k-1)+n(3,k)*n(3,s+k-1)
@@ -9203,7 +9201,7 @@
            do s = 1, nppt(pipt)-2-2*n_excl + 1
                    corr(s) = corr(s)/(nppt(pipt)-s-2*n_excl)
            end do
-           
+
            properties(1) = corr(5)
        properties(2) = corr(10)
            properties(3) = corr(15)
@@ -9213,7 +9211,7 @@
            properties(7) = corr(40)
            properties(8) = corr(50)
            properties(9) = corr(60)
-           
+
    ! ... summation of type 1 to type 9
 
             do itype = 1, 9
@@ -9256,7 +9254,7 @@
          call DistFuncHead(nvar, var, uout)
          call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
          call DistFuncAverValue(nvar, var, uout)
-           
+
             deallocate(var, ipnt, ro_loc, ro_temp, n, corr, corrh)
 
       end select
@@ -9292,7 +9290,7 @@
       real(8),       save :: rcontact_bead
       logical,       save :: ltype
 
-      integer(4)     :: ih, ic, ict, iht, ioffset, itype, ivar, ip, jp, jploc, iseg, jseg, igen
+      integer(4)     :: ih, ic, ict, ip, jp, jploc, iseg, igen
       real(8)        :: dx, dy, dz, r2
 
       namelist /nmlCBCB/  ltype, iptpart_bead, rcontact_bead
@@ -9309,20 +9307,20 @@
 
              rewind(uin)
          read(uin,nmlCBCB)
-           
+
            case (iWriteInput)
-           
+
              nvar = npct(1)
-           
+
          if(.not.lclink) call stop(txroutine, '.not.lclink',uout)
              allocate(var(nvar), ro_temp(3,np), ro_loc(3,np), r_dist(np))
              ro_temp = 0.0E+00
              ro_loc = 0.0E+00
              r_dist = 0.0E+00
-           
+
          var(1:nvar)%label = 'complexation                = '
          var(1:nvar)%norm = One
-           
+
       case (iBeforeSimulation)
 
          call ScalarSample(iStage, 1, nvar, var)
@@ -9366,7 +9364,7 @@
                    end do
        end do
 
-                   
+
    ! ... calculate complexation between each beads of ic =1 (backbone) and beads belonging to ict=3 (linear polyion)
 
        do ic = 1, nc
@@ -9389,7 +9387,7 @@
        end do
 
              end if    !    end if(ltype)
-           
+
            var(1:nvar)%value = r_dist(1:nvar)
 
          call ScalarSample(iStage, 1, nvar, var)
@@ -9437,12 +9435,12 @@
       character(40), parameter :: txroutine ='ElPot'
       character(80), parameter :: txheading ='potential radial distr function'
       integer(4)   , parameter :: ntype = 1
-      real(8), save         :: vmin,vmax, rmax
-      integer(4), save      :: nbin, nvar,ipnt
+      real(8), save         :: vmin,vmax
+      integer(4), save      :: nbin, nvar
       integer(4), save      :: nsamp1(-1:1000)
       type(df_var), allocatable, save :: var(:)
-      integer(4)            :: ivar, ibin,itype, i, ip, jp, jpt, iptjpt, ipt
-      real(8)               :: ui, dx,dy, dz,r1, r2, dr, uuu,pot, charge, norm, norm1, fsum(3), rtest(3)
+      integer(4)            :: ibin, ip, jp, ipt
+      real(8)               :: ui, dx,dy, dz, r2, dr, uuu,pot, charge, norm, norm1, fsum(3)
 
       namelist /nmlElPot/ vmin, vmax, nbin
 
@@ -9578,11 +9576,13 @@
    subroutine ImageUser(iStage)
 
       use DumpModule
+      use MolModule, only : ltrace
       implicit none
       character(40), parameter :: txroutine ='ImageUser'
 
       integer(4), intent(in) :: iStage
 
+      if (ltrace) call WriteTrace(2,txroutine, iStage)
    !  call ximage(iStage)
       call Stop(txroutine, 'no user-provided image files is available', uout)
 
@@ -10013,7 +10013,7 @@
 
          use MolModule, only: ltrace, ltime, uout, lsim, master, txstart, ucnf, ulist, ishow, iplot, ilist
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-         use MolModule, only: npt, iptpt, nptpt, txpt, nppt, ipnpt, iptpn, np
+         use MolModule, only: npt, txpt, nppt, ipnpt, np
          use StatisticsModule, only: df_var, mnbin_df
          implicit none
 
