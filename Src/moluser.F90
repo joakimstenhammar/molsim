@@ -9683,6 +9683,7 @@ module ComplexationModule
             lClusterDF = .false.
             lComplexFraction = .false.
             lSegmentComplex = .false.
+            lComplexDist    = .false.
             rewind(uin)
             read(uin,nmlComplexation)
 
