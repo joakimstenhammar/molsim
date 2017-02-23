@@ -9889,9 +9889,9 @@
 
             use MolModule, only: ltrace, ltime, uout, master, lsim, txstart, ucnf, ulist
             use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-            use MolModule, only: nct, npct, ncct, nc, ictcn, ipnsegcn
-            use MolModule, only: npt, ipnpt, nppt, txct
-            use StatisticsModule, only: df2d_var
+            use MolModule, only: nct, npct, ncct, nc, ictcn, ipnsegcn, txct
+            use MolModule, only: npt, ipnpt, nppt, txpt
+            use StatisticsModule, only: df_var
             implicit none
 
             integer(4), intent(in) :: iStage
@@ -9899,9 +9899,12 @@
             character(40), parameter :: txroutine ='SegmentComplex'
             character(80), parameter :: txheading ='Fraction of Complexation of each segment of the chains'
             integer(4), save         :: nvar
-            type(df2d_var), allocatable, save :: var(:)
+            type(df_var), allocatable, save :: var(:)
+            integer(4), allocatable, save :: ivarictipt(:,:)
 
-            integer(4)  :: ict, ic, iseg, ip, jpt
+            integer(4)  :: ict, ic, iseg
+            integer(4)  :: ip, ipt, jpt
+            integer(4)  :: ivar
             real(8)    :: InvInt
 
             if (ltrace) call WriteTrace(3, txroutine, iStage)
@@ -9909,33 +9912,39 @@
 
             select case (iStage)
             case (iReadInput)
-               nvar = nct
+
+               nvar = nct*npt
                if(.not. allocated(var)) then
                   allocate(var(nvar))
+               end if
+               if(.not. allocated(ivarictipt)) then
+                  allocate(ivarictipt(nct,npt))
                end if
 
             case (iWriteInput)
 
+               ivar = 0
                do ict = 1, nct
-                  var(ict)%label = 'chain: '//txct(ict)
-                  var(ict)%min(1) = 0.5d0
-                  var(ict)%max(1) = npct(ict) + 0.5d0
-                  var(ict)%nbin(1)= npct(ict)
-                  var(ict)%min(2) = 0.5d0
-                  var(ict)%max(2) = npt + 0.5d0
-                  var(ict)%nbin(2)= npt
-                  var(ict)%norm = InvInt(ncct(ict))
+                  do ipt = 1, npt
+                     ivar = ivar + 1
+                     ivarictipt(ict,ipt) = ivar
+                     var(ivar)%label = 'ct: '//txct(ict)//'; pt:'//txpt(ipt)
+                     var(ivar)%min   = 0.5d0
+                     var(ivar)%max   = npct(ict) + 0.5d0
+                     var(ivar)%nbin  = npct(ict)
+                     var(ivar)%norm  = InvInt(ncct(ict))
+                  end do
                end do
-               call DistFunc2DSample(iStage, nvar, var)
+               call DistFuncSample(iStage, nvar, var)
 
             case (iBeforeSimulation)
 
-               call DistFunc2DSample(iStage, nvar, var)
+               call DistFuncSample(iStage, nvar, var)
                if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
 
             case (iBeforeMacrostep)
 
-               call DistFunc2DSample(iStage, nvar, var)
+               call DistFuncSample(iStage, nvar, var)
 
             case (iSimulationStep)
 
@@ -9947,8 +9956,9 @@
                   do iseg = 1, npct(ict)
                      ip = ipnsegcn(iseg, ic)
                      do jpt = 1, npt
-                        if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed withparticle ip
-                           var(ict)%avs2(iseg,jpt) = var(ict)%avs2(iseg,jpt) + 1.0d0
+                        if( any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ip ))) then !if any particle of type jpt is complexed with particle ip
+                           ivar = ivarictipt(ict,ipt)
+                           var(ivar)%avs2(iseg) = var(ivar)%avs2(iseg) + 1.0d0
                         end if
                      end do
                   end do
@@ -9956,36 +9966,20 @@
 
             case (iAfterMacrostep)
 
-               do ict = 1, nct
-                  var(ict)%avs2(:,:) = var(ict)%avs2(:,:)*var(ict)%norm
+               do ivar = 1, nvar
+                  var(ivar)%avs2(:) = var(ivar)%avs2(:)*var(ivar)%norm
                end do
 
-               call DistFunc2DSample(iStage, nvar, var)
+               call DistFuncSample(iStage, nvar, var)
                if (lsim .and. master) write(ucnf) var
 
             case (iAfterSimulation)
 
-            call DistFunc2DSample(iStage, nvar, var)
+            call DistFuncSample(iStage, nvar, var)
             call WriteHead(2, txheading, uout)
-            write(uout,'(a                     )') 'first dimension (column) is the segment number'
-            write(uout,'(a                     )') 'second dimension (row) is the particle type'
-            call DistFunc2DHead(nvar, var, uout)
-
-            do i = 1, nvar
-               write(uout,'(a)') var(i)%label
-               write(uout,'(a,*(i8))') 'pt: ',(ibin2,ibin2 = 1,var(i)%nbin(2))
-               do ibin1 = 1, var(i)%nbin(1), il
-                  write(unit,'(i3,(42f8.4))') ibin1, var(i)%avs1(ibin1,1:var(i)%nbin(2):il)
-               end do
-               write(unit,'()')
-               write(unit,'(a)') 's.d. of '//var(i)%label
-               write(unit,'((42i8))') (ibin2,ibin2 = 0,var(i)%nbin(2)-1,il)
-               do ibin1 = 0, var(i)%nbin(1)-1, il
-                  write(unit,'(i3,(42f8.4))') ibin1, var(i)%avsd(ibin1,0:var(i)%nbin(2)-1:il)
-               end do
-            end do
-            call DistFunc2DShow(1, txheading, nvar, var, uout)
-            call DistFunc2DList(1, txheading, nvar, var, ulist)
+            call DistFuncHead(nvar, var, uout)
+            call DistFuncShow(1, txheading, nvar, var, uout)
+            call DistFuncList(1, txheading, nvar, var, ulist)
 
             deallocate(var)
 
