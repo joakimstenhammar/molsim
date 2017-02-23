@@ -3445,7 +3445,7 @@ subroutine SignMagn(xin, isign, imagn)
    real(8), parameter :: zero = 0.0d0 , one = 1.0d0 , ten = 10.0d0
    real(8), intent(in)  :: xin      ! real number
    integer(4), intent(out) :: isign  ! sign
-   integer(4), intent(out) :: imagn  ! magnitude	
+   integer(4), intent(out) :: imagn  ! magnitude
    real(8) :: x
    isign = 1                         ! initialize
    imagn = 0                         ! initialize

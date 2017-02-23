@@ -1413,7 +1413,7 @@
          do itry = 1, ntry                                         ! loop over attempts to set the particle
             call SetPartPosRandom(ip)                              ! set particle position
             call SetPartOriRandom(iseed,ori(1,1,ip))               ! set particle orientation
-            call SetAtomPos(ip,ip,.false.)                         ! set atom positions	
+            call SetAtomPos(ip,ip,.false.)                         ! set atom positions
             if (ro(1,ip)**2+ro(2,ip)**2 < rmin2) cycle             ! particle appeared in the central core
             if (lWarnHCOverlap(ip, radatset, .true.)) cycle        ! check if atom-atom hard-core overlap
             lpset(ip) = .true.                                     ! configuration accepted
@@ -7785,7 +7785,7 @@
                      ro_temp(1:3,1:ip) = vaux(1:3,1:ip)                       ! store undo backbone
                  end if
                  if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)  ! UNDO grafted chains, taking  UNDO positions
-               !linked beads belonging to the backbone as reference		
+               !linked beads belonging to the backbone as reference
                end do
             end do
          end do
@@ -7901,10 +7901,10 @@
                            r22 = rotemp(1,ip)**2+rotemp(2,ip)**2+rotemp(3,ip)**2
                            r2 = sqrt(r22)
                            ibin = max(-1,min(floor(var(ivar)%bini*(r2-var(ivar)%min)),int(var(ivar)%nbin)))
-                           var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)+One			
-               end if	
+                           var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)+One
+               end if
            if(ltype(3)) then
-               end if	
+               end if
         end do
 
       case (iAfterMacrostep)
@@ -8097,9 +8097,9 @@
                 if (ict ==1) then 												! UNDO backbone (first chain type)
                                    call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
                                    ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
-                            end if	
+                            end if
                             if (nbondcl(ip) ==1.AND.ict > 1 )     call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
-                                                                                                                                                             !linked beads belonging to the backbone as reference		
+                                                                                                                                                             !linked beads belonging to the backbone as reference
             end do
          end do
       end do
@@ -8153,7 +8153,7 @@
             end do
          end do
              end do
-            vsumr(ih) = sqrt(vsumr(ih)/n_ic(ih))	
+            vsumr(ih) = sqrt(vsumr(ih)/n_ic(ih))
       end do
 
            properties(1) = sum(vsumr(1:nh))/nh
@@ -8194,9 +8194,9 @@
                   else if(itype == 2) then
                      value = properties(2)
                   else if(itype == 3) then
-                     value = properties(3)		
+                     value = properties(3)
                   else if(itype == 4) then
-                     value = properties(4)		
+                     value = properties(4)
                   else if(itype == 5) then
                      value = properties(5)
                   else if(itype == 6) then
@@ -8204,7 +8204,7 @@
                   else if(itype == 7) then
                      value = properties(7)
                   else if(itype == 8) then
-                     value = properties(8)		
+                     value = properties(8)
                   end if
                   ibin = max(-1,min(int(var(ivar)%bini*(value-var(ivar)%min)),var(ivar)%nbin))
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)+One
@@ -8297,7 +8297,7 @@
              var(8)%label = '<Asphericity>   2nd comb       = ' ! asphericity
          var(8)%norm = One
              var(9)%label = '<Asphericity>   3rd comb       = ' ! asphericity
-         var(9)%norm = One	
+         var(9)%norm = One
 
       case (iBeforeSimulation)
 
@@ -8329,9 +8329,9 @@
                if (ict ==1) then 												! UNDO backbone (first chain type)
                                    call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
                                    ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
-                           end if	
+                           end if
                            if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)         ! UNDO grafted chains, taking  UNDO positions
-                                                                                                                                                                                                   !linked beads belonging to the backbone as reference			  		
+                                                                                                                                                                                                   !linked beads belonging to the backbone as reference
             end do
          end do
        end do
@@ -8384,13 +8384,13 @@
                            end do
                    end do
            end do
-           vsumr(ih) = sqrt(vsumr(ih)/n_ic(ih))	
+           vsumr(ih) = sqrt(vsumr(ih)/n_ic(ih))
       end do
 
            var(1)%value = sum(vsumr(1:nh))/nh
 
     ! ... var(4:6)%value =    radius of gyration, 1st, 2nd and 3rd comb
-           if (nh >1 .AND. nh <=3)  var(4:6)%value = vsumr(1:3) 	
+           if (nh >1 .AND. nh <=3)  var(4:6)%value = vsumr(1:3)
 
    ! ... var(2)%value = asphericity, comb polymer, COM comb polymer
 
@@ -8418,7 +8418,7 @@
    ! ... var(3)%value = hydrodynamic radius, comb polymer, COM comb polymer
 
       vsum_rh(1:nh) = Zero
-      do ih = 1, nh															! loop over number of hierarchic structures	
+      do ih = 1, nh															! loop over number of hierarchic structures
            do igen = 0, ngen                                                       ! loop over generations
          ict = ictgen(igen)                                                   ! chain type
          do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8434,9 +8434,9 @@
                                                    dx(ih) = ro_loc(1,ip)-ro_loc(1,im)
                                                    dy(ih) = ro_loc(2,ip)-ro_loc(2,im)
                                                    dz(ih) = ro_loc(3,ip)-ro_loc(3,im)
-                                                   r2 = dx(ih)**2+dy(ih)**2+dz(ih)**2				
+                                                   r2 = dx(ih)**2+dy(ih)**2+dz(ih)**2
                                                    vsum_rh(ih) = vsum_rh(ih) + 1/sqrt(r2)
-                                           end do		
+                                           end do
                                    end do
                            end do
             end do
@@ -8614,7 +8614,7 @@
                ip = ipnsegcn(iseg,ic)
                            kx = TwoPiBoxi(1)*ro(1,ip)
                            ky = TwoPiBoxi(2)*ro(2,ip)
-                           kz = TwoPiBoxi(3)*ro(3,ip)				
+                           kz = TwoPiBoxi(3)*ro(3,ip)
                            if (ndim == 3) then
                                    eikr1(1) = cmplx(cos(kx),sin(kx))              ! ( 1 0 0) direction
                                    eikr1(2) = cmplx(cos(ky),sin(ky))              ! ( 0 1 0) direction
@@ -8639,7 +8639,7 @@
                            do m = 1, dirupp(ndim)
                                    eikrtemp = cmplx(One,Zero)
                                    do ibin = 0, nbin-1
-                                           eikrtemp = eikrtemp*eikr1(m)				
+                                           eikrtemp = eikrtemp*eikr1(m)
                                            if(iptpn(ip)==1) then 								! backbone, stored in ipt = 1
                                                    eikr(ibin,m,1) = eikr(ibin,m,1)+eikrtemp
                                            end if
@@ -8647,7 +8647,7 @@
                                                    eikr(ibin,m,2) = eikr(ibin,m,2)+eikrtemp
                                            end if
                                    end do
-                           end do			
+                           end do
                            n_ic(ih) =	n_ic(ih) + 1
             end do
          end do
@@ -8871,7 +8871,7 @@
                    if (ltype(ict) .eqv. .true.) then
                            do ic = icnct(ict), icnct(ict)+ncct(ict)-1		! loop over chains
                                    do s = 1, npct(ict)-1-2*n_excl 						! loop over segments
-                                           corr(ict,ic,s) = 0				
+                                           corr(ict,ic,s) = 0
                                    end do
                            end do
                    end if
@@ -8887,7 +8887,7 @@
                    if (ltype(ict) .eqv. .true.) then
                            do ic = icnct(ict), icnct(ict)+ncct(ict)-1		! loop over chains
                                    do s = 1, npct(ict)-1-2*n_excl 						! loop over segments
-                                           corrh(ict,ic,s) = 0					
+                                           corrh(ict,ic,s) = 0
                                    end do
                            end do
                    end if
@@ -8910,9 +8910,9 @@
                if (ict ==1) then 												! UNDO backbone (first chain type)
                                    call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
                                    ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
-                           end if	
+                           end if
                              if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
-                                                                                                                                                             !linked beads belonging to the backbone as reference		
+                                                                                                                                                             !linked beads belonging to the backbone as reference
             end do
          end do
            end do
@@ -8950,14 +8950,14 @@
            do itype = 1, ntype					!   ntype == nct
              if(ltype(itype)) then
                    do ic = icnct(itype), icnct(itype)+ncct(itype)-1
-                           ip_low(itype,ic)  = ipnsegcn(1 + n_excl,ic)				
-                           ip_high(itype,ic) = ipnsegcn(1 + npct(itype) -2-n_excl,ic) 									
+                           ip_low(itype,ic)  = ipnsegcn(1 + n_excl,ic)
+                           ip_high(itype,ic) = ipnsegcn(1 + npct(itype) -2-n_excl,ic)
                            ip_loc(itype,ic) = 0
                    end do
 
            do ic = icnct(itype), icnct(itype)+ncct(itype)-1
                     do ip = ip_low(itype,ic), ip_high(itype,ic)           ! calculate bond orientation
-                           ip_loc(itype,ic) = ip_loc(itype,ic)+1		
+                           ip_loc(itype,ic) = ip_loc(itype,ic)+1
                            n(1,ip_loc(itype,ic),itype,ic) = (ro_loc(1,ip+1)-ro_loc(1,ip))/sqrt((ro_loc(1,ip+1)-ro_loc(1,ip))**2+(ro_loc(2,ip+1)-ro_loc(2,ip))**2+(ro_loc(3,ip+1)-ro_loc(3,ip))**2)
                            n(2,ip_loc(itype,ic),itype,ic) = (ro_loc(2,ip+1)-ro_loc(2,ip))/sqrt((ro_loc(1,ip+1)-ro_loc(1,ip))**2+(ro_loc(2,ip+1)-ro_loc(2,ip))**2+(ro_loc(3,ip+1)-ro_loc(3,ip))**2)
                            n(3,ip_loc(itype,ic),itype,ic) = (ro_loc(3,ip+1)-ro_loc(3,ip))/sqrt((ro_loc(1,ip+1)-ro_loc(1,ip))**2+(ro_loc(2,ip+1)-ro_loc(2,ip))**2+(ro_loc(3,ip+1)-ro_loc(3,ip))**2)
@@ -8965,10 +8965,10 @@
            end do
 
                    do ic = icnct(itype), icnct(itype)+ncct(itype)-1
-                           do s = 1, npct(itype)-2-2*n_excl + 1  !   s = 1, npct(ict)-1-2*n_excl		
+                           do s = 1, npct(itype)-2-2*n_excl + 1  !   s = 1, npct(ict)-1-2*n_excl
                                    do k = 1, npct(itype)-s-2*n_excl
                                            corr(itype,ic,s)  = corr(itype,ic,s)  + n(1,k,itype,ic)*n(1,s+k-1,itype,ic)+n(2,k,itype,ic)*n(2,s+k-1,itype,ic)+n(3,k,itype,ic)*n(3,s+k-1,itype,ic)
-                                           corrh(itype,ic,s) = corrh(itype,ic,s) + n(1,k,itype,ic)*n(1,s+k-1,itype,ic)+n(2,k,itype,ic)*n(2,s+k-1,itype,ic)+n(3,k,itype,ic)*n(3,s+k-1,itype,ic)   			
+                                           corrh(itype,ic,s) = corrh(itype,ic,s) + n(1,k,itype,ic)*n(1,s+k-1,itype,ic)+n(2,k,itype,ic)*n(2,s+k-1,itype,ic)+n(3,k,itype,ic)*n(3,s+k-1,itype,ic)
                                    end do
                            end do
            end do
@@ -8982,8 +8982,8 @@
                            do ic = icnct(itype), icnct(itype)+ncct(itype)-1
                                    do s = 1, npct(itype)-2-2*n_excl + 1
                                            corr(itype,ic,s)  = corr(itype,ic,s)/(npct(itype)-s-2*n_excl)
-                                           corrh(itype,ic,s) = corrh(itype,ic,s)/(npct(itype)-s-2*n_excl)			
-                                   end do	
+                                           corrh(itype,ic,s) = corrh(itype,ic,s)/(npct(itype)-s-2*n_excl)
+                                   end do
                                    do s = 1, npct(itype)-2-2*n_excl +1
                                            corrp(itype,ic,istep1,s) = corrh(itype,ic,s)/(nstep2/istatic)
                                    end do
@@ -9002,7 +9002,7 @@
 
            do itype = 1, ntype
                    if(ltype(itype)) then
-                           do ic = icnct(itype), icnct(itype)+ncct(itype)-1	
+                           do ic = icnct(itype), icnct(itype)+ncct(itype)-1
                                    do s = 1, npct(itype)-2-2*n_excl +1     !!!!! replace  ncct(itype)  with  nptct(itype)  !!!!!
                                            corr2(itype,ic,s) = 0
                                            corrmed(itype,ic,s) = 0
@@ -9104,7 +9104,7 @@
          corr = 0.0E+00
          corrh = 0.0E+00
 
-             do s = 1, np	
+             do s = 1, np
                    corr(s) = 0
          end do
 
@@ -9154,9 +9154,9 @@
                 if (ict ==1) then 												! UNDO backbone (first chain type)
                                    call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
                                    ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
-                            end if	
+                            end if
                              if (nbondcl(ip) ==1.AND.ict > 1 )  call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
-                                                                                                                                                             !linked beads belonging to the backbone as reference		
+                                                                                                                                                             !linked beads belonging to the backbone as reference
             end do
          end do
        end do
@@ -9178,7 +9178,7 @@
     !.... calculate orientational correleations
 
            do itype = 1, ntype
-             if(ltype(itype)) then 		
+             if(ltype(itype)) then
                     ip_low  = ipnpt(pipt) + n_excl
                     ip_high = ipnpt(pipt)+nppt(pipt)-2-n_excl
                     ip_loc = 0
@@ -9188,8 +9188,8 @@
                            n(2,ip_loc) = (ro(2,ip+1)-ro(2,ip))/sqrt((ro(1,ip+1)-ro(1,ip))**2+(ro(2,ip+1)-ro(2,ip))**2+(ro(3,ip+1)-ro(3,ip))**2)
                            n(3,ip_loc) = (ro(3,ip+1)-ro(3,ip))/sqrt((ro(1,ip+1)-ro(1,ip))**2+(ro(2,ip+1)-ro(2,ip))**2+(ro(3,ip+1)-ro(3,ip))**2)
                    end do
-           do s = 1, np	
-                    corr(s) = 0	
+           do s = 1, np
+                    corr(s) = 0
                    end do
 
                    do s = 1, nppt(pipt)-2-2*n_excl + 1
@@ -9225,9 +9225,9 @@
                   else if(itype == 2) then
                      value = properties(2)
                   else if(itype == 3) then
-                     value = properties(3)		
+                     value = properties(3)
                   else if(itype == 4) then
-                     value = properties(4)		
+                     value = properties(4)
                   else if(itype == 5) then
                      value = properties(5)
                   else if(itype == 6) then
@@ -9237,7 +9237,7 @@
                   else if(itype == 8) then
                      value = properties(8)
                            else if(itype == 9) then
-                     value = properties(9)	
+                     value = properties(9)
                   end if
                   ibin = max(-1,min(int(var(ivar)%bini*(value-var(ivar)%min)),var(ivar)%nbin))
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)+One
@@ -9347,9 +9347,9 @@
                                            if (ict ==1) then 												! UNDO backbone (first chain type)
                                                    call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
                                                    ro_temp(1:3,1:ip) = vaux(1:3,1:ip)						 ! store undo backbone
-                                           end if	
+                                           end if
                                            if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
-                                                                                                                                                             !linked beads belonging to the backbone as reference		
+                                                                                                                                                             !linked beads belonging to the backbone as reference
                                    end do
                            end do
                    end do
@@ -9359,7 +9359,7 @@
        do ic = 1, nc
                    ict = ictcn(ic)
                    ip = ipnsegcn(1,ic)
-                   if(ihnpn(ip) /= 0) cycle										    ! exclude hierarchical structures	
+                   if(ihnpn(ip) /= 0) cycle										    ! exclude hierarchical structures
                    call UndoPBCChain(ro_temp(1,ipnsegcn(1,1)), ic, -1, vaux)        ! it assumes ic =1 is the backbone of the hierarchy
                    do iseg = 1, npct(ict)                                            ! loop over segments
                ip = ipnsegcn(iseg,ic)

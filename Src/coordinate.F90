@@ -1632,7 +1632,7 @@ subroutine SetChainRandomIntOri(iptset)
                r21(2) = ro(2,ipprev)-ro(2,ip)
                r21(3) = ro(3,ipprev)-ro(3,ip)
                call PBC(r21(1), r21(2), r21(3))
-               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector			
+               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector
                call SetPartOriBond('end', r21, r21, ori(1,1,ip))      ! set second paricle to aligne with r12 vector
 
                call SetAtomPos(ipprev,ip,.false.)

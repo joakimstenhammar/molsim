@@ -95,7 +95,7 @@ module MCModule
                                                      ! = 'lower' rotation of the lower subchain
                                                      ! = 'upper' rotation of the upper subchain
    character(6)               :: txdualpivot         ! = 'nodual' individual pivot  move
-                                                     ! = 'linear' linear chain ict = 3 as reference (dual pivot = linear chain + branched diblock copolymer) 	
+                                                     ! = 'linear' linear chain ict = 3 as reference (dual pivot = linear chain + branched diblock copolymer)
                                                      ! = 'combed' combed chain ict = 1 as reference (dual pivot = branched diblock +  copolymerlinear chain)
                                                      ! = 'mullin' idem as 'combed' and additionally works for icnct(ict) > 1
    real(8), allocatable       :: drotpivot(:)        ! rotation parameter of pivot rotation move
@@ -1821,7 +1821,7 @@ subroutine PivotDual    ! dual pivot rotation
                      if (dinf > boxlen(1)/3.0)   direction = +1
                      call UndoPBCChain(vaux(1,ipnsegcn(1,ic)), ic_loc, direction, vaux)
                   end if
-                  if (nbondcl(ip) == 1.and.ict_loc > 1 ) call UndoPBCChain(vaux(1,bondcl(1,ip)), ic_loc, direction, vaux)  !linked beads belonging to the backbone as reference		
+                  if (nbondcl(ip) == 1.and.ict_loc > 1 ) call UndoPBCChain(vaux(1,bondcl(1,ip)), ic_loc, direction, vaux)  !linked beads belonging to the backbone as reference
                end do
             end do
          end do
@@ -1923,7 +1923,7 @@ subroutine PivotDual    ! dual pivot rotation
          do ic = 1, nc                     ! undo the linear chain
             ict = ictcn(ic)
             ip = ipnsegcn(1,ic)
-            if(ihnpn(ip) /= 0) cycle       ! exclude hierarchical structures	
+            if(ihnpn(ip) /= 0) cycle       ! exclude hierarchical structures
             call UndoPBCChain(vaux(1,ipnsegcn(1,1)), ic, -1, vaux)! it assumes ic =1 is the backbone of the hierarchy; direction should be  -1
          end do
 
@@ -2026,7 +2026,7 @@ subroutine PivotDual    ! dual pivot rotation
                if (dtemp_min(1) == dtemp(iseg_loc,1)) iseg_min = iseg_loc                ! store closest segment as iseg_min
             end do
 
-            jp1 =  ipnsegcn(iseg_min,ic_temp)                  ! store closest particle to ip1 as jp1	
+            jp1 =  ipnsegcn(iseg_min,ic_temp)                  ! store closest particle to ip1 as jp1
             if(iseg_min /= 1 .or. iseg_min /= npct(ict_temp))  then
                do iseg_loc = iseg_min-1, iseg_min +1, 2        ! compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
                   dx2 = vaux(1,ipnsegcn(iseg_loc,ic_temp)) - vaux(1,ip3)

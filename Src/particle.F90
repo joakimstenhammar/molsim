@@ -1838,7 +1838,7 @@ subroutine Set_bondcl   ! crosslink and particle -> crosslinked particle
 !			 write(*,*) bondcl(nbondcl(ip)-1,ip), bondcl(nbondcl(jp)-1,jp)
                          if(nbondcl(jp)==2) then
 !			    write(*,*) ip, jp, bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp), bondcl(nbondcl(jp)-1,jp)
-                            jploc = bondcl(nbondcl(jp)-1,jp)               ! jploc 				
+                            jploc = bondcl(nbondcl(jp)-1,jp)               ! jploc
                             bondcl(nbondcl(ip),ip) = jploc                 ! bind ip to jploc
                             nbondcl(jploc) = nbondcl(jploc) + 1            ! update jploc
                             bondcl(nbondcl(jploc),jploc) = ip
