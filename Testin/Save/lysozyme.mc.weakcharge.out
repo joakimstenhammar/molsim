@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:31:08
+2017-01-05     15:52:22
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -369,39 +369,39 @@ atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        asp                 1         protein            -1.91934    -7.09169    58.46348
-     2        asp                 1         protein            -8.31896    11.11013    32.72494
-     3        asp                 1         protein            -5.35343    13.76003    34.07663
-     4        asp                 1         protein           -15.05355    13.43459    36.65889
-     5        asp                 1         protein           -18.75727     8.82263    58.30802
-     6        asp                 1         protein           -15.62014    -4.39900    37.49757
-     7        asp                 1         protein             7.33569    -1.74126    54.05947
-     8        glu                 1         protein            -2.21225    10.95159    62.59246
-     9        glu                 1         protein             1.52769    12.84058    35.95574
-    10        tyr                 1         protein           -13.95988   -10.02683    47.04557
-    11        tyr                 1         protein            -0.35312    -9.55188    42.37879
-    12        tyr                 1         protein            -3.37385     0.18829    63.46701
-    13        c-t                 1         protein            -3.59651    -1.63617    62.85786
-    14        lys                 1         protein           -10.41054    19.42576    54.47936
-    15        lys                 1         protein            -6.70988    -3.20760    62.39330
-    16        lys                 1         protein             5.81147    14.61172    52.67906
-    17        lys                 1         protein           -16.61533    -6.38647    54.87304
-    18        lys                 1         protein           -18.63186    -4.88454    41.94631
-    19        lys                 1         protein             5.18657    -3.39090    39.58297
-    20        arg                 1         protein             4.31256     5.75383    60.30528
-    21        arg                 1         protein           -10.79742     5.77765    63.85061
-    22        arg                 1         protein            -7.93401   -11.03415    43.13586
-    23        arg                 1         protein           -11.44334    18.85862    40.76956
-    24        arg                 1         protein            -9.94351     8.49372    32.13923
-    25        arg                 1         protein           -14.28706    15.57827    38.05650
-    26        arg                 1         protein           -12.91360    -0.27521    33.46529
-    27        arg                 1         protein             2.59989     1.73383    34.46208
-    28        arg                 1         protein             8.07627    11.57268    44.36745
-    29        arg                 1         protein             6.95726     0.79411    56.54743
-    30        arg                 1         protein            -2.45216     6.23810    63.84152
-    31        his                 1         protein           -18.18418     2.80234    59.50966
-    32        n-t                 1         protein           -10.33088    14.06360    61.03223
-    33        com                 1         protein            -6.57222     4.74774    47.89247
+     1        asp                 1         protein           -24.00852    51.47987    29.34920
+     2        asp                 1         protein           -26.75821    30.53068    53.60419
+     3        asp                 1         protein           -30.88629    31.30635    53.57792
+     4        asp                 1         protein           -23.63463    36.36353    58.34286
+     5        asp                 1         protein           -21.07118    57.58505    51.50557
+     6        asp                 1         protein           -12.14683    35.40981    44.69799
+     7        asp                 1         protein           -33.80267    45.33786    29.18061
+     8        glu                 1         protein           -35.69537    57.44149    42.40949
+     9        glu                 1         protein           -35.85157    31.14641    48.37729
+    10        tyr                 1         protein           -11.28512    43.49440    36.98500
+    11        tyr                 1         protein           -21.31633    35.40302    30.57777
+    12        tyr                 1         protein           -28.18845    57.43984    34.56037
+    13        c-t                 1         protein           -26.78563    56.72183    33.43527
+    14        lys                 1         protein           -33.54604    52.80135    55.77719
+    15        lys                 1         protein           -23.34984    56.95041    34.15736
+    16        lys                 1         protein           -42.68303    46.17971    43.03987
+    17        lys                 1         protein           -12.67723    52.09124    39.37859
+    18        lys                 1         protein           -10.18700    40.42835    44.96414
+    19        lys                 1         protein           -29.00947    31.89053    32.80048
+    20        arg                 1         protein           -37.09815    52.93338    35.16172
+    21        arg                 1         protein           -26.06513    60.41135    43.11368
+    22        arg                 1         protein           -14.69523    38.01728    33.67080
+    23        arg                 1         protein           -30.39772    39.90184    59.38797
+    24        arg                 1         protein           -23.78942    30.12914    52.68066
+    25        arg                 1         protein           -25.76892    37.72318    59.19860
+    26        arg                 1         protein           -16.21405    31.26174    47.31363
+    27        arg                 1         protein           -29.49335    28.23839    39.55363
+    28        arg                 1         protein           -41.29805    37.28959    41.46023
+    29        arg                 1         protein           -35.46533    48.09211    30.73333
+    30        arg                 1         protein           -32.74015    58.19681    38.59756
+    31        his                 1         protein           -17.91233    57.93539    46.22209
+    32        n-t                 1         protein           -31.20353    58.47569    49.94507
+    33        com                 1         protein           -26.32307    43.89016    43.86150
 
 atom charge
 -----------
@@ -498,8 +498,8 @@ total cpu time since start (s)        0.02
 charge-change move                               total          protein   
 -------------------                              -----          ----------
 total number of conf.          =           100000 1.00         100000 1.00
-accepted number of conf.       =            12250 0.12          12250 0.12
-energy rejected conf.          =            87750 0.88          87750 0.88
+accepted number of conf.       =            12484 0.12          12484 0.12
+energy rejected conf.          =            87516 0.88          87516 0.88
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -520,10 +520,10 @@ orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =     -6.57  4.75 47.89
-<x'> (x,y,z)                   =      0.65  0.67 -0.35
-<y'> (x,y,z)                   =      0.74 -0.66  0.11
-<z'> (x,y,z)                   =     -0.16 -0.33 -0.93
+<ro> (x,y,z)                   =    -26.32 43.89 43.86
+<x'> (x,y,z)                   =     -0.87 -0.43  0.23
+<y'> (x,y,z)                   =     -0.17 -0.17 -0.97
+<z'> (x,y,z)                   =      0.46 -0.88  0.07
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -531,17 +531,17 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =        -18.41352        2.07523      0.544E-14
- total two-body energy         =        -18.41352        2.07523      0.544E-14
-  protein-protein              =        -18.41352        2.07523      0.544E-14
-enthalpy                       =        -15.93580        2.07523
-cv                             =          5.83264
+total potential energy         =        -18.30719        2.11933      0.659E-14
+ total two-body energy         =        -18.30719        2.11933      0.659E-14
+  protein-protein              =        -18.30719        2.11933      0.659E-14
+enthalpy                       =        -15.82948        2.11933
+cv                             =          6.08317
 temperature                    =        298.00000        0.00000
 pressure (excl. cont. contr.)  =          0.00411        0.00000
 number of particles            =          1.00000        0.00000
 volume                         =      1.00000E+06    0.00000E+00
 
-total potential energy (NkT)   =         -7.43166
+total potential energy (NkT)   =         -7.38875
 pressure (NkT/V)(excl. contact)=          1.00000
 pressure (kT) (excl. contact)  =      1.00000E-06
 number density                 =      1.00000E-06
@@ -552,15 +552,15 @@ number density                 =      1.00000E-06
 
 quantity                                  average     fluctuation
 --------                                  -------     -----------
-total charge                   =            4.610          1.085
+total charge                   =            4.605          1.080
 fractional charge: asp         =            1.000          0.000
 fractional charge: glu         =            1.000          0.000
-fractional charge: tyr         =            0.470          0.505
+fractional charge: tyr         =            0.476          0.508
 fractional charge: c-t         =            1.000          0.000
-fractional charge: lys         =            0.840          0.386
-fractional charge: arg         =            0.993          0.158
-fractional charge: his         =            0.000          0.123
-fractional charge: n-t         =            0.055          0.478
+fractional charge: lys         =            0.845          0.378
+fractional charge: arg         =            0.991          0.166
+fractional charge: his         =            0.000          0.097
+fractional charge: n-t         =            0.056          0.479
 fractional charge: com         =            0.000          0.000
 
 **************************************************************************************************************
@@ -569,7 +569,7 @@ fractional charge: com         =            0.000          0.000
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:31:11
+2017-01-05     15:52:26
 
 title   : 1 lysozyme, Rudi                                                                          
 
@@ -588,7 +588,7 @@ pressure                       =       0.004
 box lengths (x,y,z)            =     100.000     100.000     100.000
 volume                         =   0.100E+07
 
-seed of random generator       =  1490337121
+seed of random generator       =      992328
 
 
 **************************************************************************************************************
@@ -600,39 +600,39 @@ atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        asp                 1         protein            -1.91934    -7.09169    58.46348
-     2        asp                 1         protein            -8.31896    11.11013    32.72494
-     3        asp                 1         protein            -5.35343    13.76003    34.07663
-     4        asp                 1         protein           -15.05355    13.43459    36.65889
-     5        asp                 1         protein           -18.75727     8.82263    58.30802
-     6        asp                 1         protein           -15.62014    -4.39900    37.49757
-     7        asp                 1         protein             7.33569    -1.74126    54.05947
-     8        glu                 1         protein            -2.21225    10.95159    62.59246
-     9        glu                 1         protein             1.52769    12.84058    35.95574
-    10        tyr                 1         protein           -13.95988   -10.02683    47.04557
-    11        tyr                 1         protein            -0.35312    -9.55188    42.37879
-    12        tyr                 1         protein            -3.37385     0.18829    63.46701
-    13        c-t                 1         protein            -3.59651    -1.63617    62.85786
-    14        lys                 1         protein           -10.41054    19.42576    54.47936
-    15        lys                 1         protein            -6.70988    -3.20760    62.39330
-    16        lys                 1         protein             5.81147    14.61172    52.67906
-    17        lys                 1         protein           -16.61533    -6.38647    54.87304
-    18        lys                 1         protein           -18.63186    -4.88454    41.94631
-    19        lys                 1         protein             5.18657    -3.39090    39.58297
-    20        arg                 1         protein             4.31256     5.75383    60.30528
-    21        arg                 1         protein           -10.79742     5.77765    63.85061
-    22        arg                 1         protein            -7.93401   -11.03415    43.13586
-    23        arg                 1         protein           -11.44334    18.85862    40.76956
-    24        arg                 1         protein            -9.94351     8.49372    32.13923
-    25        arg                 1         protein           -14.28706    15.57827    38.05650
-    26        arg                 1         protein           -12.91360    -0.27521    33.46529
-    27        arg                 1         protein             2.59989     1.73383    34.46208
-    28        arg                 1         protein             8.07627    11.57268    44.36745
-    29        arg                 1         protein             6.95726     0.79411    56.54743
-    30        arg                 1         protein            -2.45216     6.23810    63.84152
-    31        his                 1         protein           -18.18418     2.80234    59.50966
-    32        n-t                 1         protein           -10.33088    14.06360    61.03223
-    33        com                 1         protein            -6.57222     4.74774    47.89247
+     1        asp                 1         protein           -24.00852    51.47987    29.34920
+     2        asp                 1         protein           -26.75821    30.53068    53.60419
+     3        asp                 1         protein           -30.88629    31.30635    53.57792
+     4        asp                 1         protein           -23.63463    36.36353    58.34286
+     5        asp                 1         protein           -21.07118    57.58505    51.50557
+     6        asp                 1         protein           -12.14683    35.40981    44.69799
+     7        asp                 1         protein           -33.80267    45.33786    29.18061
+     8        glu                 1         protein           -35.69537    57.44149    42.40949
+     9        glu                 1         protein           -35.85157    31.14641    48.37729
+    10        tyr                 1         protein           -11.28512    43.49440    36.98500
+    11        tyr                 1         protein           -21.31633    35.40302    30.57777
+    12        tyr                 1         protein           -28.18845    57.43984    34.56037
+    13        c-t                 1         protein           -26.78563    56.72183    33.43527
+    14        lys                 1         protein           -33.54604    52.80135    55.77719
+    15        lys                 1         protein           -23.34984    56.95041    34.15736
+    16        lys                 1         protein           -42.68303    46.17971    43.03987
+    17        lys                 1         protein           -12.67723    52.09124    39.37859
+    18        lys                 1         protein           -10.18700    40.42835    44.96414
+    19        lys                 1         protein           -29.00947    31.89053    32.80048
+    20        arg                 1         protein           -37.09815    52.93338    35.16172
+    21        arg                 1         protein           -26.06513    60.41135    43.11368
+    22        arg                 1         protein           -14.69523    38.01728    33.67080
+    23        arg                 1         protein           -30.39772    39.90184    59.38797
+    24        arg                 1         protein           -23.78942    30.12914    52.68066
+    25        arg                 1         protein           -25.76892    37.72318    59.19860
+    26        arg                 1         protein           -16.21405    31.26174    47.31363
+    27        arg                 1         protein           -29.49335    28.23839    39.55363
+    28        arg                 1         protein           -41.29805    37.28959    41.46023
+    29        arg                 1         protein           -35.46533    48.09211    30.73333
+    30        arg                 1         protein           -32.74015    58.19681    38.59756
+    31        his                 1         protein           -17.91233    57.93539    46.22209
+    32        n-t                 1         protein           -31.20353    58.47569    49.94507
+    33        com                 1         protein           -26.32307    43.89016    43.86150
 
 atom charge
 -----------
@@ -648,13 +648,13 @@ atom no       weak charge    charged
      8              T           T
      9              T           T
     10              T           T
-    11              T           F
-    12              T           T
+    11              T           T
+    12              T           F
     13              T           T
-    14              T           F
+    14              T           T
     15              T           T
     16              T           T
-    17              T           T
+    17              T           F
     18              T           T
     19              T           T
     20              T           T
@@ -680,8 +680,8 @@ atom no       weak charge    charged
 charge-change move                               total          protein   
 -------------------                              -----          ----------
 total number of conf.          =           100000 1.00         100000 1.00
-accepted number of conf.       =            12250 0.12          12250 0.12
-energy rejected conf.          =            87750 0.88          87750 0.88
+accepted number of conf.       =            12484 0.12          12484 0.12
+energy rejected conf.          =            87516 0.88          87516 0.88
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -726,10 +726,10 @@ orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =     -6.57  4.75 47.89
-<x'> (x,y,z)                   =      0.65  0.67 -0.35
-<y'> (x,y,z)                   =      0.74 -0.66  0.11
-<z'> (x,y,z)                   =     -0.16 -0.33 -0.93
+<ro> (x,y,z)                   =    -26.32 43.89 43.86
+<x'> (x,y,z)                   =     -0.87 -0.43  0.23
+<y'> (x,y,z)                   =     -0.17 -0.17 -0.97
+<z'> (x,y,z)                   =      0.46 -0.88  0.07
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -737,17 +737,17 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =        -18.41352        0.07269        2.08125        0.03576           123.
- total two-body energy         =        -18.41352        0.07269        2.08125        0.03576           123.
-  protein-protein              =        -18.41352        0.07269        2.08125        0.03576           123.
-enthalpy                       =        -15.93580        0.07269        2.08125        0.03576           123.
-cv                             =          5.83264
+total potential energy         =        -18.30719        0.08111        2.09571        0.04263           146.
+ total two-body energy         =        -18.30719        0.08111        2.09571        0.04263           146.
+  protein-protein              =        -18.30719        0.08111        2.09571        0.04263           146.
+enthalpy                       =        -15.82948        0.08111        2.09571        0.04263           146.
+cv                             =          6.08317
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
-pressure (excl. cont. contr.)  =          0.00411        0.00000        0.00000        0.00000             3.
+pressure (excl. cont. contr.)  =          0.00411        0.00000        0.00000        0.00000             0.
 number of particles            =          1.00000        0.00000        0.00000        0.00000             0.
 volume                         =      1.00000E+06    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =         -7.43166        0.00000
+total potential energy (NkT)   =         -7.38875        0.00000
 pressure (NkT/V)(excl. contact)=          1.00000        0.00000
 pressure (kT) (excl. contact)  =      1.00000E-06    0.00000E+00
 number density                 =      1.00000E-06    0.00000E+00
@@ -758,15 +758,15 @@ number density                 =      1.00000E-06    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-total charge                   =            4.610          0.041          1.190          0.019           120.
+total charge                   =            4.605          0.037          1.159          0.018           102.
 fractional charge: asp         =            1.000          0.000          0.000          0.000             0.
 fractional charge: glu         =            1.000          0.000          0.000          0.000             0.
-fractional charge: tyr         =            0.470          0.008          0.442          0.013           107.
+fractional charge: tyr         =            0.476          0.008          0.443          0.013           101.
 fractional charge: c-t         =            1.000          0.000          0.000          0.000             0.
-fractional charge: lys         =            0.840          0.005          0.367          0.016           111.
-fractional charge: arg         =            0.993          0.001          0.078          0.016           181.
-fractional charge: his         =            0.000          0.000          0.019          0.002            79.
-fractional charge: n-t         =            0.055          0.009          0.228          0.013           139.
+fractional charge: lys         =            0.845          0.005          0.351          0.016           130.
+fractional charge: arg         =            0.991          0.001          0.091          0.014           138.
+fractional charge: his         =            0.000          0.000          0.012          0.002            30.
+fractional charge: n-t         =            0.056          0.009          0.220          0.013           154.
 fractional charge: com         =            0.000          0.000          0.000          0.000             0.
 
 **************************************************************************************************************
@@ -787,11 +787,11 @@ static analysis routines used
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-net charge                      =         4.61036        0.04078        1.18968        0.01867           120.
-dipole moment (com)             =        27.19148        0.28665        9.48353        0.16177            91.
-quadrupole moment (com, min)    =      -465.66323        2.83060       81.50422        1.62869           121.
-quadrupole moment (com, mid)    =        10.92399        2.62625       83.12123        1.59750           101.
-quadrupole moment (com, max)    =       454.73925        3.19383       91.20772        1.46623           125.
+net charge                      =         4.60541        0.03719        1.15924        0.01782           102.
+dipole moment (com)             =        27.23808        0.31081        9.59134        0.15740           104.
+quadrupole moment (com, min)    =      -470.18428        2.92282       79.91959        1.66975           132.
+quadrupole moment (com, mid)    =        14.10494        2.61118       83.33804        1.45817            99.
+quadrupole moment (com, max)    =       456.07934        3.17842       91.29755        1.46683           119.
 
 **************************************************************************************************************
 *                                             timing statistics                                              *
@@ -801,14 +801,14 @@ quadrupole moment (com, max)    =       454.73925        3.19383       91.20772 
          section          cpu time (s)     fraction
          -------          ------------     --------
          Coordinate             0.00         0.00
-         ControlAver            0.15         0.06
-         MainAver               0.48         0.18
-         StaticDriver           0.42         0.16
-         IOMolsim               0.16         0.06
+         ControlAver            0.17         0.05
+         MainAver               0.57         0.18
+         StaticDriver           0.47         0.15
+         IOMolsim               0.21         0.06
          SetVList               0.00         0.00
-         MCPass                 1.47         0.55
-          ChargeChange          0.18         0.07 
-          DUTotal               0.73         0.27 
-           DUTwoBody            0.36         0.13  
+         MCPass                 1.76         0.56
+          ChargeChange          0.23         0.07 
+          DUTotal               0.84         0.27 
+           DUTwoBody            0.40         0.13  
  
-total cpu time since start (s)        3.44
+total cpu time since start (s)        4.08

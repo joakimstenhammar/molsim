@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                      version 6.4.7, Sep 18, 2015 v                                       **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-09-14     08:29:31
+2017-01-05     15:50:09
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -353,8 +353,8 @@ total cpu time since start (s)        0.01
 
 single-particle move                             total          jon1                jon2      
 -------------------                              -----          ----------          ----------
-total number of conf.          =                2 1.00              1 1.00              1 1.00
-energy rejected conf.          =                2 1.00              1 1.00              1 1.00
+total number of conf.          =                2 1.00              2 1.00              0 0.00
+energy rejected conf.          =                2 1.00              2 1.00              0 0.00
 
 average no of displaced part.  =                                      0.00                0.00
 average no of net joining part.=                                      0.00                0.00
@@ -460,7 +460,7 @@ number density                 =      1.00000E+00
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-09-14     08:29:31
+2017-01-05     15:50:09
 
 title   : two charges, test of ewald summation, elongated box                                       
 
@@ -478,7 +478,7 @@ pressure                       =  **********
 box lengths (x,y,z)            =       1.000       1.000       2.000
 volume                         =   0.200E+01
 
-seed of random generator       =  1985906753
+seed of random generator       =           2
 
 
 **************************************************************************************************************
@@ -506,8 +506,8 @@ atom no       atom type      particle no    particle type            coordinate 
 
 single-particle move                             total          jon1                jon2      
 -------------------                              -----          ----------          ----------
-total number of conf.          =                2 1.00              1 1.00              1 1.00
-energy rejected conf.          =                2 1.00              1 1.00              1 1.00
+total number of conf.          =                2 1.00              2 1.00              0 0.00
+energy rejected conf.          =                2 1.00              2 1.00              0 0.00
 
 average no of displaced part.  =                                      0.00                0.00
 average no of net joining part.=                                      0.00                0.00
@@ -590,16 +590,16 @@ number density                 =      1.00000E+00    0.00000E+00
  
          section            cpu time (s)     fraction
          -------            ------------     --------
-         Coordinate               0.00         0.10
+         Coordinate               0.00         0.24
          ControlAver              0.00         0.00
-         MainAver                 0.00         0.26
-         IOMolsim                 0.00         0.27
+         MainAver                 0.00         0.01
+         IOMolsim                 0.00         0.74
          SetVList                 0.00         0.00
-         MCPass                   0.00         0.37
+         MCPass                   0.00         0.00
           SPartMove               0.00         0.00
-          DUTotal                 0.00         0.37
+          DUTotal                 0.00         0.00
            DUTwoBody              0.00         0.00
-           DUTwoBodyEwald         0.00         0.37
-            UEwaldRecStd          0.00         0.37 
+           DUTwoBodyEwald         0.00         0.00
+            UEwaldRecStd          0.00         0.00 
  
 total cpu time since start (s)        0.02

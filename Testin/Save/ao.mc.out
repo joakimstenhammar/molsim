@@ -6,7 +6,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.0.0                                           **
+**                                          version 6.4.7, v2.2.0                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2016-11-14     12:24:17
+2017-01-05     15:53:08
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -390,9 +390,8 @@ total cpu time since start (s)        0.01
 single-particle move                             total          ao        
 -------------------                              -----          ----------
 total number of conf.          =               20 1.00             20 1.00
-accepted number of conf.       =               14 0.70             14 0.70
-energy rejected conf.          =                1 0.05              1 0.05
-hard-core rejected conf.       =                5 0.25              5 0.25
+accepted number of conf.       =               17 0.85             17 0.85
+energy rejected conf.          =                3 0.15              3 0.15
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -404,16 +403,16 @@ average no of net joining part.=                                      0.00
 quantity                                    ao        
 --------                                    ----------
 
-<dr**2>/step (macrostep)       =            0.3196E+00
-precision                      =            0.2439E+00
-<dr**2>/step (from start)      =            0.3196E+00
-precision                      =            0.2439E+00
+<dr**2>/step (macrostep)       =            0.7660E-01
+precision                      =            0.5059E-01
+<dr**2>/step (from start)      =            0.7660E-01
+precision                      =            0.5059E-01
 
 orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =     0.400-0.781-0.722
+<ro> (x,y,z)                   =     0.049-0.250 0.689
 <x'> (x,y,z)                   =      1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00
@@ -424,17 +423,17 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =         -1.02969        0.40413      0.763E-15
- total two-body energy         =         -1.02969        0.40413      0.763E-15
-  ao-ao                        =         -1.02969        0.40413      0.763E-15
-enthalpy                       =          0.59665        0.40413
-cv                             =          0.44239
+total potential energy         =         -0.42667        0.27146     -0.158E-14
+ total two-body energy         =         -0.42667        0.27146     -0.158E-14
+  ao-ao                        =         -0.42667        0.27146     -0.158E-14
+enthalpy                       =          1.19967        0.27146
+cv                             =          0.19961
 temperature                    =        298.00000        0.00000
 pressure (excl. cont. contr.)  =        200.04496        0.00000
 number of particles            =          2.00000        0.00000
 volume                         =      2.70000E+01    0.00000E+00
 
-total potential energy (NkT)   =         -0.41558
+total potential energy (NkT)   =         -0.17220
 pressure (NkT/V)(excl. contact)=          0.65639
 pressure (kT) (excl. contact)  =      4.86214E-02
 number density                 =      7.40741E-02
@@ -445,7 +444,7 @@ number density                 =      7.40741E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2016-11-14     12:24:17
+2017-01-05     15:53:08
 
 title   : asakura-oosawa potential: radat = 0.5, rphs=0.5 paticles at separation 1.5                
 
@@ -459,11 +458,11 @@ key data: mode           : simulation
 number of time steps/passes           1  *        10  =         10
 
 temperature                    =     298.000
-pressure                       =     250.972
+pressure                       =     270.469
 box lengths (x,y,z)            =       3.000       3.000       3.000
 volume                         =   0.270E+02
 
-seed of random generator       =   797133505
+seed of random generator       =           2
 
 
 **************************************************************************************************************
@@ -475,7 +474,7 @@ particle coordinates
 --------------------
 particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
 -----------   -------------       -----------              ---------------        ---------------        ---------------
-     1        ao              1.041    1.043   -0.919   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
+     1        ao              1.299    1.206    1.135   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -484,9 +483,8 @@ particle no   particle type       com (x,y,z)              x'-axis (x,y,z)      
 single-particle move                             total          ao        
 -------------------                              -----          ----------
 total number of conf.          =               20 1.00             20 1.00
-accepted number of conf.       =               14 0.70             14 0.70
-energy rejected conf.          =                1 0.05              1 0.05
-hard-core rejected conf.       =                5 0.25              5 0.25
+accepted number of conf.       =               17 0.85             17 0.85
+energy rejected conf.          =                3 0.15              3 0.15
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -505,8 +503,8 @@ maximal number of neighbours   =          2000
 *                                           verlet list statistics                                           *
 **************************************************************************************************************
 
-no of neighbour list calls     =           2
-no of steps/passes per call    =         5.0
+no of neighbour list calls     =           1
+no of steps/passes per call    =        10.0
 
            no of part per proc   no of neighbours per part and proc  load of proc   load(max)-load(aver)
            -------------------   ----------------------------------  ------------   --------------------
@@ -524,16 +522,16 @@ maximum              2.0                      1.0                           2.0 
 quantity                                    ao        
 --------                                    ----------
 
-<dr**2>/step (from start)      =            0.3196E+00
-precision                      =            0.2439E+00
-sqrt(<dr**2>)(from start)      =                1.7878
-precision                      =                0.5860
+<dr**2>/step (from start)      =            0.7660E-01
+precision                      =            0.5059E-01
+sqrt(<dr**2>)(from start)      =                0.8752
+precision                      =                0.2526
 
 orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =     0.400-0.781-0.722
+<ro> (x,y,z)                   =     0.049-0.250 0.689
 <x'> (x,y,z)                   =      1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00
@@ -544,17 +542,17 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =         -1.02969        0.08426        0.25172        0.09365             0.
- total two-body energy         =         -1.02969        0.08426        0.25172        0.09365             0.
-  ao-ao                        =         -1.02969        0.08426        0.25172        0.09365             0.
-enthalpy                       =          0.59665        0.08426        0.25172        0.09365             0.
-cv                             =          0.44239
+total potential energy         =         -0.42667        0.01925        0.25586        0.11077             0.
+ total two-body energy         =         -0.42667        0.01925        0.25586        0.11077             0.
+  ao-ao                        =         -0.42667        0.01925        0.25586        0.11077             0.
+enthalpy                       =          1.19967        0.01925        0.25586        0.11077             0.
+cv                             =          0.19961
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =        200.04496        0.00000        0.00000        0.00000             0.
 number of particles            =          2.00000        0.00000        0.00000        0.00000             0.
 volume                         =      2.70000E+01    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =         -0.41558        0.00000
+total potential energy (NkT)   =         -0.17220        0.00000
 pressure (NkT/V)(excl. contact)=          0.65639        0.00000
 pressure (kT) (excl. contact)  =      4.86214E-02    0.00000E+00
 number density                 =      7.40741E-02    0.00000E+00
@@ -566,14 +564,14 @@ number density                 =      7.40741E-02    0.00000E+00
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.05 
+         Coordinate            0.00         0.00 
          ControlAver           0.00         0.07 
-         MainAver              0.00         0.66 
-         IOMolsim              0.00         0.10 
+         MainAver              0.00         0.33 
+         IOMolsim              0.00         0.60 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.11 
-          SPartMove            0.00         0.01  
-          DUTotal              0.00         0.05  
-           DUTwoBody           0.00         0.01   
+         MCPass                0.00         0.00 
+          SPartMove            0.00         0.00  
+          DUTotal              0.00         0.00  
+           DUTwoBody           0.00         0.00   
  
 total cpu time since start (s)        0.01

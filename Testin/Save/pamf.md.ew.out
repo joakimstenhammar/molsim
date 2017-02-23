@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-02-02     14:46:48
+2017-01-05     15:52:17
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -121,13 +121,6 @@ number of atom types           =       2     (     10 )
 chain type         no of chains             topology  npptct(1,ict)  npptct(2,ict)
 ----------         ------------             --------  -------------  -------------
 p_amf                  1                    block        50            50 
-
-- - - - - - - - - - - - - sequence of chain type 1 'p_amf' - - - - - - - - - - - - -
-
-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-
-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2-2
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -253,8 +246,8 @@ minimum angle between consecutive beads =    120.000
 
 velocities: Maxwell distribution
 
-linear moments (x,y,z)         =      466.        280.       -165.    
-angular moments (x,y,z)        =     0.423E+05  -0.580E+05   0.600E+05
+linear moments (x,y,z)         =      537.       -359.       -725.    
+angular moments (x,y,z)        =     0.910E+05  -0.399E+05   0.804E+05
 
 first macrostep                =      1
 
@@ -267,13 +260,13 @@ particle coordinates
 --------------------
 particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
 -----------   -------------       -----------              ---------------        ---------------        ---------------
-     1        p_seg        -247.496 -187.848   65.213   0.588  0.271  0.762    0.248  0.836 -0.489   -0.770  0.476  0.425
+     1        p_seg        -136.033  -86.309   23.348   0.422 -0.552  0.719   -0.595 -0.767 -0.240    0.684 -0.327 -0.652
 
 particle velocities
 -------------------
 particle no   particle type     linear vel. (x,y,z)        angular vel. (x',y',z')
 -----------   -------------     -------------------        -----------------------
-     1        p_seg           -2.109    2.595    2.524     0.000    0.000    0.000
+     1        p_seg           -4.327    4.446   -0.494     0.000    0.000    0.000
 
 **************************************************************************************************************
 *                                                  md data                                                   *
@@ -306,25 +299,25 @@ maximal number of neighbours   =          2000
 
 quantity                            initial value
 &-------                            -------------
-total energy                   =         29.80737
-kinetic energy                 =          3.71548
-total potential energy         =         26.09190
- total two-body energy         =         25.52753
-  p_seg-p_seg                  =         13.35670
-  p_seg-m_seg                  =         -1.26144
-  m_seg-m_seg                  =         13.43227
- pot. energy from rec. space   =          0.56436
+total energy                   =         28.78314
+kinetic energy                 =          3.94719
+total potential energy         =         24.83595
+ total two-body energy         =         24.39632
+  p_seg-p_seg                  =         13.33728
+  p_seg-m_seg                  =         -2.69501
+  m_seg-m_seg                  =         13.75405
+ pot. energy from rec. space   =          0.43963
  bond energy                   =          0.00000
  angle energy                  =          0.00000
-enthalpy                       =         82.09872
-temperature                    =        297.91242
-pressure (excl. cont. contr.)  =          0.07440
+enthalpy                       =         80.58078
+temperature                    =        316.49185
+pressure (excl. cont. contr.)  =          0.07405
 number of particles            =        100.00000
 volume                         =      1.25000E+08
 
-total potential energy (NkT)   =         10.53373
-pressure (NkT/V)(excl. contact)=         22.61089
-pressure (kT) (excl. contact)  =      1.80887E-05
+total potential energy (NkT)   =          9.43808
+pressure (NkT/V)(excl. contact)=         21.18397
+pressure (kT) (excl. contact)  =      1.69472E-05
  
 total cpu time since start (s)        0.01
 
@@ -342,32 +335,32 @@ total cpu time since start (s)        0.01
 quantity                                    p_seg               m_seg     
 --------                                    ----------          ----------
 
-<force**2>                     =            0.5214E+07          0.5195E+07
+<force**2>                     =            0.4849E+07          0.5424E+07
 <torque**2>x'                  =            0.0000E+00          0.0000E+00
 <torque**2>y'                  =            0.0000E+00          0.0000E+00
 <torque**2>z'                  =            0.0000E+00          0.0000E+00
-<linear mom.>x                 =            0.1064E+02         -0.1319E+01
-<linear mom.>y                 =            0.2882E+01          0.2724E+01
-<linear mom.>z                 =            0.5348E+01         -0.8643E+01
-<angular mom.>x                =           -0.1219E+04          0.2065E+04
-<angular mom.>y                =            0.1935E+03         -0.1350E+04
-<angular mom.>z                =            0.2040E+04         -0.1112E+04
-<t(tran)>                      =              289.2663            307.9489
+<linear mom.>x                 =           -0.1247E+01          0.1192E+02
+<linear mom.>y                 =           -0.4006E+01         -0.3117E+01
+<linear mom.>z                 =           -0.1091E+02         -0.3499E+01
+<angular mom.>x                =            0.1409E+04          0.3980E+03
+<angular mom.>y                =           -0.9991E+03          0.2062E+03
+<angular mom.>z                =            0.1106E+03          0.1486E+04
+<t(tran)>                      =              350.6276            284.5884
 <t(rot)>                       =                0.0000              0.0000
 
-<dr**2>/step (macrostep)       =            0.2190E-02          0.2315E-02
-precision                      =            0.2480E-03          0.2367E-03
-<dr**2>/step (from start)      =            0.2190E-02          0.2315E-02
-precision                      =            0.2480E-03          0.2367E-03
+<dr**2>/step (macrostep)       =            0.2652E-02          0.2162E-02
+precision                      =            0.3436E-03          0.2722E-03
+<dr**2>/step (from start)      =            0.2652E-02          0.2162E-02
+precision                      =            0.3436E-03          0.2722E-03
 
 orientation order, x'-axis     =                1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000
 
-<ro> (x,y,z)                   =     -64.3-219.3 105.4  -175.1-213.5  68.9
-<x'> (x,y,z)                   =     -0.05  0.03 -0.07   -0.02  0.00  0.01
-<y'> (x,y,z)                   =      0.08 -0.02  0.05   -0.11 -0.03 -0.03
-<z'> (x,y,z)                   =      0.08  0.04  0.02    0.14 -0.02 -0.03
+<ro> (x,y,z)                   =     -75.5-118.6  16.2   -22.3-116.5  -7.7
+<x'> (x,y,z)                   =      0.01  0.01  0.03   -0.03 -0.05  0.13
+<y'> (x,y,z)                   =     -0.05 -0.04  0.18    0.02 -0.11 -0.03
+<z'> (x,y,z)                   =      0.03  0.06 -0.06    0.02  0.09 -0.01
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -375,26 +368,26 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average    fluctuation
 &&------                                  -------    -----------
-total energy                   =         29.80649        0.00000
-kinetic energy                 =          3.72415        0.00000
-total potential energy         =         26.08234        0.00000
- total two-body energy         =         25.51599        0.00000
-  p_seg-p_seg                  =         13.37494        0.00000
-  p_seg-m_seg                  =         -1.28981        0.00000
-  m_seg-m_seg                  =         13.43087        0.00000
- pot. energy from rec. space   =          0.56435        0.00000
- bond energy                   =          0.00200        0.00000
+total energy                   =         28.72885        0.00000
+kinetic energy                 =          3.96111        0.00000
+total potential energy         =         24.76774        0.00000
+ total two-body energy         =         24.32647        0.00000
+  p_seg-p_seg                  =         13.28797        0.00000
+  p_seg-m_seg                  =         -2.68617        0.00000
+  m_seg-m_seg                  =         13.72466        0.00000
+ pot. energy from rec. space   =          0.43963        0.00000
+ bond energy                   =          0.00163        0.00000
  angle energy                  =          0.00000        0.00000
-enthalpy                       =         82.04283        0.00000
+enthalpy                       =         80.30369        0.00000
 cv                             =         12.47171
-temperature                    =        298.60762        0.00000
-pressure (excl. cont. contr.)  =          0.07434        0.00000
+temperature                    =        317.60802        0.00000
+pressure (excl. cont. contr.)  =          0.07378        0.00000
 number of particles            =        100.00000        0.00000
 volume                         =      1.25000E+08    0.00000E+00
 
-total potential energy (NkT)   =         10.50536
-pressure (NkT/V)(excl. contact)=         22.53959
-pressure (kT) (excl. contact)  =      1.80317E-05
+total potential energy (NkT)   =          9.37908
+pressure (NkT/V)(excl. contact)=         21.03043
+pressure (kT) (excl. contact)  =      1.68243E-05
 number density                 =      8.00000E-07
 
 **************************************************************************************************************
@@ -403,25 +396,25 @@ number density                 =      8.00000E-07
 
 quantity                                  average     fluctuation
 --------                                  -------     -----------
-<r(bb)**2>**0.5                =          5.00224        0.00000
-<r(ee)**2>**0.5                =         70.76214        0.00000
-<r(g)**2>**0.5                 =         52.43452        0.00000
-smallest rms mom. p.a.         =         11.09618        0.00000
-intermediate rms mom. p.a.     =         31.76185        0.00000
-largest rms mom. p.a.          =         40.21739        0.00000
-<persist. l.>  (r(ee))         =          7.55671        0.00000
-<persist. l.>  (r(g))          =         18.59662        0.00000
-<angle>                        =        140.90224        0.00000
-<cos(180-angle)>               =          0.75207        0.00000
-<r(ee)**2/r(g)**2>             =          1.82124        0.00000
-<asphericity>                  =          0.22409        0.00000
-<toroid param>                 =          0.02840        0.00000
+<r(bb)**2>**0.5                =          5.00362        0.00000
+<r(ee)**2>**0.5                =         87.06056        0.00000
+<r(g)**2>**0.5                 =         48.96645        0.00000
+smallest rms mom. p.a.         =         10.79207        0.00000
+intermediate rms mom. p.a.     =         22.37360        0.00000
+largest rms mom. p.a.          =         42.19794        0.00000
+<persist. l.>  (r(ee))         =         10.15238        0.00000
+<persist. l.>  (r(g))          =         15.96783        0.00000
+<angle>                        =        140.90494        0.00000
+<cos(180-angle)>               =          0.75221        0.00000
+<r(ee)**2/r(g)**2>             =          3.16115        0.00000
+<asphericity>                  =          0.39622        0.00000
+<toroid param>                 =          0.08445        0.00000
 
-persist. l. (<r(ee)**2>)       =          7.55671
-persist. l. (<r(g)**2>)        =         18.59662
-persist. l. (<cos(180-angle)>) =         20.17608
-<r(ee)**2>/<r(g)**2>           =          1.82124
-asphericity (<2:nd moments>)   =          0.22409
+persist. l. (<r(ee)**2>)       =         10.15238
+persist. l. (<r(g)**2>)        =         15.96783
+persist. l. (<cos(180-angle)>) =         20.19318
+<r(ee)**2>/<r(g)**2>           =          3.16115
+asphericity (<2:nd moments>)   =          0.39622
 
 
 **************************************************************************************************************
@@ -430,7 +423,7 @@ asphericity (<2:nd moments>)   =          0.22409
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-02-02     14:46:48
+2017-01-05     15:52:17
 
 title   : polyamphlyte, 100 beads * 10 chains                                                       
 
@@ -443,12 +436,12 @@ key data: mode           : simulation
 
 number of time steps/passes           1  *         1  =          1
 
-temperature                    =     298.608
+temperature                    =     317.608
 pressure                       =       0.074
 box lengths (x,y,z)            =     500.000     500.000     500.000
 volume                         =   0.125E+09
 
-seed of random generator       =  2077767799
+seed of random generator       =   537292546
 
 
 **************************************************************************************************************
@@ -460,13 +453,13 @@ particle coordinates
 --------------------
 particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
 -----------   -------------       -----------              ---------------        ---------------        ---------------
-     1        p_seg        -247.509 -187.831   65.231   0.588  0.271  0.762    0.248  0.836 -0.489   -0.770  0.476  0.425
+     1        p_seg        -136.060  -86.288   23.344   0.422 -0.552  0.719   -0.595 -0.767 -0.240    0.684 -0.327 -0.652
 
 particle velocities
 -------------------
 particle no   particle type     linear vel. (x,y,z)        angular vel. (x',y',z')
 -----------   -------------     -------------------        -----------------------
-     1        p_seg           -2.519    3.784    3.798     0.000    0.000    0.000
+     1        p_seg           -5.398    3.320   -1.207     0.000    0.000    0.000
 
 **************************************************************************************************************
 *                                               neighbour list                                               *
@@ -501,32 +494,32 @@ maximum            100.0                     50.0                        4950.0 
 quantity                                    p_seg               m_seg     
 --------                                    ----------          ----------
 
-<force**2>                     =            0.5214E+07          0.5195E+07
+<force**2>                     =            0.4849E+07          0.5424E+07
 <torque**2>x'                  =            0.0000E+00          0.0000E+00
 <torque**2>y'                  =            0.0000E+00          0.0000E+00
 <torque**2>z'                  =            0.0000E+00          0.0000E+00
-<linear mom.>x                 =            0.1064E+02         -0.1319E+01
-<linear mom.>y                 =            0.2882E+01          0.2724E+01
-<linear mom.>z                 =            0.5348E+01         -0.8643E+01
-<angular mom.>x                =           -0.1219E+04          0.2065E+04
-<angular mom.>y                =            0.1935E+03         -0.1350E+04
-<angular mom.>z                =            0.2040E+04         -0.1112E+04
-<t(tran)>                      =              289.2663            307.9489
+<linear mom.>x                 =           -0.1247E+01          0.1192E+02
+<linear mom.>y                 =           -0.4006E+01         -0.3117E+01
+<linear mom.>z                 =           -0.1091E+02         -0.3499E+01
+<angular mom.>x                =            0.1409E+04          0.3980E+03
+<angular mom.>y                =           -0.9991E+03          0.2062E+03
+<angular mom.>z                =            0.1106E+03          0.1486E+04
+<t(tran)>                      =              350.6276            284.5884
 <t(rot)>                       =                0.0000              0.0000
 
-<dr**2>/step (from start)      =            0.2190E-02          0.2315E-02
-precision                      =            0.2480E-03          0.2367E-03
-sqrt(<dr**2>)(from start)      =                0.0468              0.0481
-precision                      =                0.0026              0.0024
+<dr**2>/step (from start)      =            0.2652E-02          0.2162E-02
+precision                      =            0.3436E-03          0.2722E-03
+sqrt(<dr**2>)(from start)      =                0.0515              0.0465
+precision                      =                0.0032              0.0028
 
 orientation order, x'-axis     =                1.0000              1.0000
 orientation order, y'-axis     =                1.0000              1.0000
 orientation order, z'-axis     =                1.0000              1.0000
 
-<ro> (x,y,z)                   =     -64.3-219.3 105.4  -175.1-213.5  68.9
-<x'> (x,y,z)                   =     -0.05  0.03 -0.07   -0.02  0.00  0.01
-<y'> (x,y,z)                   =      0.08 -0.02  0.05   -0.11 -0.03 -0.03
-<z'> (x,y,z)                   =      0.08  0.04  0.02    0.14 -0.02 -0.03
+<ro> (x,y,z)                   =     -75.5-118.6  16.2   -22.3-116.5  -7.7
+<x'> (x,y,z)                   =      0.01  0.01  0.03   -0.03 -0.05  0.13
+<y'> (x,y,z)                   =     -0.05 -0.04  0.18    0.02 -0.11 -0.03
+<z'> (x,y,z)                   =      0.03  0.06 -0.06    0.02  0.09 -0.01
 
 **************************************************************************************************************
 *                                          thermodynamic quantities                                          *
@@ -534,26 +527,26 @@ orientation order, z'-axis     =                1.0000              1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total energy                   =         29.80649        0.00000        0.00000        0.00000             0.
-kinetic energy                 =          3.72415        0.00000        0.00000        0.00000             0.
-total potential energy         =         26.08234        0.00000        0.00000        0.00000             0.
- total two-body energy         =         25.51599        0.00000        0.00000        0.00000             0.
-  p_seg-p_seg                  =         13.37494        0.00000        0.00000        0.00000             0.
-  p_seg-m_seg                  =         -1.28981        0.00000        0.00000        0.00000             0.
-  m_seg-m_seg                  =         13.43087        0.00000        0.00000        0.00000             0.
- pot. energy from rec. space   =          0.56435        0.00000        0.00000        0.00000             0.
- bond energy                   =          0.00200        0.00000        0.00000        0.00000             0.
+total energy                   =         28.72885        0.00000        0.00000        0.00000             0.
+kinetic energy                 =          3.96111        0.00000        0.00000        0.00000             0.
+total potential energy         =         24.76774        0.00000        0.00000        0.00000             0.
+ total two-body energy         =         24.32647        0.00000        0.00000        0.00000             0.
+  p_seg-p_seg                  =         13.28797        0.00000        0.00000        0.00000             0.
+  p_seg-m_seg                  =         -2.68617        0.00000        0.00000        0.00000             0.
+  m_seg-m_seg                  =         13.72466        0.00000        0.00000        0.00000             0.
+ pot. energy from rec. space   =          0.43963        0.00000        0.00000        0.00000             0.
+ bond energy                   =          0.00163        0.00000        0.00000        0.00000             0.
  angle energy                  =          0.00000        0.00000        0.00000        0.00000             0.
-enthalpy                       =         82.04283        0.00000        0.00000        0.00000             0.
+enthalpy                       =         80.30369        0.00000        0.00000        0.00000             0.
 cv                             =         12.47171
-temperature                    =        298.60762        0.00000        0.00000        0.00000             0.
-pressure (excl. cont. contr.)  =          0.07434        0.00000        0.00000        0.00000             0.
+temperature                    =        317.60802        0.00000        0.00000        0.00000             0.
+pressure (excl. cont. contr.)  =          0.07378        0.00000        0.00000        0.00000             0.
 number of particles            =        100.00000        0.00000        0.00000        0.00000             0.
 volume                         =      1.25000E+08    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =         10.50536        0.00000
-pressure (NkT/V)(excl. contact)=         22.53959        0.00000
-pressure (kT) (excl. contact)  =      1.80317E-05    0.00000E+00
+total potential energy (NkT)   =          9.37908        0.00000
+pressure (NkT/V)(excl. contact)=         21.03043        0.00000
+pressure (kT) (excl. contact)  =      1.68243E-05    0.00000E+00
 number density                 =      8.00000E-07    0.00000E+00
 
 **************************************************************************************************************
@@ -562,25 +555,25 @@ number density                 =      8.00000E-07    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          5.00224        0.00000        0.00000        0.00000             0.
-<r(ee)**2>**0.5                =         70.76214        0.00000        0.00000        0.00000             0.
-<r(g)**2>**0.5                 =         52.43452        0.00000        0.00000        0.00000             0.
-smallest rms mom. p.a.         =         11.09618        0.00000        0.00000        0.00000             0.
-intermediate rms mom. p.a.     =         31.76185        0.00000        0.00000        0.00000             0.
-largest rms mom. p.a.          =         40.21739        0.00000        0.00000        0.00000             0.
-<persist. l.>  (r(ee))         =          7.55671        0.00000        0.00000        0.00000             0.
-<persist. l.>  (r(g))          =         18.59662        0.00000        0.00000        0.00000             0.
-<angle>                        =        140.90224        0.00000        0.00000        0.00000             0.
-<cos(180-angle)>               =          0.75207        0.00000        0.00000        0.00000             0.
-<r(ee)**2/r(g)**2>             =          1.82124        0.00000        0.00000        0.00000             0.
-<asphericity>                  =          0.22409        0.00000        0.00000        0.00000             0.
-<toroid param>                 =          0.02840        0.00000        0.00000        0.00000             0.
+<r(bb)**2>**0.5                =          5.00362        0.00000        0.00000        0.00000             0.
+<r(ee)**2>**0.5                =         87.06056        0.00000        0.00000        0.00000             0.
+<r(g)**2>**0.5                 =         48.96645        0.00000        0.00000        0.00000             0.
+smallest rms mom. p.a.         =         10.79207        0.00000        0.00000        0.00000             0.
+intermediate rms mom. p.a.     =         22.37360        0.00000        0.00000        0.00000             0.
+largest rms mom. p.a.          =         42.19794        0.00000        0.00000        0.00000             0.
+<persist. l.>  (r(ee))         =         10.15238        0.00000        0.00000        0.00000             0.
+<persist. l.>  (r(g))          =         15.96783        0.00000        0.00000        0.00000             0.
+<angle>                        =        140.90494        0.00000        0.00000        0.00000             0.
+<cos(180-angle)>               =          0.75221        0.00000        0.00000        0.00000             0.
+<r(ee)**2/r(g)**2>             =          3.16115        0.00000        0.00000        0.00000             0.
+<asphericity>                  =          0.39622        0.00000        0.00000        0.00000             0.
+<toroid param>                 =          0.08445        0.00000        0.00000        0.00000             0.
 
-persist. l. (<r(ee)**2>)       =          7.55671
-persist. l. (<r(g)**2>)        =         18.59662
-persist. l. (<cos(180-angle)>) =         20.17608
-<r(ee)**2>/<r(g)**2>           =          1.82124
-asphericity (<2:nd moments>)   =          0.22409
+persist. l. (<r(ee)**2>)       =         10.15238
+persist. l. (<r(g)**2>)        =         15.96783
+persist. l. (<cos(180-angle)>) =         20.19318
+<r(ee)**2>/<r(g)**2>           =          3.16115
+asphericity (<2:nd moments>)   =          0.39622
 
 
 **************************************************************************************************************
@@ -598,8 +591,8 @@ average volume                 =      1.25000E+08    0.00000E+00
 contact values                 =             0.00           0.00           0.00
 
 pressure (NkT/V)(contact cont.)=          0.00000        0.00000
-pressure (NkT/V)(total)        =         22.53959        0.00000
-pressure (kT) (total)          =      1.80317E-05    0.00000E+00
+pressure (NkT/V)(total)        =         21.03043        0.00000
+pressure (kT) (total)          =      1.68243E-05    0.00000E+00
 
 no    function                         min            max            nbin           step
 --    --------                         ---            ---            ----           ----
@@ -863,18 +856,18 @@ distribution functions
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.00         0.18
-         ControlAver            0.00         0.13
-         MainAver               0.00         0.06
-         DistFunc               0.00         0.32
-         IOMolsim               0.00         0.16
-         SetVList               0.00         0.01
-         MDDriver               0.00         0.14
+         Coordinate             0.00         0.07
+         ControlAver            0.00         0.03
+         MainAver               0.00         0.12
+         DistFunc               0.00         0.38
+         IOMolsim               0.00         0.20
+         SetVList               0.00         0.11
+         MDDriver               0.00         0.10
           VelVer                0.00         0.00 
-          UTotal                0.00         0.14 
-           UTwoBodyA            0.00         0.04  
-           UEwald               0.00         0.10  
-            UEwaldRecStd        0.00         0.10   
+          UTotal                0.00         0.10 
+           UTwoBodyA            0.00         0.06  
+           UEwald               0.00         0.04  
+            UEwaldRecStd        0.00         0.04   
            UBond                0.00         0.00  
  
 total cpu time since start (s)        0.02

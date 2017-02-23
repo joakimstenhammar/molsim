@@ -344,6 +344,7 @@ subroutine IOSystem(iStage)
       call LowerCase(txstart)
       call LowerCase(txuser)
 
+
 ! ... set lsim and lana
 
       lsim =.false.
@@ -441,6 +442,7 @@ subroutine IOSystem(iStage)
       prsrst = prsr
       volst  = vol
       if (iseed <= 0) iseed = int(1.0e+6*Second())
+      iseed = -abs(iseed)     !the first seed should be negative, as the random seed generator is only initialized properly when the passed seed is negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed) when iseed > 0
 
    case (iWriteInput)
 
@@ -486,7 +488,7 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         write(uout,'(a,t35,i10)') 'seed of random generator       = ', iseed
+         write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
          write(uout,'()')
          if (maxcpu > 0) then
             write(uout,'(a,t35,i10)') 'maximum cpu time (seconds)     = ', maxcpu
@@ -576,7 +578,7 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         write(uout,'(a,t35,i10)') 'seed of random generator       = ', iseed
+         write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
          write(uout,'()')
 
       end if
@@ -680,6 +682,7 @@ end subroutine IOScale
 subroutine IOCnf(str)
 
    use MolModule
+   use Random_Module, only: am, ix, iy
    implicit none
 
    character(*) :: str
@@ -709,7 +712,9 @@ subroutine IOCnf(str)
                read(ucnf) nstep1done, iaux, raux, raux, raux !  2007-03-16-
             end if
          else if (txstart == 'continue') then
-            read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30-
+            read(ucnf) nstep1done, iseed, am, ix, iy, boxlen             ! 2017-01-05-
+
+            !read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30-2017-01-05
 !           read(ucnf) nstep1done, iseed, raux, raux, raux   !  1999-12-21--2003-09-30
          end if
          read(ucnf) npread, iaux, raux, raux, laux, laux
@@ -727,6 +732,9 @@ subroutine IOCnf(str)
 #if defined (_PAR_)
       call par_bc_ints (nstep1done, 1   )
       call par_bc_ints (iseed     , 1   )
+      call par_bc_reals (am     , 1   )
+      call par_bc_ints (ix     , 1   )
+      call par_bc_ints (iy     , 1   )
       call par_bc_reals(boxlen    , 3   )
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
@@ -756,7 +764,7 @@ subroutine IOCnf(str)
 
       rewind(ucnf)
       if (lmc .or. lmcall) call OriToQua(np, 1, np, ori, qua)
-      write(ucnf) istep1, iseed, boxlen
+      write(ucnf) istep1, iseed, am, ix, iy, boxlen
       write(ucnf) np, iaux, raux, raux, laux, laux
       write(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
       if (lclink) write(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)

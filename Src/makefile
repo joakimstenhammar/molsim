@@ -353,7 +353,7 @@ testmesh       : testmesh.o mesh.o
 	$(COMP_SER) $(FLAG_SER) -o testmesh.exe testmesh.o mesh.o
 	./testmesh.exe
 
-mol.o           : mol.F90         statistics.o mesh.o
+mol.o           : mol.F90         statistics.o mesh.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c mol.F90
 molsim.o        : molsim.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c molsim.F90

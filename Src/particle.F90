@@ -440,6 +440,7 @@ subroutine Particle(iStage)
             end do
             write(uout,'()')
             do ict = 1, nct
+               if (txcopolymer(ict) == 'block') cycle ! No sequence output for block-like chain types
                write(txhelp,'(i3)') ict
                write(uout,'(a)') repeat('- ',13)//'sequence of chain type '//trim(adjustl(txhelp))&
                                  &//' '''//trim(adjustl(txct(ict)))//''''//repeat(' -',13)

@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-02-02     14:46:16
+2017-01-05     15:51:30
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -120,12 +120,6 @@ number of atom types           =       1     (     10 )
 chain type         no of chains             topology  npptct(1,ict)
 ----------         ------------             --------  -------------
 trimer                 1                    block         3               
-
-- - - - - - - - - - - - - sequence of chain type 1 'trimer' - - - - - - - - - - - - -
-
-1-1-1
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 particle       no        atom     no     mass    hard core    no of unit   weak      pK        sigma    epsilon  zatalpha
                                                  radius       charges      charge                              
@@ -277,7 +271,7 @@ pressure (kT) (excl. contact)  =     -1.17546E-04
 ..............................................................................................................
 
 configuration                     -3
-seed of random generator           1
+seed of random generator          -1
 tot. pot. energy          2401.42977
 tot. two-body pot. energ     0.00000
 two-body pot. energy         0.00000
@@ -328,15 +322,15 @@ total cpu time since start (s)        0.01
 ..............................................................................................................
 
 configuration                      1
-seed of random generator  1871512097
-tot. pot. energy          2244.11857
+seed of random generator           2
+tot. pot. energy          2350.34357
 tot. two-body pot. energ     0.00000
 two-body pot. energy         0.00000
 pot. energy, u%rec           0.00000
 pot. energy, u%stat          0.00000
 pot. energy, u%pol           0.00000
-pot. energy, u%bond          1.04788
-pot. energy, u%angle      2243.07069
+pot. energy, u%bond          1.19952
+pot. energy, u%angle      2349.14405
 pot. energy, u%crosslink     0.00000
 pot. energy, u%external      0.00000
 pressure                    -0.48363
@@ -344,13 +338,13 @@ volume                    8000.00000
  
 atom data
 atom coordinates
-   1     site                1    ion               -5.758982   -4.736511   -4.257019
+   1     site                1    ion               -5.348723   -4.905664   -4.557730
    2     site                2    ion               -5.000000    0.000000    0.000000
    3     site                3    ion                0.000000   -5.000000    0.000000
  
 particle data
 particle position
-   1     ion           -5.7590E+00 -4.7365E+00 -4.2570E+00
+   1     ion           -5.3487E+00 -4.9057E+00 -4.5577E+00
    2     ion           -5.0000E+00  1.0000E-10  1.0000E-10
    3     ion            1.0000E-10 -5.0000E+00  1.0000E-10
 particle orientation
@@ -359,24 +353,24 @@ particle orientation
    3     ion            1.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  1.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  1.0000E+00
 particle distance matrix
              1         2         3
-   1    0.0000    6.4135    7.1664
-   2    6.4135    0.0000    7.0711
-   3    7.1664    7.0711    0.0000
+   1    0.0000    6.7052    7.0278
+   2    6.7052    0.0000    7.0711
+   3    7.0278    7.0711    0.0000
 
 ..............................................................................................................
 .                                               TestSimulation                                               .
 ..............................................................................................................
 
 configuration                      2
-seed of random generator  1985906753
-tot. pot. energy          1908.33756
+seed of random generator           2
+tot. pot. energy          2350.34357
 tot. two-body pot. energ     0.00000
 two-body pot. energy         0.00000
 pot. energy, u%rec           0.00000
 pot. energy, u%stat          0.00000
 pot. energy, u%pol           0.00000
-pot. energy, u%bond          1.52059
-pot. energy, u%angle      1906.81697
+pot. energy, u%bond          1.19952
+pot. energy, u%angle      2349.14405
 pot. energy, u%crosslink     0.00000
 pot. energy, u%external      0.00000
 pressure                    -0.48363
@@ -384,39 +378,39 @@ volume                    8000.00000
  
 atom data
 atom coordinates
-   1     site                1    ion               -5.758982   -4.736511   -4.257019
+   1     site                1    ion               -5.348723   -4.905664   -4.557730
    2     site                2    ion               -5.000000    0.000000    0.000000
-   3     site                3    ion                0.962283   -4.748564    0.849520
+   3     site                3    ion                0.000000   -5.000000    0.000000
  
 particle data
 particle position
-   1     ion           -5.7590E+00 -4.7365E+00 -4.2570E+00
+   1     ion           -5.3487E+00 -4.9057E+00 -4.5577E+00
    2     ion           -5.0000E+00  1.0000E-10  1.0000E-10
-   3     ion            9.6228E-01 -4.7486E+00  8.4952E-01
+   3     ion            1.0000E-10 -5.0000E+00  1.0000E-10
 particle orientation
    1     ion            1.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  1.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  1.0000E+00
    2     ion            1.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  1.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  1.0000E+00
    3     ion            1.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  1.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  1.0000E+00
 particle distance matrix
              1         2         3
-   1    0.0000    6.4135    8.4411
-   2    6.4135    0.0000    7.6694
-   3    8.4411    7.6694    0.0000
+   1    0.0000    6.7052    7.0278
+   2    6.7052    0.0000    7.0711
+   3    7.0278    7.0711    0.0000
 
 ..............................................................................................................
 .                                               TestSimulation                                               .
 ..............................................................................................................
 
 configuration                      3
-seed of random generator   973935201
-tot. pot. energy          1836.03971
+seed of random generator           2
+tot. pot. energy          2131.72637
 tot. two-body pot. energ     0.00000
 two-body pot. energy         0.00000
 pot. energy, u%rec           0.00000
 pot. energy, u%stat          0.00000
 pot. energy, u%pol           0.00000
-pot. energy, u%bond          1.41182
-pot. energy, u%angle      1834.62789
+pot. energy, u%bond          1.39222
+pot. energy, u%angle      2130.33415
 pot. energy, u%crosslink     0.00000
 pot. energy, u%external      0.00000
 pressure                    -0.48363
@@ -424,25 +418,25 @@ volume                    8000.00000
  
 atom data
 atom coordinates
-   1     site                1    ion               -5.758982   -4.736511   -4.257019
-   2     site                2    ion               -5.610472   -0.670858   -0.092952
-   3     site                3    ion                0.962283   -4.748564    0.849520
+   1     site                1    ion               -5.348723   -4.905664   -4.557730
+   2     site                2    ion               -5.000000    0.000000    0.000000
+   3     site                3    ion                0.780146   -4.509602    0.186052
  
 particle data
 particle position
-   1     ion           -5.7590E+00 -4.7365E+00 -4.2570E+00
-   2     ion           -5.6105E+00 -6.7086E-01 -9.2952E-02
-   3     ion            9.6228E-01 -4.7486E+00  8.4952E-01
+   1     ion           -5.3487E+00 -4.9057E+00 -4.5577E+00
+   2     ion           -5.0000E+00  1.0000E-10  1.0000E-10
+   3     ion            7.8015E-01 -4.5096E+00  1.8605E-01
 particle orientation
    1     ion            1.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  1.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  1.0000E+00
    2     ion            1.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  1.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  1.0000E+00
    3     ion            1.0000E+00  0.0000E+00  0.0000E+00    0.0000E+00  1.0000E+00  0.0000E+00    0.0000E+00  0.0000E+00  1.0000E+00
 particle distance matrix
              1         2         3
-   1    0.0000    5.8216    8.4411
-   2    5.8216    0.0000    7.7921
-   3    8.4411    7.7921    0.0000
-     1       1836.040        298.000         -0.484       8000.000
+   1    0.0000    6.7052    7.7604
+   2    6.7052    0.0000    7.3336
+   3    7.7604    7.3336    0.0000
+     1       2131.726        298.000         -0.484       8000.000
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -451,7 +445,8 @@ particle distance matrix
 single-particle move                             total          ion       
 -------------------                              -----          ----------
 total number of conf.          =                3 1.00              3 1.00
-accepted number of conf.       =                3 1.00              3 1.00
+accepted number of conf.       =                2 0.67              2 0.67
+energy rejected conf.          =                1 0.33              1 0.33
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -463,16 +458,16 @@ average no of net joining part.=                                      0.00
 quantity                                    ion       
 --------                                    ----------
 
-<dr**2>/step (macrostep)       =            0.1247E+01
-precision                      =            0.2551E+00
-<dr**2>/step (from start)      =            0.1247E+01
-precision                      =            0.2551E+00
+<dr**2>/step (macrostep)       =            0.4033E+00
+precision                      =            0.2580E+00
+<dr**2>/step (from start)      =            0.4033E+00
+precision                      =            0.2580E+00
 
 orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =    -3.469-3.385-1.167
+<ro> (x,y,z)                   =    -3.190-3.138-1.457
 <x'> (x,y,z)                   =      1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00
@@ -483,19 +478,19 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =       1836.03971        0.00000      0.165E-15
+total potential energy         =       2131.72637        0.00000     -0.284E-15
  total two-body energy         =          0.00000        0.00000      0.000E+00
   ion-ion                      =          0.00000        0.00000      0.000E+00
- bond energy                   =          1.41182        0.00000      0.210E-15
- angle energy                  =       1834.62789        0.00000      0.165E-15
-enthalpy                       =       1835.26306        0.00000
+ bond energy                   =          1.39222        0.00000      0.000E+00
+ angle energy                  =       2130.33415        0.00000     -0.285E-15
+enthalpy                       =       2130.94971        0.00000
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000
 pressure (excl. cont. contr.)  =         -0.48363        0.00000
 number of particles            =          3.00000        0.00000
 volume                         =      8.00000E+03    0.00000E+00
 
-total potential energy (NkT)   =        741.02205
+total potential energy (NkT)   =        860.36061
 pressure (NkT/V)(excl. contact)=         -0.31346
 pressure (kT) (excl. contact)  =     -1.17546E-04
 number density                 =      3.75000E-04
@@ -506,25 +501,25 @@ number density                 =      3.75000E-04
 
 quantity                                  average     fluctuation
 --------                                  -------     -----------
-<r(bb)**2>**0.5                =          6.87779        0.00000
-<r(ee)**2>**0.5                =          8.44111        0.00000
-<r(g)**2>**0.5                 =          4.29289        0.00000
+<r(bb)**2>**0.5                =          7.02642        0.00000
+<r(ee)**2>**0.5                =          7.76037        0.00000
+<r(g)**2>**0.5                 =          4.20271        0.00000
 smallest rms mom. p.a.         =          0.00000        0.00000
-intermediate rms mom. p.a.     =          2.34674        0.00000
-largest rms mom. p.a.          =          3.59468        0.00000
-<persist. l.>  (r(ee))         =          6.02884        0.00000
-<persist. l.>  (r(g))          =        338.94801        0.00000
-<angle>                        =         75.08209        0.00000
-<cos(180-angle)>               =         -0.25743        0.00000
-<r(ee)**2/r(g)**2>             =          3.86633        0.00000
-<asphericity>                  =          0.37140        0.00000
+intermediate rms mom. p.a.     =          2.71233        0.00000
+largest rms mom. p.a.          =          3.21030        0.00000
+<persist. l.>  (r(ee))         =          5.65596        0.00000
+<persist. l.>  (r(g))          =        196.68264        0.00000
+<angle>                        =         66.94247        0.00000
+<cos(180-angle)>               =         -0.39166        0.00000
+<r(ee)**2/r(g)**2>             =          3.40963        0.00000
+<asphericity>                  =          0.27091        0.00000
 <toroid param>                 =          1.00000        0.00000
 
-persist. l. (<r(ee)**2>)       =          6.02884
-persist. l. (<r(g)**2>)        =        338.94801
-persist. l. (<cos(180-angle)>) =          5.46970
-<r(ee)**2>/<r(g)**2>           =          3.86633
-asphericity (<2:nd moments>)   =          0.37140
+persist. l. (<r(ee)**2>)       =          5.65596
+persist. l. (<r(g)**2>)        =        196.68264
+persist. l. (<cos(180-angle)>) =          5.04897
+<r(ee)**2>/<r(g)**2>           =          3.40963
+asphericity (<2:nd moments>)   =          0.27091
 
 
 **************************************************************************************************************
@@ -533,7 +528,7 @@ asphericity (<2:nd moments>)   =          0.37140
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-02-02     14:46:16
+2017-01-05     15:51:30
 
 title   : testchain:  trimer                                                                        
 
@@ -547,11 +542,11 @@ key data: mode           : simulation
 number of time steps/passes           1  *         1  =          1
 
 temperature                    =     298.000
-pressure                       =      -0.293
+pressure                       =      -0.432
 box lengths (x,y,z)            =      20.000      20.000      20.000
 volume                         =   0.800E+04
 
-seed of random generator       =   973935201
+seed of random generator       =           2
 
 
 **************************************************************************************************************
@@ -563,17 +558,17 @@ particle coordinates
 --------------------
 particle no   particle type       com (x,y,z)              x'-axis (x,y,z)        y'-axis (x,y,z)        z'-axis (x,y,z)
 -----------   -------------       -----------              ---------------        ---------------        ---------------
-     1        ion            -5.759   -4.737   -4.257   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
-     2        ion            -5.610   -0.671   -0.093   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
-     3        ion             0.962   -4.749    0.850   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
+     1        ion            -5.349   -4.906   -4.558   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
+     2        ion            -5.000    0.000    0.000   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
+     3        ion             0.780   -4.510    0.186   1.000  0.000  0.000    0.000  1.000  0.000    0.000  0.000  1.000
 
 atom coordinates
 ----------------
 atom no       atom type      particle no    particle type            coordinate (x,y,z)
 -------       ---------      -----------    -------------            ------------------
-     1        site                1         ion                -5.75898    -4.73651    -4.25702
-     2        site                2         ion                -5.61047    -0.67086    -0.09295
-     3        site                3         ion                 0.96228    -4.74856     0.84952
+     1        site                1         ion                -5.34872    -4.90566    -4.55773
+     2        site                2         ion                -5.00000     0.00000     0.00000
+     3        site                3         ion                 0.78015    -4.50960     0.18605
 
 **************************************************************************************************************
 *                                               mc statistics                                                *
@@ -582,7 +577,8 @@ atom no       atom type      particle no    particle type            coordinate 
 single-particle move                             total          ion       
 -------------------                              -----          ----------
 total number of conf.          =                3 1.00              3 1.00
-accepted number of conf.       =                3 1.00              3 1.00
+accepted number of conf.       =                2 0.67              2 0.67
+energy rejected conf.          =                1 0.33              1 0.33
 
 average no of displaced part.  =                                      1.00
 average no of net joining part.=                                      0.00
@@ -620,16 +616,16 @@ maximum              3.0                      2.0                           6.0 
 quantity                                    ion       
 --------                                    ----------
 
-<dr**2>/step (from start)      =            0.1247E+01
-precision                      =            0.2551E+00
-sqrt(<dr**2>)(from start)      =                1.1165
-precision                      =                0.1089
+<dr**2>/step (from start)      =            0.4033E+00
+precision                      =            0.2580E+00
+sqrt(<dr**2>)(from start)      =                0.6350
+precision                      =                0.1782
 
 orientation order, x'-axis     =                1.0000
 orientation order, y'-axis     =                1.0000
 orientation order, z'-axis     =                1.0000
 
-<ro> (x,y,z)                   =    -3.469-3.385-1.167
+<ro> (x,y,z)                   =    -3.190-3.138-1.457
 <x'> (x,y,z)                   =      1.00  0.00  0.00
 <y'> (x,y,z)                   =      0.00  1.00  0.00
 <z'> (x,y,z)                   =      0.00  0.00  1.00
@@ -640,19 +636,19 @@ orientation order, z'-axis     =                1.0000
 
 quantity                                  average      precision    fluctuation      precision       stat eff
 &&&-----                                  -------      ---------    -----------      ---------       --------
-total potential energy         =       1836.03971        0.00000        0.00000        0.00000             0.
+total potential energy         =       2131.72637        0.00000        0.00000        0.00000             0.
  total two-body energy         =          0.00000        0.00000        0.00000        0.00000             0.
   ion-ion                      =          0.00000        0.00000        0.00000        0.00000             0.
- bond energy                   =          1.41182        0.00000        0.00000        0.00000             0.
- angle energy                  =       1834.62789        0.00000        0.00000        0.00000             0.
-enthalpy                       =       1835.26306        0.00000        0.00000        0.00000             0.
+ bond energy                   =          1.39222        0.00000        0.00000        0.00000             0.
+ angle energy                  =       2130.33415        0.00000        0.00000        0.00000             0.
+enthalpy                       =       2130.94971        0.00000        0.00000        0.00000             0.
 cv                             =          0.00000
 temperature                    =        298.00000        0.00000        0.00000        0.00000             0.
 pressure (excl. cont. contr.)  =         -0.48363        0.00000        0.00000        0.00000             0.
 number of particles            =          3.00000        0.00000        0.00000        0.00000             0.
 volume                         =      8.00000E+03    0.00000E+00    0.00000E+00    0.00000E+00             0.
 
-total potential energy (NkT)   =        741.02205        0.00000
+total potential energy (NkT)   =        860.36061        0.00000
 pressure (NkT/V)(excl. contact)=         -0.31346        0.00000
 pressure (kT) (excl. contact)  =     -1.17546E-04    0.00000E+00
 number density                 =      3.75000E-04    0.00000E+00
@@ -663,25 +659,25 @@ number density                 =      3.75000E-04    0.00000E+00
 
 quantity                                  average       precision   fluctuation      precision       stat eff
 --------                                  -------       ---------   -----------      ---------       --------
-<r(bb)**2>**0.5                =          6.87779        0.00000        0.00000        0.00000             0.
-<r(ee)**2>**0.5                =          8.44111        0.00000        0.00000        0.00000             0.
-<r(g)**2>**0.5                 =          4.29289        0.00000        0.00000        0.00000             0.
+<r(bb)**2>**0.5                =          7.02642        0.00000        0.00000        0.00000             0.
+<r(ee)**2>**0.5                =          7.76037        0.00000        0.00000        0.00000             0.
+<r(g)**2>**0.5                 =          4.20271        0.00000        0.00000        0.00000             0.
 smallest rms mom. p.a.         =          0.00000        0.00000        0.00000        0.00000             0.
-intermediate rms mom. p.a.     =          2.34674        0.00000        0.00000        0.00000             0.
-largest rms mom. p.a.          =          3.59468        0.00000        0.00000        0.00000             0.
-<persist. l.>  (r(ee))         =          6.02884        0.00000        0.00000        0.00000             0.
-<persist. l.>  (r(g))          =        338.94801        0.00000        0.00000        0.00000             0.
-<angle>                        =         75.08209        0.00000        0.00000        0.00000             0.
-<cos(180-angle)>               =         -0.25743        0.00000        0.00000        0.00000             0.
-<r(ee)**2/r(g)**2>             =          3.86633        0.00000        0.00000        0.00000             0.
-<asphericity>                  =          0.37140        0.00000        0.00000        0.00000             0.
+intermediate rms mom. p.a.     =          2.71233        0.00000        0.00000        0.00000             0.
+largest rms mom. p.a.          =          3.21030        0.00000        0.00000        0.00000             0.
+<persist. l.>  (r(ee))         =          5.65596        0.00000        0.00000        0.00000             0.
+<persist. l.>  (r(g))          =        196.68264        0.00000        0.00000        0.00000             0.
+<angle>                        =         66.94247        0.00000        0.00000        0.00000             0.
+<cos(180-angle)>               =         -0.39166        0.00000        0.00000        0.00000             0.
+<r(ee)**2/r(g)**2>             =          3.40963        0.00000        0.00000        0.00000             0.
+<asphericity>                  =          0.27091        0.00000        0.00000        0.00000             0.
 <toroid param>                 =          1.00000        0.00000        0.00000        0.00000             0.
 
-persist. l. (<r(ee)**2>)       =          6.02884
-persist. l. (<r(g)**2>)        =        338.94801
-persist. l. (<cos(180-angle)>) =          5.46970
-<r(ee)**2>/<r(g)**2>           =          3.86633
-asphericity (<2:nd moments>)   =          0.37140
+persist. l. (<r(ee)**2>)       =          5.65596
+persist. l. (<r(g)**2>)        =        196.68264
+persist. l. (<cos(180-angle)>) =          5.04897
+<r(ee)**2>/<r(g)**2>           =          3.40963
+asphericity (<2:nd moments>)   =          0.27091
 
 
 **************************************************************************************************************
@@ -691,12 +687,12 @@ asphericity (<2:nd moments>)   =          0.37140
  
          section         cpu time (s)     fraction
          -------         ------------     --------
-         Coordinate            0.00         0.08 
-         ControlAver           0.00         0.02 
-         MainAver              0.00         0.42 
-         IOMolsim              0.00         0.49 
+         Coordinate            0.00         0.25 
+         ControlAver           0.00         0.06 
+         MainAver              0.00         0.23 
+         IOMolsim              0.00         0.41 
          SetVList              0.00         0.00 
-         MCPass                0.00         0.00 
+         MCPass                0.00         0.06 
           SPartMove            0.00         0.00  
           DUTotal              0.00         0.00  
            DUTwoBody           0.00         0.00   
