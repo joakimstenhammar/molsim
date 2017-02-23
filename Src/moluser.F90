@@ -9927,9 +9927,9 @@
             case (iReadInput)
 
                vtype(1)%l      = .false.
-               vtype(1)%min    = 0.0d0
-               vtype(1)%max    = 1.0d0+epsilon(vtype(1)%max)
-               vtype(1)%nbin   = 100
+               vtype(1)%min    = -0.005d0
+               vtype(1)%max    = 1.005d0+epsilon(vtype(1)%max)
+               vtype(1)%nbin   = 101
 
                rewind(uin)
                read(uin,nmlComplexDist)
@@ -9990,7 +9990,6 @@
                         w = count(any(lcmplx_ipjp( ipnpt(jpt):(ipnpt(jpt) + nppt(jpt) - 1), ipnpt(ipt):(ipnpt(ipt)+nppt(ipt)-1)),DIM=1 ))
                         w=w*var(ivar)%norm
                         ibin = max(-1,min(floor(var(ivar)%bini*(w-var(ivar)%min)),var(ivar)%nbin))
-                        print *, ibin
                         var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)+1.0d0
                      end if
 
@@ -10008,8 +10007,8 @@
                call DistFuncSample(iStage, nvar, var)
                call WriteHead(2, txheading, uout)
                call DistFuncHead(nvar, var, uout)
-               call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
                call DistFuncAverValue(nvar, var, uout)
+               call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
 
             deallocate(var)
 
