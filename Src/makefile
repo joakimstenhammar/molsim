@@ -282,6 +282,7 @@ OBJS1=mol.o           \
       mc.o            \
       bd.o            \
       nlist.o         \
+      celllist.o      \
       energy.o        \
       denergy.o       \
       dump.o          \
@@ -372,6 +373,8 @@ mc.o            : mc.F90        mol.o	nlist.o
 bd.o            : bd.F90      mol.o	md.o
 	$(COMP_SER) $(FLAG_SER) -c bd.F90
 nlist.o         : nlist.F90       mol.o
+	$(COMP_SER) $(FLAG_SER) -c nlist.F90
+celllist.o      : celllist.F90    mol.o
 	$(COMP_SER) $(FLAG_SER) -c nlist.F90
 energy.o        : energy.F90      mol.o	mollib.o
 	$(COMP_SER) $(FLAG_SER) -c energy.F90
