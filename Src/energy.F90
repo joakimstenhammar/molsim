@@ -6549,7 +6549,10 @@ subroutine EwaldSetup
 
    q2sum = sum(az(1:na)**2)/np
    if (q2sum > Zero) then
-      lq2sum = 0                                            ! system contains charges
+      lq2sum = 0                                   ! system contains charges
+   else if (q2sum == Zero .and. lweakcharge) then  ! sytem contains weak charges with laz(1:na) = .false.
+      lq2sum = 0
+      q2sum = tiny(q2sum)                          ! to avoid later division by zero
    else
       q2sum = Zero
       do ipt = 1, npt
