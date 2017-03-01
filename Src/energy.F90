@@ -31,6 +31,14 @@
 !       !             !---------- UEwald
 !       !             !   lrf
 !       !             !---------- UIntraReac
+!       !
+!       !   lweakcharge
+!       !--------------
+!       !             !
+!       !             !--------- UWeakCharge(A/P)
+!       !             !  lewald
+!       !             !--------- UEwald
+!       !
 !       !   ldipole
 !       !--------------
 !       !             !
