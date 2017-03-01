@@ -870,10 +870,10 @@ subroutine UEwaldRecStd
             if (nx == 0 .and. ny == 0 .and. nz == 0) cycle
             kn = kn+1
             do ia = iamyid(1), iamyid(2)
-            sumeikr(kn,1) = sumeikr(kn,1) + az(ia) * conjg(eikx(ia,nx)) * eikyzm(ia)
-            sumeikr(kn,2) = sumeikr(kn,2) + az(ia) * conjg(eikx(ia,nx)) * eikyzp(ia)
-            sumeikr(kn,3) = sumeikr(kn,3) + az(ia) *       eikx(ia,nx)  * eikyzm(ia)
-            sumeikr(kn,4) = sumeikr(kn,4) + az(ia) *       eikx(ia,nx)  * eikyzp(ia)
+               sumeikr(kn,1) = sumeikr(kn,1) + az(ia) * conjg(eikx(ia,nx)) * eikyzm(ia)
+               sumeikr(kn,2) = sumeikr(kn,2) + az(ia) * conjg(eikx(ia,nx)) * eikyzp(ia)
+               sumeikr(kn,3) = sumeikr(kn,3) + az(ia) *       eikx(ia,nx)  * eikyzm(ia)
+               sumeikr(kn,4) = sumeikr(kn,4) + az(ia) *       eikx(ia,nx)  * eikyzp(ia)
             end do
          end do
       end do
