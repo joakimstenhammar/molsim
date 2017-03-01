@@ -1281,6 +1281,8 @@ subroutine Pot_1_6_12(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
          call CalcScrCUfac(r1, scrlen, c0fac, c1fac, c2fac)
       else if (lcharge .and. lewald) then
          call CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
+      else if (lweakcharge .and. lewald) then
+         call CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
       else if (lcharge .and. lrf) then
          call CalcRFUfac(r1, rffac, c0fac, c1fac, c2fac)
       else
