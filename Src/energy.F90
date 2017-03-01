@@ -350,6 +350,8 @@ subroutine UTotal(iStage)
         call UWeakChargeP
       end if
 
+      if (lewald) call UEwald
+
 if (itest == 90) then
       call writehead(3,txroutine, uout)                                     !cc
       write(uout,'(a,100l4)') ' laz',laz(1:na)                              !cc
