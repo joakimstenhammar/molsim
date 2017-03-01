@@ -1474,7 +1474,7 @@ subroutine ThermoAver(iStage)
                                       write(uout,fmt1) var(iutot         )%label, u%tot/np
                                       write(uout,fmt1c)(var(iutwob+iptjpt)%label, u%twob(iptjpt)/np,iptjpt = 0,nptpt)
          if (lcharge .and. lewald)    write(uout,fmt1) var(iurec         )%label, u%rec/np
-         if (lweakcharge .and. lewald) write(uout,fmt1) var(iurec         )%label, u%rec/np   ! Cornelius Hofzumahaus
+         if (lweakcharge .and. lewald) write(uout,fmt1) var(iurec         )%label, u%rec/np
          if (ldipole .or. ldipolesph) write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iupol         )%label, u%pol/np
@@ -1614,6 +1614,7 @@ subroutine ThermoAver(iStage)
          call ThermoAverSub(lmc, fmt1, var(ivar )%label, var(ivar )%avs2, var(ivar )%fls2, ucheck%twob(ivar-iutwob))
          end do
          if (lcharge .and. lewald) call ThermoAverSub(lmc, fmt1, var(iurec)%label, var(iurec)%avs2, var(iurec)%fls2, ucheck%rec)
+         if (lweakcharge .and. lewald) call ThermoAverSub(lmc, fmt1, var(iurec)%label, var(iurec)%avs2, var(iurec)%fls2, ucheck%rec)
          if (ldipole .or. ldipolesph) call ThermoAverSub(lmc, fmt1, var(iustat)%label, var(iustat)%avs2, var(iustat)%fls2, ucheck%stat)
          if (lpolarization) call ThermoAverSub(lmc, fmt1, var(iustat)%label, var(iustat)%avs2, var(iustat)%fls2, ucheck%stat)
          if (lpolarization) call ThermoAverSub(lmc, fmt1, var(iupol )%label, var(iupol )%avs2, var(iupol )%fls2, ucheck%pol )
@@ -1680,6 +1681,7 @@ subroutine ThermoAver(iStage)
                   call TempWrite(ivar   ,fmt2,uout)
          end do
          if (lcharge .and. lewald) call TempWrite(iurec ,fmt2,uout)
+         if (lweakcharge .and. lewald) call TempWrite(iurec ,fmt2,uout)
          if (ldipole .or. ldipolesph) call TempWrite(iustat ,fmt2,uout)
          if (lpolarization) call TempWrite(iustat ,fmt2,uout)
          if (lpolarization) call TempWrite(iupol  ,fmt2,uout)
