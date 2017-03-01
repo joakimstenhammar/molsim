@@ -32,6 +32,18 @@
 !       !             !              !------DUTwoBody(A/ALList/P)Old
 !       !             !  lewald
 !       !             !--------- DUTwoBodyEwald
+!       !
+!       !   lweakcharge
+!       !--------------
+!       !             !
+!       !             !--------- DUTwoBody
+!       !             !              !
+!       !             !              !----- DUWeakCharge(A/P)New
+!       !             !              !
+!       !             !              !------DUWeakCharge(A/P)Old
+!       !             !  lewald
+!       !             !--------- DUWeakChargeEwald
+!       !
 !       !   ldipole
 !       !--------------
 !       !             !
