@@ -1474,6 +1474,7 @@ subroutine ThermoAver(iStage)
                                       write(uout,fmt1) var(iutot         )%label, u%tot/np
                                       write(uout,fmt1c)(var(iutwob+iptjpt)%label, u%twob(iptjpt)/np,iptjpt = 0,nptpt)
          if (lcharge .and. lewald)    write(uout,fmt1) var(iurec         )%label, u%rec/np
+         if (lweakcharge .and. lewald) write(uout,fmt1) var(iurec         )%label, u%rec/np   ! Cornelius Hofzumahaus
          if (ldipole .or. ldipolesph) write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iupol         )%label, u%pol/np
