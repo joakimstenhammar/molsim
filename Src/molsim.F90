@@ -232,7 +232,7 @@ subroutine IOMolsim(iStage)
       if (lradatbox) Call WarnAtomOutsideBox(1, na)
 #if defined (ALARIK_INTEL)
 #else
-     if (np < 10000) call WarnHCOverlap(1, np)
+      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (itest == 1)   call TestSimulation
 
@@ -257,7 +257,7 @@ subroutine IOMolsim(iStage)
       if (lradatbox) Call WarnAtomOutsideBox(1, na)
 #if defined (ALARIK_INTEL)
 #else
-     if (np < 10000) call WarnHCOverlap(1, np)
+      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (master) call FileFlush(uout)
       if (lsim .and. master) call WriteDateTime(6)
