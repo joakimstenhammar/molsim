@@ -2900,6 +2900,7 @@ subroutine DistFunc(iStage)
          if (ltime) call CpuAdd('interrupt', ' ', 0, uout)
          usave = u                   ! save potential energies
          if (lcharge .and. lewald) call UEwald
+         if (lweakcharge .and. lewald) call UEwald
          if (ldipole .and. lewald) call UDipoleEwald
          if (lchain) call UBond
          if (lchain) call UAngle
