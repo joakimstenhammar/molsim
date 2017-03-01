@@ -2114,7 +2114,7 @@ end subroutine ChainAver
 !*                                                                      *
 !************************************************************************
 
-! ... calculate averages of network quantities  
+! ... calculate averages of network quantities
 
 subroutine NetworkAver(iStage)
 
