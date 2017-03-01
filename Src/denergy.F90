@@ -158,6 +158,10 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
          call DUTwoBody(lhsoverlap, UWeakChargePNew, UWeakChargePOld)
       end if
 
+      if (lhsoverlap) goto 400
+
+      if (lewald) call DUWeakChargeEwald
+
 if (itest == 90) then
       call writehead(3,txroutine, uout)                             !cc
       write(uout,'(a,100l4)') 'laz', laz(1:na)                       !cc
