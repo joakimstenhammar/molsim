@@ -1376,7 +1376,7 @@ subroutine DUWeakChargeEwald
    du%rec = EpsiFourPi*du%rec
    du%tot = du%tot + du%rec
 
-   if(time) call CpuAdd('stop', txroutine, 2, uout)
+   if(ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
 
