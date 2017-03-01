@@ -800,7 +800,7 @@ subroutine UEwald
    u%rec          = Zero
    virrec         = Zero
 
-! ... calculate
+! ... calculate long range term of electrostatic energy in reciprocal space
 
    if (txewaldrec == 'std') then
        call UEwaldRecStd
@@ -808,12 +808,19 @@ subroutine UEwald
    else if (txewaldrec == 'spm') then
        call UEwaldRecSPM
    end if
+
    if (itest == 3 .and. master) call TestUEwald(u%rec, force, virrec, One, '(rec)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%rec, force, virrec, One, '(rec)_slave', uout)
+
+! ... calculate self interaction term of electrostatic energy in reciprocal space
    call UEwaldSelf
+
    if (itest == 3 .and. master) call TestUEwald(u%rec, force, virrec, One, '(rec + self)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%rec, force, virrec, One, '(rec + self)_slave', uout)
+
+! ... calculate surface term of electrostatic energy in reciprocal space
    if (lsurf) call  UEwaldSurf
+
    if (itest == 3 .and. master) call TestUEwald(u%rec, force, virrec, One, '(rec + self + sur)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%rec, force, virrec, One, '(rec + self + sur)_slave', uout)
 
@@ -822,6 +829,7 @@ subroutine UEwald
    u%rec = EpsiFourPi*u%rec
    u%tot  = u%tot  + u%rec
    virial = virial + EpsiFourPi*virrec
+
    if (itest == 3 .and. master) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)_slave', uout)
 
