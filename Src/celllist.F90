@@ -4,18 +4,18 @@ implicit none
 private
 public UpdateCellip
 
-type cell_pointer
-   type(cell), pointer  :: p => null()
-end type cell_pointer
+type cell_pointer_array
+   type(cell_type), pointer  :: p => null()
+end type cell_pointer_array
 
 type cell_type
    integer(4)  :: id       ! fore easy recognition
    integer(4)  :: npart
-   type(cell_pointer), pointer  :: neighcell(27)
+   type(cell_pointer_array) :: neighcell(27)
    integer(4), allocatable :: ip(:)
 end type cell_type
 
-type(cell_pointer)  :: cellip(:) !cell of each particle
+type(cell_pointer_array), allocatable  :: cellip(:) !cell of each particle
 integer(4)  :: ncell(3)                !number of cells in x y z in each octant
 real(8)     :: rcell                   !edge length of each cell
 real(8)     :: ircell                  !inverse edge length of each cell
@@ -27,11 +27,12 @@ subroutine InitCellList(rcut, iStage)
 
    use MolModule, only: ltrace, ltime, uout
    use MolModule, only: lbcbox, boxlen2
+   use MolModule, only: np
 
    real(8), intent(in)  :: rcut
    integer(4), intent(in)  :: iStage
    character(40), parameter :: txroutine ='InitCellList'
-   integer(4)  :: ix, iy, iz, jx, jy, jy, neigh(3), ineigh, id
+   integer(4)  :: ix, iy, iz, jx, jy, jz, neigh(3), ineigh, id
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -81,7 +82,7 @@ subroutine InitCellList(rcut, iStage)
          do iz = -ncell(3), ncell(3) -1
 
             id = id + 1
-            cel(ix,iy,iz)%id = id
+            cell(ix,iy,iz)%id = id
             !allocate cell
             allocate(cell(ix,iz,iy)%ip(np))
             cell(ix,iy,iz)%npart = 0
@@ -91,7 +92,7 @@ subroutine InitCellList(rcut, iStage)
             do jx = -1, 1
                do jy = -1, 1
                   do jz = -1, 1
-                     neigh(1:3) = (/ ix + jx, iy + jy , iz + jz \)
+                     neigh(1:3) = (/ ix + jx, iy + jy , iz + jz /)
                      where (neigh .ge. ncell)
                         neigh = -ncell
                      elsewhere (neigh < -ncell)
@@ -111,7 +112,8 @@ subroutine InitCellList(rcut, iStage)
 
 end subroutine InitCellList
 
-pure, function pcellro(ro), result(icell)
+pure function pcellro(ro) result(icell)
+   implicit none
    real(8), intent(in)  :: ro(3)
    type(cell_type), pointer :: icell
    integer(4)  :: i(3)
@@ -120,16 +122,16 @@ pure, function pcellro(ro), result(icell)
    icell => cell(i(1), i(2), i(3))
 end function pcellro
 
-subroutine addiptocell(ip, icell)
+subroutine addiptocellp(ip, icell)
    implicit none
    integer(4), intent(in)  :: ip
-   type(cell_type), intent(inout) :: icell
+   type(cell_type), target, intent(inout) :: icell
 
    icell%npart = icell%npart + 1
-   icell%ip(call%npart) = ip
-   icellip(ip)%p => icell
+   icell%ip(icell%npart) = ip
+   cellip(ip)%p => icell
 
-end subroutine addiptocell
+end subroutine addiptocellp
 
 subroutine RmIpFromCell(ip, icell)
    implicit none
@@ -145,19 +147,20 @@ subroutine RmIpFromCell(ip, icell)
 end subroutine RmIpFromCell
 
 subroutine UpdateCellip(ip)
-   implicit none
    use MolModule, only: ro
+   implicit none
    integer(4), intent(in)  :: ip
    type(cell_type), pointer :: cellold
    type(cell_type), pointer :: cellnew
 
-   cellold = cellip(ip)%p
-   cellnew = pcellro(ro(1:3,ip))
+   cellold => cellip(ip)%p
+   cellnew => pcellro(ro(1:3,ip))
 
    if(cellold%id .ne. cellnew%id) then !do not update cell if cell has not changed
       call RmIpFromCell(ip, cellold)
-      call AddIpToCell(ip, cellnew)
+      call AddIpToCellp(ip, cellnew)
    end if
+end subroutine UpdateCellip
 
 subroutine SetCellList
 
@@ -166,9 +169,9 @@ subroutine SetCellList
 
    integer(4)  :: ip
 
-   cell(:)%npart = 0
+   cell(:,:,:)%npart = 0
    do ip = 1, np
-      call AddiptoCell(ip, pcellro(ip)%p)
+      call AddiptoCellp(ip, pcellro(ro(1:3,ip)))
    end do
 
 end subroutine SetCellList
