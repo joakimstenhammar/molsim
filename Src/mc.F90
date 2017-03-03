@@ -1315,7 +1315,7 @@ subroutine SPartMove(iStage, loptsso)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -1518,7 +1518,7 @@ subroutine SPartCl2Move(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -1757,7 +1757,7 @@ subroutine PivotMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2209,7 +2209,7 @@ subroutine ChainMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2388,7 +2388,7 @@ subroutine SlitherMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2524,7 +2524,7 @@ subroutine BrushMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2726,7 +2726,7 @@ subroutine BrushCl2Move(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2838,7 +2838,7 @@ subroutine HierarchicalMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2924,7 +2924,7 @@ subroutine NetworkMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      aztm(1:natm) = az(ianatm(1:natm))
+      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
