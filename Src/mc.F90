@@ -4854,15 +4854,16 @@ subroutine MCUpdate
 
    integer(4) :: ip, iploc
 
-                              u%tot            = u%tot            + du%tot
-                              u%twob(0:nptpt)  = u%twob(0:nptpt)  + du%twob(0:nptpt)
-   if (lcharge .and. lewald)  u%rec            = u%rec            + du%rec
-   if (ldipole .or. ldipolesph) u%stat           = u%stat           + du%stat
-   if (ldieldis)              u%oneb           = u%oneb           + du%oneb
-   if (lchain)                u%bond           = u%bond           + du%bond
-   if (lchain)                u%angle          = u%angle          + du%angle
-   if (lclink)                u%crosslink      = u%crosslink      + du%crosslink
-   if (luext)                 u%external       = u%external       + du%external
+                                 u%tot            = u%tot            + du%tot
+                                 u%twob(0:nptpt)  = u%twob(0:nptpt)  + du%twob(0:nptpt)
+   if (lcharge .and. lewald)     u%rec            = u%rec            + du%rec
+   if (lweakcharge .and. lewald) u%rec            = u%rec            + du%rec
+   if (ldipole .or. ldipolesph)  u%stat           = u%stat           + du%stat
+   if (ldieldis)                 u%oneb           = u%oneb           + du%oneb
+   if (lchain)                   u%bond           = u%bond           + du%bond
+   if (lchain)                   u%angle          = u%angle          + du%angle
+   if (lclink)                   u%crosslink      = u%crosslink      + du%crosslink
+   if (luext)                    u%external       = u%external       + du%external
 
    if (lewald) call EwaldUpdateArray
    if (luext)  call UExternalUpdate(iptmove)
