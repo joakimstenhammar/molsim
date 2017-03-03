@@ -2835,7 +2835,12 @@ subroutine HierarchicalMove(iStage)
 
    call SetTrialAtomProp
    if (lradatbox) call CheckAtomBCTM(natm, rtm, lboxoverlap)
-   if (lweakcharge) laztm(1:natm) = laz(ianatm(1:natm))
+
+   if (lweakcharge) then
+      laztm(1:natm) = laz(ianatm(1:natm))
+      aztm(1:natm) = az(ianatm(1:natm))
+   end if
+
    if (itestmc == 2) call TestMCMove(uout)
 
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
