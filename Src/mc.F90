@@ -698,7 +698,7 @@ subroutine IOMC(iStage)
             lzero = .true.
             do iatloc = 1, natpt(ipt)
                iat = iat +1
-               if ((latweakcharge(iat) .eqv. .true.) .and. (naatpt(iatloc,ipt) > 0)) lzero = .false.  ! at least one weak charge
+               if (latweakcharge(iat) .and. (naatpt(iatloc,ipt) > 0)) lzero = .false.  ! at least one weak charge
             end do
             if (lzero) pcharge(ipt) = Zero
          end do
@@ -802,7 +802,7 @@ subroutine IOMC(iStage)
       if (lpbrushcl2) call Stop(txroutine, 'pbrushcl2(ipt) > 0 .and. _PAR_ not supported', uout)
       !if (lphierarchical) call Stop(txroutine, 'phierarchical(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpnetwork) call Stop(txroutine, 'pnetwork(ipt) > 0 .and. _PAR_ not supported', uout)
-      if (lpcharge) call Stop(txroutine, 'pcharge(ipt) > 0 .and. _PAR_ not supported', uout)
+      !if (lpcharge) call Stop(txroutine, 'pcharge(ipt) > 0 .and. _PAR_ not supported', uout)
 #endif
 
       if (master) then
