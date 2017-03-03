@@ -612,7 +612,7 @@ subroutine IOMC(iStage)
 
       pcharge         = Zero
 
-      pspartsso       = Zero   ! Pascal Hebbeker
+      pspartsso       = Zero
 
       radcl1          = Zero
       pselectcl1      = One
