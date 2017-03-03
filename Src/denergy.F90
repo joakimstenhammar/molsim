@@ -1387,7 +1387,7 @@ subroutine DUWeakChargeEwaldRecStd
    character(40), parameter :: txroutine ='DUWeakChargeEwaldRecStd'
    integer(4) :: kn, nx, ny, nz, ia, ialoc, ikvec2
    real(8)    :: term, termnew, termold
-   real(8)    :: kx, ky, kp, sinhkpztm, coshkpztm, sinhkpz, coshkpz, termi
+   !real(8)    :: kx, ky, kp, sinhkpztm, coshkpztm, sinhkpz, coshkpz, termi
 
    if(ltime) call CpuAdd('start', txroutine, 3, uout)
 
