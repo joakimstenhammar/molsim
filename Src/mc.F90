@@ -3352,6 +3352,17 @@ subroutine ChargeChange(iStage)
 
    laztm(1:natm) =.not.laz(ianatm(1:natm))  ! get trial charge states
 
+   if (lewald) then
+      do ialoc = 1, natm
+         ia = ianatm(ialoc)
+         if (laztm(ialoc)) then
+            aztm(ialoc) = zat(iatan(ia))
+         else
+            aztm(ialoc) = Zero
+         end if
+      end do
+   end if
+
 if (itest == 90) then
    call writehead(3, txroutine, uout)
    write(uout,'(a,2i5)') 'ipnapm(iploc)', (ipnptm(1:nptm))
@@ -3397,7 +3408,9 @@ end if
       call MCUpdate       ! update energies and coordinates
       do ialoc = 1, natm
          laz(ianatm(ialoc)) = laztm(ialoc)    ! update charge status
+         if (lewald) az(ianatm(ialoc)) = aztm(ialoc) ! update atom charge
       end do
+      !if (lewald) call EwaldSetup    ! I don't think this is needed, even though the number of charges changes
    end if
 
 if (itest == 90) then
