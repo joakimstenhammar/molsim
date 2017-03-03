@@ -809,158 +809,158 @@ subroutine IOMC(iStage)
 
 ! ... check if drnlist is sufficiently large (not complete)
 
-      drnlist = Getdrnlist()
-      if (lvlist) then
-         if (lpspart) then
-            if (count(lcl1spart(1:npt)) == 0) then
-               if (maxval(dtran(1:npt)/2) > drnlist) call Warn(txroutine, 'maxval(dtran(1:npt)/2) > drnlist', uout)
-            else
-               if (maxval(dtran(1:npt)/2+radcl1(1:npt)) > drnlist) &
-                  call Warn(txroutine, 'maxval(dtran(1:npt)/2+radcl1(1:npt)) > drnlist', uout)
-            end if       !!! above ?? !!
+         drnlist = Getdrnlist()
+         if (lvlist) then
+            if (lpspart) then
+               if (count(lcl1spart(1:npt)) == 0) then
+                  if (maxval(dtran(1:npt)/2) > drnlist) call Warn(txroutine, 'maxval(dtran(1:npt)/2) > drnlist', uout)
+               else
+                  if (maxval(dtran(1:npt)/2+radcl1(1:npt)) > drnlist) &
+                     call Warn(txroutine, 'maxval(dtran(1:npt)/2+radcl1(1:npt)) > drnlist', uout)
+               end if       !!! above ?? !!
+            end if
+            if (lpspartcl2     .and. count(dtrancl2(1:npt)/2+radcl2(1:npt) > drnlist) > 0) &
+                                         call Warn(txroutine, 'dtrancl2(ipt)/2+radcl2(ipt) > drnlist', uout)
+            if (lpchain        .and. count(dtranchain(1:npt)/2 > drnlist) > 0) &
+                                         call Warn(txroutine, 'dtranchain(ipt)/2 > drnlist', uout)
+            if (lpbrush        .and. count(dtranbrush(1:npt)/2 > drnlist) > 0) &
+                                         call Warn(txroutine, 'dtranbrush(ipt)/2 > drnlist', uout)
+            if (lpbrushcl2     .and. count(dtranbrushcl2(1:npt)/2+radcl1(1:npt) > drnlist) > 0) &
+                                         call Warn(txroutine, 'dtranbrushcl2(ipt)/2+radcl1(ipt) > drnlist', uout)
+            if (lphierarchical .and. count(dtranhierarchical(1:npt)/2 > drnlist) > 0) &
+                                         call Warn(txroutine, 'dtranhierarchical(ipt)/2 > drnlist', uout)
+            if (lpnetwork      .and. count(dtrannetwork(1:npt)/2 > drnlist) > 0) &
+                                         call Warn(txroutine, 'dtrannetwork(ipt)/2 > drnlist', uout)
          end if
-         if (lpspartcl2     .and. count(dtrancl2(1:npt)/2+radcl2(1:npt) > drnlist) > 0) &
-                                      call Warn(txroutine, 'dtrancl2(ipt)/2+radcl2(ipt) > drnlist', uout)
-         if (lpchain        .and. count(dtranchain(1:npt)/2 > drnlist) > 0) &
-                                      call Warn(txroutine, 'dtranchain(ipt)/2 > drnlist', uout)
-         if (lpbrush        .and. count(dtranbrush(1:npt)/2 > drnlist) > 0) &
-                                      call Warn(txroutine, 'dtranbrush(ipt)/2 > drnlist', uout)
-         if (lpbrushcl2     .and. count(dtranbrushcl2(1:npt)/2+radcl1(1:npt) > drnlist) > 0) &
-                                      call Warn(txroutine, 'dtranbrushcl2(ipt)/2+radcl1(ipt) > drnlist', uout)
-         if (lphierarchical .and. count(dtranhierarchical(1:npt)/2 > drnlist) > 0) &
-                                      call Warn(txroutine, 'dtranhierarchical(ipt)/2 > drnlist', uout)
-         if (lpnetwork      .and. count(dtrannetwork(1:npt)/2 > drnlist) > 0) &
-                                      call Warn(txroutine, 'dtrannetwork(ipt)/2 > drnlist', uout)
-      end if
 
-      call WriteHead(2, 'mc data', uout)
-      if (lmcsep) write(uout,'(a)') 'separating move types (lmcsep)'
-      if (isamp == 0) write(uout,'(a)') 'uniform sampling, sequence'
-      if (isamp == 1) write(uout,'(a)') 'uniform sampling, random'
-      if (dtran(1) < 0) write(uout,'(a)') 'spherical displacement area'
-      if (dtran(1) > 0) write(uout,'(a)') 'cubic displacement volume'
-      write(uout,'()')
-      if (lpspart) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ispartmove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pspart(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtran(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drot(1:npt)/sclang
-         if (count(lcl1spart(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1spart(1:npt)
-         if (count(lfixzcoord(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' fixed z-coordinate           =', lfixzcoord(1:npt)
-         if (count(lfixxycoord(1:npt)) > 0)write(uout,'(a,t40,6(l10,5x))') ' fixed xy-coordinates         =', lfixxycoord(1:npt)
-         if (count(lshiftzcom(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' z_com = 0 if possible        =', lshiftzcom(1:npt)
-         if (lfixchainstartspart) write(uout,'(a)') ' no displacement of first chain particle'
-         if (ispart > 0) write(uout,'(a,t35,i10)') 'ispart                         = ', ispart
+         call WriteHead(2, 'mc data', uout)
+         if (lmcsep) write(uout,'(a)') 'separating move types (lmcsep)'
+         if (isamp == 0) write(uout,'(a)') 'uniform sampling, sequence'
+         if (isamp == 1) write(uout,'(a)') 'uniform sampling, random'
+         if (dtran(1) < 0) write(uout,'(a)') 'spherical displacement area'
+         if (dtran(1) > 0) write(uout,'(a)') 'cubic displacement volume'
          write(uout,'()')
-      end if
-      if (lpspartcl2) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ispartcl2move), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pspartcl2(1:npt)
-         write(uout,'(a,t40,6(a10  ,5x))') 'selction of cluster members    = ', txmembcl2(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') ' radius of secondary cluster   = ', radcl2(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtrancl2(1:npt)
-         if (count(lfixzcoord(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' fixed z-coordinate           =', lfixzcoord(1:npt)
-         if (count(lfixxycoord(1:npt)) > 0)write(uout,'(a,t40,6(l10,5x))') ' fixed xy-coordinates         =', lfixxycoord(1:npt)
-         write(uout,'()')
-      end if
-      if (lppivot) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ipivotmove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', ppivot(1:npt)
-         if (txdualpivot /= 'nodual') write(uout,'(a,t40,6(a10  ,5x))') 'dual pivot move                = ', txdualpivot
-         write(uout,'(a,t40,6(a10  ,5x))') 'subchain to be rotated         = ', txpivot(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotpivot(1:npt)/sclang
-         write(uout,'(a,t40,6(f10.3,5x))') 'auxillary displacement param.  = ', drotminpivot(1:npt)/sclang
-         write(uout,'(a,t35,i6)')          'pivot rotation mode            = ', ipivotrotmode
-         if (count(lcl1pivot(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1pivot(1:npt)
-         write(uout,'()')
-      end if
-      if (lpchain) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ichainmove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pchain(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranchain(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotchain(1:npt)/sclang
-         if (count(lcl1chain(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1chain(1:npt)
-         write(uout,'()')
-      end if
-      if (lpslither) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(islithermove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pslither(1:npt)
-         write(uout,'()')
-      end if
-      if (lpbrush) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ibrushmove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pbrush(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranbrush(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotbrush(1:npt)/sclang
-         if (count(lcl1brush(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1brush(1:npt)
-         if (count(lshiftzcom(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' z_com = 0 if possible        =', lshiftzcom(1:npt)
-         write(uout,'()')
-      end if
-      if (lpbrushcl2) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ibrushcl2move), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pbrushcl2(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranbrushcl2(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotbrushcl2(1:npt)*RadToDeg
-         write(uout,'()')
-      end if
-      if (lphierarchical) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ihierarchicalmove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', phierarchical(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranhierarchical(1:npt)
-         write(uout,'()')
-      end if
-      if (lpnetwork) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(inetworkmove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pnetwork(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtrannetwork(1:npt)
-         write(uout,'()')
-      end if
-      if (lpvol) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ivolumemove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pvol(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') 'maximum volume change          = ', dvol
-         write(uout,'()')
-      end if
-      if (lpnpart) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(inpartmove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pnpart(1:npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'chemical potential             = ', chempot(1:npt)
-         write(uout,'()')
-      end if
-      if (lpcharge) then
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ichargemove), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pcharge(1:npt)
-         write(uout,'()')
-      end if
-      if (lpspartsso) then   ! Pascal Hebbeker
-         write(uout,'(a,t35,6(5x,a))') txmovetype(ispartsso), txpt(1:npt)
-         write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
-         write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pspartsso(1:npt)
-         write(uout,'()')
-      end if
-      if ((count(lcl1spart(1:npt))>0) .or. lpspartcl2 .or.                      &
-         (count(lcl1pivot(1:npt))>0) .or.                                      &
-         (count(lcl1chain(1:npt))>0) .or.                                      &
-         (count(lcl1brush(1:npt))>0) .or. lpbrushcl2) then
-         write(uout,'()')
-         write(uout,'(a,t35,6(f10.3,5x))') ' radius of primary cluster     = ', radcl1(1:npt)
-         write(uout,'(a,t40,6(f10.3,5x))') ' particle selection prob.      = ', pselectcl1(1:npt)
-      end if
+         if (lpspart) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ispartmove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pspart(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtran(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drot(1:npt)/sclang
+            if (count(lcl1spart(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1spart(1:npt)
+            if (count(lfixzcoord(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' fixed z-coordinate           =', lfixzcoord(1:npt)
+            if (count(lfixxycoord(1:npt)) > 0)write(uout,'(a,t40,6(l10,5x))') ' fixed xy-coordinates         =', lfixxycoord(1:npt)
+            if (count(lshiftzcom(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' z_com = 0 if possible        =', lshiftzcom(1:npt)
+            if (lfixchainstartspart) write(uout,'(a)') ' no displacement of first chain particle'
+            if (ispart > 0) write(uout,'(a,t35,i10)') 'ispart                         = ', ispart
+            write(uout,'()')
+         end if
+         if (lpspartcl2) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ispartcl2move), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pspartcl2(1:npt)
+            write(uout,'(a,t40,6(a10  ,5x))') 'selction of cluster members    = ', txmembcl2(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') ' radius of secondary cluster   = ', radcl2(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtrancl2(1:npt)
+            if (count(lfixzcoord(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' fixed z-coordinate           =', lfixzcoord(1:npt)
+            if (count(lfixxycoord(1:npt)) > 0)write(uout,'(a,t40,6(l10,5x))') ' fixed xy-coordinates         =', lfixxycoord(1:npt)
+            write(uout,'()')
+         end if
+         if (lppivot) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ipivotmove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', ppivot(1:npt)
+            if (txdualpivot /= 'nodual') write(uout,'(a,t40,6(a10  ,5x))') 'dual pivot move                = ', txdualpivot
+            write(uout,'(a,t40,6(a10  ,5x))') 'subchain to be rotated         = ', txpivot(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotpivot(1:npt)/sclang
+            write(uout,'(a,t40,6(f10.3,5x))') 'auxillary displacement param.  = ', drotminpivot(1:npt)/sclang
+            write(uout,'(a,t35,i6)')          'pivot rotation mode            = ', ipivotrotmode
+            if (count(lcl1pivot(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1pivot(1:npt)
+            write(uout,'()')
+         end if
+         if (lpchain) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ichainmove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pchain(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranchain(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotchain(1:npt)/sclang
+            if (count(lcl1chain(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1chain(1:npt)
+            write(uout,'()')
+         end if
+         if (lpslither) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(islithermove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pslither(1:npt)
+            write(uout,'()')
+         end if
+         if (lpbrush) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ibrushmove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pbrush(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranbrush(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotbrush(1:npt)/sclang
+            if (count(lcl1brush(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' cluster1 move                 =', lcl1brush(1:npt)
+            if (count(lshiftzcom(1:npt)) > 0) write(uout,'(a,t40,6(l10,5x))') ' z_com = 0 if possible        =', lshiftzcom(1:npt)
+            write(uout,'()')
+         end if
+         if (lpbrushcl2) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ibrushcl2move), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pbrushcl2(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranbrushcl2(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'rot. displacement parameter    = ', drotbrushcl2(1:npt)*RadToDeg
+            write(uout,'()')
+         end if
+         if (lphierarchical) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ihierarchicalmove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', phierarchical(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtranhierarchical(1:npt)
+            write(uout,'()')
+         end if
+         if (lpnetwork) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(inetworkmove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pnetwork(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'tran. displacement parameter   = ', dtrannetwork(1:npt)
+            write(uout,'()')
+         end if
+         if (lpvol) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ivolumemove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pvol(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') 'maximum volume change          = ', dvol
+            write(uout,'()')
+         end if
+         if (lpnpart) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(inpartmove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pnpart(1:npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'chemical potential             = ', chempot(1:npt)
+            write(uout,'()')
+         end if
+         if (lpcharge) then
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ichargemove), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pcharge(1:npt)
+            write(uout,'()')
+         end if
+         if (lpspartsso) then   ! Pascal Hebbeker
+            write(uout,'(a,t35,6(5x,a))') txmovetype(ispartsso), txpt(1:npt)
+            write(uout,'(a,t35,6(5x,a))') '-------------------', ('----------',ipt = 1,npt)
+            write(uout,'(a,t35,6(f10.3,5x))') 'probability                    = ', pspartsso(1:npt)
+            write(uout,'()')
+         end if
+         if ((count(lcl1spart(1:npt))>0) .or. lpspartcl2 .or.                      &
+            (count(lcl1pivot(1:npt))>0) .or.                                      &
+            (count(lcl1chain(1:npt))>0) .or.                                      &
+            (count(lcl1brush(1:npt))>0) .or. lpbrushcl2) then
+            write(uout,'()')
+            write(uout,'(a,t35,6(f10.3,5x))') ' radius of primary cluster     = ', radcl1(1:npt)
+            write(uout,'(a,t40,6(f10.3,5x))') ' particle selection prob.      = ', pselectcl1(1:npt)
+         end if
 
-      if (lmcweight) write(uout, '(a)') 'apply weighting function based on the position of two particles'
-      if (lautumb) write(uout,'(a)') 'generate umbrella potential with automatic update procedure'
+         if (lmcweight) write(uout, '(a)') 'apply weighting function based on the position of two particles'
+         if (lautumb) write(uout,'(a)') 'generate umbrella potential with automatic update procedure'
 
       end if
 
