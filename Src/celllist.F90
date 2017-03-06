@@ -167,62 +167,70 @@ end subroutine UpdateCellip
 
 subroutine SetCellList
 
-   use MolModule, only: np
+   use MolModule, only: np, ro
    implicit none
 
    integer(4)  :: ip
-   type(cell_type), pointer :: icell
+   type(cell_type), pointer :: celltmp
 
    cell(:,:,:)%npart = 0
    do ip = 1, np
-      icell => pcellro(ro(1:3,ip))
-      call AddiptoCell(ip, icell)
+      celltmp => pcellro(ro(1:3,ip))
+      call AddiptoCell(ip, celltmp)
    end do
 
 end subroutine SetCellList
 
 subroutine CellListAver(iStage)
 
-   use MolModule, only: np, uout
+   use MolModule, only: uout
+   use MolModule, only: np
+   use MolModule, only: master, nstep1
+   use MolModule, only: iWriteInput, iAfterMacrostep, iAfterSimulation
    implicit none
    integer(4), intent(in) :: iStage
    character(80), parameter :: txheading ='cell list statistics'
    real(8), save    :: nppp(4)         ! number of particles per processor
    real(8), save    :: nneigh(4)       ! number of neigbours per particle and processor
-   type(cell_type), pointer   :: icell
-   integer(4)  :: ip
+   type(cell_type), pointer   :: tmpcell
+   integer(4)  :: ip, icell
+   real(8)     :: nneighip
 
 
    if (master) then
       select case (iStage)
       case (iWriteInput)
 
-         nppp(1:2)    = Zero
-         nppp(3)    =+huge(One)
-         nppp(4)    =-huge(One)
-         nneigh(1:2)  = Zero
-         nneigh(3)  =+huge(One)
-         nneigh(4)  =-huge(One)
+         nppp(1:2)    = 0.0d0
+         nppp(3)    =+huge(1.0d0)
+         nppp(4)    =-huge(1.0d0)
+         nneigh(1:2)  = 0.0d0
+         nneigh(3)  =+huge(1.0d0)
+         nneigh(4)  =-huge(1.0d0)
 
       case (iAfterMacrostep)
 
          nppp(1) = nppp(1) + sum(cell(:,:,:)%npart)
          nppp(2) = nppp(2) + sum(cell(:,:,:)%npart**2)
-         nppp(3) = min(nppp(3), minval(cell(:,:,:)%npart))
-         nppp(4) = max(nppp(4), maxval(cell(:,:,:)%npart))
+         nppp(3) = min(nppp(3), real(minval(cell(:,:,:)%npart)))
+         nppp(4) = max(nppp(4), real(maxval(cell(:,:,:)%npart)))
 
          do ip=1, np
-            icell => cellip(ip)
-            nneigh(1) = nneigh(1) + sum(icell%neighcell(1:27)%p%npart) - 1
-            nneigh(2) = nneigh(2) + (sum(icell%neighcell(1:27)%p%npart) - 1)**2
-            nneigh(3) = min(nneigh(3), sum(icell%neighcell(1:27)%p%npart) - 1)
-            nneigh(4) = max(nneigh(4), sum(icell%neighcell(1:27)%p%npart) - 1)
+            nneighip = -1.0d0 !do not count the particle itself as a neighbour
+            do icell = 1, 27
+               tmpcell => cellip(ip)%p%neighcell(icell)%p
+               nneighip = nneighip + tmpcell%npart
+            end do
+            nneigh(1) = nneigh(1) + nneighip
+            nneigh(2) = nneigh(2) + nneighip**2
+            nneigh(3) = min(nneigh(3), nneighip)
+            nneigh(4) = max(nneigh(4), nneighip)
          end do
 
       case (iAfterSimulation)
 
-         nppp(1)   = nppp(1)/(nstep1*8*product(ncell(1:3))
-         nppp(2)   = sqrt(nppp(2)/(nstep1*8*product(ncell(1:3))-nppp(1)**2)
+         nppp(1)   = nppp(1)/(nstep1*8*product(ncell(1:3)))
+         nppp(2)   = sqrt(nppp(2)/(nstep1*8*product(ncell(1:3)))-nppp(1)**2)
          nneigh(1) = nneigh(1)/(nstep1*np)
          nneigh(2) = sqrt(nneigh(2)/(nstep1*np)-nneigh(1)**2)
 
@@ -238,4 +246,7 @@ subroutine CellListAver(iStage)
          write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'maximum', nppp(4), nneigh(4)
 
       end select
-end module CellList
+   end if
+
+   end subroutine CellListAver
+end module CellListModule
