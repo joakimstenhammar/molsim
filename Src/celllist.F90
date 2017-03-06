@@ -1,4 +1,4 @@
-module CellList
+module CellListModule
 
 implicit none
 private
@@ -15,17 +15,18 @@ type cell_type
    integer(4), allocatable :: ip(:)
 end type cell_type
 
+type(cell_type), target, allocatable  :: cell(:,:,:)    !cells
 type(cell_pointer_array), allocatable  :: cellip(:) !cell of each particle
 integer(4)  :: ncell(3)                !number of cells in x y z in each octant
 real(8)     :: rcell                   !edge length of each cell
 real(8)     :: ircell                  !inverse edge length of each cell
-type(cell_type), target, allocatable  :: cell(:,:,:)    !cells
 
 contains
 
 subroutine InitCellList(rcut, iStage)
 
    use MolModule, only: ltrace, ltime, uout
+   ! TODO(pascal): incorporate lbcbox
    use MolModule, only: lbcbox, boxlen2
    use MolModule, only: np
 
@@ -84,7 +85,7 @@ subroutine InitCellList(rcut, iStage)
             id = id + 1
             cell(ix,iy,iz)%id = id
             !allocate cell
-            allocate(cell(ix,iz,iy)%ip(np))
+            allocate(cell(ix,iy,iz)%ip(np))
             cell(ix,iy,iz)%npart = 0
 
             !make pointers to neighbouring cells
@@ -99,7 +100,7 @@ subroutine InitCellList(rcut, iStage)
                         neigh = ncell - 1
                      end where
                      ineigh = ineigh + 1
-                     cell(ix,iz,iy)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
+                     cell(ix,iy,iz)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
                   end do
                end do
             end do
@@ -118,11 +119,11 @@ pure function pcellro(ro) result(icell)
    type(cell_type), pointer :: icell
    integer(4)  :: i(3)
 
-   i = min(ncell,floor(ro*ircell))
+   i = min(ncell-1,floor(ro*ircell))
    icell => cell(i(1), i(2), i(3))
 end function pcellro
 
-subroutine addiptocellp(ip, icell)
+subroutine AddIpToCell(ip, icell)
    implicit none
    integer(4), intent(in)  :: ip
    type(cell_type), target, intent(inout) :: icell
@@ -131,7 +132,7 @@ subroutine addiptocellp(ip, icell)
    icell%ip(icell%npart) = ip
    cellip(ip)%p => icell
 
-end subroutine addiptocellp
+end subroutine AddIpToCell
 
 subroutine RmIpFromCell(ip, icell)
    implicit none
@@ -158,7 +159,7 @@ subroutine UpdateCellip(ip)
 
    if(cellold%id .ne. cellnew%id) then !do not update cell if cell has not changed
       call RmIpFromCell(ip, cellold)
-      call AddIpToCellp(ip, cellnew)
+      call AddIpToCell(ip, cellnew)
    end if
 end subroutine UpdateCellip
 
@@ -168,10 +169,12 @@ subroutine SetCellList
    implicit none
 
    integer(4)  :: ip
+   type(cell_type), pointer :: icell
 
    cell(:,:,:)%npart = 0
    do ip = 1, np
-      call AddiptoCellp(ip, pcellro(ro(1:3,ip)))
+      icell => pcellro(ro(1:3,ip))
+      call AddiptoCell(ip, icell)
    end do
 
 end subroutine SetCellList
