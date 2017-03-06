@@ -375,7 +375,7 @@ bd.o            : bd.F90      mol.o	md.o
 nlist.o         : nlist.F90       mol.o
 	$(COMP_SER) $(FLAG_SER) -c nlist.F90
 celllist.o      : celllist.F90    mol.o
-	$(COMP_SER) $(FLAG_SER) -c nlist.F90
+	$(COMP_SER) $(FLAG_SER) -c celllist.F90
 energy.o        : energy.F90      mol.o	mollib.o
 	$(COMP_SER) $(FLAG_SER) -c energy.F90
 denergy.o       : denergy.F90     mol.o	energy.o	mollib.o
