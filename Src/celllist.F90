@@ -187,10 +187,8 @@ subroutine CellListAver(iStage)
    implicit none
    integer(4), intent(in) :: iStage
    character(80), parameter :: txheading ='cell list statistics'
-   integer(4), save :: ncall           ! sum of number of calls of SetVList
    real(8), save    :: nppp(4)         ! number of particles per processor
    real(8), save    :: nneigh(4)       ! number of neigbours per particle and processor
-   real(8)    :: nneightmp(4)
    type(cell_type), pointer   :: icell
    integer(4)  :: ip
 
@@ -199,13 +197,10 @@ subroutine CellListAver(iStage)
       select case (iStage)
       case (iWriteInput)
 
-         ncall      = 1         ! 1 for the initial call before the simulation
-         nppp(1)    = Zero
-         nppp(2)    = Zero
+         nppp(1:2)    = Zero
          nppp(3)    =+huge(One)
          nppp(4)    =-huge(One)
-         nneigh(1)  = Zero
-         nneigh(2)  = Zero
+         nneigh(1:2)  = Zero
          nneigh(3)  =+huge(One)
          nneigh(4)  =-huge(One)
 
@@ -216,22 +211,13 @@ subroutine CellListAver(iStage)
          nppp(3) = min(nppp(3), minval(cell(:,:,:)%npart))
          nppp(4) = max(nppp(4), maxval(cell(:,:,:)%npart))
 
-         nneightmp(1)  = Zero
-         nneightmp(2)  = Zero
-         nneightmp(3)  =+huge(One)
-         nneightmp(4)  =-huge(One)
-
          do ip=1, np
             icell => cellip(ip)
-            nneightmp(1) = nneightmp(1) + sum(icell%neighcell(1:27)%p%npart) - 1
-            nneightmp(2) = nneightmp(2) + (sum(icell%neighcell(1:27)%p%npart) - 1)**2
-            nneightmp(3) = min(nneightmp(3), sum(icell%neighcell(1:27)%p%npart) - 1)
-            nneightmp(4) = max(nneightmp(4), sum(icell%neighcell(1:27)%p%npart) - 1)
+            nneigh(1) = nneigh(1) + sum(icell%neighcell(1:27)%p%npart) - 1
+            nneigh(2) = nneigh(2) + (sum(icell%neighcell(1:27)%p%npart) - 1)**2
+            nneigh(3) = min(nneigh(3), sum(icell%neighcell(1:27)%p%npart) - 1)
+            nneigh(4) = max(nneigh(4), sum(icell%neighcell(1:27)%p%npart) - 1)
          end do
-
-         nneigh(1:2) = nneigh(1:2) + nneightmp(1:2)
-         nneigh(3) = min(nneigh(3),nneightmp(3))
-         nneigh(4) = max(nneigh(4),nneightmp(4))
 
       case (iAfterSimulation)
 
