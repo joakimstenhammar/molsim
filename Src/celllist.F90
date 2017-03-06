@@ -26,7 +26,6 @@ contains
 subroutine InitCellList(rcut, iStage)
 
    use MolModule, only: ltrace, ltime, uout
-   ! TODO(pascal): incorporate lbcbox
    use MolModule, only: lbcbox, boxlen2
    use MolModule, only: np
 
@@ -40,6 +39,9 @@ subroutine InitCellList(rcut, iStage)
 
    if(rcut .le. 0.0d0) then
       call Stop(txroutine, 'rcut .le. 0.0', uout)
+   end if
+   if(.not. lbcbox) then
+      call Stop(txroutine, 'celllist needs cubic box (lbcbox should be true)', uout)
    end if
    ncell(1:3) = ceiling(boxlen2(1:3)/rcut)
    rcell = rcut
@@ -179,13 +181,75 @@ subroutine SetCellList
 
 end subroutine SetCellList
 
+subroutine CellListAver(iStage)
+
+   use MolModule, only: np, uout
+   implicit none
+   integer(4), intent(in) :: iStage
+   character(80), parameter :: txheading ='cell list statistics'
+   integer(4), save :: ncall           ! sum of number of calls of SetVList
+   real(8), save    :: nppp(4)         ! number of particles per processor
+   real(8), save    :: nneigh(4)       ! number of neigbours per particle and processor
+   real(8)    :: nneightmp(4)
+   type(cell_type), pointer   :: icell
+   integer(4)  :: ip
 
 
-!needed:
-      !call SetVList
-      !call VListAver(iStage)
-         !if (lllist) call UTwoBodyALList
-            !call SetLList(rcut+drnlist)
-            !call LListAver(iStage)
-!       !             !              !----- DUTwoBody(A/ALList/P)New
+   if (master) then
+      select case (iStage)
+      case (iWriteInput)
+
+         ncall      = 1         ! 1 for the initial call before the simulation
+         nppp(1)    = Zero
+         nppp(2)    = Zero
+         nppp(3)    =+huge(One)
+         nppp(4)    =-huge(One)
+         nneigh(1)  = Zero
+         nneigh(2)  = Zero
+         nneigh(3)  =+huge(One)
+         nneigh(4)  =-huge(One)
+
+      case (iAfterMacrostep)
+
+         nppp(1) = nppp(1) + sum(cell(:,:,:)%npart)
+         nppp(2) = nppp(2) + sum(cell(:,:,:)%npart**2)
+         nppp(3) = min(nppp(3), minval(cell(:,:,:)%npart))
+         nppp(4) = max(nppp(4), maxval(cell(:,:,:)%npart))
+
+         nneightmp(1)  = Zero
+         nneightmp(2)  = Zero
+         nneightmp(3)  =+huge(One)
+         nneightmp(4)  =-huge(One)
+
+         do ip=1, np
+            icell => cellip(ip)
+            nneightmp(1) = nneightmp(1) + sum(icell%neighcell(1:27)%p%npart) - 1
+            nneightmp(2) = nneightmp(2) + (sum(icell%neighcell(1:27)%p%npart) - 1)**2
+            nneightmp(3) = min(nneightmp(3), sum(icell%neighcell(1:27)%p%npart) - 1)
+            nneightmp(4) = max(nneightmp(4), sum(icell%neighcell(1:27)%p%npart) - 1)
+         end do
+
+         nneigh(1:2) = nneigh(1:2) + nneightmp(1:2)
+         nneigh(3) = min(nneigh(3),nneightmp(3))
+         nneigh(4) = max(nneigh(4),nneightmp(4))
+
+      case (iAfterSimulation)
+
+         nppp(1)   = nppp(1)/(nstep1*8*product(ncell(1:3))
+         nppp(2)   = sqrt(nppp(2)/(nstep1*8*product(ncell(1:3))-nppp(1)**2)
+         nneigh(1) = nneigh(1)/(nstep1*np)
+         nneigh(2) = sqrt(nneigh(2)/(nstep1*np)-nneigh(1)**2)
+
+         call WriteHead(2, txheading, uout)
+         write(uout,'()')
+         write(uout,'(t12,a,t34,a)') &
+         'no of part per cell', 'no of neighbours per part'
+         write(uout,'(t12,a,t34,a)') &
+         '-------------------', '----------------------------------'
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'average', nppp(1), nneigh(1)
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'one sd ', nppp(2), nneigh(2)
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'minimum', nppp(3), nneigh(3)
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'maximum', nppp(4), nneigh(4)
+
+      end select
 end module CellList
