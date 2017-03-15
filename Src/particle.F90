@@ -652,7 +652,7 @@ subroutine SetObjectParam1
 
 ! ... check consistence among nnwnwt and ncct
 
-   if(lnetwork) then
+   if(nnwt > 0) then
       do ict = 1, nct
          nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
          if (.not.((nctemp == 0).or.(nctemp == ncct(ict)))) then
