@@ -23,7 +23,7 @@ subroutine IOPotFlexLJ(iStage)
    integer  :: ipt, jpt, ptpt
    integer  :: io
 
-   namelist /nmlLennardJones/ epsilonLJ, sigmaLJ
+   namelist /nmlFlexLJ/ epsilonLJ, sigmaLJ
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -40,7 +40,7 @@ subroutine IOPotFlexLJ(iStage)
 
       !reading the input variables
       rewind(uin)
-      read(uin,nmlPotential, iostat=io)
+      read(uin,nmlFlexLJ, iostat=io)
       if(io .ne. 0) then
             !print Warning when the namelist is not given
             call Warn(txroutine ,'nmlLennardJones is not given in input file. Using default values.', uout)
