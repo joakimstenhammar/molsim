@@ -242,7 +242,7 @@ subroutine Particle(iStage)
 ! ... check condition
 
       if (lweakcharge .and. lnetwork .and. lpolyatom) then
-         call Stop(txroutine,'(lweakcharge .and. lnetwork) not adapted for monoatomic systems',uout)
+         call Stop(txroutine,'(lweakcharge .and. lnetwork) not adapted for polyatomic systems',uout)
       end if
 
 ! ... allocate memory
