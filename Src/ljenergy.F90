@@ -5,9 +5,37 @@ module FlexLJEnergyModule
 implicit none
 private
 public IOPotFlexLJ
+public UFlexLJ
 
    real(8)  , allocatable  :: 4eps(:,:)
    real(8)  , allocatable  :: sig2(:,:)
+
+contains
+
+pure function uLJ(r2, ipt, jpt) result(energy)
+   real(8), intent(in)  :: r2
+   integer(4), intent(in)  :: ipt
+   integer(4), intent(in)  :: jpt
+   real(8)  :: energy
+   real(8)  :: invr6
+
+   invr6 = (sig2(ipt,jpt)/r2)**3
+   energy = 4eps(ipt,jpt)*(invr6**2 - invr6)
+
+end function uLJ
+
+pure function fLJ(r2, ipt, jpt) result(force)
+   real(8), intent(in)  :: r2
+   integer(4), intent(in)  :: ipt
+   integer(4), intent(in)  :: jpt
+   real(8)  :: energy
+   real(8)  :: invr6, invr1
+
+   invr6 = (sig2(ipt,jpt)/r2)**3
+   invr1 = -6.0d0/sqrt(r2)
+   force = 4eps(ipt,jpt)*(Two*invr6**2-invr6)*invr1
+
+end function fLJ
 
 subroutine IOPotFlexLJ(iStage)
 
@@ -81,109 +109,80 @@ subroutine IOPotFlexLJ(iStage)
 
 end subroutine IOPotFlexLJ
 
+subroutine UFlexLJ(utwob, utot, force, virial)
+   use MolModule, only lclist
+   use MolModule, only lmonoatom
 
-!subroutine ULJNewA(lhsoverlap,jp)
+   real(8), allocatable, intent(inout)  :: utwob(:)
+   real(8), intent(inout)               :: utot
+   real(8), allocatable, intent(inout)  :: force(:,:)
+   real(8), intent(inout)               :: virial
 
-   !!use EnergyModule, only:
-   !!use MolModule, only: uout
-   !!use MolModule, only: lmonoatom
-   !implicit none
-
-   !logical,    intent(out) :: lhsoverlap
-   !integer(4), intent(out) :: jp
-
-   !real(8)  :: dr(3), r2
-
-!!  todo (pascal): have it checked in potential routine
-   !!if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
-   !!if (any(zat(1:npt)).ne. 0.0d0) txpot=='(1,6,12)'
-
-!!   write(uout,*) txroutine
-
-   !utwobnew(0:nptpt) = Zero
-   !lhsoverlap =.true.
-
-   !do iploc = 1, nptm
-      !ip = ipnptm(iploc)
-      !ipt = iptpn(ip)
-!!      write(uout,'(a,i5,3f10.5)') 'ip,rotm(1:3,iploc)',ip, rotm(1:3,iploc)
-
-      !do jploc = 1, nneighpn(ip) !using standard neighbor list
-         !jp = jpnlist(jploc,ip)
-         !if (lptm(jp)) cycle ! do not calculate interactions where both particles moves
-         !jpt = iptpn(jp)
-         !iptjpt = iptpt(ipt,jpt)
-         !dr(1:3) = rotm(1:3,iploc) - ro(1:3,jp)
-         !call PBCr2(dr(1), dr(2), dr(3) ,r2)
-         !if (lellipsoid) Then
-            !if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),radellipsoid2,aellipsoid)) goto 400
-         !end if
-         !if (lsuperball) Then
-            !if (SuperballOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp))) goto 400
-         !end if
-         !if (r2 > rcut2) cycle
-         !if (r2 < r2atat(iptjpt)) goto 400
-
-         !if (r2 < r2umin(iptjpt)) goto 400       ! outside lower end
-         !ibuf = iubuflow(iptjpt)
-         !do
-            !if (r2 >= ubuf(ibuf)) exit
-            !ibuf = ibuf+12
-         !end do
-         !d = r2-ubuf(ibuf)
-         !usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
-                           !d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
-
-         !utwobnew(iptjpt) = utwobnew(iptjpt) + usum
-!!         write(uout,'(a,i5,6f10.5)') 'jp,ro(1:3,jp), r2, usum, utwobnew(iptjpt)',jp, ro(1:3,jp), r2, usum, utwobnew(iptjpt)
-      !end do
-   !end do
-
-!! ... contribution from pairs where both particles are displaced
-
-   !if (lptmdutwob) then      ! not adapted for _PAR_ !!
-      !do iploc = 1, nptm
-         !ip = ipnptm(iploc)
-         !ipt = iptpn(ip)
-         !do jploc = iploc+1, nptm
-            !jp = ipnptm(jploc)
-            !jpt = iptpn(jp)
-            !iptjpt = iptpt(ipt,jpt)
-            !dx = rotm(1,iploc)-rotm(1,jploc)
-            !dy = rotm(2,iploc)-rotm(2,jploc)
-            !dz = rotm(3,iploc)-rotm(3,jploc)
-            !call PBCr2(dx,dy,dz,r2)
-            !if (lellipsoid) Then
-                !if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),oritm(1,1,jploc),radellipsoid2,aellipsoid)) goto 400
-            !end if
-            !if (lsuperball) Then
-               !if (SuperballOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),oritm(1,1,jploc))) goto 400
-            !end if
-            !if (r2 > rcut2) cycle
-            !if (r2 < r2atat(iptjpt)) goto 400
-
-            !if (r2 < r2umin(iptjpt)) goto 400       ! outside lower end
-            !ibuf = iubuflow(iptjpt)
-            !do
-               !if (r2 >= ubuf(ibuf)) exit
-               !ibuf = ibuf+12
-            !end do
-            !d = r2-ubuf(ibuf)
-            !usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
-                              !d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
-
-            !utwobnew(iptjpt) = utwobnew(iptjpt) + usum
-         !end do
-      !end do
+   !if(lclist) then
+      !if(lmonoatom) then
+         !call UFlexLJCellMono(utwob, utot, force, virial)
+      !else
+         !call UFlexLJCellPoly(utwob, utot, force, virial)
+      !end if
+   !else
+      !if(lmonoatom) then
+         call UFlexLJMono(utwob, utot, force, virial)
+      !else
+         !call UFlexLJPoly(utwob, utot, force, virial)
+      !end if
    !end if
+end subroutine
 
-   !utwobnew(0) = sum(utwobnew(1:nptpt))
-   !du%twob(0:nptpt) = du%twob(0:nptpt) + utwobnew(0:nptpt)
-   !lhsoverlap =.false.
+subroutine UFlexLJMono(utwob, utot, force, virial)
 
-  !400 continue
+   use MolModule, only: np, iptpn, iptpt, nptpt
+   use MolModule, only: myid
+   use MolModule, only: ro
+   use MolModule, only: jpnlist
+   real(8), allocatable, intent(inout)  :: utwob(:)
+   real(8), intent(inout)               :: utot
+   real(8), allocatable, intent(inout)  :: force(:,:)
+   real(8), intent(inout)               :: virial
 
-!end subroutine ULJNew
-!subroutine UTwoBodyAOld
+   integer(4)  :: ip, jp, iptjpt, iploc, jploc
+   real(8)  :: dr(3), r2
+   real(8)  :: uloc, floc, virtwob
+
+   virtwob         = 0.0d0
+   do iploc = 1, Getnpmyid() !get particles from nlist
+      ip = ipnploc(iploc)
+      ipt = iptpn(ip)
+      do jploc = 1, nneighpn(iploc)
+         jp = jpnlist(jploc,iploc)
+         if (lmc) then
+            if (jp < ip) cycle
+         end if
+         jpt = iptpn(jp)
+         iptjpt = iptpt(ipt,jpt)
+
+         dr = ro(1:3,ip)-ro(1:3,jp)
+         call PBCr2(dr(1), dr(2), dr(3),r2)
+         if (r2 > rcut2) cycle
+         if (r2 < r2umin(iptjpt)) call StopUTwoBodyA
+         if (r2 < r2atat(iptjpt)) then
+            uloc = 1d10                ! emulate hs overlap
+         else
+            uloc = uLJ(r2, ipt, jpt)
+            floc = fLJ(r2, ipt, jpt)
+         end if
+
+         utwob(iptjpt) = utwob(iptjpt) + uloc
+         force(1:3,ip) = force(1:3,ip) + floc*dr(1:3)
+         force(1:3,jp) = force(1:3,jp) + floc*dr(1:3)
+         virial     = virial     - (floc * r2)
+      end do
+   end do
+
+   utwob(0) = sum(utwob(1:nptpt))
+   utot     = utot + utwob(0)
+
+end subroutine UFlexLJMono
+
+
 
 end module flexLJEnergyModule

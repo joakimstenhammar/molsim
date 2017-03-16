@@ -368,6 +368,10 @@ end if
 
    end if
 
+   if(lflexLJ) then
+      call UFlexLJ(u%twob,u%tot, force, virial)
+   end if
+
    if (lchain) call UBond
    if (lchain) call UAngle
    if (lclink) call UCrossLink

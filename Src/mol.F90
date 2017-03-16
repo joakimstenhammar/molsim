@@ -614,6 +614,7 @@ module MolModule
    logical   , allocatable :: lcellllist(:)! list of cells to be used for a position (local)
    integer(4), allocatable :: headllist(:) ! head of the linked list
    integer(4), allocatable :: jpllist(:)   ! linked list
+   logical                 :: lclist       ! flag for cell lists
 
 ! ... two-body potential and its lookup table
 
