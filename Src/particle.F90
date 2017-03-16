@@ -212,6 +212,8 @@ subroutine Particle(iStage)
          if (txelec(7:11) == 'image') laimage = .true.
       else if (txelec == 'dieldis') then
          ldieldis =.true.
+      else if (txelec == 'flexlj') then
+         lflexLJ =.true.
       else
          call Stop(txroutine, 'error in txelec', uout)
       end if
