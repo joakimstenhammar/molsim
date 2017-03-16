@@ -327,11 +327,6 @@ subroutine IOPotTwoBody(iStage)
 ! ... IO for flexLJ Potential
       if(lflexLJ) then
          call IOPotFlexLJ(iStage)   ! IO
-         if(any(trim(txpot) .ne. "default")) then  !some other potentials were used
-            call Stop(txroutine, 'lfexLJ and any other potential is not allowed', uout)
-         end if
-         txpot = "LJFlex"           ! Do not set any other potentials
-         exit                       ! Do not do any other IO
       end if
 
 ! ... prepare for ewald summation (rcut might be changed)
@@ -375,7 +370,6 @@ subroutine IOPotTwoBody(iStage)
 ! ... flexible LJ potential
       if(lflexLJ) then
          call IOPotFlexLJ(iStage)
-         exit                       !Do not do any other IO
       end if
 
 ! ... check conditions
@@ -841,8 +835,6 @@ subroutine PotTwoBodyTab1(lwrite)
                call PotTwoBodyTab2(ipt, jpt, ibuf, lsetatat, AsakuraOosawa)
             else if (txpot(iptjpt) == 'lekkerkerker-tuinier') then
                call PotTwoBodyTab2(ipt, jpt, ibuf, lsetatat, LekkerkerkerTuinier)
-            else if (lflexLJ) then
-               continue ! flexible LJ potential does not use a tabulated Potential
             else
                call PotentialUser(ipt, jpt, ibuf, lsetatat, lsetconf)
             end if
