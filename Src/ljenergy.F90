@@ -109,6 +109,17 @@ subroutine IOPotFlexLJ(iStage)
 
 end subroutine IOPotFlexLJ
 
+subroutine PointNeighs(n, neighs, ip)
+   use MolModule, only lclist
+   use MolModule, only lmonoatom
+   integer(4), intent(out)  :: n
+   integer(4), intent(out)  :: n
+   real(8), intent(inout)               :: utot
+   real(8), allocatable, intent(inout)  :: force(:,:)
+end subroutine PointNeighs
+
+end subroutine GetNeighs
+
 subroutine UFlexLJ(utwob, utot, force, virial)
    use MolModule, only lclist
    use MolModule, only lmonoatom
@@ -146,9 +157,10 @@ subroutine UFlexLJMono(utwob, utot, force, virial)
 
    integer(4)  :: ip, jp, iptjpt, iploc, jploc
    real(8)  :: dr(3), r2
-   real(8)  :: uloc, floc, virtwob
+   real(8)  :: uloc, floc, virtwob, dutot
 
    virtwob         = 0.0d0
+   dutot = utwob(0)
    do iploc = 1, Getnpmyid() !get particles from nlist
       ip = ipnploc(iploc)
       ipt = iptpn(ip)
@@ -179,9 +191,124 @@ subroutine UFlexLJMono(utwob, utot, force, virial)
    end do
 
    utwob(0) = sum(utwob(1:nptpt))
-   utot     = utot + utwob(0)
+   utot     = utot + utwob(0) - dutot
 
 end subroutine UFlexLJMono
+
+subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
+   use MolModule, only lclist
+   use MolModule, only lmonoatom
+
+   real(8), allocatable, intent(inout)  :: dutwob(:)
+   logical, intent(inout)               :: lhsoverlap
+   real(8)  :: dutwbold
+
+   lhsoverlap =.true.
+   dutwbold = dutwob(0)
+   !if(lclist) then
+      !if(lmonoatom) then
+         !call UFlexLJCellMono(utwob, utot, force, virial)
+      !else
+         !call UFlexLJCellPoly(utwob, utot, force, virial)
+      !end if
+   !else
+      !if(lmonoatom) then
+         call DUFlexLJMono(dutwob, lhsoverlap)
+      !else
+         !call UFlexLJPoly(utwob, utot, force, virial)
+      !end if
+   !end if
+
+   dutwob(0) = sum(dutwob(1:nptpt))
+   dutot = dutot + dutwob(0) - dutwbold
+end subroutine
+
+subroutine DUFlexLJMono(dutwob, lhsoverlap)
+
+   use MolModule, only: np, iptpn, iptpt, nptpt
+   use MolModule, only: ro
+   use MolModule, only: jpnlist, nptm, lptm, lptmdutwob
+   use MolModule, only: nproc
+   real(8), allocatable, intent(inout)  :: dutwob(:)
+   real(8), intent(inout)               :: utot
+   real(8), allocatable, intent(inout)  :: force(:,:)
+   real(8), intent(inout)               :: virial
+
+   integer(4)  :: ip, jp, iptjpt, iploc, jploc
+   real(8)  :: dr(3), r2
+   real(8)  :: uloc
+
+   do iploc = 1, nptm
+      ip = ipnptm(iploc)
+      ipt = iptpn(ip)
+      do jploc = 1, nneighpn(ip)
+         jp = jpnlist(jploc,ip)
+         if (lptm(jp)) cycle
+         jpt = iptpn(jp)
+         iptjpt = iptpt(ipt,jpt)
+         dr = ro(1:3,ip)-ro(1:3,jp)
+         call PBCr2(dr(1), dr(2), dr(3),r2)
+         if (r2 > rcut2) cycle
+         if (r2 < r2umin(iptjpt)) return
+         if (r2 < r2atat(iptjpt)) return
+         uloc = uLJ(r2, ipt, jpt)
+         dutwob(iptjpt) = dutwob(iptjpt) + uloc
+      end do
+   end do
+
+! ... contribution from pairs where both particles are displaced
+
+   if (lptmdutwob) then
+      do iploc = 1, nptm
+         ip = ipnptm(iploc)
+         ipt = iptpn(ip)
+         do jploc = iploc+1, nptm, nproc
+            jp = ipnptm(jploc)
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr = ro(1:3,ip)-ro(1:3,jp)
+            call PBCr2(dr(1), dr(2), dr(3),r2)
+            if (r2 > rcut2) cycle
+            if (r2 < r2umin(iptjpt)) return
+            if (r2 < r2atat(iptjpt)) return
+            uloc = uLJ(r2, ipt, jpt)
+            dutwob(iptjpt) = dutwob(iptjpt) + uloc
+         end do
+      end do
+   end if
+
+   lhsoverlap =.false.
+   virtwob         = 0.0d0
+   do iploc = 1, Getnpmyid() !get particles from nlist
+      ip = ipnploc(iploc)
+      ipt = iptpn(ip)
+      do jploc = 1, nneighpn(iploc)
+         jp = jpnlist(jploc,iploc)
+         if (lmc) then
+            if (jp < ip) cycle
+         end if
+         jpt = iptpn(jp)
+         iptjpt = iptpt(ipt,jpt)
+
+         dr = ro(1:3,ip)-ro(1:3,jp)
+         call PBCr2(dr(1), dr(2), dr(3),r2)
+         if (r2 > rcut2) cycle
+         if (r2 < r2umin(iptjpt)) call StopUTwoBodyA
+         if (r2 < r2atat(iptjpt)) then
+            uloc = 1d10                ! emulate hs overlap
+         else
+            uloc = uLJ(r2, ipt, jpt)
+            floc = fLJ(r2, ipt, jpt)
+         end if
+
+         utwob(iptjpt) = utwob(iptjpt) + uloc
+         force(1:3,ip) = force(1:3,ip) + floc*dr(1:3)
+         force(1:3,jp) = force(1:3,jp) + floc*dr(1:3)
+         virial     = virial     - (floc * r2)
+      end do
+   end do
+
+end subroutine DUFlexLJMono
 
 
 

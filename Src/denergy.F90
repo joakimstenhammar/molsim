@@ -171,6 +171,10 @@ end if
 
    end if
 
+   if(lflexLJ) then
+      call DUFlexLJ(du%twob,du%tot,lhsoverlap)
+   end if
+
    if (lchain) call DUBond
    if (lchain) call DUAngle
    if (lclink) call DUCrossLink
