@@ -283,6 +283,7 @@ OBJS1=mol.o           \
       bd.o            \
       nlist.o         \
       celllist.o      \
+      ljenergy.o      \
       energy.o        \
       denergy.o       \
       dump.o          \
@@ -362,7 +363,7 @@ moldyn.o        : moldyn.F90	statistics.o
 	$(COMP_SER) $(FLAG_SER) -c moldyn.F90
 particle.o      : particle.F90    mol.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c particle.F90
-potential.o     : potential.F90   mol.o
+potential.o     : potential.F90   mol.o ljenergy.o
 	$(COMP_SER) $(FLAG_SER) -c potential.F90
 coordinate.o    : coordinate.F90  mol.o
 	$(COMP_SER) $(FLAG_SER) -c coordinate.F90
@@ -376,6 +377,8 @@ nlist.o         : nlist.F90       mol.o
 	$(COMP_SER) $(FLAG_SER) -c nlist.F90
 celllist.o      : celllist.F90    mol.o
 	$(COMP_SER) $(FLAG_SER) -c celllist.F90
+ljenergy.o      : ljenergy.F90    mol.o
+	$(COMP_SER) $(FLAG_SER) -c ljenergy.F90
 energy.o        : energy.F90      mol.o	mollib.o
 	$(COMP_SER) $(FLAG_SER) -c energy.F90
 denergy.o       : denergy.F90     mol.o	energy.o	mollib.o

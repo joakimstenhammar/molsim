@@ -173,6 +173,7 @@ end subroutine PotentialDriver
 subroutine IOPotTwoBody(iStage)
 
    use PotentialModule
+   use flexLJEnergyModule, only: IOPotFlexLJ
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -200,7 +201,7 @@ subroutine IOPotTwoBody(iStage)
                            lsuperball, radsuperball, qsuperball, txmethodsuperball, nitersuperball, tolsuperball, meshdepthsuperball, &
                            dl_damp, dl_cut, dr_damp, dr_cut, lstatsuperball,        &
                            luext,                                                   &
-                           lmonoatom, itestpot
+                           lmonoatom, itestpot, lflexLJ
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -271,6 +272,8 @@ subroutine IOPotTwoBody(iStage)
 
       itestpot       = 0
 
+      lflexLJ        = .false.
+
 ! ... consistence with earlier versions
 
       radimg = Zero
@@ -321,6 +324,16 @@ subroutine IOPotTwoBody(iStage)
 
       cyllen2 = half*cyllen
 
+! ... IO for flexLJ Potential
+      if(lflexLJ) then
+         call IOPotFlexLJ(iStage)   ! IO
+         if(any(trim(txpot) .ne. "default")) then  !some other potentials were used
+            call Stop(txroutine, 'lfexLJ and any other potential is not allowed', uout)
+         end if
+         txpot = "LJFlex"           ! Do not set any other potentials
+         exit                       ! Do not do any other IO
+      end if
+
 ! ... prepare for ewald summation (rcut might be changed)
 
       if (lewald) call EwaldSetup
@@ -358,6 +371,12 @@ subroutine IOPotTwoBody(iStage)
       end if
 
    case (iWriteInput)
+
+! ... flexible LJ potential
+      if(lflexLJ) then
+         call IOPotFlexLJ(iStage)
+         exit                       !Do not do any other IO
+      end if
 
 ! ... check conditions
 
@@ -822,6 +841,8 @@ subroutine PotTwoBodyTab1(lwrite)
                call PotTwoBodyTab2(ipt, jpt, ibuf, lsetatat, AsakuraOosawa)
             else if (txpot(iptjpt) == 'lekkerkerker-tuinier') then
                call PotTwoBodyTab2(ipt, jpt, ibuf, lsetatat, LekkerkerkerTuinier)
+            else if (lflexLJ) then
+               continue ! flexible LJ potential does not use a tabulated Potential
             else
                call PotentialUser(ipt, jpt, ibuf, lsetatat, lsetconf)
             end if
