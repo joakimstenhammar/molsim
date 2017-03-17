@@ -17,6 +17,7 @@ subroutine IOPotFlexLJ(iStage)
    use MolModule, only: natat, txatat
    use MolModule, only: uin, uout, ltrace, master
    use MolModule, only: iWriteInput, iReadInput
+   use MolModule, only: lmonoatom
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -59,6 +60,11 @@ subroutine IOPotFlexLJ(iStage)
 
       foureps = 4.0d0*epsilonLJ
       sig2 = sigmaLJ**2
+
+      !todo(pascal): implement the calculation of polyatomic particles
+      if(.not. lmonoatom) then
+         call Stop(txroutine, 'flexLJ does not support particles with more than one atom', uout)
+      end if
 
       if (master) then
 
@@ -155,9 +161,9 @@ end subroutine uLJdr
 
 
 subroutine UFlexLJ(utwob, utot, force, virial)
-   !todo(pascal)  : add lclist
+   !todo(pascal)  : add lclist and lmonoatom
+   !use MolModule, only: lmonoatom
    !use MolModule, only: lclist
-   use MolModule, only: lmonoatom
    use MolModule, only: nptpt
    implicit none
 
@@ -169,17 +175,11 @@ subroutine UFlexLJ(utwob, utot, force, virial)
 
    dutotold = utwob(0)
    !if(lclist) then
-      !if(lmonoatom) then
          !call UFlexLJCellMono(utwob, utot, force, virial)
-      !else
-         !call UFlexLJCellPoly(utwob, utot, force, virial)
-      !end if
+         !call UFlexLJCellPoly(utwob, utot, force, virial) !not implemented yet
    !else
-      if(lmonoatom) then
          call UFlexLJMono(utwob, force, virial)
-      else
-         call UFlexLJPoly(utwob, force, virial)
-      end if
+         !call UFlexLJPoly(utwob, force, virial)
    !end if
    utwob(0) = sum(utwob(1:nptpt))
    utot = utot + utwob(0) - dutotold
@@ -250,6 +250,44 @@ subroutine UFlexLJMono(utwob, force, virial)
 
 end subroutine UFlexLJMono
 
+subroutine UFlexLJMonoCell(utwob, force, virial)
+
+   use MolModule, only: ro, iptpn, iptpt
+   use MolModule, only: lmc, myid, nproc
+   use CellListModule, only: pcellro, cell, nneighcell, cell_type, cell_pointer_array
+   implicit none
+   real(8), allocatable, intent(inout)  :: utwob(:)
+   real(8), allocatable, intent(inout)  :: force(:,:)
+   real(8), intent(inout)               :: virial
+
+   integer(4)  :: ip, jp, ipt, jpt, iptjpt, jploc
+   real(8)  :: dr(3)
+   logical  :: loverlap
+   type(cell_type), pointer   :: icell, ncell
+   integer(4)  :: incell
+
+   do ip = 1, np !get particles from nlist
+      ipt = iptpn(ip)
+      icell => pcellro(ro(1:3,ip))
+      do incell = 1+myid, nneighcell, nproc ! increment with nproc to have parallel execution
+         ncell => icell%ncell(incell)%p
+         do jploc = 1, ncell%npart
+            jp = ncell%ip(jploc)
+            if (lmc) then
+               if (jp < ip) cycle
+            end if
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr = ro(1:3,ip)-ro(1:3,jp)
+            call PBC(dr(1), dr(2), dr(3))
+            call ufvLJdr(dr, iptjpt, utwob(iptjpt), force(1:3,ip), force(1:3,jp), virial, loverlap)
+            if(loverlap)   call StopUFlexLJ(ip, jp, ro(1:3,ip), ro(1:3,jp), iptjpt, dr(1:3))
+         end do
+      end do
+   end do
+
+end subroutine UFlexLJMono
+
 subroutine UFlexLJPoly(utwob, force, virial) ! not used yet, as the calculation of DU is not adapted for polyatomic particles
 
    use MolModule, only: ro, iptpn, iptpt
@@ -300,9 +338,9 @@ subroutine UFlexLJPoly(utwob, force, virial) ! not used yet, as the calculation 
 end subroutine UFlexLJPoly
 
 subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
-   !todo(pascal)  : add lclist
+   !todo(pascal)  : add lclist and lmonoatom
    !use MolModule, only: lclist
-   use MolModule, only: lmonoatom
+   !use MolModule, only: lmonoatom
    use MolModule, only: nptpt
 
    implicit none
@@ -318,14 +356,14 @@ subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
       !if(lmonoatom) then
          !call UFlexLJCellMono(utwob, utot, force, virial)
       !else
-         !call UFlexLJCellPoly(utwob, utot, force, virial)
+         !call UFlexLJCellPoly(utwob, utot, force, virial) !not implemented yet
       !end if
    !else
-      if(lmonoatom) then
+      !if(lmonoatom) then
          call DUFlexLJMono(dutwob, lhsoverlap)
-      else
-         call UFlexLJPoly(utwob, utot, force, virial)
-      end if
+      !else
+         !call UFlexLJPoly(utwob, utot, force, virial) !not implemented yet
+      !end if
    !end if
 
    dutwob(0) = sum(dutwob(1:nptpt))
@@ -337,7 +375,7 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
    use MolModule, only: ro, rotm, iptpn, iptpt, rcut2
    use MolModule, only: jpnlist, nneighpn
    use MolModule, only: ipnptm, nptm, lptm, lptmdutwob
-   use MolModule, only: nproc
+   use MolModule, only: nproc, myid
    implicit none
    real(8), allocatable, intent(inout)  :: dutwob(:)
    logical, intent(inout)               :: lhsoverlap
@@ -370,7 +408,7 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
       do iploc = 1, nptm
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
-         do jploc = iploc+1, nptm, nproc ! increment with nproc for parallel simulations
+         do jploc = iploc+1+myid, nptm, nproc ! increment with nproc for parallel simulations
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
@@ -410,7 +448,112 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
       do iploc = 1, nptm
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
-         do jploc = iploc+1, nptm, nproc ! increment with nproc for parallel simulations
+         do jploc = iploc+1+myid, nptm, nproc ! increment with nproc for parallel simulations
+            jp = ipnptm(jploc)
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
+            call PBCr2(dr(1), dr(2), dr(3), r2)
+            !as the old configuration should be free of overlaps one can skip the checks
+            if(r2 < rcut2) then
+               dutwob(iptjpt) = dutwob(iptjpt) - uLJ(r2,iptjpt)
+            end if
+         end do
+      end do
+   end if
+
+end subroutine DUFlexLJMono
+
+subroutine DUFlexLJMono(dutwob, lhsoverlap)
+
+   use MolModule, only: ro, rotm, iptpn, iptpt, rcut2
+   use MolModule, only: ipnptm, nptm, lptm, lptmdutwob
+   use MolModule, only: nproc, myid
+   use CellListModule, only: pcellro, cell, nneighcell, cell_type, cell_pointer_array
+   implicit none
+   real(8), allocatable, intent(inout)  :: dutwob(:)
+   logical, intent(inout)               :: lhsoverlap
+
+   integer(4)  :: ip, jp, ipt, jpt, iptjpt, iploc, jploc
+   real(8)  :: dr(3), r2
+   type(cell_type), pointer   :: icell, ncell
+   integer(4)  :: incell
+
+! do first new then old energy as, overlaps will ocure in the new energy, and then the old energy is not needed
+! ----------------- NEW ENERGY ------------
+
+! ... contribution from pairs where only one particle is moved
+   do iploc = 1, nptm
+      ip = ipnptm(iploc)
+      ipt = iptpn(ip)
+      icell => pcellro(rotm(1:3,iploc))
+      do incell = 1+myid, nneighcell, nproc ! increment with nproc to have parallel execution
+         ncell => icell%ncell(incell)%p
+         do jploc = 1, ncell%npart
+            jp = ncell%ip(jploc)
+            if (lptm(jp)) cycle
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr(1:3) = rotm(1:3,iploc)-ro(1:3,jp)
+            call PBC(dr(1), dr(2), dr(3))
+            call uLJdr(dr, iptjpt, dutwob(iptjpt), lhsoverlap)
+            if(lhsoverlap) return
+         end do
+      end do
+   end do
+
+! ... contribution from pairs where both particle is moved
+
+   if (lptmdutwob) then
+      do iploc = 1, nptm
+         ip = ipnptm(iploc)
+         ipt = iptpn(ip)
+         do jploc = iploc+1+myid, nptm, nproc ! increment with nproc for parallel simulations
+            jp = ipnptm(jploc)
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr(1:3) = rotm(1:3,iploc)-rotm(1:3,jploc)
+            call PBC(dr(1), dr(2), dr(3))
+            call uLJdr(dr, iptjpt, dutwob(iptjpt), lhsoverlap)
+            if(lhsoverlap) return
+         end do
+      end do
+   end if
+
+   lhsoverlap =.false.
+
+! ----------------- OLD ENERGY ------------
+
+! ... contribution from pairs where only one particle is moved
+   do iploc = 1, nptm
+      ip = ipnptm(iploc)
+      ipt = iptpn(ip)
+      icell => pcellro(rotm(1:3,iploc))
+      do incell = 1+myid, nneighcell, nproc ! increment with nproc to have parallel execution
+         ncell => icell%ncell(incell)%p
+         do jploc = 1, ncell%npart
+            jp = ncell%ip(jploc)
+            if (lptm(jp)) cycle
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr(1:3) = rotm(1:3,iploc)-ro(1:3,jp)
+            call PBCr2(dr(1), dr(2), dr(3), r2)
+            !as the old configuration should be free of overlaps one can skip the checks
+            if(r2 < rcut2) then
+               dutwob(iptjpt) = dutwob(iptjpt) - uLJ(r2,iptjpt)
+            end if
+         end do
+      end do
+   end do
+
+
+! ... contribution from pairs where both particle is moved
+
+   if (lptmdutwob) then
+      do iploc = 1, nptm
+         ip = ipnptm(iploc)
+         ipt = iptpn(ip)
+         do jploc = iploc+1+myid, nptm, nproc ! increment with nproc for parallel simulations
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)

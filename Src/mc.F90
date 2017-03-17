@@ -4792,6 +4792,7 @@ end subroutine Metropolis
 subroutine MCUpdate
 
    use MCModule
+   use CellListModule, only: UpdateCellip
    implicit none
 
    integer(4) :: ip, iploc
@@ -4817,6 +4818,13 @@ subroutine MCUpdate
       call SetAtomProp(ip, ip, .false.)                        ! atom and dipole
       drostep(1:3,ip) = drostep(1:3,ip)+drotm(1:3,iploc)       ! displacement
    end do
+   if(lclist) then
+      do iploc = 1, nptm
+         ip = ipnptm(iploc)
+         call UpdateCellip(ip)
+      end do
+   end if
+
 
 end subroutine MCUpdate
 

@@ -3,7 +3,9 @@ module CellListModule
 implicit none
 private
 public UpdateCellip, InitCellList, SetCellList, CellListAver
+public cell, pcellro, cell_type, cell_pointer_array, nneighcell
 
+integer(4), parameter  :: nneighcell = 27
 type cell_pointer_array
    type(cell_type), pointer  :: p => null()
 end type cell_pointer_array
@@ -11,7 +13,7 @@ end type cell_pointer_array
 type cell_type
    integer(4)  :: id       ! fore easy recognition
    integer(4)  :: npart
-   type(cell_pointer_array) :: neighcell(27)
+   type(cell_pointer_array) :: neighcell(nneighcell)
    integer(4), allocatable :: ip(:)
 end type cell_type
 
@@ -215,7 +217,7 @@ subroutine CellListAver(iStage)
 
          do ip=1, np
             nneighip = -1.0d0 !do not count the particle itself as a neighbour
-            do icell = 1, 27
+            do icell = 1, nneighcell
                tmpcell => cellip(ip)%p%neighcell(icell)%p
                nneighip = nneighip + tmpcell%npart
             end do

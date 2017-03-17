@@ -369,15 +369,15 @@ coordinate.o    : coordinate.F90  mol.o
 	$(COMP_SER) $(FLAG_SER) -c coordinate.F90
 md.o            : md.F90        mol.o
 	$(COMP_SER) $(FLAG_SER) -c md.F90
-mc.o            : mc.F90        mol.o	nlist.o
+mc.o            : mc.F90        mol.o	nlist.o celllist.o
 	$(COMP_SER) $(FLAG_SER) -c mc.F90
 bd.o            : bd.F90      mol.o	md.o
 	$(COMP_SER) $(FLAG_SER) -c bd.F90
-nlist.o         : nlist.F90       mol.o
+nlist.o         : nlist.F90       mol.o celllist.o
 	$(COMP_SER) $(FLAG_SER) -c nlist.F90
 celllist.o      : celllist.F90    mol.o
 	$(COMP_SER) $(FLAG_SER) -c celllist.F90
-ljenergy.o      : ljenergy.F90    mol.o
+ljenergy.o      : ljenergy.F90    mol.o celllist.o
 	$(COMP_SER) $(FLAG_SER) -c ljenergy.F90
 energy.o        : energy.F90      mol.o	mollib.o ljenergy.o
 	$(COMP_SER) $(FLAG_SER) -c energy.F90

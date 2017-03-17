@@ -180,12 +180,15 @@ subroutine IONList(iStage)
       lnolist = .false.
       lvlist = .false.
       lllist = .false.
+      lclist = .false.
       if (txintlist == 'nolist') then
          lnolist = .true.
       else if (txintlist == 'vlist') then
          lvlist = .true.
       else if (txintlist == 'llist') then
          lllist = .true.
+      else if (txintlist == 'clist') then
+         lclist = .true.
       else
          call Stop(txroutine, 'unsupported txintlist', uout)
       end if
@@ -265,12 +268,16 @@ subroutine WriteSub
          if (lvlistllist) write(uout,'(a)') 'linked lists used to make verlet list'
       else if (txintlist == 'llist') then
          write(uout,'(a)') 'linked list'
+      else if (txintlist == 'clist') then
+         write(uout,'(a)') 'cell list'
       end if
 
-      if (inlist == 0) then
-         write(uout,'(a)') 'automatic control of update frequency'
-      else if (inlist > 0) then
-         write(uout,'(a,t35,i10)') 'update interval                = ', inlist
+      if(.not. lclist) then
+         if (inlist == 0) then
+            write(uout,'(a)') 'automatic control of update frequency'
+         else if (inlist > 0) then
+            write(uout,'(a,t35,i10)') 'update interval                = ', inlist
+         end if
       end if
       if(lvlist) then
          write(uout,'(a,t35,f12.3)') 'layer thickness                = ', drnlist
@@ -505,6 +512,7 @@ end subroutine LoadBalanceRecSpace
 subroutine NList(iStage)
 
    use NListModule
+   use CellListModule, only: InitCellList, SetCellList, CellListAver
    implicit none
    integer(4), intent(in) :: iStage
 
@@ -529,11 +537,17 @@ subroutine NList(iStage)
          call LListAver(iStage)
          if (itest == 4) call TestLList(uout)
       end if
+      if (lclist) then
+         call InitCellList(rcut, iStage)
+         call SetCellList()
+         call CellListAver(iStage)
+      end if
 
       if (.not.allocated(drosum)) then 
          allocate(drosum(3,np_alloc))
          drosum = 0.0E+00
       end if
+
 
    case (iBeforeMacrostep)
 
@@ -541,31 +555,34 @@ subroutine NList(iStage)
 
    case (iSimulationStep)
 
-      if (inlist == 0) then                             ! adjusted update interval
-         r2max1 = Zero
-         r2max2 = Zero
-         do ip = 1, np
-            drosum(1:3,ip) = drosum(1:3,ip)+drostep(1:3,ip)
-            r2 = sum(drosum(1:3,ip)**2)
-            if (r2 > r2max1) then
-               r2max1 = r2
-            else if (r2 > r2max2) then
-               r2max2 = r2
+      if(.not. lclist) then   !do not update the celllist regulary, instead update the celllist in mc.F90 after an successful step
+         if (inlist == 0) then                             ! adjusted update interval
+            r2max1 = Zero
+            r2max2 = Zero
+            do ip = 1, np
+               drosum(1:3,ip) = drosum(1:3,ip)+drostep(1:3,ip)
+               r2 = sum(drosum(1:3,ip)**2)
+               if (r2 > r2max1) then
+                  r2max1 = r2
+               else if (r2 > r2max2) then
+                  r2max2 = r2
+               end if
+            end do
+            if (sqrt(r2max1)+sqrt(r2max2) > drnlist) then
+               drosum = Zero
+               call NListSub
             end if
-         end do
-         if (sqrt(r2max1)+sqrt(r2max2) > drnlist) then
-            drosum = Zero
-            call NListSub
+         else if (inlist > 0) then                        ! regular update interval
+            if (mod(istep2,inlist) == 0) call NListSub
+         else
+            call Stop(txroutine, 'inlist negative', uout)
          end if
-      else if (inlist > 0) then                        ! regular update interval
-         if (mod(istep2,inlist) == 0) call NListSub
-      else
-         call Stop(txroutine, 'inlist negative', uout)
       end if
 
    case (iAfterMacrostep)
 
       if (lvlist) call VListAver(iStage)
+      if (lclist) call CellListAver(iStage)
 
    case (iAfterSimulation)
 
@@ -584,6 +601,7 @@ subroutine NList(iStage)
          write(uout,'(a,t35,i10)')   'total number of cells          = ', ncellllist
          call LListAver(iStage)
       end if
+      if (lclist) call CellListAver(iStage)
 
        if (allocated(drosum)) deallocate(drosum)
        if (allocated(lcellllist)) deallocate(lcellllist, headllist, jpllist)
