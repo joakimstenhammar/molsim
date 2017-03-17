@@ -317,6 +317,7 @@ subroutine UTotal(iStage)
 ! ... initiate
 
    u%tot            = Zero
+   u%twob           = Zero
    force (1:3,1:na) = Zero
    torque(1:3,1:na) = Zero
    diptot(1:3,1:na) = Zero
@@ -420,6 +421,11 @@ end if
    prsr = (np*Boltz*temp*scltem-virial*sclene/(Three*AvNo))/(vol*sclvol)/sclpre
 
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+   call WriteHead(3, 'Test'//trim(txroutine), uout)
+   write(uout,'(a,3f14.4)') 'u%tot      ' ,u%tot
+   write(uout,'(a,8f14.4)') 'u%twob     ' ,u%twob(0:nptpt)
+   write(uout,'(a,8f14.4)') 'u%oneb     ' ,u%oneb(0:npt)
 
 end subroutine UTotal
 

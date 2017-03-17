@@ -45,7 +45,7 @@ subroutine IOPotFlexLJ(iStage)
       rewind(uin)
       read(uin,nmlFlexLJ, iostat=io)
       if(io .ne. 0) then
-            !print Warning when the namelist is not given
+            !write Warning when the namelist is not given
             call Warn(txroutine ,'nmlLennardJones is not given in input file. Using default values.', uout)
       end if
 
@@ -168,6 +168,7 @@ subroutine UFlexLJ(utwob, utot, force, virial)
    real(8)  :: dutotold
 
    dutotold = utwob(0)
+   print *, dutotold, utwob
    !if(lclist) then
       !if(lmonoatom) then
          !call UFlexLJCellMono(utwob, utot, force, virial)
@@ -325,7 +326,7 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
-            dr(1:3) = rotm(1:3,iploc)-rotm(1:3,jp)
+            dr(1:3) = rotm(1:3,iploc)-rotm(1:3,jploc)
             call PBC(dr(1), dr(2), dr(3))
             call uLJdr(dr, iptjpt, dutwob(iptjpt), lhsoverlap)
             if(lhsoverlap) return
@@ -346,7 +347,7 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
          if (lptm(jp)) cycle
          jpt = iptpn(jp)
          iptjpt = iptpt(ipt,jpt)
-         dr(1:3) = ro(1:3,iploc)-ro(1:3,jp)
+         dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
          call PBCr2(dr(1), dr(2), dr(3), r2)
          !as the old configuration should be free of overlaps one can skip the checks
          if(r2 < rcut2) then
@@ -365,7 +366,7 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
-            dr(1:3) = ro(1:3,iploc)-ro(1:3,jp)
+            dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
             call PBCr2(dr(1), dr(2), dr(3), r2)
             !as the old configuration should be free of overlaps one can skip the checks
             if(r2 < rcut2) then
