@@ -75,7 +75,6 @@ module NListModule
    integer(4)    :: ncellllist             ! number of liked-list cells
    real(8)       :: celli(3)               ! 1 / cell lengths
    integer(4)    :: npartperproc           ! number of particles per processor
-   integer(4)    :: npmyid                 ! number of particles handled by processor myid
    integer(4)    :: maxnneigh              ! maximum number of neighbours; used in memory allocation
 
    real(8), allocatable, save :: drosum(:,:)                ! sum of displacements   !Pascal Hebbeker moved vom subroutine NList

@@ -607,6 +607,7 @@ module MolModule
 ! ... neighbour and linked cell lists
 
    logical                 :: lvlist       ! flag for neighbour lists
+   integer(4)              :: npmyid       ! number of particles handled by processor myid
    integer(4), allocatable :: ipnploc(:)   ! particle (local) -> particle (1:np)
    integer(4), allocatable :: nneighpn(:)  ! particle (local) -> number of neighbours
    integer(2), allocatable :: jpnlist(:,:) ! ineigh (local list) and ip (global or local) -> neigbour particle (1:np)

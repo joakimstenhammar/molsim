@@ -274,6 +274,7 @@ end module EnergyModule
 subroutine UTotal(iStage)
 
    use EnergyModule
+   use FlexLJEnergyModule, only: UFlexLJ
    implicit none
 
    integer(4), intent(in) :: iStage
