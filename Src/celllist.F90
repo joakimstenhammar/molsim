@@ -3,7 +3,7 @@ module CellListModule
 implicit none
 private
 public UpdateCellip, InitCellList, SetCellList, CellListAver
-public cell, pcellro, cell_type, cell_pointer_array, nneighcell
+public pcellro, cell_type, cell_pointer_array, nneighcell
 
 integer(4), parameter  :: nneighcell = 27
 type cell_pointer_array

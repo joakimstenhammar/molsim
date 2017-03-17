@@ -252,9 +252,9 @@ end subroutine UFlexLJMono
 
 subroutine UFlexLJMonoCell(utwob, force, virial)
 
-   use MolModule, only: ro, iptpn, iptpt
+   use MolModule, only: ro, iptpn, iptpt, np
    use MolModule, only: lmc, myid, nproc
-   use CellListModule, only: pcellro, cell, nneighcell, cell_type, cell_pointer_array
+   use CellListModule, only: pcellro, nneighcell, cell_type, cell_pointer_array
    implicit none
    real(8), allocatable, intent(inout)  :: utwob(:)
    real(8), allocatable, intent(inout)  :: force(:,:)
@@ -270,7 +270,7 @@ subroutine UFlexLJMonoCell(utwob, force, virial)
       ipt = iptpn(ip)
       icell => pcellro(ro(1:3,ip))
       do incell = 1+myid, nneighcell, nproc ! increment with nproc to have parallel execution
-         ncell => icell%ncell(incell)%p
+         ncell => icell%neighcell(incell)%p
          do jploc = 1, ncell%npart
             jp = ncell%ip(jploc)
             if (lmc) then
@@ -286,7 +286,7 @@ subroutine UFlexLJMonoCell(utwob, force, virial)
       end do
    end do
 
-end subroutine UFlexLJMono
+end subroutine UFlexLJMonoCell
 
 subroutine UFlexLJPoly(utwob, force, virial) ! not used yet, as the calculation of DU is not adapted for polyatomic particles
 
@@ -464,12 +464,12 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
 
 end subroutine DUFlexLJMono
 
-subroutine DUFlexLJMono(dutwob, lhsoverlap)
+subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
 
    use MolModule, only: ro, rotm, iptpn, iptpt, rcut2
    use MolModule, only: ipnptm, nptm, lptm, lptmdutwob
    use MolModule, only: nproc, myid
-   use CellListModule, only: pcellro, cell, nneighcell, cell_type, cell_pointer_array
+   use CellListModule, only: pcellro, nneighcell, cell_type, cell_pointer_array
    implicit none
    real(8), allocatable, intent(inout)  :: dutwob(:)
    logical, intent(inout)               :: lhsoverlap
@@ -488,7 +488,7 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
       ipt = iptpn(ip)
       icell => pcellro(rotm(1:3,iploc))
       do incell = 1+myid, nneighcell, nproc ! increment with nproc to have parallel execution
-         ncell => icell%ncell(incell)%p
+         ncell => icell%neighcell(incell)%p
          do jploc = 1, ncell%npart
             jp = ncell%ip(jploc)
             if (lptm(jp)) cycle
@@ -530,7 +530,7 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
       ipt = iptpn(ip)
       icell => pcellro(rotm(1:3,iploc))
       do incell = 1+myid, nneighcell, nproc ! increment with nproc to have parallel execution
-         ncell => icell%ncell(incell)%p
+         ncell => icell%neighcell(incell)%p
          do jploc = 1, ncell%npart
             jp = ncell%ip(jploc)
             if (lptm(jp)) cycle
@@ -567,6 +567,6 @@ subroutine DUFlexLJMono(dutwob, lhsoverlap)
       end do
    end if
 
-end subroutine DUFlexLJMono
+end subroutine DUFlexLJMonoCell
 
 end module flexLJEnergyModule
