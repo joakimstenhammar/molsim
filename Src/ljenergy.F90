@@ -155,9 +155,9 @@ end subroutine uLJdr
 
 
 subroutine UFlexLJ(utwob, utot, force, virial)
-   !todo(pascal)  : add lclist and lmonoatom
+   !todo(pascal)  : add lclist
    !use MolModule, only: lclist
-   !use MolModule, only: lmonoatom
+   use MolModule, only: lmonoatom
    use MolModule, only: nptpt
    implicit none
 
@@ -175,11 +175,11 @@ subroutine UFlexLJ(utwob, utot, force, virial)
          !call UFlexLJCellPoly(utwob, utot, force, virial)
       !end if
    !else
-      !if(lmonoatom) then
+      if(lmonoatom) then
          call UFlexLJMono(utwob, force, virial)
-      !else
-         !call UFlexLJPoly(utwob, utot, force, virial)
-      !end if
+      else
+         call UFlexLJPoly(utwob, force, virial)
+      end if
    !end if
    utwob(0) = sum(utwob(1:nptpt))
    utot = utot + utwob(0) - dutotold
@@ -250,10 +250,59 @@ subroutine UFlexLJMono(utwob, force, virial)
 
 end subroutine UFlexLJMono
 
+subroutine UFlexLJPoly(utwob, force, virial) ! not used yet, as the calculation of DU is not adapted for polyatomic particles
+
+   use MolModule, only: ro, iptpn, iptpt
+   use MolModule, only: ipnploc, nneighpn
+   use MolModule, only: lmc
+   use MolModule, only: jpnlist, npmyid
+   use MolModule, only: r, ianpn, napt, iatan, iatat
+   implicit none
+   real(8), allocatable, intent(inout)  :: utwob(:)
+   real(8), allocatable, intent(inout)  :: force(:,:)
+   real(8), intent(inout)               :: virial
+
+   integer(4)  :: ip, jp, ipt, jpt, iptjpt, iploc, jploc
+   integer(4)  :: ia, ja, iat, jat, iatjat, ialow, iaupp, jalow, jaupp
+   real(8)  :: drp(3), dr(3), rpbc(3)
+   logical  :: loverlap
+
+   do iploc = 1, npmyid !get particles from nlist
+      ip = ipnploc(iploc)
+      ipt = iptpn(ip)
+      ialow = ianpn(ip)
+      iaupp = ialow+napt(ipt)-1
+      do jploc = 1, nneighpn(iploc)
+         jp = jpnlist(jploc,iploc)
+         if (lmc) then
+            if (jp < ip) cycle
+         end if
+         jpt = iptpn(jp)
+         iptjpt = iptpt(ipt,jpt)
+         drp(1:3) = ro(1:3,ip)-ro(1:3,jp)
+         call PBC2(drp(1), drp(2), drp(3), rpbc(1), rpbc(2), rpbc(3)) !get vector for PBC
+
+         jalow = ianpn(jp)
+         jaupp = jalow+napt(jpt)-1
+         do ia = ialow, iaupp
+            iat = iatan(ia)
+            do ja = jalow, jaupp
+               jat = iatan(ja)
+               iatjat = iatat(iat,jat)
+               dr(1:3) = r(1:3,ia)-r(1:3,ja)-rpbc(1:3)
+               call ufvLJdr(dr, iatjat, utwob(iptjpt), force(1:3,ia), force(1:3,ja), virial, loverlap)
+               if(loverlap)   call StopUFlexLJ(ia, ja, r(1:3,ia), r(1:3,ja), iptjpt, dr(1:3))
+            end do
+         end do
+      end do
+   end do
+
+end subroutine UFlexLJPoly
+
 subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
-   !todo(pascal)  : add lclist and lmonoatom
+   !todo(pascal)  : add lclist
    !use MolModule, only: lclist
-   !use MolModule, only: lmonoatom
+   use MolModule, only: lmonoatom
    use MolModule, only: nptpt
 
    implicit none
@@ -272,11 +321,11 @@ subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
          !call UFlexLJCellPoly(utwob, utot, force, virial)
       !end if
    !else
-      !if(lmonoatom) then
+      if(lmonoatom) then
          call DUFlexLJMono(dutwob, lhsoverlap)
-      !else
-         !call UFlexLJPoly(utwob, utot, force, virial)
-      !end if
+      else
+         call UFlexLJPoly(utwob, utot, force, virial)
+      end if
    !end if
 
    dutwob(0) = sum(dutwob(1:nptpt))
