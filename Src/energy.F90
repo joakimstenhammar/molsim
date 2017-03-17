@@ -426,6 +426,8 @@ end if
    write(uout,'(a,3f14.4)') 'u%tot      ' ,u%tot
    write(uout,'(a,8f14.4)') 'u%twob     ' ,u%twob(0:nptpt)
    write(uout,'(a,8f14.4)') 'u%oneb     ' ,u%oneb(0:npt)
+   write(uout,'(a,8f14.4)') 'force      ' ,force
+   write(uout,'(a,8f14.4)') 'virial     ' ,virial
 
 end subroutine UTotal
 

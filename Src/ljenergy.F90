@@ -92,7 +92,7 @@ pure function uLJ(r2, iatjat) result(energy)
 
 end function uLJ
 
-pure function fLJ(r2, iatjat) result(force) !note that this subroutine is not tuned for efficiency
+pure function fLJ(r2, iatjat) result(force) !note that this subroutine is not tuned for efficiency; returns force/abs(r)
    implicit none
    real(8), intent(in)  :: r2
    integer(4), intent(in)  :: iatjat
@@ -100,7 +100,7 @@ pure function fLJ(r2, iatjat) result(force) !note that this subroutine is not tu
    real(8)  :: invr6, invr1
 
    invr6 = (sig2(iatjat)/r2)**3
-   invr1 = -6.0d0/sqrt(r2)
+   invr1 = -6.0d0/(r2)
    force = foureps(iatjat)*(2.0d0*invr6**2-invr6)*invr1
 
 end function fLJ
@@ -112,8 +112,8 @@ subroutine ufvLJdr(dr, iatjat, energy, forcea, forceb, virial, loverlap) !calcul
    real(8), intent(in)  :: dr(3) !note that the PBC are neede to be already applied!
    integer(4), intent(in)  :: iatjat
    real(8), intent(inout)  :: energy
-   real(8), intent(inout)  :: forcea(3)
-   real(8), intent(inout)  :: forceb(3)
+   real(8), intent(inout)  :: forcea(3) ! dr must be pointing towards the object this force belongs to
+   real(8), intent(inout)  :: forceb(3) ! dr must be pointing away from the object this force belongs to
    real(8), intent(inout)  :: virial
    logical, intent(out)  :: loverlap
    real(8)  :: totforce, r2
@@ -127,9 +127,9 @@ subroutine ufvLJdr(dr, iatjat, energy, forcea, forceb, virial, loverlap) !calcul
    end if
    energy = energy + uLJ(r2, iatjat)
    totforce = fLJ(r2,iatjat)
-   forcea(1:3) = forcea(1:3) + totforce*dr(1:3)
-   forceb(1:3) = forceb(1:3) - totforce*dr(1:3)
-   virial     = virial - (totforce * r2)
+   forcea(1:3) = forcea(1:3) - totforce*dr(1:3) ! multiplication with dr gives force vector; dr is poiting toward a: use negative sign
+   forceb(1:3) = forceb(1:3) + totforce*dr(1:3) ! dr is pointing away from b: use positive sign
+   virial     = virial + (totforce * r2)
 end subroutine ufvLJdr
 
 subroutine uLJdr(dr, iatjat, energy, loverlap) !calculated the energy from a distance and atom-type combination
@@ -168,7 +168,6 @@ subroutine UFlexLJ(utwob, utot, force, virial)
    real(8)  :: dutotold
 
    dutotold = utwob(0)
-   print *, dutotold, utwob
    !if(lclist) then
       !if(lmonoatom) then
          !call UFlexLJCellMono(utwob, utot, force, virial)
