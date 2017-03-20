@@ -2,8 +2,8 @@ module CellListModule
 
 implicit none
 private
-public UpdateCellip, InitCellList, SetCellList, CellListAver
-public pcellro, cell_type, cell_pointer_array
+public UpdateCellip, InitCellList, SetCellList, CellListAver, TestCellList
+public pcellro, cell_type, cell_pointer_array, cellip
 
 integer(4), parameter  :: maxneighcell = 27
 type cell_pointer_array
@@ -27,14 +27,15 @@ contains
 
 subroutine InitCellList(rcut, iStage)
 
-   use MolModule, only: ltrace, ltime, uout
+   use MolModule, only: ltrace, ltime, uout, itest
    use MolModule, only: lbcbox, boxlen2
    use MolModule, only: np
 
    real(8), intent(in)  :: rcut
    integer(4), intent(in)  :: iStage
    character(40), parameter :: txroutine ='InitCellList'
-   integer(4)  :: ix, iy, iz, jx, jy, jz, neigh(3), ineigh, id
+   integer(4)  :: ix, iy, iz, jx, jy, jz, neigh(3), ineigh, id, jneigh
+   logical  :: alreadyneighbour
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -79,20 +80,27 @@ subroutine InitCellList(rcut, iStage)
    !| ,-2 | ,-2 | ,-2 | -2  |/
    !+-----+-----+-----+-----+
 
-   !loop over all cells
+   !allocate cells and set the id of the cells
    id = 0
    do ix = -ncell(1), ncell(1) -1
       do iy = -ncell(2), ncell(2) -1
          do iz = -ncell(3), ncell(3) -1
-
             id = id + 1
-            cell(ix,iy,iz)%id = id
-            !allocate cell
-            allocate(cell(ix,iy,iz)%ip(np))
-            cell(ix,iy,iz)%npart = 0
+            cell(ix,iy,iz)%id = id ! sets the id
+            allocate(cell(ix,iy,iz)%ip(np)) ! allocate cell particles
+            cell(ix,iy,iz)%npart = 0        ! initialize cell particles
+         end do
+      end do
+   end do
+
+   !set the neighbours
+   do ix = -ncell(1), ncell(1) -1
+      do iy = -ncell(2), ncell(2) -1
+         do iz = -ncell(3), ncell(3) -1
+
 
             !make pointers to neighbouring cells
-            cell(ix,iy,iz)%nneighcell = 0
+            ineigh = 0
             do jx = -1, 1
                do jy = -1, 1
                   do jz = -1, 1
@@ -102,8 +110,18 @@ subroutine InitCellList(rcut, iStage)
                      elsewhere (neigh < -ncell)
                         neigh = ncell - 1
                      end where
-                     if ((ix .ne. neigh(1)) .and. (iy .ne. neigh(2)) .and. (iz .ne. neigh(3))) then
+
+                     alreadyneighbour = .false.
+                     do jneigh = 1, ineigh
+                        if (cell(ix,iy,iz)%neighcell(jneigh)%p%id .eq. cell(neigh(1), neigh(2), neigh(3))%id) then !neighbour is already set
+                           alreadyneighbour = .true.
+                           exit
+                        end if
+                     end do
+
+                     if(.not. alreadyneighbour) then
                         ineigh = ineigh + 1
+                        cell(ix,iy,iz)%nneighcell = ineigh
                         cell(ix,iy,iz)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
                      end if
                   end do
@@ -113,8 +131,6 @@ subroutine InitCellList(rcut, iStage)
          end do
       end do
    end do
-
-
 
 end subroutine InitCellList
 
@@ -184,6 +200,39 @@ subroutine SetCellList
 
 end subroutine SetCellList
 
+subroutine TestCellList(output)
+   implicit none
+   integer(4), intent(in) :: output
+   character(80), parameter :: txheading ='cell list testing'
+   integer(4)  :: ix, iy, iz, ineigh
+   type(cell_type), pointer   :: icell
+
+   call WriteHead(2, txheading, output)
+   write(output,'()')
+   write(output,'(a,i0)') "Number of cells ", product(ncell(1:3))*8
+   write(output,'()')
+   write(output,'(tr2,a49)') &
+   repeat('-',49)
+   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
+   'cell id', 'i neighbour', 'id of neighbour'
+   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
+   repeat('-',15), repeat('-', 15), repeat('-',15)
+   do ix = -ncell(1), ncell(1) -1
+      do iy = -ncell(2), ncell(2) -1
+         do iz = -ncell(3), ncell(3) -1
+            icell => cell(ix,iy,iz)
+            do ineigh = 1, icell%nneighcell
+               write(output,'(tr2,i15,tr2,i15,tr2,i15)') icell%id, ineigh, icell%neighcell(ineigh)%p%id
+            end do
+         end do
+      end do
+   end do
+   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
+   repeat('-',15), repeat('-', 15), repeat('-',15)
+
+end subroutine
+
+
 subroutine CellListAver(iStage)
 
    use MolModule, only: uout
@@ -238,6 +287,8 @@ subroutine CellListAver(iStage)
          nneigh(2) = sqrt(nneigh(2)/(nstep1*np)-nneigh(1)**2)
 
          call WriteHead(2, txheading, uout)
+         write(uout,'()')
+         write(uout,'(a,i0)') "Number of cells ", product(ncell(1:3))*8
          write(uout,'()')
          write(uout,'(t12,a,t34,a)') &
          'no of part per cell', 'no of neighbours per part'
