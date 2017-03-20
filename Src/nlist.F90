@@ -512,7 +512,7 @@ end subroutine LoadBalanceRecSpace
 subroutine NList(iStage)
 
    use NListModule
-   use CellListModule, only: InitCellList, SetCellList, CellListAver
+   use CellListModule, only: InitCellList, SetCellList, CellListAver, TestCellList
    implicit none
    integer(4), intent(in) :: iStage
 
@@ -541,6 +541,7 @@ subroutine NList(iStage)
          call InitCellList(rcut, iStage)
          call SetCellList()
          call CellListAver(iStage)
+         if (itest == 4) call TestCellList(uout)
       end if
 
       if (.not.allocated(drosum)) then 
