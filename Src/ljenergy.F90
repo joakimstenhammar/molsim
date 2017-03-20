@@ -364,6 +364,8 @@ subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
 
    dutwob(0) = sum(dutwob(1:nptpt))
    dutot = dutot + dutwob(0) - dutwbold
+
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 end subroutine DUFlexLJ
 
 subroutine DUFlexLJMono(dutwob, lhsoverlap)
