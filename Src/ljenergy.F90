@@ -460,7 +460,7 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
    use MolModule, only: ro, rotm, iptpn, iptpt, rcut2
    use MolModule, only: ipnptm, nptm, lptm, lptmdutwob
    use MolModule, only: nproc, myid
-   use CellListModule, only: pcellro, cell_type, cell_pointer_array
+   use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip
    implicit none
    real(8), allocatable, intent(inout)  :: dutwob(:)
    logical, intent(inout)               :: lhsoverlap
@@ -519,7 +519,7 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
    do iploc = 1, nptm
       ip = ipnptm(iploc)
       ipt = iptpn(ip)
-      icell => pcellro(ro(1:3,ip))
+      icell => cellip(ip)%p
       do incell = 1+myid, icell%nneighcell
          ncell => icell%neighcell(incell)%p
          do jploc = 1, ncell%npart, nproc ! increment with nproc to have parallel execution
