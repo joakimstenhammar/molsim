@@ -3,9 +3,9 @@ module CellListModule
 implicit none
 private
 public UpdateCellip, InitCellList, SetCellList, CellListAver
-public pcellro, cell_type, cell_pointer_array, nneighcell
+public pcellro, cell_type, cell_pointer_array
 
-integer(4), parameter  :: nneighcell = 27
+integer(4), parameter  :: maxneighcell = 27
 type cell_pointer_array
    type(cell_type), pointer  :: p => null()
 end type cell_pointer_array
@@ -13,7 +13,8 @@ end type cell_pointer_array
 type cell_type
    integer(4)  :: id       ! fore easy recognition
    integer(4)  :: npart
-   type(cell_pointer_array) :: neighcell(nneighcell)
+   integer(4)  :: nneighcell
+   type(cell_pointer_array) :: neighcell(maxneighcell)
    integer(4), allocatable :: ip(:)
 end type cell_type
 
@@ -91,7 +92,7 @@ subroutine InitCellList(rcut, iStage)
             cell(ix,iy,iz)%npart = 0
 
             !make pointers to neighbouring cells
-            ineigh = 0
+            cell(ix,iy,iz)%nneighcell = 0
             do jx = -1, 1
                do jy = -1, 1
                   do jz = -1, 1
@@ -101,8 +102,10 @@ subroutine InitCellList(rcut, iStage)
                      elsewhere (neigh < -ncell)
                         neigh = ncell - 1
                      end where
-                     ineigh = ineigh + 1
-                     cell(ix,iy,iz)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
+                     if ((ix .ne. neigh(1)) .and. (iy .ne. neigh(2)) .and. (iz .ne. neigh(3))) then
+                        ineigh = ineigh + 1
+                        cell(ix,iy,iz)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
+                     end if
                   end do
                end do
             end do
@@ -217,7 +220,7 @@ subroutine CellListAver(iStage)
 
          do ip=1, np
             nneighip = -1.0d0 !do not count the particle itself as a neighbour
-            do icell = 1, nneighcell
+            do icell = 1, cellip(ip)%p%nneighcell
                tmpcell => cellip(ip)%p%neighcell(icell)%p
                nneighip = nneighip + tmpcell%npart
             end do
