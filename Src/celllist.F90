@@ -21,7 +21,7 @@ end type cell_type
 type(cell_type), target, allocatable  :: cell(:,:,:)    !cells
 type(cell_pointer_array), allocatable  :: cellip(:) !cell of each particle
 integer(4)  :: ncell(3)                !number of cells in x y z in each octant
-real(8)     :: ircell                  !inverse edge length of each cell
+real(8)     :: ircell(3)                  !inverse edge length of each cell
 
 contains
 
@@ -46,8 +46,11 @@ subroutine InitCellList(rcut, iStage)
    if(.not. lbcbox) then
       call Stop(txroutine, 'celllist needs cubic box (lbcbox should be true)', uout)
    end if
-   ncell(1:3) = ceiling(boxlen2(1:3)/rcut)
-   ircell = 1.0d0/rcut
+   ncell(1:3) = max(1,floor(boxlen2(1:3)/rcut)) !floor to underestimate the number of cells, therefore the cellsize is >= rcut
+   ! but at least one cell in each direction is needed
+
+   !boxlen2/ncell is the cell-size (larger than rcut)
+   ircell(1:3) = ncell(1:3)/boxlen2(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcut)
 
    if(allocated(cell)) then
       deallocate(cell)
@@ -182,6 +185,7 @@ subroutine UpdateCellip(ip)
       call RmIpFromCell(ip, cellold)
       call AddIpToCell(ip, cellnew)
    end if
+
 end subroutine UpdateCellip
 
 subroutine SetCellList
@@ -201,11 +205,16 @@ subroutine SetCellList
 end subroutine SetCellList
 
 subroutine TestCellList(output)
+   use MolModule, only: ro, np
+   use MolModule, only: rcut2
    implicit none
    integer(4), intent(in) :: output
    character(80), parameter :: txheading ='cell list testing'
    integer(4)  :: ix, iy, iz, ineigh
-   type(cell_type), pointer   :: icell
+   type(cell_type), pointer   :: icell, tncell
+   integer(4)  :: ip, jp, incell, jploc
+   real(8)  :: dr(3), r2
+   logical  :: lipjpneighbour
 
    call WriteHead(2, txheading, output)
    write(output,'()')
@@ -227,8 +236,53 @@ subroutine TestCellList(output)
          end do
       end do
    end do
+   write(output,'(tr2,a49)') &
+   repeat('-',49)
+   write(output,'()')
+   write(output,'(tr2,a49)') &
+   repeat('-',49)
+   do ip = 1, np
+      do jp = 1, np
+         dr = ro(1:3,ip)-ro(1:3,jp)
+         call PBCr2(dr(1), dr(2), dr(3), r2)
+         if(r2 .le. rcut2) then !check if ip and jp are neighbours
+            lipjpneighbour = .false.
+            icell => cellip(ip)%p
+            do incell = 1, icell%nneighcell
+               tncell => icell%neighcell(incell)%p
+               if(any(tncell%ip(1:tncell%npart) .eq. jp)) then
+                  lipjpneighbour = .true.
+                  exit
+               end if
+            end do
+            if(.not. lipjpneighbour) then
+               write(output, *) "Error ip ", ip, " and jp ", jp , "are not neighbours!", cellip(ip)%p%id, cellip(jp)%p%id
+               write(output, *) ro(1:3,ip)*ircell, ro(1:3,jp)*ircell
+            else
+               write(output, *) "ip ", ip, " and jp ", jp , "are neighbours"
+            end if
+         end if
+      end do
+   end do
+   write(output,'(tr2,a49)') &
+   repeat('-',49)
+   write(output,'()')
+   write(output,'(tr2,a49)') &
+   repeat('-',49)
+   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
+   'cell id', 'n particles', 'particle id'
    write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
    repeat('-',15), repeat('-', 15), repeat('-',15)
+   do ix = -ncell(1), ncell(1) -1
+      do iy = -ncell(2), ncell(2) -1
+         do iz = -ncell(3), ncell(3) -1
+            icell => cell(ix,iy,iz)
+            write(output,'(tr2,i15,tr2,i15,999(tr2,i4))') icell%id, icell%npart, icell%ip(1:icell%npart)
+         end do
+      end do
+   end do
+   write(output,'(tr2,a49)') &
+   repeat('-',49)
 
 end subroutine
 
@@ -289,6 +343,8 @@ subroutine CellListAver(iStage)
          call WriteHead(2, txheading, uout)
          write(uout,'()')
          write(uout,'(a,i0)') "Number of cells ", product(ncell(1:3))*8
+         write(uout,'()')
+         write(uout,'(a,3f14.4)') "Size of Cells in x,y,z", 1.0d0/ircell(1:3)
          write(uout,'()')
          write(uout,'(t12,a,t34,a)') &
          'no of part per cell', 'no of neighbours per part'
