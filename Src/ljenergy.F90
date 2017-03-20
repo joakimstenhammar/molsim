@@ -519,7 +519,7 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
    do iploc = 1, nptm
       ip = ipnptm(iploc)
       ipt = iptpn(ip)
-      icell => pcellro(rotm(1:3,iploc))
+      icell => pcellro(ro(1:3,ip))
       do incell = 1+myid, icell%nneighcell
          ncell => icell%neighcell(incell)%p
          do jploc = 1, ncell%npart, nproc ! increment with nproc to have parallel execution
