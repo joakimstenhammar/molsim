@@ -776,10 +776,10 @@ subroutine UEwald
    implicit none
 
    character(40), parameter :: txroutine ='UEwald'
-   real(8)    :: virrec, Second
+   real(8)    :: virrec, SecondsSinceStart
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
-   time_ewald = Second()
+   time_ewald = SecondsSinceStart()
 
    if (itest == 3 .and. master) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real)_slave', uout)
@@ -814,7 +814,7 @@ subroutine UEwald
    if (itest == 3 .and. master) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)_slave', uout)
 
-   time_ewald = Second() - time_ewald
+   time_ewald = SecondsSinceStart() - time_ewald
    if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
@@ -1675,10 +1675,10 @@ subroutine UDipoleEwald
    implicit none
 
    character(40), parameter :: txroutine ='UDipoleEwald'
-   real(8) :: Second
+   real(8) :: SecondsSinceStart
 
    if (ltime) call CpuAdd('start', txroutine, 3, uout)
-   time_ewald = Second()
+   time_ewald = SecondsSinceStart()
 
    if (txewaldrec == 'std') then
        call UDipoleEwaldRecStd
@@ -1691,7 +1691,7 @@ subroutine UDipoleEwald
    if (lsurf) call UDipoleEwaldSurf
    if (itest == 3 .and. master) call TestUDipoleEwald('(real + rec + self + sur)', uout)
 
-   time_ewald = Second() - time_ewald
+   time_ewald = SecondsSinceStart() - time_ewald
    if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains

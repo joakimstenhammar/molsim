@@ -31,7 +31,7 @@
 !                        LabToPri   , PriToLab       , EulerRot    ,
 !                        CheckOriOrtho, QuaNorm,     , AngVelToQuaVel, QuaVelToAngVel,
 !               random : Random     , GauRandom      , CirRandom   , SphRandom
-!                mixed : InvInt     , InvFlt         , RelDiff     , CpuAdd      , CpuLeft     , CpuTot     , Second
+!                mixed : InvInt     , InvFlt         , RelDiff     , CpuAdd      , CpuLeft     , CpuTot     , SecondsSinceStart
 !            readwrite : WriteVec   , WriteMat       , WriteStd    , WriteFront  , WriteHead   , WriteDateTime, WriteIOStat, Warn       , Stop
 !               string : Center     , SpaceOut       , LowerCase   , UpperCase   , SubStr      , Advance
 !                 plot : SignMagn   , Plot
@@ -2869,7 +2869,7 @@ subroutine CpuAdd(txwhattodo,label,level,unit)
    character(2)  :: str
    integer(4) :: i
    character(LEN=len(txwhattodo))   :: whattodo
-   real(8) :: Second, tot
+   real(8) :: SecondsSinceStart, tot
 
    whattodo = txwhattodo
 
@@ -2912,9 +2912,9 @@ subroutine CpuAdd(txwhattodo,label,level,unit)
 ! ... do the work
 
    if (whattodo == 'start') then
-      cpustart(i) = Second()
+      cpustart(i) = SecondsSinceStart()
    else if (whattodo == 'stop') then
-      cputot(i) = cputot(i)+Second()-cpustart(i)
+      cputot(i) = cputot(i)+SecondsSinceStart()-cpustart(i)
    else if (whattodo == 'write') then
       write(str,'(i2)') 15+max(0,maxval(len_trim(xlabel(1:nlabel))))
       tot = sum(cputot(1:nlabel), 1, xlevel(1:nlabel)==0)  ! total cpu time by summing top level
@@ -2955,9 +2955,9 @@ subroutine CpuLeft(maxcpu,unit)
    integer(4), intent(in) :: unit     ! output unit
    logical, save :: first = .true.
    real(8), save :: t1
-   real(8) :: t2, Second, tcycle, tleft
+   real(8) :: t2, SecondsSinceStart, tcycle, tleft
 
-   t2 = Second()
+   t2 = SecondsSinceStart()
    if (first) then
       first = .false.
    else
@@ -2987,8 +2987,8 @@ end subroutine CpuLeft
 subroutine CpuTot(unit)
    implicit none
    integer(4), intent(in) :: unit
-   real(8) :: Second, t
-   t = Second()
+   real(8) :: SecondsSinceStart, t
+   t = SecondsSinceStart()
    write(unit,*)
    if (t < 3600.0) then
       write(unit,'(a,2f12.2)') 'total cpu time since start (s)',t
@@ -2999,23 +2999,23 @@ end subroutine CpuTot
 
 !************************************************************************
 !*                                                                      *
-!*     Second                                                           *
+!*     SecondsSinceStart                                                *
 !*                                                                      *
 !************************************************************************
 
 ! ... return cpu time used since start in seconds
 
-real(8) function Second()
+real(8) function SecondsSinceStart()
    implicit none
-!  Second = 1.0D-3 * mscpu()        ! Univac
+!  SecondsSinceStart = 1.0D-3 * mscpu()        ! Univac
 !  integer(4), tused                ! Nord
-!  Second = 20.D-3 * tused(0)       ! Nord
-!  Second = secvax()                ! Vax
-!  istat = sys&gettime(Second,wait) ! Fps164
-!  Second = 1.0d-2 * mclock()       ! Ibm Aix / Risc 6000
-!  Second = 1.0d-3 * mclock()       ! Intel
-   call cpu_time(second)            ! fortran 95
-end function Second
+!  SecondsSinceStart = 20.D-3 * tused(0)       ! Nord
+!  SecondsSinceStart = secvax()                ! Vax
+!  istat = sys&gettime(SecondsSinceStart,wait) ! Fps164
+!  SecondsSinceStart = 1.0d-2 * mclock()       ! Ibm Aix / Risc 6000
+!  SecondsSinceStart = 1.0d-3 * mclock()       ! Intel
+   call cpu_time(SecondsSinceStart)            ! fortran 95
+end function SecondsSinceStart
 
 !************************************************************************
 !*                                                                      *
@@ -3499,8 +3499,8 @@ subroutine Advance(targetstring,unit,str,ok)
    do
       read(unit,'(a)',iostat = ios) str             ! fix  1 -> unit   2010-11-29
       if (ios /= 0) then
-!	 write(*,*) 'ios = ',ios
-	 return
+!        write(*,*) 'ios = ',ios
+         return
       endif
       if (index(str,targetstring) > 0) exit
    end do

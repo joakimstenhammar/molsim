@@ -2735,7 +2735,7 @@ subroutine TestPotTwoBodyTab(iStage, unit)
    character(40), parameter :: txroutine ='TestPotTwoBodyTab'
    integer(4) :: m
    real(8) :: t0, t1
-   real(8) :: Second, tsetnn
+   real(8) :: SecondsSinceStart, tsetnn
 
    call WriteHead(3, txroutine, unit)
 
@@ -2743,9 +2743,9 @@ subroutine TestPotTwoBodyTab(iStage, unit)
    lmc   =.false.
    lmcall =.false.
 
-   t0 = Second()
+   t0 = SecondsSinceStart()
    call NList(1)
-   tsetnn = Second()-t0
+   tsetnn = SecondsSinceStart()-t0
    write(unit,'(a,f12.3)') 'Neighbour list: cpu time ', tsetnn
 
    write(unit,'()')
@@ -2755,11 +2755,11 @@ subroutine TestPotTwoBodyTab(iStage, unit)
       utoltab = 10.0d0**(-m)
       ftoltab = 10.0d0**(-m)
       call PotTwoBodyTab1(.false.)
-      t0 = Second()
+      t0 = SecondsSinceStart()
       if (lintsite) call SetAtomPos(1, np, lintsite)
       call UTotal(iStage)
       if (lintsite) call SetAtomPos(1, np, .false.)
-      t1 = Second()-t0
+      t1 = SecondsSinceStart()-t0
       write(uout,'(es8.1,t20,f15.8,t45,f15.8,t70,f8.3)') utoltab, u%tot/np, prsr, t1
    end do
    write(unit,'()')
