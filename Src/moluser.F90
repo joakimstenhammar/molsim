@@ -10275,7 +10275,6 @@ module ComplexationModule
 
       recursive subroutine get_nbead_clstr(ip, iptc, jptc, nbead)
 
-         use MolModule ,only: np
          implicit none
 
          integer(4), intent(in)  :: ip
@@ -10283,7 +10282,7 @@ module ComplexationModule
          integer(4), intent(in)  :: jptc
          integer(4), intent(inout)  :: nbead
 
-         integer(4)  :: jp, ipt
+         integer(4)  :: jp
 
          if(linclstr(ip)) then
             return
