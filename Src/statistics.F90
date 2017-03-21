@@ -145,7 +145,7 @@ subroutine ScalarSampleBlock(iStage, ilow, iupp, var)
    integer(4),       intent(in)  :: ilow      ! lower variable
    integer(4),       intent(in)  :: iupp      ! upper variable
    type(scalar_var), intent(out) :: var(*)    ! scalar variable
-   integer(4) :: i, ibl
+   integer(4) :: i
    real(8)    :: norm, norm1
 
    select case (iStage)
