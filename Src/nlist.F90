@@ -346,6 +346,9 @@ subroutine LoadBalanceRealSpace(myid, master, nproc, iobjlow, iobjupp, iobjmyid,
 
    character(40), parameter :: txroutine='LoadBalanceRealSpace'
    integer(4) :: nobj, nobjmyid
+#if defined (_PAR_)
+   integer(4) :: vaux(1000)
+#endif
 
    nobj = iobjupp - iobjlow + 1
 
@@ -771,6 +774,9 @@ subroutine SetVListMC
    character(10), parameter :: txroutine ='SetVListMC'
    integer(4) :: ip, jp
    real(8)    :: rs2cut, r2, dx, dy, dz
+#if defined(_PAR_)
+   integer(4) :: iploc
+#endif
 
    rs2cut = (rcut+drnlist)**2
 
