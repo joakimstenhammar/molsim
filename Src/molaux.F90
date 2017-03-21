@@ -2735,10 +2735,10 @@ end function SuperballOverlap
 
 ! ... superball overlap check, return overlap function
 
-real(8) function SuperballOverlapOF(r2, r21, ori1, ori2) result(of)
+real(8) function SuperballOverlapOF(r21, ori1, ori2) result(of) !r2 is not used
    use MolModule
    implicit none
-   real(8), intent(in) :: r2            ! distance squared between superball 1 and 2
+   !real(8), intent(in) :: r2            ! distance squared between superball 1 and 2
    real(8), intent(in) :: r21(3)        ! vector from superball 2 to superball 1
    real(8), intent(in) :: ori1(3,3)     ! orientation matrix of superball 1
    real(8), intent(in) :: ori2(3,3)     ! orientation matrix of superball 2
@@ -2851,7 +2851,7 @@ logical function SuperballOverlap_NR(r21, ori1, ori2, of) result(loverlap)
       if (max(abs(dl),maxval(abs(dr))) < tolsuperball) then
          loverlap = .true.
          if (of > one) loverlap = .false.         ! of is here the overlap potential
-         if (lstatsuperball) call SuperballStatNR(iSimulationStep, r21, iter)
+         if (lstatsuperball) call SuperballStatNR(iSimulationStep, iter)
          if (itest == 5) call TestSuperballOverlap_NR(5)
          goto 999
       end if
@@ -2919,11 +2919,11 @@ end function SuperballOverlap_NR
 
 ! ... superball check statistics, NR overlap method
 
-subroutine SuperballStatNR(iStage, rr, iter)
+subroutine SuperballStatNR(iStage, iter) !rr is not used
    use MolModule
    implicit none
    integer(4), intent(in) :: iStage
-   real(8), intent(in)     :: rr(3)
+   !real(8), intent(in)     :: rr(3)
    integer(4), intent(in)  :: iter
 
    character(40), parameter :: txroutine ='SuperballStatNR'
@@ -2997,7 +2997,7 @@ subroutine SuperballStatMesh(iStage, rr, loverlap, time)
    real(8), intent(in)     :: time
 
    call SuperballAver(iStage, rr, loverlap, time)
-   call SuperballDF(iStage, rr, loverlap, time)
+   call SuperballDF(iStage, rr, time)
 
 end subroutine SuperballStatMesh
 
@@ -3097,12 +3097,12 @@ end subroutine SuperballAver
 !     2     triangle   tri (triangle)
 !     3     time       cpu time
 
-subroutine SuperballDF(iStage, rr, loverlap, time)
+subroutine SuperballDF(iStage, rr, time) !loverlap is not used
    use MolModule
    implicit none
    integer(4), intent(in) :: iStage
    real(8), intent(in)     :: rr(3)
-   logical, intent(in)     :: loverlap
+   !logical, intent(in)     :: loverlap
    real(8), intent(in)     :: time
 
    character(40), parameter :: txroutine ='SuperballDF'
