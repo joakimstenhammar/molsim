@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.0] - 2017-03-21 - Quapsel
+### Changed
+- the distribution of the complexation rate as well as the complexation rate of segments can be measured
+
 ## [2.3.0] - 2017-02-16 - Klikk
 ### Changed
 - changed output about polymer chains and added txcopolymer == 'sequence'
