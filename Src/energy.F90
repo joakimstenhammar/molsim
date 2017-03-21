@@ -2723,6 +2723,7 @@ subroutine FieldStatEwaldRecSPM
    real(8)    :: splx, sply, splz
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, Qval
+   real(8)    :: raux2
 
    if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
@@ -2766,7 +2767,7 @@ subroutine FieldStatEwaldRecSPM
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
 
-   call SPMFFTRec(.false., .false., .false., 'StatMakeFFT', 'StatCalcGIF', 5, raux, raux)
+   call SPMFFTRec(.false., .false., .false., 'StatMakeFFT', 'StatCalcGIF', 5, raux, raux2)
 
 ! ... calculate potential, field, field gradient, and virial
 
@@ -3342,6 +3343,7 @@ subroutine FieldIdmEwaldRecSPM
    real(8)    :: splx, sply, splz
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, Qval
+   real(8)    :: raux2
 
    if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
@@ -3384,7 +3386,7 @@ subroutine FieldIdmEwaldRecSPM
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
 
-   call SPMFFTRec(.false., .false., .false.,'IdmMakeFFT', 'IdmCalcGIF', 5, raux, raux)
+   call SPMFFTRec(.false., .false., .false.,'IdmMakeFFT', 'IdmCalcGIF', 5, raux, raux2)
 
 ! ... calculate potential, field, field gradient, and virial
 
