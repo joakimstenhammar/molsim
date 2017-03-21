@@ -1052,20 +1052,20 @@ subroutine RDF(iStage)
 
       subroutine GContact(vlow, vbin, vs2, tauvar, rcont, gcont) ! tlow and tbin is not used
          implicit none
-	 real(8), intent(in) :: vlow
-	 real(8), intent(in) :: vbin
-	 real(8), intent(in) :: vs2(-1:*)
-	 !real(8), intent(in) :: tlow
-	 !real(8), intent(in) :: tbin
-	 real(8), intent(in) :: tauvar(-1:*)
+     real(8), intent(in) :: vlow
+     real(8), intent(in) :: vbin
+     real(8), intent(in) :: vs2(-1:*)
+     !real(8), intent(in) :: tlow
+     !real(8), intent(in) :: tbin
+     real(8), intent(in) :: tauvar(-1:*)
          real(8), intent(in) :: rcont
          real(8), intent(out):: gcont
 
          integer(4), parameter :: npol = 2, ndp = npol+1
           integer(4) :: i, ihs
 
-	 real(8) :: xx(ndp), yy(ndp), tt(ndp), ww(ndp), a(0:npol), dum1, dum2
-	 real(8), external :: PolVal
+     real(8) :: xx(ndp), yy(ndp), tt(ndp), ww(ndp), a(0:npol), dum1, dum2
+     real(8), external :: PolVal
 
          ihs = int((rcont-vlow-1.0d-10)/vbin)
          xx(1:ndp) = vlow + vbin * ( 0.5d0+ [ ( ihs+i, i=1, ndp )] )
