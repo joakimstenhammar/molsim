@@ -1541,7 +1541,7 @@ subroutine ThermoAver(iStage)
          end if
       end if
 
-  10 continue
+     continue
 
    case (iAfterMacrostep)
 

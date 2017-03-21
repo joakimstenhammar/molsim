@@ -1086,7 +1086,7 @@ subroutine Diag_old(n,a,eivr)
    integer(4) :: i, i2, j, ii, jj, irow,jcol, jcol1, iflag
    real(8)    :: atop, aii, ajj, aij, avgf, c, d, dstop, s, t, u, thrsh
 
-1  do 10 j = 1,n
+   do 10 j = 1,n
    do 20 i = 1,n
 20 eivr(i,j) = zero
 10 eivr(j,j) = one

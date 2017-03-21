@@ -3129,7 +3129,7 @@ subroutine NPartChange(iStage)
       call SetObjectParam1
       call SetObjectParam2
       ipmove = np                                  ! place the new particle last
-10    continue
+      continue
       call SetPartPosRandomMC(ipmove)              ! set trial random particle position
 !      write(*,'(a,3f10.3)') 'trial position', ro(1:3,ipmove)
 !      if (abs(ro(3,ipmove)) > 0.8*boxlen2(3)) then
