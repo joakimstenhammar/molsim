@@ -5949,8 +5949,6 @@ subroutine AdsBondOrder(iStage)
    integer(4),    allocatable, save :: bondlist(:,:), nq(:)
    real(8),       allocatable, save :: bondorder(:), rdir(:,:), rc(:,:), q(:,:)
    integer(4)                 :: ic, ict, itype, ivar, ibin, ib, nbond, isum
-   !real(8)                    :: avbondorder
-   !character(5)               :: txrad
    type(scalar_var), allocatable, save :: var_s(:)
 
    namelist /nmlAdsBondOrder/ vtype, adscond, radius
@@ -6133,7 +6131,6 @@ subroutine AdsPropDyn(iStage)
    integer(4)          , save :: nblock               ! number of blocks sampled
    logical, allocatable, save :: ladschain(:)         ! .true. if chain is adsorbed
    logical, allocatable, save :: ladsseg(:)           ! .true. if segment is adsorbed
-   !integer(4)  :: nseg                                ! number of segments in a chain
    type(chainprop_var) :: ChainProperty
    integer(4)  :: nobj(3)                             ! number of objects
    integer(4)  :: lenobj(3,mnobj)                     ! length of objects
@@ -7388,7 +7385,6 @@ subroutine ElMom(iStage)
    type(scalar_var), allocatable, save :: var(:)
    integer(4) :: nrot
    real(8) :: qr(3), qrr(3,3), diagonal(3), eivr(3,3)
-   !real(8) :: rr, theta, phi
 
 !  namelist /nmlElMom/ xxxx
 
@@ -7667,7 +7663,6 @@ subroutine SPDF_COMB(iStage)
    integer(4) :: ip, igr, ic, ict, n_ic(nh), iseg, ih, igen, n_chain
    real(8)    :: r1, r12, r2, r22, norm, norm1, norm2,vsum, vsum1, vsum2, dvol
    real(8)    :: xcom1, ycom1, zcom1, xcom(nh), ycom(nh), zcom(nh)
-   !real(8)    :: dropbc(3)
    real(8)    ::  dinf, dx, dy, dz, r_dist
    integer(4) ::  jct, jc, jseg, jp
 
@@ -8832,7 +8827,6 @@ subroutine OCF(iStage)
    character(5),  parameter :: txtype(ntype) = ['cos_t','cos_t','cos_t']
 
    logical,       save :: ltype(ntype)
-   !real(8),       save :: vmax(ntype)
    integer(4),    save :: nvar
 
    type(df_var),  allocatable, save :: var(:)
