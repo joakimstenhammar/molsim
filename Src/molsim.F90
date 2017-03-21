@@ -291,7 +291,7 @@ subroutine IOSystem(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='IOSystem'
-   real(8) :: Second
+   real(8) :: SecondsSinceStart
 
    namelist /nmlSystem/ txtitle,                                                               &
                         txmode,                                                                &
@@ -441,7 +441,7 @@ subroutine IOSystem(iStage)
       tempst = temp
       prsrst = prsr
       volst  = vol
-      if (iseed <= 0) iseed = int(1.0e+6*Second())
+      if (iseed <= 0) iseed = int(1.0e+6*SecondsSinceStart())
       iseed = -abs(iseed)     !the first seed should be negative, as the random seed generator is only initialized properly when the passed seed is negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed) when iseed > 0
 
    case (iWriteInput)
