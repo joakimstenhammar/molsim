@@ -27,8 +27,8 @@ contains
 
 subroutine InitCellList(rcut, iStage)
 
-   use MolModule, only: ltrace, ltime, uout, itest
-   use MolModule, only: lbcbox, boxlen2
+   use MolModule, only: ltrace, ltime, uout
+   use MolModule, only: lbcbox, boxlen
    use MolModule, only: np
 
    real(8), intent(in)  :: rcut
@@ -46,11 +46,11 @@ subroutine InitCellList(rcut, iStage)
    if(.not. lbcbox) then
       call Stop(txroutine, 'celllist needs cubic box (lbcbox should be true)', uout)
    end if
-   ncell(1:3) = max(1,floor(boxlen2(1:3)/rcut)) !floor to underestimate the number of cells, therefore the cellsize is >= rcut
+   ncell(1:3) = max(1,floor(boxlen(1:3)/rcut)) !floor to underestimate the number of cells, therefore the cellsize is >= rcut
    ! but at least one cell in each direction is needed
 
    !boxlen2/ncell is the cell-size (larger than rcut)
-   ircell(1:3) = ncell(1:3)/boxlen2(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcut)
+   ircell(1:3) = ncell(1:3)/boxlen(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcut)
 
    if(allocated(cell)) then
       deallocate(cell)
@@ -58,36 +58,36 @@ subroutine InitCellList(rcut, iStage)
    if(allocated(cellip)) then
       deallocate(cellip)
    end if
-   allocate(cell(-ncell(1):(ncell(1)-1),-ncell(2):(ncell(2)-1),-ncell(3):(ncell(3)-1)))
+   allocate(cell(0:(ncell(1)-1),0:(ncell(2)-1),0:(ncell(3)-1)))
    allocate(cellip(1:np))
-   ! cell structure when ncell(1:3) = 2
+   ! cell structure when ncell(1:3) = 4
    !        +-----+-----+-----+-----+
-   !       /.., 1/     /     /     /|
+   !       /.., 3/     /     /     /|
    !      +-----+-----+-----+-----+ |
-   !     /.., 0/     /     /     /| +
+   !     /.., 2/     /     /     /| +
    !    +-----+-----+-----+-----+ |/|
-   !   /..,-1/     /     /     /| + |
+   !   /.., 1/     /     /     /| + |
    !  +-----+-----+-----+-----+ |/| +
-   ! /..,-2/     /     /     /| + |/|
+   ! /.., 0/     /     /     /| + |/|
    !+-----+-----+-----+-----+ |/| + |
-   !|-2, 1|-1, 1| 0, 1| 1, 1| + |/| +
-   !| ,-2 | ,-2 | ,-2 | ,-2 |/| + |/|
+   !| 0, 3| 1, 3| 2, 3| 3, 3| + |/| +
+   !| , 0 | , 0 | , 0 | , 0 |/| + |/|
    !+-----+-----+-----+-----+ |/| + |
-   !|-2, 0|-1, 0| 0, 0| 1, 0| + |/| +
-   !| ,-2 | ,-2 | ,-2 | ,-2 |/| + |/
+   !| 0, 2| 1, 2| 2, 2| 3, 2| + |/| +
+   !| , 0 | , 0 | , 0 | , 0 |/| + |/
    !+-----+-----+-----+-----+ |/| +
-   !|-2,-1|-1,-1| 0,-1| 1,-1| + |/
-   !| ,-2 | ,-2 | ,-2 | ,-2 |/| +
+   !| 0, 1| 1, 1| 2, 1| 3, 1| + |/
+   !| , 0 | , 0 | , 0 | , 0 |/| +
    !+-----+-----+-----+-----+ |/
-   !|-2,-2|-1,-2| 0,-2| 1,-2| +
-   !| ,-2 | ,-2 | ,-2 | -2  |/
+   !| 0, 0| 1, 0| 2, 0| 3, 0| +
+   !| , 0 | , 0 | , 0 |  0  |/
    !+-----+-----+-----+-----+
 
    !allocate cells and set the id of the cells
    id = 0
-   do ix = -ncell(1), ncell(1) -1
-      do iy = -ncell(2), ncell(2) -1
-         do iz = -ncell(3), ncell(3) -1
+   do ix = lbound(cell,dim=1), ubound(cell,dim=1)
+      do iy = lbound(cell,dim=2), ubound(cell,dim=2)
+         do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             id = id + 1
             cell(ix,iy,iz)%id = id ! sets the id
             allocate(cell(ix,iy,iz)%ip(np)) ! allocate cell particles
@@ -97,21 +97,19 @@ subroutine InitCellList(rcut, iStage)
    end do
 
    !set the neighbours
-   do ix = -ncell(1), ncell(1) -1
-      do iy = -ncell(2), ncell(2) -1
-         do iz = -ncell(3), ncell(3) -1
-
-
+   do ix = lbound(cell,dim=1), ubound(cell,dim=1)
+      do iy = lbound(cell,dim=2), ubound(cell,dim=2)
+         do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             !make pointers to neighbouring cells
             ineigh = 0
             do jx = -1, 1
                do jy = -1, 1
                   do jz = -1, 1
                      neigh(1:3) = (/ ix + jx, iy + jy , iz + jz /)
-                     where (neigh .ge. ncell)
-                        neigh = -ncell
-                     elsewhere (neigh < -ncell)
-                        neigh = ncell - 1
+                     where (neigh > ubound(cell))
+                        neigh = lbound(cell)
+                     elsewhere (neigh < lbound(cell))
+                        neigh = ubound(cell)
                      end where
 
                      alreadyneighbour = .false.
@@ -138,12 +136,13 @@ subroutine InitCellList(rcut, iStage)
 end subroutine InitCellList
 
 pure function pcellro(ro) result(icell)
+   use MolModule, only: boxlen2
    implicit none
    real(8), intent(in)  :: ro(3)
    type(cell_type), pointer :: icell
    integer(4)  :: i(3)
 
-   i = min(ncell-1,floor(ro*ircell))
+   i = floor((ro+ boxlen2)*ircell)
    icell => cell(i(1), i(2), i(3))
 end function pcellro
 
@@ -212,13 +211,13 @@ subroutine TestCellList(output)
    character(80), parameter :: txheading ='cell list testing'
    integer(4)  :: ix, iy, iz, ineigh
    type(cell_type), pointer   :: icell, tncell
-   integer(4)  :: ip, jp, incell, jploc
+   integer(4)  :: ip, jp, incell
    real(8)  :: dr(3), r2
    logical  :: lipjpneighbour
 
    call WriteHead(2, txheading, output)
    write(output,'()')
-   write(output,'(a,i0)') "Number of cells ", product(ncell(1:3))*8
+   write(output,'(a,i0)') "Number of cells ", size(cell)
    write(output,'()')
    write(output,'(tr2,a49)') &
    repeat('-',49)
@@ -226,9 +225,9 @@ subroutine TestCellList(output)
    'cell id', 'i neighbour', 'id of neighbour'
    write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
    repeat('-',15), repeat('-', 15), repeat('-',15)
-   do ix = -ncell(1), ncell(1) -1
-      do iy = -ncell(2), ncell(2) -1
-         do iz = -ncell(3), ncell(3) -1
+   do ix = lbound(cell,dim=1), ubound(cell,dim=1)
+      do iy = lbound(cell,dim=2), ubound(cell,dim=2)
+         do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             icell => cell(ix,iy,iz)
             do ineigh = 1, icell%nneighcell
                write(output,'(tr2,i15,tr2,i15,tr2,i15)') icell%id, ineigh, icell%neighcell(ineigh)%p%id
@@ -273,9 +272,9 @@ subroutine TestCellList(output)
    'cell id', 'n particles', 'particle id'
    write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
    repeat('-',15), repeat('-', 15), repeat('-',15)
-   do ix = -ncell(1), ncell(1) -1
-      do iy = -ncell(2), ncell(2) -1
-         do iz = -ncell(3), ncell(3) -1
+   do ix = lbound(cell,dim=1), ubound(cell,dim=1)
+      do iy = lbound(cell,dim=2), ubound(cell,dim=2)
+         do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             icell => cell(ix,iy,iz)
             write(output,'(tr2,i15,tr2,i15,999(tr2,i4))') icell%id, icell%npart, icell%ip(1:icell%npart)
          end do
@@ -335,14 +334,14 @@ subroutine CellListAver(iStage)
 
       case (iAfterSimulation)
 
-         nppp(1)   = nppp(1)/(nstep1*8*product(ncell(1:3)))
-         nppp(2)   = sqrt(nppp(2)/(nstep1*8*product(ncell(1:3)))-nppp(1)**2)
+         nppp(1)   = nppp(1)/(nstep1*size(cell))
+         nppp(2)   = sqrt(nppp(2)/(nstep1*size(cell))-nppp(1)**2)
          nneigh(1) = nneigh(1)/(nstep1*np)
          nneigh(2) = sqrt(nneigh(2)/(nstep1*np)-nneigh(1)**2)
 
          call WriteHead(2, txheading, uout)
          write(uout,'()')
-         write(uout,'(a,i0)') "Number of cells ", product(ncell(1:3))*8
+         write(uout,'(a,i0)') "Number of cells ", size(cell)
          write(uout,'()')
          write(uout,'(a,3f14.4)') "Size of Cells in x,y,z", 1.0d0/ircell(1:3)
          write(uout,'()')
