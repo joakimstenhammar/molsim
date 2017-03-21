@@ -1351,6 +1351,7 @@ end subroutine UndoPBCChain
 subroutine CalcChainProperty(ic, rotemp, ChainProperty)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4),          intent(in)  :: ic            ! chain number
@@ -1363,7 +1364,7 @@ subroutine CalcChainProperty(ic, rotemp, ChainProperty)
    !real(8) :: i_small, i_mid, i_large ! used in older code snippet below - currently not needed
    integer(4) :: iseg, ip, jp, jp_m, jp_p, ict, nrot
    real(8) :: hx, hy, hz, hxsum, hysum, hzsum
-   real(8) :: InvInt, InvFlt, PerLengthRg, Asphericity
+   real(8) :: InvFlt, PerLengthRg, Asphericity
 
    ict = ictcn(ic)
 
@@ -1577,7 +1578,7 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
    real(8)     :: diagonal(3)
    integer(4)  :: nrot
    integer(4)  :: npcharged
-   
+
 ! ... counter
    integer(4)  :: inwt, ip, iploc
    integer(4)  :: irow
@@ -2314,6 +2315,7 @@ end subroutine CorrAnalysis
 
 subroutine BlockAverAnalysis(ndata, unitin, unitout)
 
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: ndata                                  ! number of data points
@@ -2329,7 +2331,7 @@ subroutine BlockAverAnalysis(ndata, unitin, unitout)
    real(8)    :: av_sd(mnblocklen)
    real(8)    :: av_s2(mnblocklen)
    integer(4) :: ibl, idata
-   real(8)    :: data, InvInt, norm, norm1
+   real(8)    :: data, norm, norm1
    real(8)    :: xfit(50), yfit(50), wfit(50), afit(0:2), PolVal, dum1, dum2, av_sd_extrap, av_stateff
 
 ! ... initiation

@@ -100,10 +100,10 @@
    vtype(1) =.true., 0.0, 40.0, 200,  ! 003k
    vtype(1) =.true., 0.0, 30.0, 150,  ! 001k
  /
- 
+
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 1.5 /
- 
+
  &nmlMoldyn
   txtitle ='LJ-particles with embedded dipole moment',
   np    = 1000, nplow  = 1,  npupp = 1000, lgroup = .f.,

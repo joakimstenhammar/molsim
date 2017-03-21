@@ -287,15 +287,15 @@ subroutine UTotal(iStage)
 
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
-   if(.not.allocated(uaux)) then 
+   if(.not.allocated(uaux)) then
       allocate(uaux(2*((nptpt+1+npt+1)+8)))  ! 2* for scratch use
       uaux = 0.0E+00
    end if
-   if(.not.allocated(u%twob)) then 
+   if(.not.allocated(u%twob)) then
       allocate(u%twob(0:nptpt), du%twob(0:nptpt), u%oneb(0:npt), du%oneb(0:npt))
    end if
    if(ldipole .or. ldipolesph) then
-      if(.not.allocated(potstat)) then 
+      if(.not.allocated(potstat)) then
          allocate(potstat(na_alloc), estat(3,na_alloc), efg(6,na_alloc))
          potstat = 0.0E+00
          estat = 0.0E+00
@@ -303,7 +303,7 @@ subroutine UTotal(iStage)
       end if
    end if
    if(lpolarization) then
-      if(.not.allocated(potstat)) then 
+      if(.not.allocated(potstat)) then
          allocate(potstat(na_alloc), estat(3,na_alloc), eidm(3,na_alloc), etot(3,na_alloc), efg(6,na_alloc))
          potstat = 0.0E+00
          estat = 0.0E+00
@@ -2973,7 +2973,7 @@ subroutine IterIdm(lforceiter)
          idmsize = sqrt( (idm(1,ia))**2            + (idm(2,ia))**2            + (idm(3,ia))**2 )
 
 ! ... check if not converged, then exit the test loop
-         if(idmsize == Zero) then 
+         if(idmsize == Zero) then
             lidmconv =.false.
             exit
          end if
@@ -4962,7 +4962,7 @@ subroutine UTwoBodyPair(ip, jp, uuu, fforce)
       call stop(txroutine, 'lwealcharge = .true. is not appropiate', uout)
    else if (ldipole) then  ! atoms possening charges and dipoles
       if(ldipole) then
-         if(.not.allocated(potstat)) then 
+         if(.not.allocated(potstat)) then
             allocate(potstat(na_alloc), estat(3,na_alloc), efg(6,na_alloc))
             potstat = 0.0E+00
             estat = 0.0E+00
@@ -5789,7 +5789,7 @@ subroutine UExternalLJWallZlowDesorb                    ! Niklas 2006-12-20 deso
    real(8), parameter :: Sixth  = 1.0d0/6.0d0, TwoThree = 2.0d0/3.0d0
    real(8), allocatable, save :: z_min(:), uz_min(:), wallcut(:)
    real(8) :: zi1, zi3, ulj, flj
-   if(.not.allocated(z_min)) then 
+   if(.not.allocated(z_min)) then
       allocate(z_min(nat), uz_min(nat), wallcut(nat))
       z_min = 0.0E+00
       uz_min = 0.0E+00

@@ -37,6 +37,41 @@
 !                 plot : SignMagn   , Plot
 !               powell : BrentMod
 
+module MollibModule !Starting to migrate to Module
+
+   implicit none
+   private
+   public InvInt
+
+   interface InvInt
+      module procedure InvInt_single, InvInt_double
+   end interface InvInt
+
+   contains
+!************************************************************************
+!*                                                                      *
+!*     InvInt                                                           *
+!*                                                                      *
+!************************************************************************
+
+! ... return the inverse of an integer
+
+   pure elemental real(8) function InvInt_single(i)
+      implicit none
+      integer(4), intent(in) :: i
+      InvInt_single = 0.0d0
+      if (i .ne. 0) InvInt_single = 1.0d0/real(i)
+   end function InvInt_single
+
+   pure elemental real(8) function InvInt_double(i)
+      implicit none
+      integer(8), intent(in) :: i
+      InvInt_double = 0.0d0
+      if (i .ne. 0) InvInt_double = 1.0d0/real(i)
+   end function InvInt_double
+
+end module MollibModule
+
 !************************************************************************
 !*                                                                      *
 !*     ErfLocal                                                         *
@@ -1211,8 +1246,8 @@ end subroutine Diag
 !*                                                                      *
 !************************************************************************
 
-! ... Given the eigenvalues d and eigenvectors v as output from Diag this 
-! ... routine sorts the eigenvalues into descending order, and rearranges 
+! ... Given the eigenvalues d and eigenvectors v as output from Diag this
+! ... routine sorts the eigenvalues into descending order, and rearranges
 ! ... the columns of v correspondingly. The method is straight insertion.
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
@@ -1220,7 +1255,7 @@ end subroutine Diag
 
 subroutine Eigensort(d,v,n)
 
-   implicit none 
+   implicit none
 
    integer(4)  :: n
    real(8)     :: d(n), v(n,n)
@@ -1235,7 +1270,7 @@ subroutine Eigensort(d,v,n)
             k=j
             p=d(j)
          end if
-      end do   
+      end do
       if (k.ne.i) then
          d(k)=d(i)
          d(i)=p
@@ -1245,7 +1280,7 @@ subroutine Eigensort(d,v,n)
             v(j,k)=p
          end do
       end if
-   end do 
+   end do
 
    return
 
@@ -2736,28 +2771,6 @@ end subroutine SphRandom
 
 !************************************************************************
 !*                                                                      *
-!*     InvInt                                                           *
-!*                                                                      *
-!************************************************************************
-
-! ... return the inverse of an integer
-
-elemental real(8) function InvInt(i)
-   implicit none
-   integer(4), intent(in) :: i
-   InvInt = 0.0d0
-   if (i > 0) InvInt = 1.0d0/real(i)
-end function InvInt
-
-elemental real(8) function InvInt_dbl(i)
-   implicit none
-   integer(8), intent(in) :: i
-   InvInt_dbl = 0.0d0
-   if (i > 0) InvInt_dbl = 1.0d0/real(i)
-end function InvInt_dbl
-
-!************************************************************************
-!*                                                                      *
 !*     InvFlt                                                           *
 !*                                                                      *
 !************************************************************************
@@ -3432,7 +3445,7 @@ subroutine SignMagn(xin, isign, imagn)
    real(8), parameter :: zero = 0.0d0 , one = 1.0d0 , ten = 10.0d0
    real(8), intent(in)  :: xin      ! real number
    integer(4), intent(out) :: isign  ! sign
-   integer(4), intent(out) :: imagn  ! magnitude	
+   integer(4), intent(out) :: imagn  ! magnitude
    real(8) :: x
    isign = 1                         ! initialize
    imagn = 0                         ! initialize
@@ -3697,17 +3710,18 @@ end function BrentMod
 !*                                                                      *
 !************************************************************************
 
-! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker 
+! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker
 !     "The Art of Computer Programming" Second Edition Donald E. Knuth 1981
 !     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
 
 
 subroutine KnuthShuffle(a,asize, iseed)
+
    implicit none
 
-   integer, intent(in) :: asize !size needed to cope with allocatable arrays
-   integer, intent(inout) :: a(asize)
-   integer, intent(inout) :: iseed
+   integer(4), intent(in) :: asize !size needed to cope with allocatable arrays
+   integer(4), intent(inout) :: a(asize)
+   integer(4), intent(inout) :: iseed   ! seed to random number generator
    integer :: i, randpos, itmp
    real(8) :: Random
 
@@ -3719,4 +3733,3 @@ subroutine KnuthShuffle(a,asize, iseed)
    end do
 
 end subroutine KnuthShuffle
-

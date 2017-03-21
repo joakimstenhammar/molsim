@@ -1,6 +1,6 @@
 Contributing guide
 ==================
-This contributing guide describes the working procedure of the further development of Molsim. Changes and new features should always be implemented following the guidelines given below. The procedure can be summed up to the following steps: 
+This contributing guide describes the working procedure of the further development of Molsim. Changes and new features should always be implemented following the guidelines given below. The procedure can be summed up to the following steps:
 
   1. [Generate a new branch](#1-how-to-generate-a-new-branch)
   2. [Commit features/changes](#2-how-to-commit-featureschanges)
@@ -27,7 +27,7 @@ You're now in your new branch. You may now begin to implement new features/chang
 The changes you apply to the code should be as efficient and non-invasive as possible. Try to divide your modifications in logically-associated chunks of code. These chunks can then individually be commited and described in a commit message. After you changed something you first have to stage the files in which changes were made and which you'd like to commit.
 ```sh
 git add <LIST-OF-MODIFIED-FILES>
-``` 
+```
 After staging one or several files you may now commit using
 ```sh
 git commit -m "<YOUR-MESSAGE>"
@@ -55,19 +55,19 @@ Some general rules when commenting the changes of the code:
 Besides of the reviewing of the detailed code modifications, please check whether all requirements in [this checklist](#appendix-checklist) have been met. When you are finished reviewing all modifications and all discussions have been resolved, remove the WIP-prefix from the merge request. This signals the author of the modifications, that his branch may be merged.
 
 ## 5. How to resolve all discussions
-When the assignee of your merge request has fully reviewed your modifications, it is your responsibility to resolve all discussions. There are two types of discussions: 
+When the assignee of your merge request has fully reviewed your modifications, it is your responsibility to resolve all discussions. There are two types of discussions:
 * General comments with a :negative_squared_cross_mark: in it. Resolve the described issue and change the :negative_squared_cross_mark: to a :white_check_mark: (`:white_check_mark:`).
 * Line-oriented comments: Resolve the described issue and mark the discussion as resolved.
 
 Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still it is better to resolve it  or discuss with the assignee, why for example it should not be changed.
 
 ## 6. How to merge it
-When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests). 
+When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests).
 
 ## 7. How to finalize your merge
 After the merge has been done, there are still a few thing in order to finalize your merge request:
 
-### 7.1 Generate a tag 
+### 7.1 Generate a tag
 Generating a tag means to mark this specific point of the version history. First checkout the `master` branch, and pull it:
 ```sh
 git checkout master

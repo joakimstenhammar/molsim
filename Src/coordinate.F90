@@ -327,7 +327,7 @@ subroutine SetConfiguration
                                   radlimit,                                                          &
                                   itestcoordinate
 
-   if (.not.allocated(txsetconf)) then 
+   if (.not.allocated(txsetconf)) then
       allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt),       &
       roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
       txsetconf   = ""
@@ -340,7 +340,7 @@ subroutine SetConfiguration
       bondscl     = 0.0E+00
       anglemin    = 0.0E+00
    end if
-   if (.not.allocated(radatset)) then 
+   if (.not.allocated(radatset)) then
       allocate(radatset(nat))
       radatset = 0.0E+00
    end if
@@ -423,7 +423,7 @@ subroutine SetConfiguration
 
    anglemin = anglemin*sclang
 
-   if (.not.allocated(lpset)) then 
+   if (.not.allocated(lpset)) then
       allocate(lpset(np_alloc))
       lpset = .false.
    end if
@@ -502,7 +502,7 @@ subroutine SetConfiguration
                if (count(ipt == iptclnwt(1:nnwt)) > 1) call stop(txroutine, 'error in iptclnwt', uout)
             end do
             do ict = 1, nct   ! one chain type can only be used in one network type
-               if (count(ncctnwt(ict,1:nnwt) > 0) > 1) call stop(txroutine, 'chain type used for more than one network type', uout)   ! Cornelius Hofzumahaus 
+               if (count(ncctnwt(ict,1:nnwt) > 0) > 1) call stop(txroutine, 'chain type used for more than one network type', uout)   ! Cornelius Hofzumahaus
             end do
          end if
       end if
@@ -1632,7 +1632,7 @@ subroutine SetChainRandomIntOri(iptset)
                r21(2) = ro(2,ipprev)-ro(2,ip)
                r21(3) = ro(3,ipprev)-ro(3,ip)
                call PBC(r21(1), r21(2), r21(3))
-               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector			
+               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector
                call SetPartOriBond('end', r21, r21, ori(1,1,ip))      ! set second paricle to aligne with r12 vector
 
                call SetAtomPos(ipprev,ip,.false.)
@@ -2178,7 +2178,7 @@ subroutine SetNetwork(ipt)
 
 ! ... determine chain type of strand
 
-   do ict = 1, nct   ! Currently only one chain type per network is allowed 
+   do ict = 1, nct   ! Currently only one chain type per network is allowed
       if (ncctnwt(ict,inwt) > 0) exit
    end do
 
@@ -2198,7 +2198,7 @@ subroutine SetNetwork(ipt)
 
 ! ... when particle and chain number don't accord to the neccesary ones: stop excecution and write required numbers
 
-   if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then 
+   if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then
       write(uout,'(a50,i0)') "failed to set network of network type:"       , inwt
       write(uout,'(a50,i0)') "required number of chains:"                   , nstrand*nnwnwt(inwt)
       write(uout,'(a50,i0)') "required number of node particles:"           , nnode*nnwnwt(inwt)
@@ -2369,7 +2369,7 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronodeout, nstrand, r
    nnode = 0
    nstrand = 0
    npart_strand = 0
-   if(.not.allocated(rostrand)) then 
+   if(.not.allocated(rostrand)) then
       allocate(rostrand(3,np_alloc), ronode(3,np_alloc))
       rostrand = 0.0E+00
       ronode = 0.0E+00
@@ -2419,7 +2419,7 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronodeout, nstrand, r
                      allocate(rostrand(3,2*size(vhelp,2)))
                      rostrand = 0.0E+00
                      rostrand = vhelp
-                  end if 
+                  end if
                   if(ilp >= 5) then                             ! distinguish between node symmetry
                         if((idir == 1) .or. (idir == 3)) then   ! chains starting at node
                            rostrand(1:3,jploc) = ronode(1:3,iploc) + iseg*signgel(1:3,idir)*xbondlen
@@ -2449,7 +2449,7 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronodeout, nstrand, r
 
    rostrandout = rostrand(1:3,1:np_alloc)
    ronodeout   = ronode(1:3,1:np_alloc)
-   
+
 end subroutine SetNetworkPos
 
 !***********************************************************************

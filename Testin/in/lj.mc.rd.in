@@ -5,7 +5,7 @@
   boxlen= 3*10.,
   cellside = 6.8738,
   temp  = 120.28,       prsr  = 0.1013,
-  temp  = 240.56,       prsr  = 0,     
+  temp  = 240.56,       prsr  = 0,
   iseed = 1,
   lcont =.t.,  laver =.t.,  ldist =.t., limage = .t., lstatic = .f.,
   itest = 0,   ipart = 1,   ishow = 1,  iplot = 1,   ilist = 1,
@@ -36,7 +36,7 @@
  &nmlMC
   isamp = 1,
   pspart = 1.0, dtran = 0.2,
- / 
+ /
  &nmlIntList inlist= 0, drnlist  = 1.0, /
  &nmlDist vtype(5) = .t., 0.0, 5.0, 100, idist=10 /
  &nmlImage lvrml =.true. /

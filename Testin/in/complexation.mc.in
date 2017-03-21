@@ -59,7 +59,7 @@
  &nmlMC
   isamp     = 1,
   pspart = 1.0, 1.0, 1.0, dtran = 0.0, 0.0, 0.0,
-  pspartsso = 0.0,   0.0,   0.0, 
+  pspartsso = 0.0,   0.0,   0.0,
   ppivot    = 0.0,   0.1,   0.1,
   drotpivot = 0.0, 180.0, 180.0,
   txpivot   = '', 'upper', 'upper',
@@ -73,7 +73,7 @@
  /
  &nmlGroup
  /
- &nmlIntList 
+ &nmlIntList
  /
  &nmlDist /
  &nmlStatic
@@ -83,8 +83,13 @@
  &nmlChainTypeDF
  vtype(2) = .t., 0.0, 200.0, 200,
  /
- &nmlComplexation 
+ &nmlComplexation
   rcut_complexation = 6.25,
   lComplexFraction = .true.,
   lClusterDF = .true.,
+  lSegmentComplex = .true.,
+  lComplexDist = .true.,
+ /
+ &nmlComplexDist
+ vtype(1) = .true.
  /

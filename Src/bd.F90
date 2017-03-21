@@ -84,7 +84,7 @@ subroutine IOBD(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(dcoeff)) then 
+      if (.not.allocated(dcoeff)) then
          allocate(dcoeff(npt))
          dcoeff = 0.0E+00
       end if

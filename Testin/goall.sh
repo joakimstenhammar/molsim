@@ -10,7 +10,7 @@ job=$1
 
 for i in pos ori liv anv for tor group utot
 
-do 
+do
    rm -f $job.ana.$i
    ln -s $job.$i $job.ana.$i
 done
@@ -30,7 +30,7 @@ rm -r out
 cp -r in out
 
 cd out
- 
+
 #gotest
 $molsim test                      $core
 
@@ -44,7 +44,7 @@ $molsim  free.mc.uext2            $core
 $molsim  free.md1                 $core
 $molsim  free.md2                 $core
 $molsim  di.mc                    $core
- 
+
 #gohs
 $molsim  hs.mc                    $core
 $molsim  hs.mc.percolation1       $core
@@ -256,7 +256,7 @@ $molsim sb_z_xyz                  $core
 $molsim sb_nr                     $core
 $molsim sb_mesh                   $core
 $molsim sb.mc.ads                 $core
- 
+
 $molsim  capsid.mc.charge         $core
 $molsim  capsid.mc.uniform        $core
 $molsim  jurij1                   $core
@@ -294,7 +294,7 @@ echo "Remove group and dump files"
 echo
 rm -f *.group
 rm -f *.pos;  rm -f *.ori;  rm -f *.liv;  rm -f *.anv;  rm -f *.for;  rm -f *.tor; rm -f *.utot
- 
+
 echo
 echo "Your job is completed!"
 echo

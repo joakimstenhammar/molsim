@@ -17,7 +17,7 @@
       real(8)     :: d4 !displacement**4
    end type step
 
-   !define what happens if two variables of type step are added 
+   !define what happens if two variables of type step are added
    interface operator(+)
       module procedure stepadd
    end interface operator(+)
@@ -29,7 +29,7 @@
 
    contains
 
-      !define what happens if two variables of type step are added 
+      !define what happens if two variables of type step are added
       pure function stepadd(s1, s2) result(add)
          type(step), intent(in) :: s1, s2
          type(step)  :: add
@@ -134,7 +134,7 @@
             read(uin,nmlSPartSSO)
             !--------------------------------------------------------------------------------------
 
-         case (iWriteInput) 
+         case (iWriteInput)
 
             ! check conditions---------------------------------------------------------------------
             if (master) then
@@ -347,7 +347,7 @@
          subroutine CalcCurrentMobility(ipt)
 
             implicit none
-            
+
             ! particle type to be calculated
             integer(4), intent(in)  :: ipt
 
@@ -366,7 +366,7 @@
             type(step)  :: stepbin ! steps done
 
 
-            stepbin = step(0, Zero, Zero) 
+            stepbin = step(0, Zero, Zero)
             Mobility(0) = mobility_var(Zero, Zero, Zero)
 
             do ibin = 1, nssobin

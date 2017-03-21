@@ -95,7 +95,7 @@ module MCModule
                                                      ! = 'lower' rotation of the lower subchain
                                                      ! = 'upper' rotation of the upper subchain
    character(6)               :: txdualpivot         ! = 'nodual' individual pivot  move
-                                                     ! = 'linear' linear chain ict = 3 as reference (dual pivot = linear chain + branched diblock copolymer) 	
+                                                     ! = 'linear' linear chain ict = 3 as reference (dual pivot = linear chain + branched diblock copolymer)
                                                      ! = 'combed' combed chain ict = 1 as reference (dual pivot = branched diblock +  copolymerlinear chain)
                                                      ! = 'mullin' idem as 'combed' and additionally works for icnct(ict) > 1
    real(8), allocatable       :: drotpivot(:)        ! rotation parameter of pivot rotation move
@@ -155,8 +155,8 @@ module MCModule
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
    real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
-   
-   
+
+
 
 ! ... mcall trial move variables
 
@@ -436,135 +436,135 @@ subroutine IOMC(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(lptmove)) then 
+      if (.not. allocated(lptmove)) then
          allocate(lptmove(npt))
       end if
-      if (.not. allocated(pspart)) then 
+      if (.not. allocated(pspart)) then
          allocate(pspart(npt))
       end if
-      if (.not. allocated(dtran)) then 
+      if (.not. allocated(dtran)) then
          allocate(dtran(npt))
       end if
-      if (.not. allocated(drot)) then 
+      if (.not. allocated(drot)) then
          allocate(drot(npt))
       end if
-      if (.not. allocated(lcl1spart)) then 
+      if (.not. allocated(lcl1spart)) then
          allocate(lcl1spart(npt))
       end if
-      if (.not. allocated(lfixzcoord)) then 
+      if (.not. allocated(lfixzcoord)) then
          allocate(lfixzcoord(npt))
       end if
-      if (.not. allocated(lfixxycoord)) then 
+      if (.not. allocated(lfixxycoord)) then
          allocate(lfixxycoord(npt))
       end if
-      if (.not. allocated(lshiftzcom)) then 
+      if (.not. allocated(lshiftzcom)) then
          allocate(lshiftzcom(npt))
       end if
-      if (.not. allocated(pspartcl2)) then 
+      if (.not. allocated(pspartcl2)) then
          allocate(pspartcl2(npt))
       end if
-      if (.not. allocated(txmembcl2)) then 
+      if (.not. allocated(txmembcl2)) then
          allocate(txmembcl2(npt))
       end if
-      if (.not. allocated(radcl2)) then 
+      if (.not. allocated(radcl2)) then
          allocate(radcl2(npt))
       end if
-      if (.not. allocated(dtrancl2)) then 
+      if (.not. allocated(dtrancl2)) then
          allocate(dtrancl2(npt))
       end if
-      if (.not. allocated(ppivot)) then 
+      if (.not. allocated(ppivot)) then
          allocate(ppivot(npt))
       end if
-      if (.not. allocated(txpivot)) then 
+      if (.not. allocated(txpivot)) then
          allocate(txpivot(npt))
       end if
-      if (.not. allocated(drotpivot)) then 
+      if (.not. allocated(drotpivot)) then
          allocate(drotpivot(npt))
       end if
-      if (.not. allocated(drotminpivot)) then 
+      if (.not. allocated(drotminpivot)) then
          allocate(drotminpivot(npt))
       end if
-      if (.not. allocated(lcl1pivot)) then 
+      if (.not. allocated(lcl1pivot)) then
          allocate(lcl1pivot(npt))
       end if
-      if (.not. allocated(pchain)) then 
+      if (.not. allocated(pchain)) then
          allocate(pchain(npt))
       end if
-      if (.not. allocated(dtranchain)) then 
+      if (.not. allocated(dtranchain)) then
          allocate(dtranchain(npt))
       end if
-      if (.not. allocated(drotchain)) then 
+      if (.not. allocated(drotchain)) then
          allocate(drotchain(npt))
       end if
-      if (.not. allocated(lcl1chain)) then 
+      if (.not. allocated(lcl1chain)) then
          allocate(lcl1chain(npt))
       end if
-      if (.not. allocated(pslither)) then 
+      if (.not. allocated(pslither)) then
          allocate(pslither(npt))
       end if
-      if (.not. allocated(pbrush)) then 
+      if (.not. allocated(pbrush)) then
          allocate(pbrush(npt))
       end if
-      if (.not. allocated(dtranbrush)) then 
+      if (.not. allocated(dtranbrush)) then
          allocate(dtranbrush(npt))
          dtranbrush = 0.0E+00
       end if
-      if (.not. allocated(drotbrush)) then 
+      if (.not. allocated(drotbrush)) then
          allocate(drotbrush(npt))
          drotbrush = 0.0E+00
       end if
-      if (.not. allocated(lcl1brush)) then 
+      if (.not. allocated(lcl1brush)) then
          allocate(lcl1brush(npt))
          lcl1brush = .false.
       end if
-      if (.not. allocated(pbrushcl2)) then 
+      if (.not. allocated(pbrushcl2)) then
          allocate(pbrushcl2(npt))
       end if
-      if (.not. allocated(dtranbrushcl2)) then 
+      if (.not. allocated(dtranbrushcl2)) then
          allocate(dtranbrushcl2(npt))
          dtranbrushcl2 = 0.0E+00
       end if
-      if (.not. allocated(drotbrushcl2)) then 
+      if (.not. allocated(drotbrushcl2)) then
          allocate(drotbrushcl2(npt))
          drotbrushcl2 = 0.0E+00
       end if
-      if (.not. allocated(phierarchical)) then 
+      if (.not. allocated(phierarchical)) then
          allocate(phierarchical(npt))
       end if
-      if (.not. allocated(dtranhierarchical)) then 
+      if (.not. allocated(dtranhierarchical)) then
          allocate(dtranhierarchical(npt))
          dtranhierarchical = 0.0E+00
       end if
-      if (.not. allocated(pnetwork)) then 
+      if (.not. allocated(pnetwork)) then
          allocate(pnetwork(npt))
       end if
-      if (.not. allocated(dtrannetwork)) then 
+      if (.not. allocated(dtrannetwork)) then
          allocate(dtrannetwork(npt))
          dtrannetwork = 0.0E+00
       end if
-      if (.not. allocated(pvol)) then 
+      if (.not. allocated(pvol)) then
          allocate(pvol(npt))
       end if
-      if (.not. allocated(pnpart)) then 
+      if (.not. allocated(pnpart)) then
          allocate(pnpart(npt))
       end if
-      if (.not. allocated(chempot)) then 
+      if (.not. allocated(chempot)) then
          allocate(chempot(npt))
          chempot = 0.0E+00
       end if
-      if (.not. allocated(radcl1)) then 
+      if (.not. allocated(radcl1)) then
          allocate(radcl1(npt))
       end if
-      if (.not. allocated(pselectcl1)) then 
+      if (.not. allocated(pselectcl1)) then
          allocate(pselectcl1(npt))
       end if
-      if (.not. allocated(pcharge)) then 
+      if (.not. allocated(pcharge)) then
          allocate(pcharge(npt))
       end if
-      if (.not. allocated(pspartsso)) then 
+      if (.not. allocated(pspartsso)) then
          allocate(pspartsso(npt))
       end if
-      if (.not. allocated(plocal)) then 
+      if (.not. allocated(plocal)) then
          allocate(plocal(npt))
       end if
 
@@ -645,21 +645,21 @@ subroutine IOMC(iStage)
          lssopt = .false.
          where ( pspartsso(1:npt) > Zero) lssopt = .true.
       end if
-            
+
 
    case (iWriteInput)
 
 ! ... allocate memory for MC-specific pointers
 
-      if (.not.allocated(ianatm)) then 
+      if (.not.allocated(ianatm)) then
          allocate(ianatm(na_alloc))
          ianatm = 0
       end if
-      if (.not.allocated(iptmpn)) then 
+      if (.not.allocated(iptmpn)) then
          allocate(iptmpn(np_alloc))
          iptmpn = 0
       end if
-      if (.not.allocated(ipnptm)) then 
+      if (.not.allocated(ipnptm)) then
          allocate(ipnptm(np_alloc))
          ipnptm = 0
       end if
@@ -670,7 +670,7 @@ subroutine IOMC(iStage)
 
 ! ... initiate lptm
 
-      if (.not.allocated(lptm)) then 
+      if (.not.allocated(lptm)) then
          allocate(lptm(np_alloc))
          lptm = .false.
       end if
@@ -678,7 +678,7 @@ subroutine IOMC(iStage)
 
 ! ... initiate lmcsep
 
-      if (lmcsep .and. (.not. allocated(plocal))) then 
+      if (lmcsep .and. (.not. allocated(plocal))) then
          allocate(plocal(npt))
       end if
 
@@ -717,7 +717,7 @@ subroutine IOMC(iStage)
 
 ! ... normalize probabilities of different trial moves
 
-      if (.not.allocated(psum)) then 
+      if (.not.allocated(psum)) then
          allocate(psum(npt))
          psum = 0.0E+00
       end if
@@ -1458,7 +1458,7 @@ subroutine SPartCl2Move(iStage)
 
 ! ... consider first primary cluster particles
 
-   if (.not.allocated(n1)) then 
+   if (.not.allocated(n1)) then
       allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
       n1 = 0
       n2 = 0
@@ -1787,7 +1787,7 @@ subroutine PivotDual    ! dual pivot rotation
    real(8)    :: dx1, dy1, dz1, dx2, dy2, dz2, dtemp_min(2), r1, r2
    real(8)    :: dinf, r_dist
 
-   if (.not.allocated(dtemp)) then 
+   if (.not.allocated(dtemp)) then
       allocate(dtemp(np_alloc,2))
       dtemp = 0.0E+00
    end if
@@ -1821,7 +1821,7 @@ subroutine PivotDual    ! dual pivot rotation
                      if (dinf > boxlen(1)/3.0)   direction = +1
                      call UndoPBCChain(vaux(1,ipnsegcn(1,ic)), ic_loc, direction, vaux)
                   end if
-                  if (nbondcl(ip) == 1.and.ict_loc > 1 ) call UndoPBCChain(vaux(1,bondcl(1,ip)), ic_loc, direction, vaux)  !linked beads belonging to the backbone as reference		
+                  if (nbondcl(ip) == 1.and.ict_loc > 1 ) call UndoPBCChain(vaux(1,bondcl(1,ip)), ic_loc, direction, vaux)  !linked beads belonging to the backbone as reference
                end do
             end do
          end do
@@ -1923,7 +1923,7 @@ subroutine PivotDual    ! dual pivot rotation
          do ic = 1, nc                     ! undo the linear chain
             ict = ictcn(ic)
             ip = ipnsegcn(1,ic)
-            if(ihnpn(ip) /= 0) cycle       ! exclude hierarchical structures	
+            if(ihnpn(ip) /= 0) cycle       ! exclude hierarchical structures
             call UndoPBCChain(vaux(1,ipnsegcn(1,1)), ic, -1, vaux)! it assumes ic =1 is the backbone of the hierarchy; direction should be  -1
          end do
 
@@ -2026,7 +2026,7 @@ subroutine PivotDual    ! dual pivot rotation
                if (dtemp_min(1) == dtemp(iseg_loc,1)) iseg_min = iseg_loc                ! store closest segment as iseg_min
             end do
 
-            jp1 =  ipnsegcn(iseg_min,ic_temp)                  ! store closest particle to ip1 as jp1	
+            jp1 =  ipnsegcn(iseg_min,ic_temp)                  ! store closest particle to ip1 as jp1
             if(iseg_min /= 1 .or. iseg_min /= npct(ict_temp))  then
                do iseg_loc = iseg_min-1, iseg_min +1, 2        ! compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
                   dx2 = vaux(1,ipnsegcn(iseg_loc,ic_temp)) - vaux(1,ip3)
@@ -2643,7 +2643,7 @@ subroutine BrushCl2Move(iStage)
 
 ! ... consider first primary cluster particles (particles of type iptmove including particle ipmove)
 
-   if (.not.allocated(n1)) then 
+   if (.not.allocated(n1)) then
       allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
       n1 = 0
       n2 = 0
@@ -3545,11 +3545,11 @@ subroutine IOMCAll(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(dtranall)) then 
+      if (.not. allocated(dtranall)) then
          allocate(dtranall(npt))
          dtranall = 0.0E+00
       end if
-      if (.not. allocated(drotall)) then 
+      if (.not. allocated(drotall)) then
          allocate(drotall(npt))
          drotall = 0.0E+00
       end if
@@ -3619,7 +3619,7 @@ subroutine MCAllPass(iStage)
 
    if (ltime) call CpuAdd('start', trim(txroutine)//'_move', 1, uout)
 
-   if(.not.allocated(rosave)) then 
+   if(.not.allocated(rosave)) then
       allocate(rosave(3,np_alloc), orisave(3,3,np_alloc), boxlensave(1:3), &
            idmsyssave(1:3), idmosave(1:3,1:np), idmsave(1:3,1:na), forcesave(1:3,1:na))
       rosave = 0.0E+00
@@ -4873,7 +4873,7 @@ subroutine MCAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if (.not.allocated(nys1)) then 
+      if (.not.allocated(nys1)) then
          allocate(nys1(0:nevent,0:npt,nmovetype), nys2(0:nevent,0:npt,nmovetype), &
       npcl1s1(2,npt,nmovetype), npcl1s2(2,npt,nmovetype), npcl2s1(2,npt), npcl2s2(2,npt), nprimpartclmax(npt))
          nys1 = 0
@@ -4884,7 +4884,7 @@ subroutine MCAver(iStage)
          npcl2s2 = 0
          nprimpartclmax = 0
       end if
-      if (.not.allocated(nazs1)) then 
+      if (.not.allocated(nazs1)) then
          allocate(nazs1(1:nat), nazs2(1:nat))
          nazs1 = 0
          nazs2 = 0
@@ -4952,23 +4952,23 @@ contains
 
 subroutine MCAverWrite(ny, npcl, nprimpartcl)
 
+   use MollibModule, only: InvInt
    integer(8), intent(in) :: ny(0:nevent,0:npt,1:nmovetype)
    integer(8), intent(in) :: npcl(2,npt,1:nmovetype)
    integer(8), intent(in) :: nprimpartcl(2,npt)
 
    integer(4) :: ipt
    real(8)    :: any(0:nevent,0:npt), ancl1(2,npt), ancl2(2,npt)
-   real(8)    :: InvInt_dbl
 
    call WriteHead(2, 'mc statistics', uout)
    do imovetype = 1, nmovetype
       if (ny(0,0,imovetype) == 0) cycle
       if (imovetype > 1) write(uout,'()')
       do ipt = 0, npt
-         any(0:nevent,ipt) = ny(0:nevent,ipt,imovetype)*InvInt_dbl(ny(0,ipt,imovetype))
+         any(0:nevent,ipt) = ny(0:nevent,ipt,imovetype)*InvInt(ny(0,ipt,imovetype))
       end do
       do ipt = 1, npt
-         ancl1(1:2,ipt) = npcl(1:2,ipt,imovetype)*InvInt_dbl(ny(imcaccept,ipt,imovetype))
+         ancl1(1:2,ipt) = npcl(1:2,ipt,imovetype)*InvInt(ny(imcaccept,ipt,imovetype))
       end do
       write(uout,'(a,t50,a,6(10x,a))') txmovetype(imovetype), 'total', txpt(1:npt)
       write(uout,'(a,t50,a,6(10x,a))') '-------------------', '-----', ('----------',ipt = 1,npt)
@@ -4983,7 +4983,7 @@ subroutine MCAverWrite(ny, npcl, nprimpartcl)
 
    if (ny(0,0,ispartcl2move) > 0) then
       do ipt = 1, npt
-         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt_dbl(ny(imcaccept,ipt,ispartcl2move))
+         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt(ny(imcaccept,ipt,ispartcl2move))
       end do
       write(uout,'()')
       write(uout,'(a,t60,5(5x,f10.2,5x))') 'average no of diplacad part.   = ', ancl2(1,1:npt)
@@ -4991,7 +4991,7 @@ subroutine MCAverWrite(ny, npcl, nprimpartcl)
    end if
    if (ny(0,0,ibrushcl2move) > 0) then
       do ipt = 1, npt
-         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt_dbl(ny(imcaccept,ipt,ibrushcl2move))
+         ancl2(1:2,ipt) = nprimpartcl(1:2,ipt)*InvInt(ny(imcaccept,ipt,ibrushcl2move))
       end do
       write(uout,'()')
       write(uout,'(a,t60,5(5x,f10.2,5x))') 'average no of diplacad part.   = ', ancl2(1,1:npt)
@@ -5003,11 +5003,11 @@ end subroutine MCAverWrite
 !........................................................................
 
 subroutine MCAverData
-   real(8) :: InvInt_dbl
+   use MollibModule, only: InvInt
    open(90, file = 'mcaver.data', position = 'append')
    write(90,'(15g10.3)') dtran(1:npt), pspart(1:npt), radcl1(1:npt), &
-                         nys1(imcaccept,1:npt,ispartmove)*InvInt_dbl(nys1(0,1:npt,ispartmove)), &
-                         npcl1s1(1,1:npt,ispartmove)*InvInt_dbl(nys1(imcaccept,1:npt,ispartmove))
+                         nys1(imcaccept,1:npt,ispartmove)*InvInt(nys1(0,1:npt,ispartmove)), &
+                         npcl1s1(1,1:npt,ispartmove)*InvInt(nys1(imcaccept,1:npt,ispartmove))
    close(90)
 end subroutine MCAverData
 
@@ -5072,9 +5072,9 @@ contains
 
 subroutine MCAllAversub(ny)
 
+   use MollibModule, only: InvInt
    integer(4), intent(in) :: ny(0:nevent)
    real(8)    :: any(0:nevent)
-   real(8)    :: InvInt
    integer(4) :: ievent
 
    any = ny*InvInt(ny(0))

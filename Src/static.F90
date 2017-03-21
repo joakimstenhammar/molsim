@@ -1106,6 +1106,7 @@ end subroutine RDF
 subroutine RDFChain(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1123,7 +1124,7 @@ subroutine RDFChain(iStage)
    real(8), save :: rdfvols2
    type(chainprop_var) :: ChainProperty
    integer(4) :: itype, ivar, ibin, ic, jc, ict, jct, ictjct
-   real(8)    :: r1, r2, dvol, darea, dcx, dcy, dcz, dropbc(3), InvInt, InvFlt
+   real(8)    :: r1, r2, dvol, darea, dcx, dcy, dcz, dropbc(3), InvFlt
 
    namelist /nmlRDFChain/ vtype, rmax, func
 
@@ -2141,7 +2142,7 @@ subroutine ScatIntens(nbin, q, sfpar)
 
    namelist /nmlScatIntens/ nshell, rshell, cshell
 
-    if (.not.allocated(nshell)) then 
+    if (.not.allocated(nshell)) then
        allocate(nshell(npt), rshell(mnshell,npt), cshell(mnshell,npt))
        nshell = 0
        rshell = 0.0E+00
@@ -3424,6 +3425,7 @@ end subroutine RadAngDF
 subroutine Kirkwoodgk(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -3437,7 +3439,7 @@ subroutine Kirkwoodgk(iStage)
    type(df_var),  allocatable, save :: var(:)
    integer(4),    allocatable, save :: ipnt(:,:)
    integer(4) :: itype, ivar, ibin, ip, ipt, jp, kp, jpt, iptjpt
-   real(8)    :: dx, dy, dz, r2, ac, angcos, InvInt
+   real(8)    :: dx, dy, dz, r2, ac, angcos
 
    namelist /nmlKirkwoodgk/ vtype, rmax
 
@@ -3800,6 +3802,7 @@ end subroutine OriPolDF
 subroutine NNHB(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -3814,7 +3817,7 @@ subroutine NNHB(iStage)
    integer(4), save :: nsamp1
    real(8),    save :: rmax
    integer(4) :: ip, jp, igr, jgr, ith, inn, ihb
-   real(8)    :: dx, dy, dz, r2, uuu, fdum(3), aver, term, norm, norm1, InvInt
+   real(8)    :: dx, dy, dz, r2, uuu, fdum(3), aver, term, norm, norm1
 
    namelist /nmlNNHB/ nthnn, thnn, nthhb, thhb, nnnhb, rmax
 
@@ -4814,7 +4817,7 @@ subroutine LoopTailTrain(iStage)
       call LowerCase(adscond%txobject)
       call LowerCase(adscond%txsurface)
 
-      if (.not.allocated(ladsseg)) then 
+      if (.not.allocated(ladsseg)) then
          allocate(ladsseg(maxval(npct(1:nct))))
          ladsseg = .false.
       end if
@@ -5040,7 +5043,7 @@ end subroutine CheckAdsChainSeg
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(iobjt)) then 
+      if (.not.allocated(iobjt)) then
          allocate(iobjt(npt))
          iobjt = 0
       end if
@@ -5064,7 +5067,7 @@ end subroutine CheckAdsChainSeg
 
    case (iWriteInput)
 
-     if (.not.allocated(txobjt)) then 
+     if (.not.allocated(txobjt)) then
         allocate(txobjt(nobjt))
      end if
 
@@ -6202,6 +6205,7 @@ end subroutine EnergyDF
    subroutine Widom1(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -6217,7 +6221,7 @@ end subroutine EnergyDF
    type(scalar_var), allocatable, save :: var(:)
    integer(4),       save :: nvar, ivol, iacc, iide, iexe
    integer(4) :: iset, itimes, iseedWidom
-   real(8)    :: duwidom(0:npt), InvInt
+   real(8)    :: duwidom(0:npt)
    logical    :: lhsoverlap
    character(1) :: nchar
 
@@ -7438,7 +7442,7 @@ subroutine SurfaceArea(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(wradat)) then 
+      if (.not.allocated(wradat)) then
          allocate(wradat(nat))
          wradat = 0.0E+00
       end if
@@ -7809,6 +7813,7 @@ end subroutine ExcessAmount
 subroutine SubStructureDF(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
 
    implicit none
 
@@ -7834,7 +7839,7 @@ subroutine SubStructureDF(iStage)
 
    real(8)    :: rcom(3), rgsub, alpha
    integer(4) :: ipt, ip, ivar, ibin, itype, igr, ict, ic, ia
-   real(8)    :: InvFlt, InvInt
+   real(8)    :: InvFlt
    real(8)    :: r2, r1, dr(3), vsum, norm, value, dvol
 
    namelist /nmlSubStructureDF/ vtype, lptinsub

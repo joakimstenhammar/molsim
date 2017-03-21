@@ -2,9 +2,9 @@
   txtitle ='hs 60:1 system, spherical cell',
   txmethod='mc',    txensemb='nvt',     txbc ='sph',  txstart ='setconf', txuser = 'twocomponentmodel_corr',
   nstep1   = 2,     nstep2   = 100,
- 
+
   sphrad= 50.0,
- 
+
   temp  = 298.0,    prsr = 0.1013,
   iseed = 9876543,
   lcont =.t.,  laver =.t.,    ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.t.,limage =.f.,

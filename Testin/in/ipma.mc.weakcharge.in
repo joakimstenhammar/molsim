@@ -32,7 +32,7 @@
   txat  = 'CH2', 'Csp3',  'CH3','COO', 'Na',
   massat=  14.,   12.0,    0.,   0.,    23.,
   radat =  0.675, 0.675,   0.9,  1.14,   0.9,
-  zat   =  0.,    0.,      0.,  -1.,     1., 
+  zat   =  0.,    0.,      0.,  -1.,     1.,
   latweakcharge = ,,, .t.,,
   pK    = ,,, 5.0,,
   pH    = 5,
@@ -42,8 +42,8 @@
   txaat(1,1) = 'CH2',
   rain(1,1,1)  =  0.0, 0.0, 0.0,
 
-  naatpt(1,2)=  1,                           
-  txaat(1,2) = 'Csp3',                      
+  naatpt(1,2)=  1,
+  txaat(1,2) = 'Csp3',
   rain(1,1,2)  =  0.0, 0.0, 0.0,
 
   naatpt(2,2)=  1,
@@ -80,7 +80,7 @@
 
  &nmlMC
   isamp = 0,
-  pspart    = 0.0, 0.0, 1.0,  dtran     = 0.0, 0.0, 20.,   
+  pspart    = 0.0, 0.0, 1.0,  dtran     = 0.0, 0.0, 20.,
   ppivot    = 1.0, 1.0, 0.0,  drotpivot = 30.0, 30., 0.,   ipivotrotmode  = 1
   pchain    = 1.0, 1.0, 0.0,  dtranchain= 0.3, 0.3, 0.0,
   pcharge   = 0.0, 1.0, 0.0,
@@ -92,7 +92,7 @@
  &nmlDist
   vtype(5)=.t., 0.0, 100.0,200,
   vtype(6)=.f., 0.0, 73.0, 73
-  idist=10, 
+  idist=10,
   rcutdist =  100.0,
  /
 

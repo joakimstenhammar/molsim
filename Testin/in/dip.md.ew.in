@@ -31,7 +31,7 @@
   dipain(1,1,1) = 0.0000, 0.0000, 0.10584,
   dipain(1,1,1) = 0.0000, 0.0000, 0.23813,
   dipain(1,1,1) = 0.0000, 0.0000, 0.34397,
- 
+
  /
  &nmlPotential
   txpot = '(1,6,12)',
@@ -106,7 +106,7 @@
  /
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 1.5 /
- 
+
  &nmlMoldyn
   txtitle ='LJ-particles with embedded dipole moment',
   np    = 1000, nplow  = 1,  npupp = 1000, lgroup = .f.,

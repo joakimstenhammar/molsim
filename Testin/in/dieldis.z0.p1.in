@@ -6,9 +6,9 @@
   txmethod= 'mc',     txensemb='nvt',     txbc  ='sph',  txstart ='setconf',
   txmethod= 'mc',     txensemb='nvt',     txbc  ='sph',  txstart ='readfin',
   nstep1   = 1,     nstep2   = 1,
- 
+
   sphrad= 50.0,
- 
+
   temp  = 298.0,    prsr  = 0.1013,
   iseed = 9876543,
   lcont =.t.,  laver =.t.,    ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.f.,limage =.f.,

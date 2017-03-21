@@ -831,6 +831,7 @@ end subroutine ControlAver
 subroutine MDAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -844,14 +845,14 @@ subroutine MDAver(iStage)
    real(8), allocatable, save :: ttras2(:),   ttras1(:)   ! translational temp
    real(8), allocatable, save :: trots2(:),   trots1(:)   ! rotational temp
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm, fac
+   real(8)    :: norm, fac
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(for2s2)) then 
+      if(.not.allocated(for2s2)) then
          allocate( for2s2(npt), for2s1(npt), tor2s2(3,npt), tor2s1(3,npt), &
          lims2(3,npt), lims1(3,npt), anms2(3,npt), anms1(3,npt), ttras2(npt), ttras1(npt), trots2(npt), trots1(npt) )
          for2s2 = 0.0E+00
@@ -983,6 +984,7 @@ end subroutine MDAver
 subroutine DispAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -993,14 +995,14 @@ subroutine DispAver(iStage)
    real(8), allocatable, save :: rr2(:), rr2sd(:)       ! mean square displacement/step for particle type ipt
    real(8), allocatable, save :: rr3(:), rr3sd(:)       ! mean square displacement/step for particle type ipt
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm, term
+   real(8)    :: norm, term
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(dros2)) then 
+      if(.not.allocated(dros2)) then
          allocate(dros2(3,np_alloc), dros1(3,np_alloc), rr2(npt), rr2sd(npt), rr3(npt), rr3sd(npt))
          dros2 = 0.0E+00
          dros1 = 0.0E+00
@@ -1120,6 +1122,7 @@ end subroutine DispAver
 subroutine OriOrderAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1129,14 +1132,14 @@ subroutine OriOrderAver(iStage)
    real(8), allocatable, save :: orist(:,:,:)               ! initial orientation of particle ip
    real(8), allocatable, save :: oris2(:,:), oris1(:,:)     ! orientational order parameter (0 to 1)
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm
+   real(8)    :: norm
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(orist)) then 
+      if(.not.allocated(orist)) then
          allocate(orist(3,3,np_alloc), oris2(3,npt), oris1(3,npt))
          orist = 0.0E+00
          oris2 = 0.0E+00
@@ -1209,6 +1212,7 @@ end subroutine OriOrderAver
 subroutine PosOriAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1218,14 +1222,14 @@ subroutine PosOriAver(iStage)
    real(8), allocatable, save :: roavs2(:,:), roavs1(:,:)       ! average of ro for particles of type ipt
    real(8), allocatable, save :: oriavs2(:,:,:), oriavs1(:,:,:) ! average of ori for particles of type ipt
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm
+   real(8)    :: norm
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(roavs2)) then 
+      if(.not.allocated(roavs2)) then
          allocate(roavs2(3,npt), roavs1(3,npt), oriavs2(3,3,npt), oriavs1(3,3,npt))
          roavs2 = 0.0E+00
          roavs1 = 0.0E+00
@@ -1541,7 +1545,7 @@ subroutine ThermoAver(iStage)
 
    case (iAfterMacrostep)
 
-      if(.not.allocated(ucheck%twob)) then 
+      if(.not.allocated(ucheck%twob)) then
          allocate(ucheck%twob(0:nptpt))
       end if
       if (lmc) then
@@ -2048,10 +2052,10 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs2**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs2))+Half*(var(1+ioffset)%avs2)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs2**2, (npct(ict)-1)*(var(1+ioffset)%avs2))
-         if (var(10+ioffset)%avs2 == One) then 
+         if (var(10+ioffset)%avs2 == One) then
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             IEEE_VALUE((var(10+ioffset)%avs2),IEEE_QUIET_NAN)
-         else 
+         else
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
          end if
@@ -2078,10 +2082,10 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs1**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs1))+Half*(var(1+ioffset)%avs1)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs1**2, (npct(ict)-1)*(var(1+ioffset)%avs1))
-         if (var(10+ioffset)%avs1 == One) then 
+         if (var(10+ioffset)%avs1 == One) then
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             IEEE_VALUE((var(10+ioffset)%avs1),IEEE_QUIET_NAN)
-         else 
+         else
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
          end if
@@ -2104,7 +2108,7 @@ end subroutine ChainAver
 !*                                                                      *
 !************************************************************************
 
-! ... calculate averages of network quantities  
+! ... calculate averages of network quantities
 
 subroutine NetworkAver(iStage)
 
@@ -2134,16 +2138,16 @@ subroutine NetworkAver(iStage)
       nvar = nnwt*ntype
       allocate(var(nvar))
 
-      ! ... please note, that properties of type 1-7 are "rms" quantities. They have to be normalized by "ScalarNorm" with 
-      ! ... iopt = 2. If new properties are wished to be incorporated, please adjust the call of "ScalarNorm" below for 
+      ! ... please note, that properties of type 1-7 are "rms" quantities. They have to be normalized by "ScalarNorm" with
+      ! ... iopt = 2. If new properties are wished to be incorporated, please adjust the call of "ScalarNorm" below for
       ! ... both stages, "IAfterMacrostep" and "IAfterSimulation".
 
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
          var(1+ioffset)%label  = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
          var(2+ioffset)%label  = '<r(g)**2_x>**0.5               = ' ! rms radius of gyration projection on the x-axis
-         var(3+ioffset)%label  = '<r(g)**2_y>**0.5               = ' ! rms radius of gyration projection on the y-axis 
-         var(4+ioffset)%label  = '<r(g)**2_z>**0.5               = ' ! rms radius of gyration projection on the z-axis 
+         var(3+ioffset)%label  = '<r(g)**2_y>**0.5               = ' ! rms radius of gyration projection on the y-axis
+         var(4+ioffset)%label  = '<r(g)**2_z>**0.5               = ' ! rms radius of gyration projection on the z-axis
          var(5+ioffset)%label  = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
          var(6+ioffset)%label  = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
          var(7+ioffset)%label  = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
@@ -2199,10 +2203,10 @@ subroutine NetworkAver(iStage)
          call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
-         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout)
          write(uout,'()')
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
-           Asphericity(var(5+ioffset)%avs2**2,var(6+ioffset)%avs2**2,var(7+ioffset)%avs2**2) 
+           Asphericity(var(5+ioffset)%avs2**2,var(6+ioffset)%avs2**2,var(7+ioffset)%avs2**2)
          write(uout,'()')
       end do
 
@@ -2212,11 +2216,11 @@ subroutine NetworkAver(iStage)
       call WriteHead(2, txheading, uout)
       do inwt = 1, nnwt
          ioffset = ntype*(inwt-1)
-         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2) 
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2)
          call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
          if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
          if (nnwt > 1) write(uout,'(a)')  '------------------'
-         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout) 
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout)
          write(uout,'()')
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
            Asphericity(var(5+ioffset)%avs1**2,var(6+ioffset)%avs1**2,var(7+ioffset)%avs1**2)
@@ -2549,7 +2553,7 @@ subroutine DistFunc(iStage)
 
       rcutdist2 = rcutdist**2
 
-      if (.not.allocated(ixat)) then 
+      if (.not.allocated(ixat)) then
          allocate(ixat(nat), ixatat(nat,nat))
          ixat = 0
          ixatat = 0

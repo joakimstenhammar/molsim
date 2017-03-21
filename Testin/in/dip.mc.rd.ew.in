@@ -100,7 +100,7 @@
  /
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 1.5 /
- 
+
  &nmlMoldyn
   txtitle ='LJ-particles with embedded dipole moment',
   np    = 1000, nplow  = 1,  npupp = 1000, lgroup = .f.,
