@@ -198,18 +198,18 @@ subroutine StopUFlexLJ(i, j, ri, rj, itjt, dr)
 
    r2 = sum(dr**2)
 
-   write(uout,'(a,i5)')  'i', i
-   write(uout,'(a,i5)')  'j', j
-   write(uout,'(a,3e15.5)') 'r(i)         = ', ri(1:3)
-   write(uout,'(a,3e15.5)') 'r(j)         = ', rj(1:3)
-   write(uout,'(a,3e15.5)') 'boxlen2      = ', boxlen2
-   write(uout,'(a,3e15.5)') 'dpbc         = ', dpbc
-   write(uout,'(a,i15)')    'uout         = ', uout
-   write(uout,'(a,i15)')    'myid         = ', myid
-   write(uout,'(a,i15)')    'itjt         = ', itjt
-   write(uout,'(a,e15.5)')  'r2           = ', r2
-   write(uout,'(a,e15.5)')  'r2umin(itjt) = ', r2umin(itjt)
-   write(uout,'(a,e15.5)')  'r2atat(itjt) = ', r2atat(itjt)
+   write(*,'(a,i5)')  'i', i
+   write(*,'(a,i5)')  'j', j
+   write(*,'(a,3e15.5)') 'r(i)         = ', ri(1:3)
+   write(*,'(a,3e15.5)') 'r(j)         = ', rj(1:3)
+   write(*,'(a,3e15.5)') 'boxlen2      = ', boxlen2
+   write(*,'(a,3e15.5)') 'dpbc         = ', dpbc
+   write(*,'(a,i15)')    'uout         = ', uout
+   write(*,'(a,i15)')    'myid         = ', myid
+   write(*,'(a,i15)')    'itjt         = ', itjt
+   write(*,'(a,e15.5)')  'r2           = ', r2
+   write(*,'(a,e15.5)')  'r2umin(itjt) = ', r2umin(itjt)
+   write(*,'(a,e15.5)')  'r2atat(itjt) = ', r2atat(itjt)
    call Stop(txroutine, 'r2 < r2umin or r2 < r2atat', uout)
 
 end subroutine StopUFlexLJ
@@ -267,9 +267,9 @@ subroutine UFlexLJMonoCell(utwob, force, virial)
    do ip = 1, np !get particles from nlist
       ipt = iptpn(ip)
       icell => pcellro(ro(1:3,ip))
-      do incell = 1+myid, icell%nneighcell, nproc ! increment with nproc to have parallel execution
+      do incell = 1, icell%nneighcell
          ncell => icell%neighcell(incell)%p
-         do jploc = 1, ncell%npart
+         do jploc = 1 + myid, ncell%npart, nproc ! increment with nproc to have parallel execution
             jp = ncell%ip(jploc)
             if (ip .eq. jp) cycle
             if (lmc) then
@@ -360,12 +360,16 @@ subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
    else
          call DUFlexLJMono(dutwob, lhsoverlap)
    end if
-   if(lhsoverlap) return
-
-   dutwob(0) = sum(dutwob(1:nptpt))
-   dutot = dutot + dutwob(0) - dutwbold
 
    if (ltime) call CpuAdd('stop', txroutine, 2, uout)
+
+   if(lhsoverlap) then
+      return
+   else
+      dutwob(0) = sum(dutwob(1:nptpt))
+      dutot = dutot + dutwob(0) - dutwbold
+   end if
+
 end subroutine DUFlexLJ
 
 subroutine DUFlexLJMono(dutwob, lhsoverlap)
@@ -485,9 +489,9 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
       ip = ipnptm(iploc)
       ipt = iptpn(ip)
       icell => pcellro(rotm(1:3,iploc))
-      do incell = 1+myid, icell%nneighcell
+      do incell = 1, icell%nneighcell
          ncell => icell%neighcell(incell)%p
-         do jploc = 1, ncell%npart, nproc ! increment with nproc to have parallel execution
+         do jploc = 1 + myid, ncell%npart, nproc ! increment with nproc to have parallel execution
             jp = ncell%ip(jploc)
             if (lptm(jp)) cycle
             jpt = iptpn(jp)
@@ -506,7 +510,7 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
       do iploc = 1, nptm
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
-         do jploc = iploc+1+myid, nptm, nproc ! increment with nproc for parallel simulations
+         do jploc = iploc + 1 + myid, nptm, nproc ! increment with nproc for parallel simulations
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
@@ -527,9 +531,9 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
       ip = ipnptm(iploc)
       ipt = iptpn(ip)
       icell => cellip(ip)%p
-      do incell = 1+myid, icell%nneighcell
+      do incell = 1, icell%nneighcell
          ncell => icell%neighcell(incell)%p
-         do jploc = 1, ncell%npart, nproc ! increment with nproc to have parallel execution
+         do jploc = 1 + myid, ncell%npart, nproc ! increment with nproc to have parallel execution
             jp = ncell%ip(jploc)
             if (lptm(jp)) cycle
             jpt = iptpn(jp)
@@ -551,7 +555,7 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
       do iploc = 1, nptm
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
-         do jploc = iploc+1+myid, nptm, nproc ! increment with nproc for parallel simulations
+         do jploc = iploc + 1 + myid, nptm, nproc ! increment with nproc for parallel simulations
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
