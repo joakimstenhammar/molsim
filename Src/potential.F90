@@ -179,10 +179,9 @@ subroutine IOPotTwoBody(iStage)
 
    character(40), parameter :: txroutine ='IOPotTwoBody'
    character(80), parameter :: txheading ='two-body potential data'
-   integer(4) :: ipt, jpt, iptjpt, iat, jat, iatjat, m, Getnkvec, Getnkvec2d, ierr
-   real(8)    :: sig, eps, ucoffaim, fac1, fac2, NetCharge, raddiag2
+   integer(4) :: iptjpt, iat, jat, iatjat, m, Getnkvec, Getnkvec2d
+   real(8)    :: ucoffaim, fac1, fac2, NetCharge, raddiag2
    logical, allocatable    :: lucoffmod(:)
-   real(8)    :: volfac, lenfac, GammaLn
    real(8)    :: EwaldErrorUReal, EwaldErrorURec
    namelist /nmlPotential/ r2uminin, utoltab, ftoltab, umaxtab, fmaxtab,            &
                            rcut, txpot, npot, ipot, ucoff, relpermitt,              &
@@ -2146,7 +2145,7 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
                        cab(iatjat), dab(iatjat), eab(iatjat), fab(iatjat), nab(iatjat), u0, u1, u2)
       else if (ptype == nemop(7)) then
          call NemoType7(r1, acht(iatjat), kcht(iatjat), aab(iatjat), bab(iatjat), &
-                       cab(iatjat), dab(iatjat), eab(iatjat), fab(iatjat), nab(iatjat), u0, u1, u2)
+                       cab(iatjat), dab(iatjat), eab(iatjat), fab(iatjat), u0, u1, u2) !nab(iatjat) is not needed
       else
          call Stop(txroutine, 'illegal value of ptype in calc', uout)
       end if
@@ -2492,11 +2491,11 @@ end subroutine NemoType6
 !          + eab*exp(-fab*r)
 !
 
-subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, nab, ur, urp, urpp)
+subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, ur, urp, urpp) !nab is not used
 
    implicit none
 
-   integer(4), intent(in)  :: nab
+   !integer(4), intent(in)  :: nab
    real(8),    intent(in)  :: r, acht, kcht, aab, bab, cab, dab, eab, fab
    real(8),    intent(out) :: ur, urp, urpp
 
@@ -2659,7 +2658,7 @@ subroutine PlotPotTwoBodyTab
 
    character(40), parameter :: txroutine ='PlotPotTwoBodyTab'
    integer(4), parameter :: ncheck = 101
-   integer(4) :: ipt, jpt, iat, jat, iatjat, icheck, ibuf, idum
+   integer(4) :: ipt, jpt, iat, jat, iatjat, icheck, ibuf
    real(8)    :: dr, rlow, rupp, r1, r2, d, u0, dum(1)
    real(8)    :: distance(1:ncheck), potential(1:ncheck)
 
@@ -2915,7 +2914,7 @@ real(8) function EwaldErrorUReal(lq2sum, q2sum, l, alpha, rcut, unit)
    real(8),    intent(in) :: unit    ! unit factor
 
    real(8),    parameter :: Pi = 3.14159265359d0
-   real(8) :: fac, b, c, facbc
+   real(8) :: fac, facbc
 
    fac = (alpha*rcut)**2
    if (lq2sum == 0) EwaldErrorUReal = unit*q2sum*sqrt(rcut/(2.0d0*l**3))/fac*exp(-fac) ! kolafa and perram
@@ -2993,7 +2992,6 @@ subroutine TestEwaldStd(iStage)
    integer(4) :: i,nnstep
    integer(4) :: iewaldoptsave, ncutsave
    real(8) :: uewaldtolsave, ualphasave, ualpharedsave, rcutsave
-   real(8) :: EwaldErrorUReal, EwaldErrorURec
    real(8) :: uexact
 
    call WriteHead(3, txroutine, uout)
@@ -3141,9 +3139,8 @@ subroutine TestEwaldSPM(iStage)
    integer(4) :: iorder, inmesh
    integer(4) :: iewaldoptsave, ordersave, nmeshsave
    real(8) :: uewaldtolsave, ualphasave, ualpharedsave, rcutsave
-   real(8) :: EwaldErrorUReal, Second, Gettime_ewald
-   integer(4) :: idum
-   real(8) :: dum, uexact, urec
+   real(8) :: Gettime_ewald
+   real(8) :: uexact
    character(2) :: str
 
    if(master) call WriteHead(3, txroutine, uout)
@@ -3255,7 +3252,7 @@ contains
 
 subroutine WriteExactSub(unit)
    integer(4), intent(in) :: unit
-   real(8) :: EwaldErrorUReal, EwaldErrorURec
+   real(8) :: EwaldErrorUReal
    write(unit,'(a)')     '''exact'' calculation'
    write(unit,'(a)')     '-------------------'
    write(unit,'(a,t35,a)')      'txewaldrec                     = ', txewaldrec
@@ -3283,7 +3280,7 @@ end subroutine WriteHeadSub
 
 subroutine WriteBodySub(unit)
    integer(4), intent(in) :: unit
-   real(8) :: EwaldErrorUReal, EwaldErrorURec
+   real(8) :: EwaldErrorUReal
    write(unit,'((i4,a),(g12.5,a),3(f10.5,a),2(i4,a),(f20.12,a),2(g12.5,a))') &
    iewaldopt, tab, uewaldtol, tab, ualphared, tab, ualpha, tab,  &
    rcut, tab, order, tab, nmesh, tab, u%rec/np, tab, &
@@ -3410,7 +3407,6 @@ subroutine IOPotChain(iStage)
 
    character(40), parameter :: txroutine ='IOPotChain'
    character(80), parameter :: txheading ='ipotchain data'
-   integer(4) :: icl
 
    namelist /nmlPotentialChain/ bond, angle, clink, itestpotchain
 
