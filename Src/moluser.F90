@@ -1911,7 +1911,7 @@ subroutine xy_coordinates_Jasper(iStage)
    case (iAfterSimulation)
 
       close(uuser)
-      write(*,*) 'istage', istage
+      write(*,*) 'iStage', iStage
       write(*,'(i5,2f10.2)') (iptpn(ip), xy(1:2,ip), ip = 1, np)
 
    end select
@@ -2563,7 +2563,7 @@ subroutine StaticUser(iStage)
          else if (lbd) then               ! Brownian dynamics
             call AdsPropDyn(iStage)        ! time dependence of adsorbed chain properties
             call AdsEventDyn(iStage)       ! write time and occurrance of adsorbtion events
-            if (istage == iAfterSimulation) call AdsExam ! analysis of written time and occurrance of adsorbtion event
+            if (iStage == iAfterSimulation) call AdsExam ! analysis of written time and occurrance of adsorbtion event
          end if
       end if
 
@@ -9676,8 +9676,8 @@ module ComplexationModule
             rcut_complexation = 0.0
             lClusterDF = .false.
             lComplexFraction = .false.
-            lSegmentComplex = .false.
             lComplexDist    = .false.
+            lSegmentComplex = .false.
             rewind(uin)
             read(uin,nmlComplexation)
 
@@ -9721,10 +9721,10 @@ module ComplexationModule
 
          contains
             subroutine ComplexationDriverSub
-               if (lComplexFraction)  call ComplexFraction(iStage)
-               if (lComplexDist)      call ComplexDist(istage)
-               if (lSegmentComplex)   call SegmentComplex(iStage)
                if (lClusterDF)        call ClusterDF(iStage)
+               if (lComplexFraction)  call ComplexFraction(iStage)
+               if (lComplexDist)      call ComplexDistribution(iStage)
+               if (lSegmentComplex)   call SegmentComplex(iStage)
                continue
             end subroutine ComplexationDriverSub
       end subroutine
@@ -9888,7 +9888,7 @@ module ComplexationModule
       !     ----  -----  --------
       !     1     w      fraction of complexation
 
-      subroutine ComplexDist(iStage)
+      subroutine ComplexDistribution(iStage)
 
          use MolModule, only: ltrace, ltime, uin, uout, master, lsim, txstart, ucnf, ulist, ishow, iplot, ilist
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
@@ -10010,7 +10010,7 @@ module ComplexationModule
 
       if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
-   end subroutine ComplexDist
+   end subroutine ComplexDistribution
 
       !************************************************************************
       !*                                                                      *
@@ -10208,7 +10208,7 @@ module ComplexationModule
 
          call DistFuncSample(iStage, nvar, var)
          do imoment = 1, nmoment
-            call distfuncsample(istage, nvar, var(:,imoment))
+            call distfuncsample(iStage, nvar, var(:,imoment))
          end do
 
       case (iSimulationStep)
