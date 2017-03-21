@@ -282,8 +282,6 @@ OBJS1=mol.o           \
       mc.o            \
       bd.o            \
       nlist.o         \
-      celllist.o      \
-      ljenergy.o      \
       energy.o        \
       denergy.o       \
       dump.o          \
@@ -297,8 +295,10 @@ OBJS1=mol.o           \
       mollib.o        \
       moluser.o       \
       sso.o	      \
-      mesh.o
- 
+      mesh.o	      \
+      celllist.o      \
+      ljenergy.o
+
 OBJS2=mol.o           \
       particle_par.o  \
       potential_par.o \
@@ -321,7 +321,9 @@ OBJS2=mol.o           \
       parallel_par.o  \
       moluser_par.o   \
       sso_par.o       \
-      mesh_par.o
+      mesh_par.o      \
+      celllist_par.o  \
+      ljenergy_par.o
  
 OBJS3=mol.o           \
       statistics.o    \
@@ -413,21 +415,21 @@ molsim_par.o    : molsim.F90      mol.o      statistics_par.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o molsim_par.o -c molsim.F90
 particle_par.o  : particle.F90    mol.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90
-potential_par.o : potential.F90   mol.o
+potential_par.o : potential.F90   mol.o ljenergy_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o potential_par.o -c potential.F90
 coordinate_par.o : coordinate.F90 mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o coordinate_par.o -c coordinate.F90
 md_par.o        : md.F90      mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o md_par.o -c md.F90
-mc_par.o        : mc.F90      mol.o	nlist.o
+mc_par.o        : mc.F90      mol.o	nlist.o celllist_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o mc_par.o -c mc.F90
 bd_par.o        : bd.F90      mol.o	md_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o bd_par.o -c bd.F90
-nlist_par.o     : nlist.F90       mol.o
+nlist_par.o     : nlist.F90       mol.o celllist_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o nlist_par.o -c nlist.F90
-energy_par.o    : energy.F90      mol.o	mollib_par.o
+energy_par.o    : energy.F90      mol.o	mollib_par.o ljenergy_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o energy_par.o -c energy.F90
-denergy_par.o   : denergy.F90 	mol.o	energy_par.o	mollib_par.o
+denergy_par.o   : denergy.F90 	mol.o	energy_par.o	mollib_par.o ljenergy_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o denergy_par.o -c denergy.F90
 dump_par.o	: dump.F90 	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o dump_par.o -c dump.F90
@@ -451,6 +453,10 @@ mesh_par.o    : mesh.F90
 	$(COMP_PAR) $(FLAG_PAR) -o mesh_par.o -c mesh.F90
 sso_par.o      : sso.F90  mc_par.o	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o sso_par.o -c sso.F90
+celllist_par.o      : celllist.F90    mol.o
+	$(COMP_SER) $(FLAG_PAR) -o celllist_par.o -c celllist.F90
+ljenergy_par.o      : ljenergy.F90    mol.o celllist_par.o
+	$(COMP_SER) $(FLAG_PAR) -o ljenergy_par.o -c ljenergy.F90
  
 #*****************************************************************
 #*                         Tidy                                  *
