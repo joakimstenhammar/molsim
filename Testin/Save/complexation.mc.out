@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-02-23     17:42:53
+2017-03-21     16:06:36
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -778,7 +778,7 @@ quantity                                  average     fluctuation
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-02-23     17:42:53
+2017-03-21     16:06:36
 
 title   : test complexation                                                                         
 
@@ -1262,8 +1262,10 @@ static analysis routines used
 cutoff-distance                =   0.625000E+01
 static analysis routines used
 -----------------------------
-   ComplexFraction
    ClusterDF      
+   ComplexFraction
+   ComplexDist    
+   SegmentComplex 
 
 **************************************************************************************************************
 *                                          Fraction of Complexation                                          *
@@ -2161,24 +2163,24 @@ Size distribution of the binary clusters
  
          section                cpu time (s)     fraction
          -------                ------------     --------
-         Coordinate                   0.00         0.09
-         ControlAver                  0.00         0.02
-         MainAver                     0.00         0.03
-         StaticDriver                 0.01         0.16
-         ComplexationDriver           0.01         0.16
-          ComplexFraction             0.00         0.01
-          ComplexDist                 0.00         0.04
-          SegmentComplex              0.00         0.05
+         Coordinate                   0.01         0.11
+         ControlAver                  0.00         0.01
+         MainAver                     0.00         0.05
+         StaticDriver                 0.01         0.17
+         ComplexationDriver           0.01         0.15
+          ComplexFraction             0.00         0.00
+          ComplexDist                 0.00         0.06
+          SegmentComplex              0.00         0.02
           ClusterDF                   0.00         0.04
-         IOMolsim                     0.00         0.09
-         SetVList                     0.00         0.07
-         MCPass                       0.02         0.39
-          SPartMove                   0.00         0.02
-          DUTotal                     0.02         0.34
-           DUTwoBody                  0.01         0.30
-           DUBond                     0.00         0.00
-         DUCrossLink                  0.00         0.00
+         IOMolsim                     0.00         0.05
+         SetVList                     0.00         0.05
+         MCPass                       0.02         0.41
+          SPartMove                   0.00         0.01
+          DUTotal                     0.02         0.39
+           DUTwoBody                  0.02         0.34
+           DUBond                     0.00         0.01
+         DUCrossLink                  0.00         0.01
           PivotMove                   0.00         0.00
          GetComplex                   0.00         0.00
  
-total cpu time since start (s)        0.05
+total cpu time since start (s)        0.06

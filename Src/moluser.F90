@@ -9709,8 +9709,10 @@ module ComplexationModule
                write(uout,'(a,t35,e13.6)')     'cutoff-distance                = ', rcut_complexation
                write(uout,'(a)') 'static analysis routines used'
                write(uout,'(a)') '-----------------------------'
-               if (lComplexFraction)  write(uout,'(a)') '   ComplexFraction'
                if (lClusterDF)        write(uout,'(a)') '   ClusterDF      '
+               if (lComplexFraction)  write(uout,'(a)') '   ComplexFraction'
+               if (lComplexDist)      write(uout,'(a)') '   ComplexDist    '
+               if (lSegmentComplex)   write(uout,'(a)') '   SegmentComplex '
             end if
 
             call ComplexationDriverSub
@@ -9721,10 +9723,10 @@ module ComplexationModule
 
          contains
             subroutine ComplexationDriverSub
-               if (lClusterDF)        call ClusterDF(iStage)
                if (lComplexFraction)  call ComplexFraction(iStage)
                if (lComplexDist)      call ComplexDistribution(iStage)
                if (lSegmentComplex)   call SegmentComplex(iStage)
+               if (lClusterDF)        call ClusterDF(iStage)
                continue
             end subroutine ComplexationDriverSub
       end subroutine
