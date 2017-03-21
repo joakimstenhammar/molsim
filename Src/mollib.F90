@@ -78,12 +78,13 @@ module MollibModule !Starting to migrate to Module
 
 ! ... center a string
 
-pure function Center(nw,string)
+function Center(nw,string)
+   implicit none
    integer(4),   intent(in) :: nw              ! width of line
-   character(nw), intent(in) :: string          ! string
-   character(nw) :: Center
+   character(*), intent(in) :: string          ! string
+   character(len=nw) :: Center
    integer(4) :: nchar, noff
-   Center(1:nw) = ' '
+   Center = repeat(' ', nw)
    nchar = len_trim(string)
    noff = (nw-nchar)/2
    Center(noff+1:noff+nchar) = string
@@ -97,14 +98,15 @@ end function Center
 
 ! ... space out a string
 
-pure function SpaceOut(string)
+function SpaceOut(string)
    implicit none
    character(*), intent(in) :: string   ! string to be spaced out
-   character(2*len_trim(adjustl(string))) :: SpaceOut
+   character(:), allocatable :: SpaceOut
    integer(4) :: i
-   SpaceOut=''
+   allocate( character(len=2*len(string)) :: SpaceOut)
+   SpaceOut=repeat(' ', len(SpaceOut))
    do i=1,len_trim(adjustl(string))
-      SpaceOut(2*i-1:2*i)=string(i:i)
+      SpaceOut(2*i-1:2*i)=string(i:i)//' '
    end do
 end function SpaceOut
 
