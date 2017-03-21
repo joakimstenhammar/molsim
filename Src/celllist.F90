@@ -34,8 +34,9 @@ subroutine InitCellList(rcut, iStage)
    real(8), intent(in)  :: rcut
    integer(4), intent(in)  :: iStage
    character(40), parameter :: txroutine ='InitCellList'
-   integer(4)  :: ix, iy, iz, jx, jy, jz, neigh(3), ineigh, id, jneigh
+   integer(4)  :: ix, iy, iz, neigh(3), ineigh, id, jneigh
    logical  :: alreadyneighbour
+   integer(4) :: directions(3,maxneighcell), directionindex(maxneighcell), idir !
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -96,39 +97,49 @@ subroutine InitCellList(rcut, iStage)
       end do
    end do
 
+   !generate all possible directions of neighbouring cells
+   idir = 0
+   do ix = -1, 1
+      do iy = -1, 1
+         do iz = -1, 1
+            idir = idir + 1
+            directions(1:3,idir) = (/ix, iy, iz/)
+         end do
+      end do
+   end do
+
+   ! sort the directions to have the neighbours with the smallest distance at the beginning
+   ! therefore the hard core overlaps occur as early as possible
+   call HeapSortIndex(maxneighcell, real(sum(abs(directions),dim=1),kind=8), directionindex)
+
    !set the neighbours
    do ix = lbound(cell,dim=1), ubound(cell,dim=1)
       do iy = lbound(cell,dim=2), ubound(cell,dim=2)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             !make pointers to neighbouring cells
             ineigh = 0
-            do jx = -1, 1
-               do jy = -1, 1
-                  do jz = -1, 1
-                     neigh(1:3) = (/ ix + jx, iy + jy , iz + jz /)
-                     where (neigh > ubound(cell))
-                        neigh = lbound(cell)
-                     elsewhere (neigh < lbound(cell))
-                        neigh = ubound(cell)
-                     end where
+            do idir = 1, maxneighcell
+               neigh(1:3) = (/ ix , iy , iz /) + directions(1:3,directionindex(idir))
+               where (neigh > ubound(cell))
+                  neigh = lbound(cell)
+               elsewhere (neigh < lbound(cell))
+                  neigh = ubound(cell)
+               end where
 
-                     alreadyneighbour = .false.
-                     do jneigh = 1, ineigh
-                        if (cell(ix,iy,iz)%neighcell(jneigh)%p%id .eq. cell(neigh(1), neigh(2), neigh(3))%id) then !neighbour is already set
-                           alreadyneighbour = .true.
-                           exit
-                        end if
-                     end do
-
-                     if(.not. alreadyneighbour) then
-                        ineigh = ineigh + 1
-                        cell(ix,iy,iz)%nneighcell = ineigh
-                        cell(ix,iy,iz)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
-                     end if
-                  end do
+               alreadyneighbour = .false.
+               do jneigh = 1, ineigh
+                  if (cell(ix,iy,iz)%neighcell(jneigh)%p%id .eq. cell(neigh(1), neigh(2), neigh(3))%id) then !neighbour is already set
+                     alreadyneighbour = .true.
+                     exit
+                  end if
                end do
-            end do
 
+               if(.not. alreadyneighbour) then
+                  ineigh = ineigh + 1
+                  cell(ix,iy,iz)%nneighcell = ineigh
+                  cell(ix,iy,iz)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
+               end if
+            end do
          end do
       end do
    end do
@@ -209,6 +220,7 @@ subroutine TestCellList(output)
    implicit none
    integer(4), intent(in) :: output
    character(80), parameter :: txheading ='cell list testing'
+   character(40), parameter :: txroutine ='InitCellList'
    integer(4)  :: ix, iy, iz, ineigh
    type(cell_type), pointer   :: icell, tncell
    integer(4)  :: ip, jp, incell
@@ -255,8 +267,9 @@ subroutine TestCellList(output)
                end if
             end do
             if(.not. lipjpneighbour) then
-               write(output, *) "Error ip ", ip, " and jp ", jp , "are not neighbours!", cellip(ip)%p%id, cellip(jp)%p%id
-               write(output, *) ro(1:3,ip)*ircell, ro(1:3,jp)*ircell
+               write(output, *) "Error ip ", ip, " and jp ", jp , "are not in neighbouring cells! cell(ip)%id ", cellip(ip)%p%id, " cell(jp)%id) ",cellip(jp)%p%id
+               write(output, *) "ro(ip): ",ro(1:3,ip), " ro(jp) ",ro(1:3,jp)
+                  call Stop(txroutine, 'found two particles which should be neighbours but which are not', output)
             else
                write(output, *) "ip ", ip, " and jp ", jp , "are neighbours"
             end if
