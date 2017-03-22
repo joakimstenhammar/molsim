@@ -3,7 +3,7 @@ module CellListModule
 implicit none
 private
 public UpdateCellip, InitCellList, SetCellList, CellListAver, TestCellList
-public pcellro, cell_type, cell_pointer_array, cellip
+public pcellro, cell_type, cell_pointer_array, cellip, ipnext
 
 integer(4), parameter  :: maxneighcell = 27
 type cell_pointer_array
@@ -15,8 +15,11 @@ type cell_type
    integer(4)  :: npart
    integer(4)  :: nneighcell
    type(cell_pointer_array) :: neighcell(maxneighcell)
-   integer(4), allocatable :: ip(:)
+   integer(4)  :: iphead
 end type cell_type
+
+integer(4), allocatable :: ipnext(:)
+integer(4), allocatable :: ipprev(:)
 
 type(cell_type), target, allocatable  :: cell(:,:,:)    !cells
 type(cell_pointer_array), allocatable  :: cellip(:) !cell of each particle
@@ -61,6 +64,10 @@ subroutine InitCellList(rcut, iStage)
    end if
    allocate(cell(0:(ncell(1)-1),0:(ncell(2)-1),0:(ncell(3)-1)))
    allocate(cellip(1:np))
+   allocate(ipnext(1:np))
+   allocate(ipprev(1:np))
+   ipnext = 0
+   ipprev = 0
    ! cell structure when ncell(1:3) = 4
    !        +-----+-----+-----+-----+
    !       /.., 3/     /     /     /|
@@ -91,7 +98,8 @@ subroutine InitCellList(rcut, iStage)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             id = id + 1
             cell(ix,iy,iz)%id = id ! sets the id
-            allocate(cell(ix,iy,iz)%ip(np)) ! allocate cell particles
+            !allocate(cell(ix,iy,iz)%ip(np)) ! allocate cell particles
+            cell(ix,iy,iz)%iphead = 0
             cell(ix,iy,iz)%npart = 0        ! initialize cell particles
          end do
       end do
@@ -161,9 +169,14 @@ subroutine AddIpToCell(ip, icell)
    implicit none
    integer(4), intent(in)  :: ip
    type(cell_type), target, intent(inout) :: icell
+   integer(4)  :: jp
 
    icell%npart = icell%npart + 1
-   icell%ip(icell%npart) = ip
+   jp = icell%iphead
+   ipprev(jp) = ip
+   icell%iphead = ip
+   ipnext(ip) = jp
+   ipprev(ip) = 0
    cellip(ip)%p => icell
 
 end subroutine AddIpToCell
@@ -172,11 +185,22 @@ subroutine RmIpFromCell(ip, icell)
    implicit none
    integer(4), intent(in)  :: ip
    type(cell_type), intent(inout) :: icell
-   integer(4)  :: npart
+   integer(4)  :: nextp, prevp
 
-   npart = icell%npart
-   icell%ip(1:(npart -1)) = pack(icell%ip(1:npart), (icell%ip(1:npart) .ne. ip))
-   icell%npart = npart - 1
+   icell%npart = icell%npart - 1
+   nextp = ipnext(ip)
+   prevp = ipprev(ip)
+   if( prevp .eq. 0) then ! ip is at head
+      !make next particle to head
+      icell%iphead = nextp
+      ipprev(nextp) = 0
+   else
+      ! connext next and previous particle
+      ipprev(nextp) = prevp
+      ipnext(prevp) = nextp
+   end if
+   ipprev(ip) = 0
+   ipnext(ip) = 0
    cellip(ip)%p => null()
 
 end subroutine RmIpFromCell
@@ -223,7 +247,7 @@ subroutine TestCellList(output)
    character(40), parameter :: txroutine ='InitCellList'
    integer(4)  :: ix, iy, iz, ineigh
    type(cell_type), pointer   :: icell, tncell
-   integer(4)  :: ip, jp, incell
+   integer(4)  :: ip, jp, incell, jploc, jpneigh
    real(8)  :: dr(3), r2
    logical  :: lipjpneighbour
 
@@ -261,8 +285,15 @@ subroutine TestCellList(output)
             icell => cellip(ip)%p
             do incell = 1, icell%nneighcell
                tncell => icell%neighcell(incell)%p
-               if(any(tncell%ip(1:tncell%npart) .eq. jp)) then
-                  lipjpneighbour = .true.
+               jpneigh = tncell%iphead
+               do jploc = 1, tncell%npart
+                  if(jpneigh .eq. jp)) then
+                     lipjpneighbour = .true.
+                     exit
+                  end if
+                  jpneigh = ipnext(jpneigh)
+               end do
+               if(lipjpneighbour) then
                   exit
                end if
             end do
@@ -281,17 +312,12 @@ subroutine TestCellList(output)
    write(output,'()')
    write(output,'(tr2,a49)') &
    repeat('-',49)
-   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
-   'cell id', 'n particles', 'particle id'
-   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
-   repeat('-',15), repeat('-', 15), repeat('-',15)
-   do ix = lbound(cell,dim=1), ubound(cell,dim=1)
-      do iy = lbound(cell,dim=2), ubound(cell,dim=2)
-         do iz = lbound(cell,dim=3), ubound(cell,dim=3)
-            icell => cell(ix,iy,iz)
-            write(output,'(tr2,i15,tr2,i15,999(tr2,i4))') icell%id, icell%npart, icell%ip(1:icell%npart)
-         end do
-      end do
+   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') &
+   'particle id', 'cell id', 'prev particle id', 'next particle id'
+   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') &
+   repeat('-',15), repeat('-', 15), repeat('-',15), repeat('-',15)
+   do ip = 1, np
+      write(output,'(tr2,i15,tr2,i15,tr2,i15,tr2,i15)') ip, cellip(ip)%p%id, ipprev(ip), ipnext(ip)
    end do
    write(output,'(tr2,a49)') &
    repeat('-',49)

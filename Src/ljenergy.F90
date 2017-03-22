@@ -252,7 +252,7 @@ subroutine UFlexLJMonoCell(utwob, force, virial)
 
    use MolModule, only: ro, iptpn, iptpt, np
    use MolModule, only: lmc, myid, nproc
-   use CellListModule, only: pcellro, cell_type, cell_pointer_array
+   use CellListModule, only: pcellro, cell_type, cell_pointer_array, ipnext
    implicit none
    real(8), allocatable, intent(inout)  :: utwob(:)
    real(8), allocatable, intent(inout)  :: force(:,:)
@@ -267,20 +267,19 @@ subroutine UFlexLJMonoCell(utwob, force, virial)
    do ip = 1, np !get particles from nlist
       ipt = iptpn(ip)
       icell => pcellro(ro(1:3,ip))
-      do incell = 1, icell%nneighcell
+      do incell = 1 + myid, icell%nneighcell, nproc ! increment with nproc to have parallel execution
          ncell => icell%neighcell(incell)%p
-         do jploc = 1 + myid, ncell%npart, nproc ! increment with nproc to have parallel execution
-            jp = ncell%ip(jploc)
-            if (ip .eq. jp) cycle
-            if (lmc) then
-               if (jp < ip) cycle
+         jp = ncell%iphead
+         do jploc = 1, ncell%npart
+            if ((ip < jp) .or. (((ip .ne. jp) .and. (.not. lmc))) ) then !when lmc then ip needs to be smaller than jp, otherwise ip needs to be different than ip
+               jpt = iptpn(jp)
+               iptjpt = iptpt(ipt,jpt)
+               dr = ro(1:3,ip)-ro(1:3,jp)
+               call PBC(dr(1), dr(2), dr(3))
+               call ufvLJdr(dr, iptjpt, utwob(iptjpt), force(1:3,ip), force(1:3,jp), virial, loverlap)
+               if(loverlap)   call StopUFlexLJ(ip, jp, ro(1:3,ip), ro(1:3,jp), iptjpt, dr(1:3))
             end if
-            jpt = iptpn(jp)
-            iptjpt = iptpt(ipt,jpt)
-            dr = ro(1:3,ip)-ro(1:3,jp)
-            call PBC(dr(1), dr(2), dr(3))
-            call ufvLJdr(dr, iptjpt, utwob(iptjpt), force(1:3,ip), force(1:3,jp), virial, loverlap)
-            if(loverlap)   call StopUFlexLJ(ip, jp, ro(1:3,ip), ro(1:3,jp), iptjpt, dr(1:3))
+            jp = ipnext(jp)
          end do
       end do
    end do
