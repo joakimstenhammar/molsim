@@ -78,7 +78,7 @@ module MollibModule !Starting to migrate to Module
 
 ! ... center a string
 
-   function Center(nw,string)
+   pure function Center(nw,string)
       implicit none
       integer(4),   intent(in) :: nw              ! width of line
       character(*), intent(in) :: string          ! string
@@ -98,7 +98,7 @@ module MollibModule !Starting to migrate to Module
 
 ! ... space out a string
 
-   function SpaceOut(string)
+   pure function SpaceOut(string)
       implicit none
       character(*), intent(in) :: string   ! string to be spaced out
       character(:), allocatable :: SpaceOut
