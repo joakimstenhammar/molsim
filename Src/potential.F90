@@ -2491,7 +2491,8 @@ end subroutine NemoType6
 !          + eab*exp(-fab*r)
 !
 
-subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, ur, urp, urpp) !nab is not used
+!subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, nab, ur, urp, urpp) !nap is not used
+subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, ur, urp, urpp)
 
    implicit none
 
