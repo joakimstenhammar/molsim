@@ -114,7 +114,7 @@ contains
 subroutine ImageDriverSub(iimage)
    integer(4), intent(in) :: iimage
    if (lvrml      .and. master) call ImageVRML(iStage, iimage)
-   if (lvtf       .and. master) call ImageVTF(iStage, iimage)
+   if (lvtf       .and. master) call ImageVTF(iStage)
    if (limageuser .and. master) call ImageUser(iStage)
 end subroutine ImageDriverSub
 
@@ -361,7 +361,7 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    character(40), parameter :: txroutine ='VRMLSub'
    character(20) :: txcolor
    integer(4), allocatable :: icount(:)
-   integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, ict, ic, ic_loc, ih, igen, iseg, icorner, jp, t(3)
+   integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, icorner, t(3)
    real(8) :: xdir, ydir, zdir, xnorm, ynorm, znorm, xc, yc, zc, height, arg, dangle, rrr(3), mat(4,4), dir
    real(8), allocatable, save :: ro_temp(:,:)
    real(8)     ,  parameter :: cornerref(3,8) = reshape( &
@@ -885,13 +885,13 @@ end subroutine VRMLSub
 ! ... generate input files and tcl-script for VMD
 !     by Cornelius Hofzumahaus 03/2015
 
-subroutine ImageVTF(iStage, iimage)
+subroutine ImageVTF(iStage) !iimage is not used
 
    use MolModule
    implicit none
 
    integer(4), intent(in) :: iStage
-   integer(4), intent(in) :: iimage
+   !integer(4), intent(in) :: iimage
 
    character(40), parameter :: txroutine ='ImageVTF'
    character(80), parameter :: txheading ='preparation of vtf file'
@@ -903,7 +903,6 @@ subroutine ImageVTF(iStage, iimage)
    integer(4),    save :: iframe
    logical,       save :: lgr, lrendwc
    logical, allocatable, save :: lptinnw(:)
-   character(20) :: string
    integer(4)    :: iat, m
 
    character(1),  parameter :: vmdname(36) = (/ '0','1','2','3','4','5','6','7','8'&    ! vmdname is being used for VMD to identify different particle types as such
@@ -1155,7 +1154,7 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
    real(8)                             :: rcom(3), InvFlt
    logical,                       save :: first = .true., lnomassnw = .false.
    integer(4),                    save :: ipref
-   integer(4)                          :: ia, ip, ipt
+   integer(4)                          :: ip, ipt
 
 ! ... find reference particle within network in order to determine center of mass of network
 
@@ -1260,9 +1259,7 @@ subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,txi
    integer(4),    intent(in) :: unit
 
    character(40),  parameter :: txroutine = 'WriteTCLScript'
-   integer(4),          save :: jframe
-   integer(4)                :: ia, iat, ipt, icolor, icube, icorner, ird
-   character(10)             :: str
+   integer(4)                :: iat, icolor, icube, ird
    real(8)      ,  parameter :: cornerref(3,8) = reshape( &
            [ One, One, One,   -One, One, One,  -One, One,-One,  One, One,-One, &
              One,-One, One,   -One,-One, One,  -One,-One,-One,  One,-One,-One ] , [3,8] )
@@ -1525,7 +1522,7 @@ subroutine UndoPBC(vhelp)
    use MolModule
    implicit none
    real(8),    intent(out)  :: vhelp(1:3,*)       ! undone atom position
-   integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, ict, ic, ic_loc, ih, igen, iseg, icorner, jp
+   integer(4) :: ip, ict, ic, ih, igen, jp
 
    if (lhierarchical) then                                                ! hierarchical structures
       do ih = 1, nh                                                       ! loop over number of hierarchic structures

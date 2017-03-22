@@ -46,8 +46,7 @@ subroutine MixedDriver(iStage)
    character(10) :: txpt1, txpt2
    integer(4), save ::  mode(mnchoice), nchoice, iseedst, ip
    real(8), save :: coord1(12), coord2(12)
-   integer(4) :: i, ipt, iopt
-   real(8)    :: Second, dum
+   integer(4) :: ipt, iopt
 
    namelist /nmlMixed/ mode, txpt1, txpt2, coord1, coord2, ip
 
@@ -394,8 +393,8 @@ subroutine Mixed5(ip)
 
    character(80), parameter :: txheading ='second virial coefficient'
    integer(4) :: nblock
-   integer(4) :: iwr, no, ntry, m, mm
-   real(8)    :: rlow, rupp, thlow, thupp, filow, fiupp, ulow, uupp, dum(3), utwob
+   integer(4) :: iwr, no, m
+   real(8)    :: rlow, rupp, thlow, thupp, filow, fiupp, dum(3), utwob
    real(8)    :: sum, sum1, sum2, term, r1, rfac, fac
 
    namelist /nmlMixed5/ iwr, rlow, rupp, thlow, thupp, filow, fiupp, no, nblock

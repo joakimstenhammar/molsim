@@ -294,7 +294,6 @@ subroutine OrixTCF(iStage)
    type(sf_var), save :: sf
    type(cf_input_var) :: cfin
    type(cf_var), save :: cf
-   integer(4) :: ip
 
    namelist /nmlOrixTCF/ sf, cfin
 
@@ -1072,7 +1071,7 @@ subroutine CFWrite(txheading, sf, cf)
    real(8) :: InvFlt
    real(8) :: t_low, t_mid, t_upp
    integer(4), allocatable :: nbin(:)
-   integer(4) :: ntot, ilev, idata, igr, nzero, unit, i
+   integer(4) :: ilev, idata, igr, nzero, unit, i
    character(5) :: str
 
    allocate(CF0(1:sf%ngr), CF0sd(1:sf%ngr))

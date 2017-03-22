@@ -140,7 +140,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   OPT_quick := $(OPT_format) -O0	#quick compilation
   OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
   OPT_debug := $(OPT_format) -O0 -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan   # provide useful info at exceptions (use for debug)
-  OPT_warn := $(OPT_format) -g -O0 -Wall -Wextra -Warray-temporaries -Wconversion     				       # provides many warnings
+  OPT_warn := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion# provides many warnings
 
   mode = default
   ifeq ($(mode),normal)

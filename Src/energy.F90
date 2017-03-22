@@ -543,7 +543,7 @@ subroutine UTwoBodyALList
    implicit none
 
    character(40), parameter :: txroutine ='UTwoBodyALList'
-   integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, ibuf, Getnpmyid, icell, Getncellllist
+   integer(4) :: ip, iploc, ipt, jp, jpt, iptjpt, ibuf, Getnpmyid, icell, Getncellllist
    real(8)    :: dx, dy, dz, r2, d, usum, fsum, virtwob
 
    if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
@@ -659,7 +659,6 @@ subroutine UTwoBodyP
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, ibuf, Getnpmyid
    integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r2, d, usum, fsum, virtwob
-   real(8)    :: dxopbcnew, dyopbcnew, dzopbcnew
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
@@ -777,10 +776,10 @@ subroutine UEwald
    implicit none
 
    character(40), parameter :: txroutine ='UEwald'
-   real(8)    :: virrec, Second
+   real(8)    :: virrec, SecondsSinceStart
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
-   time_ewald = Second()
+   time_ewald = SecondsSinceStart()
 
    if (itest == 3 .and. master) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real)_slave', uout)
@@ -815,7 +814,7 @@ subroutine UEwald
    if (itest == 3 .and. master) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)_slave', uout)
 
-   time_ewald = Second() - time_ewald
+   time_ewald = SecondsSinceStart() - time_ewald
    if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
 contains
@@ -1075,8 +1074,8 @@ subroutine UEwaldRecSPM
    character(40), parameter :: txroutine ='UEwaldRecSPM'
    integer(4) :: ia, m, ix, iy, iz, nx, ny, nz
    real(8)    :: q, qz, qyz
-   real(8)    :: spl(0:order-1, 3), splx, sply, splz
-   real(8)    :: psum, esum(3), efgsum(6)
+   real(8)    :: splx, sply, splz
+   real(8)    :: esum(3)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval
 
    if (ltime) call CpuAdd('start', txroutine, 3, uout)
@@ -1343,7 +1342,7 @@ subroutine UDipole
    implicit none
 
    character(40), parameter :: txroutine ='UDipole'
-   integer(4) :: ia, ialow
+   integer(4) :: ia
    real(8)    :: forcex, forcey, forcez, torquex, torquey, torquez
    real(8)    :: ureal
 
@@ -1457,7 +1456,7 @@ subroutine UDipoleP
 
    character(40), parameter :: txroutine ='UDipoleP'
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, Getnpmyid
-   integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
+   integer(4) :: ia, ialow, iaupp, ja, jalow, jaupp
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc
    real(8)    :: r1, r2, r1i, r2i, r3i, r5i, r7i, threer5i, ex
    real(8)    :: doti, dotj, dotir5i, dotjr5i, dotir7i, dotjr7i
@@ -1676,10 +1675,10 @@ subroutine UDipoleEwald
    implicit none
 
    character(40), parameter :: txroutine ='UDipoleEwald'
-   real(8) :: Second
+   real(8) :: SecondsSinceStart
 
    if (ltime) call CpuAdd('start', txroutine, 3, uout)
-   time_ewald = Second()
+   time_ewald = SecondsSinceStart()
 
    if (txewaldrec == 'std') then
        call UDipoleEwaldRecStd
@@ -1692,7 +1691,7 @@ subroutine UDipoleEwald
    if (lsurf) call UDipoleEwaldSurf
    if (itest == 3 .and. master) call TestUDipoleEwald('(real + rec + self + sur)', uout)
 
-   time_ewald = Second() - time_ewald
+   time_ewald = SecondsSinceStart() - time_ewald
    if (ltime) call CpuAdd('stop', txroutine, 3, uout)
 
 contains
@@ -1703,7 +1702,7 @@ subroutine UDipoleEwaldRecStd
    character(40), parameter :: txroutine ='UDipoleEwaldRecStd'
    integer(4) :: nx, ny, nz, kn, ia
    real(8)    :: kfac2, facmm, facmp, facpm, facpp
-   real(8)    :: term, termx, termy, termz
+   real(8)    :: termx, termy, termz
    real(8)    :: kx, ky, kz, kxkx, kyky, kzkz, kxky, kxkz, kykz
    complex(8) :: cmm, cmp, cpm, cpp
 
@@ -1919,7 +1918,7 @@ subroutine UDipoleEwaldRecSPM
    character(40), parameter :: txroutine ='UDipoleEwaldRecSPM'
    integer(4) :: m, ia, ix, iy, iz, nx, ny, nz
    real(8)    :: q, q1, dipx, dipx1, dipx2, dipy, dipy1, dipy2, dipz, dipz1, dipz2
-   real(8)    :: spl(0:order-1, 3), splx, sply, splz, erec(3)
+   real(8)    :: splx, sply, splz
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
 
@@ -2040,7 +2039,6 @@ end subroutine UDipoleEwaldRecSPM
 subroutine UDipoleEwaldSelf
 
    integer(4) :: ip, ipt, ia, ialow, iaupp, ja
-   real(8)    :: term, termx, termy, termz, fac
    real(8)    :: dx, dy, dz, r2, r1, r1i, r2i, r3i, r5i, r7i, ex, threer5i
    real(8)    :: doti, dotj, dotir5i, dotjr5i, dotjr7i, dotir7i
    real(8)    :: fldx, fldy, fldz, efgxx, efgyy, efgzz, efgxy, efgxz, efgyz
@@ -2200,7 +2198,7 @@ subroutine UManyBodyP
    character(40), parameter :: txroutine ='UManyBodyP'
    integer(4), save :: icounter = 0    ! force the first prediction of idm to be iterative
    logical, save    :: first = .true.  ! force the first iteratative prediction of idm to invoke at least two iterations
-   integer(4) :: ia, ialow
+   integer(4) :: ia
    real(8)    :: forcex, forcey, forcez, torquex, torquey, torquez
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
@@ -2722,9 +2720,10 @@ subroutine FieldStatEwaldRecSPM
    character(40), parameter :: txroutine ='FieldStatEwaldRecSPM'
    integer(4) :: ia, m, ix, iy, iz, nx, ny, nz
    real(8)    :: q, q1, dipx, dipx1, dipx2, dipy, dipy1, dipy2, dipz, dipz1, dipz2
-   real(8)    :: spl(0:order-1, 3), splx, sply, splz
+   real(8)    :: splx, sply, splz
    real(8)    :: psum, esum(3), efgsum(6)
-   real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
+   real(8)    :: dsdx, dsdy, dsdz, Qval
+   real(8)    :: raux2
 
    if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
@@ -2768,7 +2767,7 @@ subroutine FieldStatEwaldRecSPM
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
 
-   call SPMFFTRec(.false., .false., .false., 'StatMakeFFT', 'StatCalcGIF', 5, raux, raux)
+   call SPMFFTRec(.false., .false., .false., 'StatMakeFFT', 'StatCalcGIF', 5, raux, raux2)
 
 ! ... calculate potential, field, field gradient, and virial
 
@@ -2814,7 +2813,6 @@ subroutine FieldStatEwaldSelf
 
    real(8), external :: ErfLocal
    integer(4) :: ip, ipt, ia, ialow, iaupp, ja
-   real(8)    :: term, termx, termy, termz, fac
    real(8)    :: dx, dy, dz, ex, r1, r2, r1i, r2i, r3i, r5i, doti, dotj, dotir5i, dotjr5i
 
 ! ... atomic contribution
@@ -2926,7 +2924,7 @@ subroutine IterIdm(lforceiter)
 
    character(40), parameter :: txroutine ='IterIdm'
    integer(4) :: iter, ia
-   real(8)    :: ex, ey, ez, idmdiff, idmsize, ratio
+   real(8)    :: ex, ey, ez, idmdiff, idmsize
 
    if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
@@ -3040,10 +3038,10 @@ subroutine FieldIdm
    character(40), parameter :: txroutine ='FieldIdm'
    real(8), parameter :: OneSixth = 1.0d0/6.0d0
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, Getnpmyid
-   integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
+   integer(4) :: ia, ialow, iaupp, ja, jalow, jaupp
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r1, r2, r1i, r2i, r3i, r5i, ex
    real(8)    :: doti, dotj
-   real(8)    :: s, v, d2, d1, d0
+   real(8)    :: s, v, d2, d1
    real(8), external :: ErfLocal
 
    if (ltime) call CpuAdd('start', txroutine, 4, uout)
@@ -3340,12 +3338,12 @@ subroutine FieldIdmEwaldRecSPM
    implicit none
 
    character(40), parameter :: txroutine ='FieldIdmEwaldRecSPM'
-   real(8)    :: kx, ky, kz, kfac2
    integer(4) :: ia, m, ix, iy, iz, nx, ny, nz
-   real(8)    :: q, q1, dipx, dipx1, dipx2, dipy, dipy1, dipy2, dipz, dipz1, dipz2
-   real(8)    :: spl(0:order-1, 3), splx, sply, splz
+   real(8)    :: dipx, dipx1, dipx2, dipy, dipy1, dipy2, dipz, dipz1, dipz2
+   real(8)    :: splx, sply, splz
    real(8)    :: psum, esum(3), efgsum(6)
-   real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
+   real(8)    :: dsdx, dsdy, dsdz, Qval
+   real(8)    :: raux2
 
    if (ltime) call CpuAdd('start', txroutine, 4, uout)
 
@@ -3388,7 +3386,7 @@ subroutine FieldIdmEwaldRecSPM
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
 
-   call SPMFFTRec(.false., .false., .false.,'IdmMakeFFT', 'IdmCalcGIF', 5, raux, raux)
+   call SPMFFTRec(.false., .false., .false.,'IdmMakeFFT', 'IdmCalcGIF', 5, raux, raux2)
 
 ! ... calculate potential, field, field gradient, and virial
 
@@ -3518,7 +3516,7 @@ subroutine FieldTot
    character(40), parameter :: txroutine ='FieldTot'
    real(8), parameter :: OneSixth = 1.0d0/6.0d0
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, Getnpmyid
-   integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
+   integer(4) :: ia, ialow, iaupp, ja, jalow, jaupp
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc
    real(8)    :: r1, r2, r1i, r2i, r3i, r5i, r7i, threer5i, ex
    real(8)    :: fldx, fldy, fldz, efgxx, efgyy, efgzz, efgxy, efgxz, efgyz
@@ -3963,7 +3961,7 @@ subroutine FieldTotEwaldRecSPM
    character(40), parameter :: txroutine ='FieldTotEwaldRecSPM'
    integer(4) :: ia, m, ix, iy, iz, nx, ny, nz
    real(8)    :: q, q1, dipx, dipx1, dipx2, dipy, dipy1, dipy2, dipz, dipz1, dipz2
-   real(8)    :: spl(0:order-1, 3), splx, sply, splz
+   real(8)    :: splx, sply, splz
    real(8)    :: psum, esum(3), efgsum(6)
    real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
 
@@ -4070,7 +4068,6 @@ end subroutine FieldTotEwaldRecSPM
 subroutine FieldTotEwaldSelf
    real(8), external :: ErfLocal
    integer(4) :: ip, ipt, ia, ialow, iaupp, ja
-   real(8)    :: term, termx, termy, termz, fac
    real(8)    :: dx, dy, dz, ex, r1, r2, r1i, r2i, r3i, r5i, r7i, doti, dotj, dotir5i, dotjr5i, dotir7i, dotjr7i, threer5i
    real(8)    :: fldx, fldy, fldz, efgxx, efgyy, efgzz, efgxy, efgxz, efgyz
 
@@ -4305,8 +4302,8 @@ subroutine UDipoleSph
 
    character(40), parameter :: txroutine ='UDipoleSph'
    integer(4) :: ip, ipt, jp, jpt, iptjpt, ibuf
-   real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc
-   real(8)    :: r1, r2, r1i, r2i, r3i, r5i, r7i, threer5i, ex, d, usum, fsum, virtwob
+   real(8)    :: dx, dy, dz
+   real(8)    :: r1, r2, r1i, r2i, r3i, r5i, r7i, threer5i, d, usum, fsum, virtwob
    real(8)    :: forcex, forcey, forcez, torquex, torquey, torquez
    real(8)    :: doti, dotj, dotir5i, dotjr5i, dotir7i, dotjr7i
    real(8)    :: fldx, fldy, fldz, efgxx, efgyy, efgzz, efgxy, efgxz, efgyz
@@ -4721,8 +4718,8 @@ subroutine UDielDisSph
 
    character(40), parameter :: txroutine ='UDielDisSph'
    logical, save :: first = .true.
-   integer(4) :: ipt, jpt, ip, jp, iptjpt, l, iploc, jploc, Getnpmyid
-   real(8) :: r1, r2, ri, r12, fac, cosa, ImageIntSph
+   integer(4) :: ipt, jpt, ip, jp, iptjpt, iploc, jploc, Getnpmyid
+   real(8) :: r1, r2, r12, fac, cosa, ImageIntSph
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
@@ -5030,9 +5027,9 @@ end subroutine UTwoBodyPPair
 
 subroutine UDipolePair
    character(40), parameter :: txroutine ='UDipolePair'
-   integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
+   integer(4) :: ia, ialow, iaupp, jalow, jaupp
    real(8)    :: dx, dy, dz
-   real(8)    :: r1, r2, r1i, r2i, r3i, r5i, r7i, threer5i, ex, ustat, forcex, forcey, forcez
+   real(8)    :: r1, r2, r1i, r2i, r3i, r5i, r7i, threer5i, ustat, forcex, forcey, forcez
    real(8)    :: doti, dotj, dotir5i, dotjr5i, dotir7i, dotjr7i
    real(8)    :: fldx, fldy, fldz, efgxx, efgyy, efgzz, efgxy, efgxz, efgyz
    real(8), external :: ErfLocal
@@ -5479,9 +5476,8 @@ subroutine UExternal
 
    character(40), parameter :: txroutine ='UExternal'
    integer(4) :: ipt, ia, iat, ialow, iaupp, jalow, jaupp
-   real(8)    :: r1, r2, fsum, term
+   real(8)    :: r1, r2, fsum
    integer(4) :: imyid(1:2)
-   character(1) :: str
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
@@ -6283,7 +6279,7 @@ complex(8) function xCCLM(l,m,theta,phi,norm)
    logical, save :: first=.true.
    real(8), save :: s(0:l2max), si(0:l2max), vnorm(0:lmax)
    integer(4) :: i, mabs
-   real(8) :: x, xPLM, fac
+   real(8) :: x, xPLM
 
    if (first) then
       s(0) = one
@@ -6413,9 +6409,8 @@ end function Longrangecontr
 
 ! ... make Fourier transformation, reciprocal space operations, and back FFT
 
-subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
-
 # ifdef F03_CBIND
+subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
 
    use EnergyModule, s=>meshsize
    implicit none
@@ -6429,7 +6424,7 @@ subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
    real(8), intent(out) :: uloc       ! reciprocal energy
    real(8), intent(out) :: virloc     ! reciprocal virial
 
-   integer(4) :: nx, ny, nz, nya, nza, kn
+   integer(4) :: nx, ny, nz, nya, nza
    real(8)    :: Qsum
    complex(8)  :: v1, v2, v3, v4
 
@@ -6477,9 +6472,8 @@ subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
    call fftw_execute_dft_c2r(plan_bwd, FQMesh, QMesh )
    if (ltime) call CpuAdd('stop',  txFFT, level, uout)
 
-# endif
-
 end subroutine SPMFFTRec
+# endif
 
 !************************************************************************
 !*                                                                      *
@@ -6504,8 +6498,8 @@ subroutine EwaldSetup
 
    character(40), parameter :: txroutine ='EwaldSetup'
    real(8)    :: fac0, facx, facy, facz, fac, k2, kp, EwaldErrorUReal
-   real(8)    :: m2, c, spl(0:order-1), b2(0:nmesh-1,3), expf, vf, mf
-   integer(4) :: nx, ny, nz, ipt, ialoc, i, m, k, z, ia, kn, ierr
+   real(8)    :: m2, c, spl(0:order-1), b2(0:nmesh-1,3), expf, mf
+   integer(4) :: nx, ny, nz, ipt, ialoc, i, m, k, z, ierr
    complex(8) :: a
 # ifdef F03_CBIND
    integer(C_SIZE_T) :: size_fftw_alloc
@@ -7185,7 +7179,6 @@ subroutine UWeakChargeP
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, ibuf, Getnpmyid
    integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r2, d, usum, fsum, virtwob
-   real(8)    :: dxopbcnew, dyopbcnew, dzopbcnew
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
 

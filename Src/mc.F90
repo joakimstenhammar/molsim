@@ -1934,7 +1934,7 @@ subroutine PivotDual    ! dual pivot rotation
             dy1 = vaux(2,ipnsegcn(iseg_loc,ic_temp)) - vaux(2,ip1)
             dz1 = vaux(3,ipnsegcn(iseg_loc,ic_temp)) - vaux(3,ip1)
             dtemp(iseg_loc,1) = sqrt(dx1**2+dy1**2+dz1**2)
-            if (dtemp(iseg_loc,1) < dtemp_min(1))  dtemp_min(1) = dtemp(iseg_loc,1)   !	find the closest segment
+            if (dtemp(iseg_loc,1) < dtemp_min(1))  dtemp_min(1) = dtemp(iseg_loc,1)   !    find the closest segment
          end do
          do iseg_loc = 1, npct(ict_temp)
             if (dtemp_min(1) == dtemp(iseg_loc,1)) iseg_min = iseg_loc  ! store closest segment as iseg_min
@@ -3129,7 +3129,7 @@ subroutine NPartChange(iStage)
       call SetObjectParam1
       call SetObjectParam2
       ipmove = np                                  ! place the new particle last
-10    continue
+      continue
       call SetPartPosRandomMC(ipmove)              ! set trial random particle position
 !      write(*,'(a,3f10.3)') 'trial position', ro(1:3,ipmove)
 !      if (abs(ro(3,ipmove)) > 0.8*boxlen2(3)) then
@@ -4447,9 +4447,9 @@ subroutine AddNeighbours()
 use MCModule
 implicit none
 
-integer(4)		:: iploc, ip, ipn, icn, ict, isn, nptmadd
+integer(4)        :: iploc, ip, ipn, icn, ict, isn, nptmadd
 
-nptmadd=nptm			!storage location for next particle
+nptmadd=nptm            !storage location for next particle
 
 !write (*,*) 'start adding neighbours'
 do iploc=1, nptm
@@ -4460,13 +4460,13 @@ do iploc=1, nptm
    isn = isegpn(ip)
 
 
-   if (ict<1) exit		!particle not in a chain
+   if (ict<1) exit        !particle not in a chain
 
 
    if (isn > 1) then
       !check for previous particle
       ipn = ipnsegcn(isn-1,icn)
-      if (.not.lptm(ipn)) then	!particle not yet in trial move
+      if (.not.lptm(ipn)) then    !particle not yet in trial move
          nptmadd=nptmadd+1
          rotm(1:3,nptmadd)=ro(1:3,ipn)
          ipnptm(nptmadd)=ipn
@@ -4478,7 +4478,7 @@ do iploc=1, nptm
    if (isn<npct(ict)) then
       !check for next particle
       ipn = ipnsegcn(isn+1,icn)
-      if (.not.lptm(ipn)) then	!particle not yet in trial move
+      if (.not.lptm(ipn)) then    !particle not yet in trial move
          nptmadd=nptmadd+1
          rotm(1:3,nptmadd)=ro(1:3,ipn)
          ipnptm(nptmadd)=ipn
@@ -4579,8 +4579,8 @@ end subroutine UpdateOri
 subroutine UpdateOriTest(iploc, ip, ipn, r1, r2, r3)
 use MCModule
 implicit none
-real(8), intent(in)		::r1(3),r2(3),r3(3)
-integer(4), intent(in)		:: iploc, ip, ipn
+real(8), intent(in)        ::r1(3),r2(3),r3(3)
+integer(4), intent(in)        :: iploc, ip, ipn
 character(20)  :: format = '(2I3, 4F7.2)'
 
 if (.not. all(oritm(1:3,1:3,iploc).eq.ori(1:3,1:3,ip))) then

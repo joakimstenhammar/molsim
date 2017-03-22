@@ -540,13 +540,13 @@ subroutine SetConfiguration
          call SetRandomFixOri(ipt)
 
       else if (txsetconf(ipt) =='chainline') then
-         call SetChainLine(ipt)
+         call SetChainLine !(ipt) ipt is not needed
       else if (txsetconf(ipt) =='chaincircle') then
-         call SetChainCircle(ipt)
+         call SetChainCircle !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'chainrandom') then
-         call SetChainRandom(ipt)
+         call SetChainRandom !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'chainrandompos' .or. txsetconf(ipt) == 'chainrandomintori') then
-         call SetChainRandomIntOri(ipt)
+         call SetChainRandomIntOri !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'sphbrushlattice') then
          call SetSphBrush('lattice')
       else if (txsetconf(ipt) == 'sphbrushrandom') then
@@ -1304,12 +1304,12 @@ end subroutine SetRandomFixOri
 ! ... generate a linear configuration for chain particles (only for one chain)
 !     along the x-axis, lab orientation
 
-subroutine SetChainLine(iptset)
+subroutine SetChainLine !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainLine'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, jp, jseg
@@ -1386,12 +1386,12 @@ end subroutine SetChainLine
 ! ... generate a circular configuration for chain particles (only for one chain)
 !     in the xy-plane
 
-subroutine SetChainCircle(iptset)
+subroutine SetChainCircle !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainCircle'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, jseg
@@ -1505,12 +1505,12 @@ end subroutine SetChainCircle
 
 ! ... generate random positions and orientations for chain particles
 
-subroutine SetChainRandom(iptset)
+subroutine SetChainRandom !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainRandom'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp
@@ -1575,12 +1575,12 @@ end subroutine SetChainRandom
 
 ! ... generate random positions and internally fixed orientations for chain particles
 
-subroutine SetChainRandomIntOri(iptset)
+subroutine SetChainRandomIntOri  !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainRandomIntOri'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, ipprev

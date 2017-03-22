@@ -7888,7 +7888,7 @@ subroutine SPDF_COMB(iStage)
                         ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                         var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)+One
             end if
-        if(ltype(2)) then		!! ... spdf  for whole combed PECS
+        if(ltype(2)) then        !! ... spdf  for whole combed PECS
                         ivar = ipnt(igr,2)
                         rotemp(1,ip)=ro_loc(1,ip)-xcom1
                         rotemp(2,ip)=ro_loc(2,ip)-ycom1
@@ -8083,17 +8083,17 @@ subroutine COMB_DF(iStage)
 
 !...  undo conditions for hierarchical structure
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
    do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
          do iseg = 1, npct(ict)                                            ! loop over segments
             ip = ipnsegcn(iseg,ic)
-             if (ict ==1) then 												! UNDO backbone (first chain type)
+             if (ict ==1) then                                                 ! UNDO backbone (first chain type)
                                 call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-                                ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
+                                ro_temp(1:3,1:na) = vaux(1:3,1:na)                         ! store undo backbone
                          end if
-                         if (nbondcl(ip) ==1.AND.ict > 1 )     call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
+                         if (nbondcl(ip) ==1.AND.ict > 1 )     call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)      ! UNDO grafted chains, taking  UNDO positions
                                                                                                                                                           !linked beads belonging to the backbone as reference
          end do
       end do
@@ -8102,7 +8102,7 @@ subroutine COMB_DF(iStage)
 
  !    ... COM_comb polymer, xcom(ih), ycom(ih), zcom(ih)
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
     do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8112,7 +8112,7 @@ subroutine COMB_DF(iStage)
                         xcom(ih) = xcom(ih) + ro_loc(1,ip)
                         ycom(ih) = ycom(ih) + ro_loc(2,ip)
                         zcom(ih) = zcom(ih) + ro_loc(3,ip)
-                        n_ic(ih) =	n_ic(ih) + 1
+                        n_ic(ih) =    n_ic(ih) + 1
          end do
       end do
     end do
@@ -8127,7 +8127,7 @@ subroutine COMB_DF(iStage)
    vsumr(1:nh) = Zero
    mimat(1:3,1:3,1:nh) = Zero
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
    do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8160,7 +8160,7 @@ subroutine COMB_DF(iStage)
 
         properties(2) = Zero
 
-    do ih = 1, nh															! loop over number of hierarchic structures
+    do ih = 1, nh                                                            ! loop over number of hierarchic structures
                 mimat(2,1,ih) = mimat(1,2,ih)
                 mimat(3,1,ih) = mimat(1,3,ih)
                 mimat(3,2,ih) = mimat(2,3,ih)
@@ -8253,11 +8253,11 @@ subroutine COMBAver(iStage)
    integer(4), intent(in) :: iStage
    character(40), parameter :: txroutine =''
    character(80), parameter :: txheading ='comb structure quantities'
-   integer(4), parameter :: ntype = 9   		    ! maximum number of properties
+   integer(4), parameter :: ntype = 9               ! maximum number of properties
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
    real(8)         , allocatable, save :: mimat(:,:,:), ro_temp(:,:), ro_loc(:,:)
-   integer(4)	 :: ic, ict, nrot, ih, n_ic(nh), jct, igen, jgen, iseg, jseg, jc, ip, im
+   integer(4)     :: ic, ict, nrot, ih, n_ic(nh), jct, igen, jgen, iseg, jseg, jc, ip, im
    real(8)        :: xcom(nh), ycom(nh), zcom(nh), dx(nh), dy(nh), dz(nh), r2, vsumr(nh), vsum_rh(nh)
    real(8)        :: mimat_loc(3,3), dummat_loc(3,3), l2_small2, l2_mid2, l2_large2, diagonal(3)
 
@@ -8315,15 +8315,15 @@ subroutine COMBAver(iStage)
 
 !...  undo conditions for hierarchical structure
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
     do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
          do iseg = 1, npct(ict)                                            ! loop over segments
             ip = ipnsegcn(iseg,ic)
-            if (ict ==1) then 												! UNDO backbone (first chain type)
+            if (ict ==1) then                                                 ! UNDO backbone (first chain type)
                                 call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-                                ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
+                                ro_temp(1:3,1:na) = vaux(1:3,1:na)                         ! store undo backbone
                         end if
                         if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)         ! UNDO grafted chains, taking  UNDO positions
                                                                                                                                                                                                 !linked beads belonging to the backbone as reference
@@ -8334,7 +8334,7 @@ subroutine COMBAver(iStage)
 
  !    ... COM_comb polymer, xcom(ih), ycom(ih), zcom(ih)
 
-    do ih = 1, nh															! loop over number of hierarchic structures
+    do ih = 1, nh                                                            ! loop over number of hierarchic structures
                 do igen = 0, ngen                                                       ! loop over generations
                         ict = ictgen(igen)                                                   ! chain type
                         do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8344,7 +8344,7 @@ subroutine COMBAver(iStage)
                                         xcom(ih) = xcom(ih) + ro_loc(1,ip)
                                         ycom(ih) = ycom(ih) + ro_loc(2,ip)
                                         zcom(ih) = zcom(ih) + ro_loc(3,ip)
-                                        n_ic(ih) =	n_ic(ih) + 1
+                                        n_ic(ih) =    n_ic(ih) + 1
                                 end do
                         end do
                 end do
@@ -8358,7 +8358,7 @@ subroutine COMBAver(iStage)
    vsumr(1:nh) = Zero
    mimat(1:3,1:3,1:nh) = Zero
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
     do igen = 0, ngen                                                       ! loop over generations
                 ict = ictgen(igen)                                                   ! chain type
                 do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8391,7 +8391,7 @@ subroutine COMBAver(iStage)
 
         var(2)%value = Zero
 
-    do ih = 1, nh															! loop over number of hierarchic structures
+    do ih = 1, nh                                                            ! loop over number of hierarchic structures
                 mimat(2,1,ih) = mimat(1,2,ih)
                 mimat(3,1,ih) = mimat(1,3,ih)
                 mimat(3,2,ih) = mimat(2,3,ih)
@@ -8413,7 +8413,7 @@ subroutine COMBAver(iStage)
 ! ... var(3)%value = hydrodynamic radius, comb polymer, COM comb polymer
 
    vsum_rh(1:nh) = Zero
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
         do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8438,10 +8438,10 @@ subroutine COMBAver(iStage)
       end do
    end do
    vsum_rh(ih) = vsum_rh(ih)/(n_ic(ih)**2)
-  end do  																!   end loop over number of hierarchic structures
+  end do                                                                  !   end loop over number of hierarchic structures
 
-    vsum_rh(1:nh) = 1/vsum_rh(1:nh)       								! get hydrodynamic radius for each hierarchic structures
-        var(3)%value = sum(vsum_rh(1:nh))/nh									! mediate over hierarchic structures
+    vsum_rh(1:nh) = 1/vsum_rh(1:nh)                                       ! get hydrodynamic radius for each hierarchic structures
+        var(3)%value = sum(vsum_rh(1:nh))/nh                                    ! mediate over hierarchic structures
 !..............................................
 
       call ScalarSample(iStage, 1, nvar, var)
@@ -8601,7 +8601,7 @@ subroutine SFPBC_COMB(iStage)
 
     n_ic(1:nh) = 0
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
     do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8635,15 +8635,15 @@ subroutine SFPBC_COMB(iStage)
                                 eikrtemp = cmplx(One,Zero)
                                 do ibin = 0, nbin-1
                                         eikrtemp = eikrtemp*eikr1(m)
-                                        if(iptpn(ip)==1) then 								! backbone, stored in ipt = 1
+                                        if(iptpn(ip)==1) then                                 ! backbone, stored in ipt = 1
                                                 eikr(ibin,m,1) = eikr(ibin,m,1)+eikrtemp
                                         end if
-                                        if(iptpn(ip)>1)  then					! store all side chains in ipt 3
+                                        if(iptpn(ip)>1)  then                    ! store all side chains in ipt 3
                                                 eikr(ibin,m,2) = eikr(ibin,m,2)+eikrtemp
                                         end if
                                 end do
                         end do
-                        n_ic(ih) =	n_ic(ih) + 1
+                        n_ic(ih) =    n_ic(ih) + 1
          end do
       end do
     end do
@@ -8861,10 +8861,10 @@ subroutine OCF(iStage)
         allocate(var(nvar), ipnt(nptpt, ntype), ro_loc(3,np), ro_temp(3,na), n(3,np,nc,nc), corr(nct,nc,np), corrh(nct,nc,np), corr2(nc,nc,np), corrp(nc,nc,20,np), corrmed(nc,nc,np) )
     allocate (ip_loc(nc,nc), ip_low(nc,nc), ip_high(nc,nc))
 
-        do ict = 1, nct        				! loop over chain types,   ntype == nct!
+        do ict = 1, nct                        ! loop over chain types,   ntype == nct!
                 if (ltype(ict) .eqv. .true.) then
-                        do ic = icnct(ict), icnct(ict)+ncct(ict)-1		! loop over chains
-                                do s = 1, npct(ict)-1-2*n_excl 						! loop over segments
+                        do ic = icnct(ict), icnct(ict)+ncct(ict)-1        ! loop over chains
+                                do s = 1, npct(ict)-1-2*n_excl                         ! loop over segments
                                         corr(ict,ic,s) = 0
                                 end do
                         end do
@@ -8877,10 +8877,10 @@ subroutine OCF(iStage)
 
    case (iBeforeMacrostep)
 
-        do ict = 1, nct        				! loop over chain types
+        do ict = 1, nct                        ! loop over chain types
                 if (ltype(ict) .eqv. .true.) then
-                        do ic = icnct(ict), icnct(ict)+ncct(ict)-1		! loop over chains
-                                do s = 1, npct(ict)-1-2*n_excl 						! loop over segments
+                        do ic = icnct(ict), icnct(ict)+ncct(ict)-1        ! loop over chains
+                                do s = 1, npct(ict)-1-2*n_excl                         ! loop over segments
                                         corrh(ict,ic,s) = 0
                                 end do
                         end do
@@ -8895,17 +8895,17 @@ subroutine OCF(iStage)
 
 !...  undo conditions for hierarchical structure
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
         do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
          do iseg = 1, npct(ict)                                            ! loop over segments
             ip = ipnsegcn(iseg,ic)
-            if (ict ==1) then 												! UNDO backbone (first chain type)
+            if (ict ==1) then                                                 ! UNDO backbone (first chain type)
                                 call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-                                ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
+                                ro_temp(1:3,1:na) = vaux(1:3,1:na)                         ! store undo backbone
                         end if
-                          if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
+                          if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)      ! UNDO grafted chains, taking  UNDO positions
                                                                                                                                                           !linked beads belonging to the backbone as reference
          end do
       end do
@@ -8913,7 +8913,7 @@ subroutine OCF(iStage)
    end do
 
  ! ... store position of the undo structure in ro_loc(1:3,ip)
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
         do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -8927,10 +8927,10 @@ subroutine OCF(iStage)
 
  ! ... undo conditions for linear chains
 
-    do ic = 1, nc							! undo the linear chains
+    do ic = 1, nc                            ! undo the linear chains
                 ict = ictcn(ic)
                 ip = ipnsegcn(1,ic)
-                if(ihnpn(ip) /= 0) cycle										    ! exclude hierarchical structures
+                if(ihnpn(ip) /= 0) cycle                                            ! exclude hierarchical structures
                 call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, -1, vaux)
                 do iseg = 1, npct(ict)
                         ip = ipnsegcn(iseg,ic)
@@ -8941,7 +8941,7 @@ subroutine OCF(iStage)
 
  !.... calculate orientational correlations
 
-        do itype = 1, ntype					!   ntype == nct
+        do itype = 1, ntype                    !   ntype == nct
           if(ltype(itype)) then
                 do ic = icnct(itype), icnct(itype)+ncct(itype)-1
                         ip_low(itype,ic)  = ipnsegcn(1 + n_excl,ic)
@@ -9139,17 +9139,17 @@ subroutine OCF_DF(iStage)
 
 !...  undo conditions for hierarchical structure
 
-   do ih = 1, nh															! loop over number of hierarchic structures
+   do ih = 1, nh                                                            ! loop over number of hierarchic structures
     do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
          do iseg = 1, npct(ict)                                            ! loop over segments
             ip = ipnsegcn(iseg,ic)
-             if (ict ==1) then 												! UNDO backbone (first chain type)
+             if (ict ==1) then                                                 ! UNDO backbone (first chain type)
                                 call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-                                ro_temp(1:3,1:na) = vaux(1:3,1:na)						 ! store undo backbone
+                                ro_temp(1:3,1:na) = vaux(1:3,1:na)                         ! store undo backbone
                          end if
-                          if (nbondcl(ip) ==1.AND.ict > 1 )  call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
+                          if (nbondcl(ip) ==1.AND.ict > 1 )  call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)      ! UNDO grafted chains, taking  UNDO positions
                                                                                                                                                           !linked beads belonging to the backbone as reference
          end do
       end do
@@ -9157,7 +9157,7 @@ subroutine OCF_DF(iStage)
    end do
 
  ! ... store position of the undo structure in ro_loc(1:3,ip)
-  do ih = 1, nh															! loop over number of hierarchic structures
+  do ih = 1, nh                                                            ! loop over number of hierarchic structures
     do igen = 0, ngen                                                       ! loop over generations
       ict = ictgen(igen)                                                   ! chain type
       do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
@@ -9332,17 +9332,17 @@ subroutine ChainBeadBeadContact(iStage)
         if(ltype) then
         ! ... undo hierarchical structure
 
-        do ih = 1, nh															! loop over number of hierarchic structures
+        do ih = 1, nh                                                            ! loop over number of hierarchic structures
                 do igen = 0, ngen                                                       ! loop over generations
                 ict = ictgen(igen)                                                   ! chain type
                         do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1          ! loop over chains of the structure
                                 do iseg = 1, npct(ict)                                            ! loop over segments
                                         ip = ipnsegcn(iseg,ic)
-                                        if (ict ==1) then 												! UNDO backbone (first chain type)
+                                        if (ict ==1) then                                                 ! UNDO backbone (first chain type)
                                                 call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
-                                                ro_temp(1:3,1:ip) = vaux(1:3,1:ip)						 ! store undo backbone
+                                                ro_temp(1:3,1:ip) = vaux(1:3,1:ip)                         ! store undo backbone
                                         end if
-                                        if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)	  ! UNDO grafted chains, taking  UNDO positions
+                                        if (nbondcl(ip) ==1.AND.ict > 1 ) call UndoPBCChain(ro_temp(1,bondcl(1,ip)), ic, 1, vaux)      ! UNDO grafted chains, taking  UNDO positions
                                                                                                                                                           !linked beads belonging to the backbone as reference
                                 end do
                         end do
@@ -9353,7 +9353,7 @@ subroutine ChainBeadBeadContact(iStage)
     do ic = 1, nc
                 ict = ictcn(ic)
                 ip = ipnsegcn(1,ic)
-                if(ihnpn(ip) /= 0) cycle										    ! exclude hierarchical structures
+                if(ihnpn(ip) /= 0) cycle                                            ! exclude hierarchical structures
                 call UndoPBCChain(ro_temp(1,ipnsegcn(1,1)), ic, -1, vaux)        ! it assumes ic =1 is the backbone of the hierarchy
                 do iseg = 1, npct(ict)                                            ! loop over segments
             ip = ipnsegcn(iseg,ic)
@@ -10275,7 +10275,6 @@ module ComplexationModule
 
       recursive subroutine get_nbead_clstr(ip, iptc, jptc, nbead)
 
-         use MolModule ,only: np
          implicit none
 
          integer(4), intent(in)  :: ip
@@ -10283,7 +10282,7 @@ module ComplexationModule
          integer(4), intent(in)  :: jptc
          integer(4), intent(inout)  :: nbead
 
-         integer(4)  :: jp, ipt
+         integer(4)  :: jp
 
          if(linclstr(ip)) then
             return

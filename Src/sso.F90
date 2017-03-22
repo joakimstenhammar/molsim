@@ -52,7 +52,7 @@
          use MolModule, only: ltrace, txstart
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
          use MolModule, only: uin, uout, ucnf, master
-         use MolModule, only: Zero, Half, One, Two, Three, Five
+         use MolModule, only: Zero, Half, One, Two
          use MolModule, only: npt, nstep, istep
          use MolModule, only: lbcbox, lbcrd, lbcto, lbcsph, lbcell, lbccyl, boxlen, cellside, sphrad, ellrad, cylrad, cyllen
          use MCModule, only: curdtranpt, lssopt
