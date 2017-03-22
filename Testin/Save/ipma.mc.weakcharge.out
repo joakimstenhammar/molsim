@@ -28,7 +28,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-02-15     11:40:58
+2017-03-22     12:40:40
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -213,21 +213,6 @@ polyatomic energy and force routines
 relative permittivity          =   78.400000
 
 system net charge based on zat =    0.00    
-
-parameters controlling the ewald summation
-------------------------------------------
-txewaldrec                     =              std
-iewaldopt                      =                1
-uewaldtol                      =      0.81000E-06
-error estimate in real space   =      0.81000E-06
-error estimate in rec. space   =      0.95872E-07
-ualpha                         =      0.60000E-01
-ualphared                      =       3.0000    
-ncut                           =                7
-ncut2                          =               49
-ncutregion                     =           sphere
-nkvec (one octant)             =              238
-surface term                   =                F
 
 particle pair              potential
 -------------              ---------
@@ -1378,7 +1363,7 @@ asphericity (<2:nd moments>)   =          0.53916
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-02-15     11:41:06
+2017-03-22     12:40:47
 
 title   : salt free iPMA cm=0.1 25-mer                                                              
 
@@ -2958,19 +2943,19 @@ number of images made          =    1
          section          cpu time (s)     fraction
          -------          ------------     --------
          Coordinate             0.01         0.00
-         ControlAver            0.00         0.00
-         MainAver               0.01         0.00
-         DistFunc               0.05         0.01
+         ControlAver            0.01         0.00
+         MainAver               0.02         0.00
+         DistFunc               0.04         0.01
          ImageDriver            0.00         0.00
          IOMolsim               0.01         0.00
          SetVList               0.01         0.00
-         MCPass                 8.09         0.99
-          PivotMove             0.05         0.01 
-          DUTotal               7.50         0.92 
-           DUTwoBody            7.23         0.88  
-           DUBond               0.08         0.01  
-          ChainMove             0.05         0.01 
+         MCPass                 7.05         0.99
+          PivotMove             0.06         0.01 
+          DUTotal               6.61         0.92 
+           DUTwoBody            6.26         0.88  
+           DUBond               0.09         0.01  
+          ChainMove             0.07         0.01 
           ChargeChange          0.01         0.00 
-          SPartMove             0.03         0.00 
+          SPartMove             0.04         0.01 
  
-total cpu time since start (s)        8.20
+total cpu time since start (s)        7.17
