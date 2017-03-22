@@ -1050,7 +1050,8 @@ subroutine RDF(iStage)
          prsrhs = TwoPi/(Three*denst)*prsrhs
       end subroutine PressureContact
 
-      subroutine GContact(vlow, vbin, vs2, tauvar, rcont, gcont) ! tlow and tbin is not used
+      !subroutine GContact(vlow, vbin, vs2, tlow, tbin, tauvar, rcont, gcont) ! tlow and tbin is not used
+      subroutine GContact(vlow, vbin, vs2, tauvar, rcont, gcont)
          implicit none
      real(8), intent(in) :: vlow
      real(8), intent(in) :: vbin
