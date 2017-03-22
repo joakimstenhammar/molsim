@@ -2735,7 +2735,8 @@ end function SuperballOverlap
 
 ! ... superball overlap check, return overlap function
 
-real(8) function SuperballOverlapOF(r21, ori1, ori2) result(of) !r2 is not used
+!real(8) function SuperballOverlapOF(r2, r21, ori1, ori2) result(of) !r2 is not used
+real(8) function SuperballOverlapOF(r21, ori1, ori2) result(of)
    use MolModule
    implicit none
    !real(8), intent(in) :: r2            ! distance squared between superball 1 and 2
@@ -2919,7 +2920,8 @@ end function SuperballOverlap_NR
 
 ! ... superball check statistics, NR overlap method
 
-subroutine SuperballStatNR(iStage, iter) !rr is not used
+!subroutine SuperballStatNR(iStage, rr, iter) !rr is not used
+subroutine SuperballStatNR(iStage, iter)
    use MolModule
    implicit none
    integer(4), intent(in) :: iStage
@@ -3097,7 +3099,8 @@ end subroutine SuperballAver
 !     2     triangle   tri (triangle)
 !     3     time       cpu time
 
-subroutine SuperballDF(iStage, rr, time) !loverlap is not used
+!subroutine SuperballDF(iStage, rr, loverlap, time) !loverlap is not used
+subroutine SuperballDF(iStage, rr, time)
    use MolModule
    implicit none
    integer(4), intent(in) :: iStage
