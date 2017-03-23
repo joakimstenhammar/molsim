@@ -444,18 +444,15 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
          ncell => icell%neighcell(incell)%p
          jp = ncell%iphead
          do jploc = 1, ncell%npart
-            if (lptm(jp)) cycle
-            jpt = iptpn(jp)
-            iptjpt = iptpt(ipt,jpt)
-            dr(1:3) = rotm(1:3,iploc)-ro(1:3,jp)
-            call PBC(dr(1), dr(2), dr(3))
-            call uLJdr(dr, iptjpt, dutwob(iptjpt), lhsoverlap)
-            if(lhsoverlap) return
-            jp = ipnext(jp)
-            if(sum(dr**2) < 4.0d0) then
-               print *, "overlap", ip, jp
-               stop 1
+            if (.not. lptm(jp)) then
+               jpt = iptpn(jp)
+               iptjpt = iptpt(ipt,jpt)
+               dr(1:3) = rotm(1:3,iploc)-ro(1:3,jp)
+               call PBC(dr(1), dr(2), dr(3))
+               call uLJdr(dr, iptjpt, dutwob(iptjpt), lhsoverlap)
+               if(lhsoverlap) return
             end if
+            jp = ipnext(jp)
         end do
       end do
    end do
@@ -491,14 +488,15 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
          ncell => icell%neighcell(incell)%p
          jp = ncell%iphead
          do jploc = 1, ncell%npart
-            if (lptm(jp)) cycle
-            jpt = iptpn(jp)
-            iptjpt = iptpt(ipt,jpt)
-            dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
-            call PBCr2(dr(1), dr(2), dr(3), r2)
-            !as the old configuration should be free of overlaps one can skip the checks
-            if(r2 < rcut2) then
-               dutwob(iptjpt) = dutwob(iptjpt) - uLJ(r2,iptjpt)
+            if (.not. lptm(jp)) then
+               jpt = iptpn(jp)
+               iptjpt = iptpt(ipt,jpt)
+               dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
+               !as the old configuration should be free of overlaps one can skip the checks
+               if(r2 < rcut2) then
+                  dutwob(iptjpt) = dutwob(iptjpt) - uLJ(r2,iptjpt)
+               end if
             end if
             jp = ipnext(jp)
          end do
