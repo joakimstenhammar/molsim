@@ -275,9 +275,7 @@ subroutine UFlexLJMonoCell(utwob, force, virial)
                jpt = iptpn(jp)
                iptjpt = iptpt(ipt,jpt)
                dr = ro(1:3,ip)-ro(1:3,jp)
-               if(lPBC) then !apply periodic bounday conditions
-                  dr = dr-icell%drpbc(incell)
-               end if
+               call PBC(dr(1), dr(2), dr(3))
                call ufvLJdr(dr, iptjpt, utwob(iptjpt), force(1:3,ip), force(1:3,jp), virial, loverlap)
                if(loverlap)   call StopUFlexLJ(ip, jp, ro(1:3,ip), ro(1:3,jp), iptjpt, dr(1:3))
             end if
@@ -420,10 +418,11 @@ end subroutine DUFlexLJMono
 
 subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
 
-   use MolModule, only: ro, rotm, iptpn, iptpt, rcut2, lPBC
+   use MolModule, only: ro, rotm, iptpn, iptpt, rcut2
    use MolModule, only: ipnptm, nptm, lptm, lptmdutwob
    use MolModule, only: nproc, myid
-   use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip
+   use MolModule, only: np
+   use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip, ipnext
    implicit none
    real(8), allocatable, intent(inout)  :: dutwob(:)
    logical, intent(inout)               :: lhsoverlap
@@ -441,20 +440,23 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
       ip = ipnptm(iploc)
       ipt = iptpn(ip)
       icell => pcellro(rotm(1:3,iploc))
-      do incell = 1, icell%nneighcell
+      do incell = 1 + myid, icell%nneighcell, nproc ! increment with nproc to have parallel execution
          ncell => icell%neighcell(incell)%p
-         do jploc = 1 + myid, ncell%npart, nproc ! increment with nproc to have parallel execution
-            jp = ncell%ip(jploc)
+         jp = ncell%iphead
+         do jploc = 1, ncell%npart
             if (lptm(jp)) cycle
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
             dr(1:3) = rotm(1:3,iploc)-ro(1:3,jp)
-            if(lPBC) then !apply periodic bounday conditions
-               dr = dr - icell%drpbc(1:3,incell)
-            end if
+            call PBC(dr(1), dr(2), dr(3))
             call uLJdr(dr, iptjpt, dutwob(iptjpt), lhsoverlap)
             if(lhsoverlap) return
-         end do
+            jp = ipnext(jp)
+            if(sum(dr**2) < 4.0d0) then
+               print *, "overlap", ip, jp
+               stop 1
+            end if
+        end do
       end do
    end do
 
@@ -485,22 +487,20 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
       ip = ipnptm(iploc)
       ipt = iptpn(ip)
       icell => cellip(ip)%p
-      do incell = 1, icell%nneighcell
+      do incell = 1 + myid, icell%nneighcell, nproc ! increment with nproc to have parallel execution
          ncell => icell%neighcell(incell)%p
-         do jploc = 1 + myid, ncell%npart, nproc ! increment with nproc to have parallel execution
-            jp = ncell%ip(jploc)
+         jp = ncell%iphead
+         do jploc = 1, ncell%npart
             if (lptm(jp)) cycle
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
             dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
-            if(lPBC) then !apply periodic bounday conditions
-               dr = dr - icell%drpbc(1:3,incell)
-            end if
+            call PBCr2(dr(1), dr(2), dr(3), r2)
             !as the old configuration should be free of overlaps one can skip the checks
-            r2 = sum(dr**2)
             if(r2 < rcut2) then
                dutwob(iptjpt) = dutwob(iptjpt) - uLJ(r2,iptjpt)
             end if
+            jp = ipnext(jp)
          end do
       end do
    end do

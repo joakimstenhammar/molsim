@@ -15,7 +15,6 @@ type cell_type
    integer(4)  :: npart
    integer(4)  :: nneighcell
    type(cell_pointer_array), allocatable :: neighcell(:)
-   real(8), allocatable :: drpbc(:,:)
    integer(4)  :: iphead
 end type cell_type
 
@@ -40,13 +39,11 @@ subroutine InitCellList(rcell, iStage)
    integer(4), intent(in)  :: iStage
    character(40), parameter :: txroutine ='InitCellList'
    integer(4)  :: ix, iy, iz, neigh(3), ineigh, id, jneigh
-   integer(4)  :: jx, jy, ,jz, di
    logical  :: alreadyneighbour
    type(cell_type), pointer :: icell
    integer(4), allocatable :: directions(:,:), directionindex(:), idir !
-   real(8)  :: dr(3), r2, dr2(3)
+   real(8)  :: dr(3), r2
    type(cell_pointer_array), allocatable :: neighcell_tmp(:)
-   real(8), allocatable :: drpbc_tmp(:,:)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -146,16 +143,10 @@ subroutine InitCellList(rcell, iStage)
 
             !initialize cell neighbors
             icell%nneighcell = 0
-            if(allocated(icell%nneighcell)) then
-               deallocate(icell%nneighcell)
+            if(allocated(icell%neighcell)) then
+               deallocate(icell%neighcell)
             end if
-            allocate(icell%nneighcell(0))
-            if(lPBC) then
-               if(allocated(icell%drpbc)) then
-                  deallocate(icell%drpbc)
-               end if
-               allocate(icell%drpbc(0))
-            end if
+            allocate(icell%neighcell(0))
 
             do idir = 1, maxneighcell
                neigh(1:3) = (/ ix , iy , iz /) + directions(1:3,directionindex(idir))
@@ -169,7 +160,7 @@ subroutine InitCellList(rcell, iStage)
                   cycle
                end if
 
-               dr(1:3) = neigh(1:3)/ircell(1:3)
+               dr(1:3) = max(0,abs(directions(1:3, directionindex(idir)))-1)/ircell(1:3) !distance to outer end of cell
                call PBCr2(dr(1), dr(2), dr(3), r2)
                if(r2 > rcut2) then
                   cycle
@@ -185,23 +176,14 @@ subroutine InitCellList(rcell, iStage)
 
                if(.not. alreadyneighbour) then
                   !increase allocated size
-                  ineigh = icell%neighcell + 1
+                  ineigh = icell%nneighcell + 1
                   allocate(neighcell_tmp(ineigh)) !allocate temp
                   neighcell_tmp(:size(icell%neighcell)) = icell%neighcell
                   call move_alloc(neighcell_tmp, icell%neighcell) !temp gets deallocated
-                  if(lPBC) then
-                     allocate(drpbc_tmp(3,icell%nneighcell + 1))
-                     drpbc_tmp(:,:size(icell%drpbc)) = icell%drpbc
-                     call move_alloc(drpbc_tmp, icell%drpbc)
-                  end if
 
                   !add neighbour
                   icell%nneighcell = ineigh
-                  icell%nneighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
-                  if(lPBC) then
-                     call PBC2(dr(1), dr(2), dr(3), dr2(1), dr2(2), dr2(3))
-                     icell%drpbc(1:3,ineigh) = dr2
-                  end if
+                  icell%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
                end if
 
             end do
@@ -209,11 +191,11 @@ subroutine InitCellList(rcell, iStage)
       end do
    end do
 
-   deallocate(directions, directionindex, neighcell_tmp, drpbc_tmp)
+   deallocate(directions, directionindex)
 
 end subroutine InitCellList
 
-pure function pcellro(ro) result(icell)
+function pcellro(ro) result(icell)
    use MolModule, only: boxlen2
    implicit none
    real(8), intent(in)  :: ro(3)
@@ -232,7 +214,9 @@ subroutine AddIpToCell(ip, icell)
 
    icell%npart = icell%npart + 1
    jp = icell%iphead
-   ipprev(jp) = ip
+   if(jp .ne. 0) then !when a head is present
+      ipprev(jp) = ip
+   end if
    icell%iphead = ip
    ipnext(ip) = jp
    ipprev(ip) = 0
@@ -253,8 +237,11 @@ subroutine RmIpFromCell(ip, icell)
       !make next particle to head
       icell%iphead = nextp
       ipprev(nextp) = 0
+   else if (nextp .eq. 0) then ! ip is at the tail
+      ! make the previous partice the tail
+      ipnext(prevp) = nextp
    else
-      ! connext next and previous particle
+      ! connect next and previous particle
       ipprev(nextp) = prevp
       ipnext(prevp) = nextp
    end if
@@ -346,7 +333,7 @@ subroutine TestCellList(output)
                tncell => icell%neighcell(incell)%p
                jpneigh = tncell%iphead
                do jploc = 1, tncell%npart
-                  if(jpneigh .eq. jp)) then
+                  if(jpneigh .eq. jp) then
                      lipjpneighbour = .true.
                      exit
                   end if
@@ -357,11 +344,13 @@ subroutine TestCellList(output)
                end if
             end do
             if(.not. lipjpneighbour) then
-               write(output, *) "Error ip ", ip, " and jp ", jp , "are not in neighbouring cells! cell(ip)%id ", cellip(ip)%p%id, " cell(jp)%id) ",cellip(jp)%p%id
+               write(output, *) "Error ip ", ip, " and jp ", jp , "are not in neighbouring cells!"
+               write(output, *) "cell(ip)%id: ", cellip(ip)%p%id, "cell(jp)%id): ",cellip(jp)%p%id
                write(output, *) "ro(ip): ",ro(1:3,ip), " ro(jp) ",ro(1:3,jp)
                   call Stop(txroutine, 'found two particles which should be neighbours but which are not', output)
             else
-               write(output, *) "ip ", ip, " and jp ", jp , "are neighbours"
+               continue
+               !write(output, *) "ip ", ip, " and jp ", jp , "are neighbours"
             end if
          end if
       end do
