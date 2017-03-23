@@ -213,14 +213,17 @@ subroutine AddIpToCell(ip, icell)
    integer(4)  :: jp
 
    icell%npart = icell%npart + 1
-   jp = icell%iphead
+   jp = icell%iphead !current head
+   icell%iphead = ip ! make ip the head
    if(jp .ne. 0) then !when a head is present
-      ipprev(jp) = ip
+      ipprev(jp) = ip ! move the head one down
+      ipnext(ip) = jp
+   else
+      ipprev(ip) = 0 !particle is alone in cell
+      ipnext(ip) = 0
    end if
-   icell%iphead = ip
-   ipnext(ip) = jp
-   ipprev(ip) = 0
-   cellip(ip)%p => icell
+
+   cellip(ip)%p => icell !associate particle with cell
 
 end subroutine AddIpToCell
 
@@ -233,18 +236,27 @@ subroutine RmIpFromCell(ip, icell)
    icell%npart = icell%npart - 1
    nextp = ipnext(ip)
    prevp = ipprev(ip)
-   if( prevp .eq. 0) then ! ip is at head
-      !make next particle to head
-      icell%iphead = nextp
-      ipprev(nextp) = 0
-   else if (nextp .eq. 0) then ! ip is at the tail
+   if (nextp .eq. 0) then ! ip is at the tail
+      if( icell%iphead .eq. ip ) then ! ip is at head
+         !no particles are left
+         icell%iphead = 0
+      else
       ! make the previous partice the tail
-      ipnext(prevp) = nextp
-   else
-      ! connect next and previous particle
-      ipprev(nextp) = prevp
-      ipnext(prevp) = nextp
+      ipnext(prevp) = 0
+      end if
+   else ! ip is not at the tail
+      if( icell%iphead .eq. ip ) then ! ip is at head
+         !make next particle the head
+         icell%iphead = nextp
+         ipprev(nextp) = 0
+      else ! ip is neither at the tail nor at the head
+         ! connect next and previous particle
+         ipprev(nextp) = prevp
+         ipnext(prevp) = nextp
+      end if
    end if
+
+   !reset ip
    ipprev(ip) = 0
    ipnext(ip) = 0
    cellip(ip)%p => null()
