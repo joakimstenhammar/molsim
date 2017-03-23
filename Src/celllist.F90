@@ -5,7 +5,7 @@ private
 public UpdateCellip, InitCellList, SetCellList, CellListAver, TestCellList
 public pcellro, cell_type, cell_pointer_array, cellip, ipnext
 
-integer(4), parameter  :: maxneighcell = 27
+integer(4)  :: maxneighcell
 type cell_pointer_array
    type(cell_type), pointer  :: p => null()
 end type cell_pointer_array
@@ -14,7 +14,8 @@ type cell_type
    integer(4)  :: id       ! fore easy recognition
    integer(4)  :: npart
    integer(4)  :: nneighcell
-   type(cell_pointer_array) :: neighcell(maxneighcell)
+   type(cell_pointer_array), allocatable :: neighcell(:)
+   real(8), allocatable :: drpbc(:,:)
    integer(4)  :: iphead
 end type cell_type
 
@@ -28,32 +29,39 @@ real(8)     :: ircell(3)                  !inverse edge length of each cell
 
 contains
 
-subroutine InitCellList(rcut, iStage)
+subroutine InitCellList(rcell, iStage)
 
    use MolModule, only: ltrace, ltime, uout
    use MolModule, only: lbcbox, boxlen
    use MolModule, only: np
+   use MolModule, only: rcut, rcut2, lPBC
 
-   real(8), intent(in)  :: rcut
+   real(8), intent(in)  :: rcell
    integer(4), intent(in)  :: iStage
    character(40), parameter :: txroutine ='InitCellList'
    integer(4)  :: ix, iy, iz, neigh(3), ineigh, id, jneigh
+   integer(4)  :: jx, jy, ,jz, di
    logical  :: alreadyneighbour
-   integer(4) :: directions(3,maxneighcell), directionindex(maxneighcell), idir !
+   type(cell_type), pointer :: icell
+   integer(4), allocatable :: directions(:,:), directionindex(:), idir !
+   real(8)  :: dr(3), r2, dr2(3)
+   type(cell_pointer_array), allocatable :: neighcell_tmp(:)
+   real(8), allocatable :: drpbc_tmp(:,:)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
-   if(rcut .le. 0.0d0) then
-      call Stop(txroutine, 'rcut .le. 0.0', uout)
+   if(rcell .le. 0.0d0) then
+      call Stop(txroutine, 'rcell .le. 0.0', uout)
    end if
    if(.not. lbcbox) then
       call Stop(txroutine, 'celllist needs cubic box (lbcbox should be true)', uout)
    end if
-   ncell(1:3) = max(1,floor(boxlen(1:3)/rcut)) !floor to underestimate the number of cells, therefore the cellsize is >= rcut
+   ncell(1:3) = max(1,floor(boxlen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellsize is >= rcell
+   ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   !boxlen2/ncell is the cell-size (larger than rcut)
+   !boxlen2/ncell is the cell-size (larger than rcell)
    ircell(1:3) = ncell(1:3)/boxlen(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcut)
 
    if(allocated(cell)) then
@@ -61,6 +69,12 @@ subroutine InitCellList(rcut, iStage)
    end if
    if(allocated(cellip)) then
       deallocate(cellip)
+   end if
+   if(allocated(ipnext)) then
+      deallocate(ipnext)
+   end if
+   if(allocated(ipprev)) then
+      deallocate(ipprev)
    end if
    allocate(cell(0:(ncell(1)-1),0:(ncell(2)-1),0:(ncell(3)-1)))
    allocate(cellip(1:np))
@@ -97,19 +111,23 @@ subroutine InitCellList(rcut, iStage)
       do iy = lbound(cell,dim=2), ubound(cell,dim=2)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             id = id + 1
-            cell(ix,iy,iz)%id = id ! sets the id
+            icell => cell(ix,iy,iz)
+            icell%id = id ! sets the id
             !allocate(cell(ix,iy,iz)%ip(np)) ! allocate cell particles
-            cell(ix,iy,iz)%iphead = 0
-            cell(ix,iy,iz)%npart = 0        ! initialize cell particles
+            icell%iphead = 0
+            icell%npart = 0        ! initialize cell particles
          end do
       end do
    end do
 
-   !generate all possible directions of neighbouring cells
+   ! get the directions
+   maxneighcell = product(2*ceiling(rcut*ircell)+1)
+   allocate(directions(3,maxneighcell))
+   allocate(directionindex(maxneighcell))
    idir = 0
-   do ix = -1, 1
-      do iy = -1, 1
-         do iz = -1, 1
+   do ix = -ceiling(rcut*ircell(1)), ceiling(rcut*ircell(1))
+      do iy = -ceiling(rcut*ircell(2)), ceiling(rcut*ircell(2))
+         do iz = -ceiling(rcut*ircell(3)), ceiling(rcut*ircell(2))
             idir = idir + 1
             directions(1:3,idir) = (/ix, iy, iz/)
          end do
@@ -124,33 +142,74 @@ subroutine InitCellList(rcut, iStage)
    do ix = lbound(cell,dim=1), ubound(cell,dim=1)
       do iy = lbound(cell,dim=2), ubound(cell,dim=2)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
-            !make pointers to neighbouring cells
-            ineigh = 0
+            icell => cell(ix,iy,iz)
+
+            !initialize cell neighbors
+            icell%nneighcell = 0
+            if(allocated(icell%nneighcell)) then
+               deallocate(icell%nneighcell)
+            end if
+            allocate(icell%nneighcell(0))
+            if(lPBC) then
+               if(allocated(icell%drpbc)) then
+                  deallocate(icell%drpbc)
+               end if
+               allocate(icell%drpbc(0))
+            end if
+
             do idir = 1, maxneighcell
                neigh(1:3) = (/ ix , iy , iz /) + directions(1:3,directionindex(idir))
-               where (neigh > ubound(cell))
-                  neigh = lbound(cell)
-               elsewhere (neigh < lbound(cell))
-                  neigh = ubound(cell)
-               end where
+               if(lPBC) then !apply periodic boundary conditions
+                  where (neigh > ubound(cell))
+                     neigh = lbound(cell)
+                  elsewhere (neigh < lbound(cell))
+                     neigh = ubound(cell)
+                  end where
+               else if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> lbound(cell))) then !neighbour is out of bounds
+                  cycle
+               end if
+
+               dr(1:3) = neigh(1:3)/ircell(1:3)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
+               if(r2 > rcut2) then
+                  cycle
+               end if
 
                alreadyneighbour = .false.
-               do jneigh = 1, ineigh
-                  if (cell(ix,iy,iz)%neighcell(jneigh)%p%id .eq. cell(neigh(1), neigh(2), neigh(3))%id) then !neighbour is already set
+               do jneigh = 1, icell%nneighcell
+                  if (icell%neighcell(jneigh)%p%id .eq. cell(neigh(1), neigh(2), neigh(3))%id) then !neighbour is already set
                      alreadyneighbour = .true.
                      exit
                   end if
                end do
 
                if(.not. alreadyneighbour) then
-                  ineigh = ineigh + 1
-                  cell(ix,iy,iz)%nneighcell = ineigh
-                  cell(ix,iy,iz)%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
+                  !increase allocated size
+                  ineigh = icell%neighcell + 1
+                  allocate(neighcell_tmp(ineigh)) !allocate temp
+                  neighcell_tmp(:size(icell%neighcell)) = icell%neighcell
+                  call move_alloc(neighcell_tmp, icell%neighcell) !temp gets deallocated
+                  if(lPBC) then
+                     allocate(drpbc_tmp(3,icell%nneighcell + 1))
+                     drpbc_tmp(:,:size(icell%drpbc)) = icell%drpbc
+                     call move_alloc(drpbc_tmp, icell%drpbc)
+                  end if
+
+                  !add neighbour
+                  icell%nneighcell = ineigh
+                  icell%nneighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
+                  if(lPBC) then
+                     call PBC2(dr(1), dr(2), dr(3), dr2(1), dr2(2), dr2(3))
+                     icell%drpbc(1:3,ineigh) = dr2
+                  end if
                end if
+
             end do
          end do
       end do
    end do
+
+   deallocate(directions, directionindex, neighcell_tmp, drpbc_tmp)
 
 end subroutine InitCellList
 

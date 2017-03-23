@@ -275,7 +275,9 @@ subroutine UFlexLJMonoCell(utwob, force, virial)
                jpt = iptpn(jp)
                iptjpt = iptpt(ipt,jpt)
                dr = ro(1:3,ip)-ro(1:3,jp)
-               call PBC(dr(1), dr(2), dr(3))
+               if(lPBC) then !apply periodic bounday conditions
+                  dr = dr-icell%drpbc(incell)
+               end if
                call ufvLJdr(dr, iptjpt, utwob(iptjpt), force(1:3,ip), force(1:3,jp), virial, loverlap)
                if(loverlap)   call StopUFlexLJ(ip, jp, ro(1:3,ip), ro(1:3,jp), iptjpt, dr(1:3))
             end if
@@ -418,7 +420,7 @@ end subroutine DUFlexLJMono
 
 subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
 
-   use MolModule, only: ro, rotm, iptpn, iptpt, rcut2
+   use MolModule, only: ro, rotm, iptpn, iptpt, rcut2, lPBC
    use MolModule, only: ipnptm, nptm, lptm, lptmdutwob
    use MolModule, only: nproc, myid
    use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip
@@ -447,7 +449,9 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
             dr(1:3) = rotm(1:3,iploc)-ro(1:3,jp)
-            call PBC(dr(1), dr(2), dr(3))
+            if(lPBC) then !apply periodic bounday conditions
+               dr = dr - icell%drpbc(1:3,incell)
+            end if
             call uLJdr(dr, iptjpt, dutwob(iptjpt), lhsoverlap)
             if(lhsoverlap) return
          end do
@@ -489,8 +493,11 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
             dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
-            call PBCr2(dr(1), dr(2), dr(3), r2)
+            if(lPBC) then !apply periodic bounday conditions
+               dr = dr - icell%drpbc(1:3,incell)
+            end if
             !as the old configuration should be free of overlaps one can skip the checks
+            r2 = sum(dr**2)
             if(r2 < rcut2) then
                dutwob(iptjpt) = dutwob(iptjpt) - uLJ(r2,iptjpt)
             end if
