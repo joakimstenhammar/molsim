@@ -298,7 +298,6 @@ OBJS1=mol.o           \
       mesh.o	      \
       celllist.o      \
       ljenergy.o
-      mesh.o
 
 OBJS2=mol.o           \
       particle_par.o  \
@@ -325,7 +324,6 @@ OBJS2=mol.o           \
       mesh_par.o      \
       celllist_par.o  \
       ljenergy_par.o
-      mesh_par.o
 
 OBJS3=mol.o           \
       statistics.o    \
