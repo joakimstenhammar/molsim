@@ -324,7 +324,6 @@ OBJS2=mol.o           \
       mesh_par.o      \
       celllist_par.o  \
       ljenergy_par.o
-      mesh_par.o
 
 OBJS3=mol.o           \
       statistics.o    \
