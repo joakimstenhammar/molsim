@@ -41,7 +41,8 @@ subroutine InitCellList(rcell, iStage)
    integer(4)  :: ix, iy, iz, neigh(3), ineigh, id, jneigh
    logical  :: alreadyneighbour
    type(cell_type), pointer :: icell
-   integer(4), allocatable :: directions(:,:), directionindex(:), idir !
+   integer(4), allocatable :: directions(:,:), directionindex(:)
+   integer(4) :: idir !
    real(8)  :: dr(3), r2
    type(cell_pointer_array), allocatable :: neighcell_tmp(:)
 
@@ -118,7 +119,7 @@ subroutine InitCellList(rcell, iStage)
    end do
 
    ! get the directions
-   maxneighcell = product(2*ceiling(rcut*ircell)+1)
+   maxneighcell = product(2*ceiling(rcut*ircell(1:3))+1)
    allocate(directions(3,maxneighcell))
    allocate(directionindex(maxneighcell))
    idir = 0
