@@ -322,6 +322,11 @@ subroutine UTotal(iStage)
    torque(1:3,1:na) = Zero
    diptot(1:3,1:na) = Zero
    virial           = Zero
+   u%oneb(0:npt)    = Zero
+   u%bond           = Zero
+   u%angle          = Zero
+   u%crosslink      = Zero
+   u%external       = Zero
 
 ! .............. select appropiate energy routines ............
 
