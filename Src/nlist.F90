@@ -541,7 +541,7 @@ subroutine NList(iStage)
          if (itest == 4) call TestLList(uout)
       end if
       if (lclist) then
-         call InitCellList(rcut, iStage)
+         call InitCellList(rcut + drnlist, iStage)
          call SetCellList()
          call CellListAver(iStage)
          if (itest == 4) call TestCellList(uout)
