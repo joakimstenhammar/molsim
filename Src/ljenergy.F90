@@ -421,7 +421,6 @@ subroutine DUFlexLJMonoCell(dutwob, lhsoverlap)
    use MolModule, only: ro, rotm, iptpn, iptpt, rcut2
    use MolModule, only: ipnptm, nptm, lptm, lptmdutwob
    use MolModule, only: nproc, myid
-   use MolModule, only: np
    use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip, ipnext
    implicit none
    real(8), allocatable, intent(inout)  :: dutwob(:)
