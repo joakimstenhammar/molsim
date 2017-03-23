@@ -232,8 +232,8 @@ subroutine DoDump(str)
 
    character(*), intent(in) :: str
 
-   integer(4)   :: ip, ia, m, idum = 0, ierr, ipp, ipo
-   real(8)      :: dum, ldum
+   integer(4)   :: ip, ia, m, idum = 0
+   real(8)      :: dum
 
    if (str(1:4) == 'open' .and. master) then
 

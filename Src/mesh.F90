@@ -243,7 +243,6 @@ recursive function BuildNode(m, ndop, bary, dop, ids, nn, lvl) result(nid)
     real(8) :: cdop(6,2), idop(6,2), eval(3,2)
     real(8) :: vol(2), ivol(2), dvol(2)
     logical :: pick_back, add_back
-    logical :: first_leaf = .true.
     nid = nn
 #define node m%n(nid)
     nn = nn + 1
@@ -743,8 +742,7 @@ function OverlapMesh(m, trans, rot) result(overlap)
     real(8), intent(in) :: trans(3)   ! relative translation
     real(8), intent(in) :: rot(3,3)   ! relative rotation
     type(AffineTrans) :: tf
-    logical :: overlap, ol2
-    integer(4) :: sel(3,6)
+    logical :: overlap
     tf = transformation(rot,trans)
     overlap = OverlapTree(m,tf)
 end function OverlapMesh

@@ -51,6 +51,6 @@
   txpivot   = 'short',
   lmcsep = .true.,
  /
- &nmlIntList 
+ &nmlIntList
  drnlist = 10.0,
  /

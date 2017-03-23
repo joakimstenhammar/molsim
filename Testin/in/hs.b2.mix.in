@@ -44,7 +44,7 @@
   filow = 0.0,   fiupp = 360.0,
   nLoop = 1000,
  /
- 
+
  &nmlMixed
   mode =  5
   txpt1 ='hs',

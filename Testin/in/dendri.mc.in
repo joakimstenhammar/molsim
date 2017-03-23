@@ -10,7 +10,7 @@
 !         34# +                     + #50
 !          17+ # # # #       # # # # +25
 !             38    41      57    54
- 
+
  &nmlSystem
   txtitle ='third generation dendrimer',
   txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',

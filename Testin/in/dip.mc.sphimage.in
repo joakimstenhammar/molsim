@@ -9,7 +9,7 @@
   itest = 0,   ipart = 1,  iatom = 0,   iaver = 100,  ishow = 1,   iplot = 1,   ilist = 1,
  /
  &nmlScale
- /			
+ /
  &nmlParticle
   txelec = 'dipsphimage',
   npt   = 1,

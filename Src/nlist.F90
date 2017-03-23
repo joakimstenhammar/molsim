@@ -108,7 +108,7 @@ subroutine NListDriver(iStage)
    case (iWriteInput)
 
       call IONList(iStage)
-      call LoadBalance(iStage)
+      call LoadBalance !(iStage) iStage is not needed
       call NList(iStage)
 
    case (iBeforeMacrostep)
@@ -300,12 +300,12 @@ end subroutine IONList
 
 ! ... control the calls of LoadBalanceRealSpace and LoadBalanceRecSpace
 
-subroutine LoadBalance(iStage)
+subroutine LoadBalance !(iStage) iStage is not needed
 
    use NListModule
    implicit none
 
-   integer(4), intent(in) :: iStage
+   !integer(4), intent(in) :: iStage
 
    if (lchain) call LoadBalanceRealSpace(myid, master, nproc, 1, nc, icmyid, itest, 'icmyid', uout)  ! set icmyid
                call LoadBalanceRealSpace(myid, master, nproc, 1, np, ipmyid, itest, 'ipmyid', uout)  ! set ipmyid
@@ -351,7 +351,10 @@ subroutine LoadBalanceRealSpace(myid, master, nproc, iobjlow, iobjupp, iobjmyid,
    integer(4), intent(in)  :: unit         ! output unit
 
    character(40), parameter :: txroutine='LoadBalanceRealSpace'
-   integer(4) :: nobj, nobjmyid, vaux(1000)
+   integer(4) :: nobj, nobjmyid
+#if defined (_PAR_)
+   integer(4) :: vaux(1000)
+#endif
 
    nobj = iobjupp - iobjlow + 1
 
@@ -544,7 +547,7 @@ subroutine NList(iStage)
          if (itest == 4) call TestCellList(uout)
       end if
 
-      if (.not.allocated(drosum)) then 
+      if (.not.allocated(drosum)) then
          allocate(drosum(3,np_alloc))
          drosum = 0.0E+00
       end if
@@ -689,7 +692,7 @@ subroutine SetVListMD
    implicit none
 
    character(10), parameter :: txroutine ='SetVListMD'
-   integer(4) :: ip, jp, m, iploc, itemp
+   integer(4) :: ip, jp, iploc, itemp
    real(8)    :: rs2cut, r2, dx, dy, dz
 
    rs2cut = (rcut+drnlist)**2
@@ -737,7 +740,7 @@ subroutine SetVListMDLList
    character(15), parameter :: txroutine ='SetVListMDLList'
    integer(4) :: ip, jp
    real(8)    :: rs2cut, r2, dx, dy, dz
-   integer    :: i, icell
+   integer    :: icell
 
    rs2cut = (rcut+drnlist)**2
 
@@ -787,8 +790,11 @@ subroutine SetVListMC
    implicit none
 
    character(10), parameter :: txroutine ='SetVListMC'
-   integer(4) :: ip, jp, iploc
+   integer(4) :: ip, jp
    real(8)    :: rs2cut, r2, dx, dy, dz
+#if defined(_PAR_)
+   integer(4) :: iploc
+#endif
 
    rs2cut = (rcut+drnlist)**2
 
@@ -860,7 +866,7 @@ subroutine SetVListMCLList
    character(40), parameter :: txroutine ='SetVListMCLList'
    integer(4) :: ip, jp
    real(8)    :: rs2cut, r2, dx, dy, dz
-   integer    :: i, icell
+   integer    :: icell
 
    rs2cut = (rcut+drnlist)**2
 
@@ -1057,7 +1063,7 @@ subroutine TestVList(unit)
 
 ! ... allocate memory
 
-   if (.not.allocated(nneighbour)) then 
+   if (.not.allocated(nneighbour)) then
       allocate(nneighbour(maxnneigh))
       nneighbour = 0
    end if
@@ -1280,15 +1286,15 @@ subroutine TestLList(unit)
    integer(4) :: icell, jp
 
    call WriteHead(3, 'TestLList', uout)
-   write(uout,'(a)') 'particle     list (next particle)'
-   write(uout,'(i5,i10)') (jp,jpllist(jp),jp=1,np)
-   write(uout,'(a)') ' cell      particles (first is head)'
+   write(unit,'(a)') 'particle     list (next particle)'
+   write(unit,'(i5,i10)') (jp,jpllist(jp),jp=1,np)
+   write(unit,'(a)') ' cell      particles (first is head)'
    do icell = 1, ncellllist
-      write(uout,'(i5)') icell
+      write(unit,'(i5)') icell
       jp = headllist(icell)
       do
          if (jp == 0) exit
-         write(uout,'(i15)') jp
+         write(unit,'(i15)') jp
          jp = jpllist(jp)
       end do
    end do

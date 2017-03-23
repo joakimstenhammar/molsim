@@ -19,18 +19,18 @@
   txpt  = 'pe',		'protein',
   nppt  =  60,		1,
   natpt =  1,		5,
- 
+
   txat  = 'bead',	'plus_aa',	'minus_aa',	'neutr_aa', 'p_center',
   massat= 8.0,		0.0,		0.0,		0.0,	    1430,
-  radat = 2.0,		1,		1,		1,	    18.54,	
+  radat = 2.0,		1,		1,		1,	    18.54,
   zat   = -1,		1,		-1,		0,	    0,
- 
+
   naatpt(1,1) =  1,
   naatpt(1,2) =  18,
   naatpt(2,2) =  10,
   naatpt(3,2) =  4,
   naatpt(5,2) =  1,
- 
+
   txaat( 1,1) = 'pebead',
   txaat(01,2) = 'asp    66',
   txaat(02,2) = 'asp    18',
@@ -65,7 +65,7 @@
   txaat(31,2) = 'arg   125',
   txaat(32,2) = 'arg   128',
   txaat(33,2) = 'pr_ctr',
- 
+
   rain(1,01,2) =   5.126, -11.854, -10.333,
   rain(1,02,2) =  -0.702,  -7.539, -14.705,
   rain(1,03,2) =   3.495,   8.745, -13.597,
@@ -106,91 +106,91 @@
  /
  &nmlPotential
   rcut = 67,
- 
+
   npot(1)   = 	1,
   ipot(1,1) = 	1,
   ucoff(1,1) = 	1,
- 
+
   npot(2) =	1,
   ipot(1,2) =	1,
   ucoff(1,2) =	1,
- 
+
   npot(3) =	1,
   ipot(1,3) =	1,
   ucoff(1,3) =	1,
- 
+
   npot(4) =	0,
   ipot(1,4) =	0,
   ucoff(1,4) =	0,
- 
+
   npot(5) =	0,
   ipot(1,5) =	0,
   ucoff(1,5) =	0,
- 
+
   npot(6) =	2,
   ipot(1,6) =	6,		12,
   ucoff(1,6) =	-1.201e8,	0.902e16,
- 
+
   npot(7)   = 	1,
   ipot(1,7) = 	1,
   ucoff(1,7) = 	1,
- 
+
   npot(8) =	1,
   ipot(1,8) =	1,
   ucoff(1,8) =	1,
- 
+
   npot(9) =	0,
   ipot(1,9) =	0,
   ucoff(1,9) =	0,
- 
+
   npot(10) =	0,
   ipot(1,10) =	0,
   ucoff(1,10) =	0,
- 
+
   npot(11) =	0,
   ipot(1,11) =	0,
   ucoff(1,11) =	0,
- 
+
   npot(12) =	1,
   ipot(1,12) =	1,
   ucoff(1,12) =	1,
- 
+
   npot(13) =	0,
   ipot(1,13) =	0,
   ucoff(1,13) =	0,
- 
+
   npot(14) =	0,
   ipot(1,14) =	0,
   ucoff(1,14) =	0,
- 
+
   npot(15) =	0,
   ipot(1,15) =	0,
   ucoff(1,15) =	0,
- 
+
   npot(16) =	0,
   ipot(1,16) =	0,
   ucoff(1,16) =	0,
- 
+
   npot(17) =	0,
   ipot(1,17) =	0,
   ucoff(1,17) =	0,
- 
+
   npot(18) =	0,
   ipot(1,18) =	0,
   ucoff(1,18) =	0,
- 
+
   npot(19) =	0,
   ipot(1,19) =	0,
   ucoff(1,19) =	0,
- 
+
   npot(20) =	0,
   ipot(1,20) =	0,
   ucoff(1,20) =	0,
- 
+
   npot(21) =	0,
   ipot(1,21) =	0,
   ucoff(1,21) =	0,
- 
+
   relpermitt = 78.4,
   lscrc =.true.,       scrlen = 9.6,
  /
@@ -218,6 +218,6 @@
  &nmlCBPC iptpart= 2, rcontact = 25 /
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 2.0,		2.0,	2.0,	0.4,	0.4,	1.0, rgbcolor = 1,0,0.5, 	0,0,1, 	1,0,0, 	1,1,1, 	0,1,0, 	1,1,1, blmax =0.0, bondr = 0.2 /
- 
- 
- 
+
+
+

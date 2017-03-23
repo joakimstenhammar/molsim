@@ -17,18 +17,18 @@
   txpt  = 'protein',
   nppt  = 1,
   natpt = 9,
- 
+
   txat  = 'asp','glu','tyr','c-t','lys','arg','his','n-t','com',
   massat= 8*0,0, 1430,
       radat = 8*1.0, 18.54,	 ! not correct since hs overlap within ip = 1
-  radat = 8*0.0, 18.54,	
+  radat = 8*0.0, 18.54,
   zat   = -1,  -1, -1, -1, 1, 1, 1, 1, 0
   latweakcharge =  8*.t.,
-  pK = 10.3, 9.9, 3.9, 11.7, 3.3, 1.9, 8.0, 5.0, 
-  pK = 3.7, 4.1, 10.1, 2.3, 10.7, 12.1, 6.0, 9.0 
-  pH = 100e-1 
+  pK = 10.3, 9.9, 3.9, 11.7, 3.3, 1.9, 8.0, 5.0,
+  pK = 3.7, 4.1, 10.1, 2.3, 10.7, 12.1, 6.0, 9.0
+  pH = 100e-1
   naatpt(1,1) =  7, 2, 3, 1, 6, 11, 1, 1, 1
- 
+
   txaat(01,1) = 'asp    18',  rain(1,01,1) =  -8.602,  12.428,  -6.717,
   txaat(02,1) = 'asp    48',  rain(1,02,1) =   8.389,  -7.142,  12.337,
   txaat(03,1) = 'asp    52',  rain(1,03,1) =  11.645,  -6.551,   9.750,
@@ -65,7 +65,7 @@
  /
  &nmlPotential
   rcut = 67,
- 
+
   relpermitt = 78.4,
   lscrc =.true.,       scrlen = 9.6,
  /
@@ -80,6 +80,6 @@
  &nmlRDF vtype(2) =.true., 0.0, 100.0, rmax=120.54, func='rcn' /
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 8*2.0, 16.0, rgbcolor =  1,0,0, 0,1,0, 0,0,1, 1,1,0, 1,1,0, 1,0,1, 0,1,1, 0,1,1, 0,0,0 /
- 
- 
- 
+
+
+

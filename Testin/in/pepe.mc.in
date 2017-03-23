@@ -64,4 +64,4 @@
  &nmlCluster txobj = 'chain', l1d = .true.,  l2d = .true.,  nobjt = 2,  iobjt = 1, 2,  rcluster=8.0,  txweight='mass',  itestcluster = 0 /
  &nmlImage lvrml =.true. /
  &nmlVRML tximage(3) = 'undopbc' /
- 
+

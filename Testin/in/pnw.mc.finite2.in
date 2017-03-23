@@ -21,7 +21,7 @@
   nppt  =   71,    1656,      34,         416,
   natpt =    1,    1,         1,          1,
   txat  = 'node1', 'strand1', 'node2',  'strand2',
-  massat= 4*10.0,  
+  massat= 4*10.0,
   radat = 2.0, 2.0, 2.0, 2.0,
   zat   = 4*0.0,
   naatpt(1,1) =  1,
@@ -35,7 +35,7 @@
   lclink = .true.,
   nnwt = 2,
   nnwnwt(1:2) = 1, 2,
-  iptclnwt(1:2) = 1, 3, 
+  iptclnwt(1:2) = 1, 3,
   ncctnwt(1,1) = 184,
   ncctnwt(2,2) = 52,
   txnwt(1:2) = 'largenw', 'smallnw',
@@ -46,7 +46,7 @@
   rcut = 20,
   relpermitt = 78.4,
  /
- &nmlPotentialChain 
+ &nmlPotentialChain
  bond(1) = 2.4088, 2, 5.0,
  bond(2) = 2.4088, 2, 5.0,
  angle = 0.00207,
@@ -60,7 +60,7 @@
   shiftnwt(1:3,1) = 0.0,
  /
  &nmlMC
-  pspart   = 4*1.0, dtran  =  4*5.0, 
+  pspart   = 4*1.0, dtran  =  4*5.0,
  /
  &nmlIntList inlist = 0, drnlist = 2600.0,   facnneigh = 50.0 /
  &nmlDist idist = 1, rcutdist = 50.0, vtype(5) =.true., 0.0, 100.0, 100 /

@@ -74,7 +74,7 @@
   vtype%max  =-30.0,   -30.0,      0.0,    25.0,   10.0,    10.0,
   vtype%nbin = 100, 100, 100, 100, 100, 100,
  /
- 
+
  &nmlMolstat /
  &nmlGroup ref ='type=water', field='type=water' , lwref =.false.  /
  &nmlStatic

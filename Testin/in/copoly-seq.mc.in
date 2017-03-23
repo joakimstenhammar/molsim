@@ -45,7 +45,7 @@
   rcut = 0,
   relpermitt = 78.4,
  /
- &nmlPotentialChain 
+ &nmlPotentialChain
   bond(1) = 2.4088, 2, 5.0,
   bond(2) = 2.4088, 2, 5.0,
   angle = 0.00207
@@ -73,7 +73,7 @@
   lsubstructuredf = .t.,
   /
  &nmlSPDF vtype(1) =.true., 0.0, 100.0 /
- &nmlSubStructureDF 
+ &nmlSubStructureDF
 vtype(1) = .t., 0.0, 100.0, 100,
 vtype(2) = .t., 0.0, 100.0, 100,
 vtype(3) = .t., 0.0, 100.0, 100,
