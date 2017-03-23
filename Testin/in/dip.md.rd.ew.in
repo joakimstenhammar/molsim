@@ -93,7 +93,7 @@
  &nmlMultipoleDF lmax = 3, vmin =-10.0,-10.0,-100.0, vmax = 10.0, 10.0, 100.0, nrad = 2, radius = 7.5, 15.0 /
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 1.5 /
- 
+
  &nmlMoldyn
   txtitle ='LJ-particles with embedded dipole moment',
   np    = 1000, nplow  = 1,  npupp = 1000, lgroup = .f.,

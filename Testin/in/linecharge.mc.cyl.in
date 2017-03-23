@@ -36,7 +36,7 @@
  /
  &nmlSetConfiguration
   txsetconf = 'randomcylindershell', 'randomcylindershell',
-  radlimit = 10, 
+  radlimit = 10,
  /
  &nmlMC
   isamp = 0,

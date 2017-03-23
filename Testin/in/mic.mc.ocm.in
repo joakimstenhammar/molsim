@@ -3,7 +3,7 @@
   txmethod='mc',    txensemb='npt',     txbc ='xyz',  txstart ='setconf',
   nstep1   = 10,    nstep2   = 5000,
   nstep1   = 1,     nstep2   = 1,
- 
+
   boxlen= 3*861.77,
   boxlen= 3*683.99,
   boxlen= 3*542.88,
@@ -11,9 +11,9 @@
   boxlen= 3*342.00,
   boxlen= 3*271.44,
   boxlen= 3*215.44,
- 
+
   boxlen= 3*271.44,
- 
+
   temp  = 298.0,    prsr = 0.1013,
   iseed = 9876543,
   lcont =.t., laver =.t.,    ldist =.t., ldump =.f.,  lgroup=.f.,  lstatic =.t.,limage =.f.,
@@ -24,7 +24,7 @@
  &nmlParticle
   npt   = 1,
   txpt  ='micelle',
- 
+
   nppt  =1280,
   nppt  = 640,
   nppt  = 320,
@@ -32,9 +32,9 @@
   nppt  =  80,
   nppt  =  40,
   nppt  =  20,
- 
+
   nppt  =  40,
- 
+
   natpt =  1,
   txat  = 'mic',
   radat = 20.0,
@@ -53,7 +53,7 @@
  /
  &nmlMC
   dtran = 10.0,
-  drot  = 0.0, 
+  drot  = 0.0,
  /
  &nmlIntList inlist = 0, drnlist = 10.0 /
  &nmlDist idist = 20, vtype(5) =.true., 0.0, 150.0, 150 /
@@ -68,7 +68,7 @@
  &nmlCluster txobj = 'particle', iobjt = 1, rcluster = 50 /
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 20,  2, blmax  = 1.5, bondr =  0.1 /
- 
+
  &nmlMoldyn
   txtitle ='60:1 system rho(m) = 2*10e-6',
   np    = 40,     nplow  = 1,    npupp = 40,  lgroup = .f.,
@@ -76,12 +76,12 @@
   lmsd  =.true.,
  /
  &nmlMSD    nti=100, ntspti=1, ishift=1, lform=.f. /
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+
+

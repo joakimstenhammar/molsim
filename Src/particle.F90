@@ -98,7 +98,7 @@ subroutine Particle(iStage)
       txelec                ='charge'
       lclink                =.false.
       lmultigraft           =.false.
-      nnwt                  = 0        
+      nnwt                  = 0
       maxnbondcl            = 1
       ngen                  =-1
       ictgen(0:mngen)       = 1
@@ -179,10 +179,10 @@ subroutine Particle(iStage)
          end if
 
          ! ... default values of input variables
-         nnwnwt(1:nnwt)        = 0        
-         ncctnwt(1:nct,1:nnwt) = 0        
-         iptclnwt(1:nnwt)      = 0                               
-         txtoponwt(1:nnwt)     = 'default' 
+         nnwnwt(1:nnwt)        = 0
+         ncctnwt(1:nct,1:nnwt) = 0
+         iptclnwt(1:nnwt)      = 0
+         txtoponwt(1:nnwt)     = 'default'
          txnwt(1:nnwt)         = 'network'
 
          ! ... read input
@@ -249,103 +249,103 @@ subroutine Particle(iStage)
 
 ! ... allocate memory
 
-      if (.not.allocated(ro)) then 
+      if (.not.allocated(ro)) then
          allocate(ro(3,np_alloc))
          ro = 0.0E+00
       end if
-      if (.not.allocated(rotm)) then 
+      if (.not.allocated(rotm)) then
          allocate(rotm(3,np_alloc))
          rotm = 0.0E+00
       end if
-      if (.not.allocated(drotm)) then 
+      if (.not.allocated(drotm)) then
          allocate(drotm(3,np_alloc))
          drotm = 0.0E+00
       end if
-      if (.not.allocated(ori)) then 
+      if (.not.allocated(ori)) then
          allocate(ori(3,3,np_alloc))
          ori = 0.0E+00
       end if
-      if (.not.allocated(oritm)) then 
+      if (.not.allocated(oritm)) then
          allocate(oritm(3,3,np_alloc))
          oritm = 0.0E+00
       end if
-      if (.not.allocated(rod)) then 
+      if (.not.allocated(rod)) then
          allocate(rod(3,np_alloc))
          rod = 0.0E+00
       end if
-      if (.not.allocated(qua)) then 
+      if (.not.allocated(qua)) then
          allocate(qua(0:3,np_alloc))
          qua = 0.0E+00
       end if
-      if (.not.allocated(quad)) then 
+      if (.not.allocated(quad)) then
          allocate(quad(0:3,np_alloc))
          quad = 0.0E+00
       end if
-      if (.not.allocated(r)) then 
+      if (.not.allocated(r)) then
          allocate(r(3,na_alloc))
          r = 0.0E+00
       end if
-      if (.not.allocated(rtm)) then 
+      if (.not.allocated(rtm)) then
          allocate(rtm(3,na_alloc))
          rtm = 0.0E+00
       end if
 
-      if (.not.allocated(dip)) then 
+      if (.not.allocated(dip)) then
          allocate(dip(3,na_alloc))
          dip = 0.0E+00
       end if
-      if (.not.allocated(diptm)) then 
+      if (.not.allocated(diptm)) then
          allocate(diptm(3,na_alloc))
          diptm = 0.0E+00
       end if
-      if (.not.allocated(idm)) then 
+      if (.not.allocated(idm)) then
          allocate(idm(3,na_alloc))
          idm = 0.0E+00
       end if
-      if (.not.allocated(idm1)) then 
+      if (.not.allocated(idm1)) then
          allocate(idm1(3,na_alloc))
          idm1 = 0.0E+00
       end if
-      if (.not.allocated(idm2)) then 
+      if (.not.allocated(idm2)) then
          allocate(idm2(3,na_alloc))
          idm2 = 0.0E+00
       end if
-      if (.not.allocated(idmo)) then 
+      if (.not.allocated(idmo)) then
          allocate(idmo(3,np_alloc))
          idmo = 0.0E+00
       end if
-      if (.not.allocated(diptot)) then 
+      if (.not.allocated(diptot)) then
          allocate(diptot(3,na_alloc))
          diptot = 0.0E+00
       end if
-      if (.not.allocated(vaux)) then 
+      if (.not.allocated(vaux)) then
          allocate(vaux(3,max(1000,2*na_alloc)))
          vaux = 0.0E+00
       end if
 
-      if (.not.allocated(angvelo)) then 
+      if (.not.allocated(angvelo)) then
          allocate(angvelo(3,np_alloc))
          angvelo = 0.0E+00
       end if
-      if (.not.allocated(forceo)) then 
+      if (.not.allocated(forceo)) then
          allocate(forceo(3,np_alloc))
          forceo = 0.0E+00
       end if
-      if (.not.allocated(torqueo)) then 
+      if (.not.allocated(torqueo)) then
          allocate(torqueo(3,np_alloc))
          torqueo = 0.0E+00
       end if
-      if (.not.allocated(force)) then 
+      if (.not.allocated(force)) then
          allocate(force(3,na_alloc), torque(3,na_alloc))
          force = 0.0E+00
          torque = 0.0E+00
       end if
-      if (.not.allocated(drostep)) then 
+      if (.not.allocated(drostep)) then
          allocate(drostep(3,np_alloc))
          drostep = 0.0E+00
       end if
 
-      if (.not.allocated(laztm)) then 
+      if (.not.allocated(laztm)) then
          allocate(laztm(na_alloc))
          laztm = .false.
       end if
@@ -654,15 +654,17 @@ subroutine SetObjectParam1
 
 ! ... check consistence among nnwnwt and ncct
 
-   do ict = 1, nct
-      nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
-      if (.not.((nctemp == 0).or.(nctemp == ncct(ict)))) then
-         write(uout,'(a,i5)') 'ict = ', ict
-         write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
-         write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
-         call Stop(txroutine, 'inconsistency among nnwnwt, ncctnwt, and ncct', uout)
-      end if
-   end do
+   if(nnwt > 0) then
+      do ict = 1, nct
+         nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+         if (.not.((nctemp == 0).or.(nctemp == ncct(ict)))) then
+            write(uout,'(a,i5)') 'ict = ', ict
+            write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+            write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
+            call Stop(txroutine, 'inconsistency among nnwnwt, ncctnwt, and ncct', uout)
+         end if
+      end do
+   end if
 
 ! ... check whether nppt(iptclnwt(inwt)) is a multiple of nnwnwt(inwt)
 
@@ -719,17 +721,17 @@ subroutine SetObjectParam1
 
    if (lnetwork) then
       call Set_lptnwt     ! particle type ipt used for network type inwt?
-      call Set_nnw        ! number of networks                          
+      call Set_nnw        ! number of networks
       call Set_nclnwt     ! number of cross-links of network type
-      call Set_nctnwt     ! number of chain types of network type inwt   
-      call Set_ncnwt      ! number of chains of network type inwt        
+      call Set_nctnwt     ! number of chain types of network type inwt
+      call Set_ncnwt      ! number of chains of network type inwt
       call Set_npnwt      ! number of particles of network type inwt
-      call Set_nnwtnwt    ! number of network type pairs           
+      call Set_nnwtnwt    ! number of network type pairs
       call Set_npweakchargenwt ! number of titratable particles in network type inwt
 
-      call Set_inwtnwn    ! network                                      -> its network type                             
+      call Set_inwtnwn    ! network                                      -> its network type
       call Set_inwtct     ! chain type (1:nct)                           -> its network type (1:nnwt)
-      call Set_icnclocnwn ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)   
+      call Set_icnclocnwn ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)
       call Set_inwtcn     ! chain (1:nc)                                 -> its network type (1:nnwt)
       call Set_inwncn     ! chain (1:nc)                                 -> its network (1:nnw)
       call Set_inwnnwt    ! network type (1:nnwt)                        -> its first network (1:nnw)
@@ -748,11 +750,11 @@ subroutine SetObjectParam1
 
    if (lclink .and. .not.lhierarchical) then
       maxvalnbondcl = maxval(maxnbondcl(1:npt))
-      if (.not.allocated(nbondcl)) then 
+      if (.not.allocated(nbondcl)) then
          allocate(nbondcl(np_alloc))
          nbondcl = 0
       end if
-      if (.not.allocated(bondcl)) then 
+      if (.not.allocated(bondcl)) then
          allocate(bondcl(maxvalnbondcl,np_alloc))
          bondcl = 0
       end if
@@ -837,7 +839,7 @@ end subroutine Set_nphn
 !........................................................................
 
 subroutine Set_napt  ! number of atoms of a particle type
-   if (.not.allocated(napt)) then 
+   if (.not.allocated(napt)) then
       allocate(napt(npt))
       napt = 0
    end if
@@ -902,7 +904,7 @@ end subroutine Set_nat
 !........................................................................
 
 subroutine Set_naat  ! number of atoms of a given atom type
-   if (.not.allocated(naat)) then 
+   if (.not.allocated(naat)) then
       allocate(naat(nat))
       naat = 0
    end if
@@ -955,7 +957,7 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
    integer(4), allocatable :: ipstart(:)
    integer(4), allocatable :: iptiseg(:)
 
-   if (.not.allocated(ipnsegcn)) then 
+   if (.not.allocated(ipnsegcn)) then
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
       ipnsegcn = 0
    end if
@@ -1090,7 +1092,7 @@ end subroutine Set_ipnsegcn
 !........................................................................
 
 subroutine Set_ictcn  ! chain -> its chain type
-   if (.not.allocated(ictcn)) then 
+   if (.not.allocated(ictcn)) then
       allocate(ictcn(nc))
       ictcn = 0
    end if
@@ -1106,7 +1108,7 @@ end subroutine Set_ictcn
 !........................................................................
 
 subroutine Set_ictpt  ! partcle type -> its chain type
-   if (.not.allocated(ictpt)) then 
+   if (.not.allocated(ictpt)) then
       allocate(ictpt(npt))
       ictpt = 0
    end if
@@ -1122,11 +1124,11 @@ end subroutine Set_ictpt
 
 subroutine Set_ihnpn  ! particle -> its hierarchical structure
    integer(4) :: ih, igen, ict, ic, iseg, ip
-   if (.not.allocated(ihnpn)) then 
+   if (.not.allocated(ihnpn)) then
       allocate(ihnpn(np_alloc))
       ihnpn = 0
    end if
-   if (.not.allocated(icihigen)) then 
+   if (.not.allocated(icihigen)) then
       allocate(icihigen(nh,0:ngen))
       icihigen = 0
    end if
@@ -1148,7 +1150,7 @@ end subroutine Set_ihnpn
 !........................................................................
 
 subroutine Set_ictpn  ! particle -> its chain type
-   if (.not.allocated(ictpn)) then 
+   if (.not.allocated(ictpn)) then
       allocate(ictpn(np_alloc))
       ictpn = 0
    end if
@@ -1167,7 +1169,7 @@ end subroutine Set_ictpn
 !........................................................................
 
 subroutine Set_icnpn  ! particle -> its chain
-   if (.not.allocated(icnpn)) then 
+   if (.not.allocated(icnpn)) then
       allocate(icnpn(np_alloc))
       icnpn = 0
    end if
@@ -1186,7 +1188,7 @@ end subroutine Set_icnpn
 !........................................................................
 
 subroutine Set_iptpn  ! particle -> its particle type
-   if (.not.allocated(iptpn)) then 
+   if (.not.allocated(iptpn)) then
       allocate(iptpn(np_alloc))
       iptpn = 0
    end if
@@ -1202,7 +1204,7 @@ end subroutine Set_iptpn
 !........................................................................
 
 subroutine Set_iptat  ! atom type -> its particle type
-   if (.not.allocated(iptat)) then 
+   if (.not.allocated(iptat)) then
       allocate(iptat(nat))
       iptat = 0
    end if
@@ -1218,7 +1220,7 @@ end subroutine Set_iptat
 !........................................................................
 
 subroutine Set_iptan  ! atom -> its particle type
-   if (.not.allocated(iptan)) then 
+   if (.not.allocated(iptan)) then
       allocate(iptan(na_alloc))
       iptan = 0
    end if
@@ -1234,7 +1236,7 @@ end subroutine Set_iptan
 !........................................................................
 
 subroutine Set_ipnan  ! atom -> its particle
-   if (.not.allocated(ipnan)) then 
+   if (.not.allocated(ipnan)) then
       allocate(ipnan(na_alloc))
       ipnan = 0
    end if
@@ -1259,7 +1261,7 @@ subroutine Set_iatan  ! atom -> its atom type
    integer(4)  :: ia1
    integer(4)  :: ia2
    integer(4)  :: iaat
-   if (.not.allocated(iatan)) then 
+   if (.not.allocated(iatan)) then
       allocate(iatan(na_alloc))
       iatan = 0
    end if
@@ -1289,7 +1291,7 @@ end subroutine Set_iatan
 !........................................................................
 
 subroutine Set_icnct  ! chain type -> its first chain
-   if (.not.allocated(icnct)) then 
+   if (.not.allocated(icnct)) then
       allocate(icnct(nct))
       icnct = 0
    end if
@@ -1303,7 +1305,7 @@ end subroutine Set_icnct
 !........................................................................
 
 subroutine Set_ipnpt  ! particle type -> its first particle
-   if (.not.allocated(ipnpt)) then 
+   if (.not.allocated(ipnpt)) then
       allocate(ipnpt(npt))
       ipnpt = 0
    end if
@@ -1317,7 +1319,7 @@ end subroutine Set_ipnpt
 !........................................................................
 
 subroutine Set_iatpt  ! particle type -> its first atom type
-   if (.not.allocated(iatpt)) then 
+   if (.not.allocated(iatpt)) then
       allocate(iatpt(npt))
       iatpt = 0
    end if
@@ -1331,7 +1333,7 @@ end subroutine Set_iatpt
 !........................................................................
 
 subroutine Set_ianpn  ! particle -> its first atom
-   if (.not.allocated(ianpn)) then 
+   if (.not.allocated(ianpn)) then
       allocate(ianpn(np_alloc))
       ianpn = 0
    end if
@@ -1349,7 +1351,7 @@ end subroutine Set_ianpn
 !........................................................................
 
 subroutine Set_ianat  ! atom type -> its first atom
-   if (.not.allocated(ianat)) then 
+   if (.not.allocated(ianat)) then
       allocate(ianat(nat))
       ianat = 0
    end if
@@ -1382,7 +1384,7 @@ end subroutine Set_ianat
 subroutine Set_ictct  ! two chain types -> chain type pair
    integer(4)  :: jct
    integer(4)  :: ictjct
-   if (.not.allocated(ictct)) then 
+   if (.not.allocated(ictct)) then
       allocate(ictct(nct,nct))
       ictct = 0
    end if
@@ -1401,7 +1403,7 @@ end subroutine Set_ictct
 subroutine Set_iptpt  ! two particle types -> particle type pair
    integer(4)  :: jpt
    integer(4)  :: iptjpt
-   if (.not.allocated(iptpt)) then 
+   if (.not.allocated(iptpt)) then
       allocate(iptpt(npt,npt))
       iptpt = 0
    end if
@@ -1420,7 +1422,7 @@ end subroutine Set_iptpt
 subroutine Set_iatat  ! two atom types -> atom type pair
    integer(4)  :: jat
    integer(4)  :: iatjat
-   if (.not.allocated(iatat)) then 
+   if (.not.allocated(iatat)) then
       allocate(iatat(nat,nat))
       iatat = 0
    end if
@@ -1437,7 +1439,7 @@ end subroutine Set_iatat
 !........................................................................
 
 subroutine Set_isegpn   ! particle number -> segment number
-   if (.not.allocated(isegpn)) then 
+   if (.not.allocated(isegpn)) then
       allocate(isegpn(np_alloc))
       isegpn = 0
    end if
@@ -1454,7 +1456,7 @@ end subroutine Set_isegpn
 !........................................................................
 
 subroutine Set_bondnn   ! bond and particle -> bonded particle
-   if (.not.allocated(bondnn)) then 
+   if (.not.allocated(bondnn)) then
       allocate(bondnn(2,np))
       bondnn = 0
    end if
@@ -1502,9 +1504,9 @@ subroutine Set_lptnwt ! particle type ipt used for network type inwt?
    do ipt = 1, npt
       do inwt = 1, nnwt
          if (ipt == iptclnwt(inwt)) then ! ... ipt forms the nodes of networks of type inwt
-            lptnwt(ipt,inwt) = .true. 
+            lptnwt(ipt,inwt) = .true.
             exit
-         else if (ictpt(ipt) > 0) then ! ... ipt forms chains ... 
+         else if (ictpt(ipt) > 0) then ! ... ipt forms chains ...
             if (ncctnwt(ictpt(ipt),inwt) > 0) lptnwt(ipt,inwt) = .true. ! ... and is part of networks of type inwt
          end if
       end do
@@ -1561,7 +1563,7 @@ end subroutine Set_npweakchargenwt
 !........................................................................
 
 subroutine Set_inwtnwn ! network -> its network type
-   if (.not.allocated(inwtnwn)) then 
+   if (.not.allocated(inwtnwn)) then
       allocate(inwtnwn(nnw))
       inwtnwn = 0
    end if
@@ -1570,14 +1572,14 @@ subroutine Set_inwtnwn ! network -> its network type
       do inwloc = 1, nnwnwt(inwt)
          inw = inw+1
          inwtnwn(inw) = inwt
-      end do 
+      end do
    end do
 end subroutine Set_inwtnwn
 
 !........................................................................
 
 subroutine Set_inwtct  ! chain type -> its network type
-   if (.not.allocated(inwtct)) then 
+   if (.not.allocated(inwtct)) then
       allocate(inwtct(nct))
       inwtct = 0
    end if
@@ -1593,13 +1595,13 @@ subroutine Set_icnclocnwn ! local chain and network -> its chain
    character(40), parameter :: txroutine = 'Set_icnclocnwn'
    integer(4)               :: iclow
    integer(4)               :: icctloc
-   if (.not.allocated(icnclocnwn)) then 
+   if (.not.allocated(icnclocnwn)) then
       allocate(icnclocnwn(maxval(ncnwt(1:nnwt)),nnw))
       icnclocnwn = 0
    end if
    inw = 0
    do inwt = 1, nnwt
-      if (txtoponwt(inwt) == 'default') then   ! currently only txtoponwt = 'default' is supported 
+      if (txtoponwt(inwt) == 'default') then   ! currently only txtoponwt = 'default' is supported
          do inwloc = 1, nnwnwt(inwt)
             inw = inw+1
             icloc = 0
@@ -1620,7 +1622,7 @@ end subroutine Set_icnclocnwn
 !........................................................................
 
 subroutine Set_inwtcn  ! chain -> its network type
-   if (.not.allocated(inwtcn)) then 
+   if (.not.allocated(inwtcn)) then
       allocate(inwtcn(nc))
       inwtcn = 0
    end if
@@ -1639,7 +1641,7 @@ end subroutine Set_inwtcn
 !........................................................................
 
 subroutine Set_inwncn ! chain -> its network
-   if (.not.allocated(inwncn)) then 
+   if (.not.allocated(inwncn)) then
       allocate(inwncn(nc))
       inwncn = 0
    end if
@@ -1658,14 +1660,14 @@ end subroutine Set_inwncn
 !........................................................................
 
 subroutine Set_inwnnwt ! network type -> its first network
-   if (.not.allocated(inwnnwt)) then 
-      allocate(inwnnwt(nnwt)) 
+   if (.not.allocated(inwnnwt)) then
+      allocate(inwnnwt(nnwt))
       inwnnwt = 0
    end if
    inw = 1
    do inwt = 1, nnwt
       inwnnwt(inwt) = inw
-      inw = inw + nnwnwt(inwt) 
+      inw = inw + nnwnwt(inwt)
    end do
 end subroutine Set_inwnnwt
 
@@ -1674,7 +1676,7 @@ end subroutine Set_inwnnwt
 subroutine Set_inwtnwt  ! two network types -> network type pair
    integer(4)  :: inwtjnwt
    integer(4)  :: jnwt
-   if (.not.allocated(inwtnwt)) then 
+   if (.not.allocated(inwtnwt)) then
       allocate(inwtnwt(nnwt,nnwt))
       inwtnwt = 0
    end if
@@ -1691,7 +1693,7 @@ end subroutine Set_inwtnwt
 !........................................................................
 
 subroutine Set_ipncllocnwn ! cross-link and network -> its particle
-   if (.not.allocated(ipncllocnwn)) then 
+   if (.not.allocated(ipncllocnwn)) then
       allocate(ipncllocnwn(maxval(nclnwt(1:nnwt)),nnw))
       ipncllocnwn = 0
    end if
@@ -1711,7 +1713,7 @@ end subroutine Set_ipncllocnwn
 !........................................................................
 
 subroutine Set_ipnplocnwn ! local particle and network -> its particle
-   if (.not.allocated(ipnplocnwn)) then 
+   if (.not.allocated(ipnplocnwn)) then
       allocate(ipnplocnwn(maxval(npnwt(1:nnwt)),nnw))
       ipnplocnwn = 0
    end if
@@ -1740,7 +1742,7 @@ end subroutine Set_ipnplocnwn
 !........................................................................
 
 subroutine Set_lpnnwn ! particle part of network?
-   if (.not.allocated(lpnnwn)) then 
+   if (.not.allocated(lpnnwn)) then
       allocate(lpnnwn(np,nnw))
       lpnnwn = .false.
    end if
@@ -1775,7 +1777,7 @@ end subroutine Set_ipnhn
 !........................................................................
 
 subroutine Set_genic  ! chain number -> generation number
-   if (.not.allocated(genic)) then 
+   if (.not.allocated(genic)) then
       allocate(genic(nc))
       genic = 0
    end if
@@ -1795,11 +1797,11 @@ subroutine Set_bondcl   ! crosslink and particle -> crosslinked particle
    integer(4) :: jploc
 
    maxvalnbondcl = maxval(maxnbondcl(1:npt))
-   if (.not.allocated(nbondcl)) then 
+   if (.not.allocated(nbondcl)) then
       allocate(nbondcl(np_alloc))
       nbondcl = 0
    end if
-   if (.not.allocated(bondcl)) then 
+   if (.not.allocated(bondcl)) then
       allocate(bondcl(maxvalnbondcl,np_alloc))
       bondcl = 0
    end if
@@ -1834,11 +1836,11 @@ subroutine Set_bondcl   ! crosslink and particle -> crosslinked particle
                      bondcl(nbondcl(ip),ip) = jp
                      bondcl(nbondcl(jp),jp) = ip
                      if(lmultigraft) then    !   shift all grafting point to the backbone
-!			 write(*,*) ip, jp, nbondcl(ip), nbondcl(jp), bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp)
-!			 write(*,*) bondcl(nbondcl(ip)-1,ip), bondcl(nbondcl(jp)-1,jp)
+!             write(*,*) ip, jp, nbondcl(ip), nbondcl(jp), bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp)
+!             write(*,*) bondcl(nbondcl(ip)-1,ip), bondcl(nbondcl(jp)-1,jp)
                          if(nbondcl(jp)==2) then
-!			    write(*,*) ip, jp, bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp), bondcl(nbondcl(jp)-1,jp)
-                            jploc = bondcl(nbondcl(jp)-1,jp)               ! jploc 				
+!                write(*,*) ip, jp, bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp), bondcl(nbondcl(jp)-1,jp)
+                            jploc = bondcl(nbondcl(jp)-1,jp)               ! jploc
                             bondcl(nbondcl(ip),ip) = jploc                 ! bind ip to jploc
                             nbondcl(jploc) = nbondcl(jploc) + 1            ! update jploc
                             bondcl(nbondcl(jploc),jploc) = ip
@@ -1951,19 +1953,19 @@ subroutine SetObjectParam2
 
 ! ... set txnwtnwt, txctct, txptpt, and txatat
 
-   if (.not.allocated(txnwtnwt)) then 
+   if (.not.allocated(txnwtnwt)) then
       allocate(txnwtnwt(nnwtnwt))
       txnwtnwt = ""
    end if
-   if (.not.allocated(txctct)) then 
+   if (.not.allocated(txctct)) then
       allocate(txctct(nctct))
       txctct = ""
    end if
-   if (.not.allocated(txptpt)) then 
+   if (.not.allocated(txptpt)) then
       allocate(txptpt(nptpt))
       txptpt = ""
    end if
-   if (.not.allocated(txatat)) then 
+   if (.not.allocated(txatat)) then
       allocate(txatat(natat))
       txatat = ""
    end if
@@ -1991,7 +1993,7 @@ subroutine SetObjectParam2
 
 ! ... set az
 
-    if (.not.allocated(az)) then 
+    if (.not.allocated(az)) then
        allocate(az(na_alloc))
        az = 0.0E+00
     end if
@@ -2003,7 +2005,7 @@ subroutine SetObjectParam2
 ! ... weak charge: allocate memory, set iatweakcharge, and set pointer iananweakcharge
 
    if (lweakcharge) then
-      if (.not.allocated(laz)) then 
+      if (.not.allocated(laz)) then
          allocate(laz(na_alloc)) ! allocate memory for laz
          laz = .false.
       end if
@@ -2017,7 +2019,7 @@ subroutine SetObjectParam2
          if (iatweakcharge == 0) call Stop(txroutine,'iatweakcharge == 0', uout)
          if (naat(jatweakcharge) /= 1) call Stop(txroutine,'naat(jatweakcharge) /= 1', uout) ! particle carrying counter charge has to be an ion
 
-         if (.not.allocated(iananweakcharge)) then 
+         if (.not.allocated(iananweakcharge)) then
             allocate(iananweakcharge(na_alloc))
             iananweakcharge = 0
          end if
@@ -2042,7 +2044,7 @@ subroutine SetObjectParam2
 
 ! ... calculate particle masses, masspt, and massipt
 
-    if (.not.allocated(masspt)) then 
+    if (.not.allocated(masspt)) then
        allocate(masspt(npt), massipt(npt))
        masspt = 0.0E+00
        massipt = 0.0E+00
@@ -2060,7 +2062,7 @@ subroutine SetObjectParam2
 ! ... calculate network mass massnwt and inverse mass massinwt
 
    if (lnetwork) then
-      if (.not.allocated(massnwt)) then 
+      if (.not.allocated(massnwt)) then
          allocate(massnwt(nnwt), massinwt(nnwt))
          massnwt = 0.0E+00
          massinwt = 0.0E+00
@@ -2071,24 +2073,24 @@ subroutine SetObjectParam2
             call Warn(txroutine,'NetworkProperties flawed for massnwt(inwt) == Zero',uout)
          end if
          if (massnwt(inwt) > Zero) massinwt(inwt) = One/massnwt(inwt)
-      end do      
+      end do
    end if
 
 ! ... calculate atom coordinates in the principal axes system and mompt and momipt
 
-    if (.not.allocated(poltens)) then 
+    if (.not.allocated(poltens)) then
        allocate(poltens(6,na_alloc))
        poltens = 0.0E+00
     end if
     ntemp = maxval(napt(1:npt))
-    if (.not.allocated(ra)) then 
+    if (.not.allocated(ra)) then
        allocate(ra(3,ntemp,npt), dipa(3,ntemp,npt), poltensa(6,ntemp,npt), rasite(3,ntemp,npt))
        ra = 0.0E+00
        dipa = 0.0E+00
        poltensa = 0.0E+00
        rasite = 0.0E+00
     end if
-    if (.not.allocated(mompt)) then 
+    if (.not.allocated(mompt)) then
        allocate(mompt(3,npt), momipt(3,npt))
        mompt = 0.0E+00
        momipt = 0.0E+00
@@ -2104,7 +2106,7 @@ subroutine SetObjectParam2
 ! ... set lapolarization
 
     if (lpolarization) then
-       if (.not.allocated(lapolarization)) then 
+       if (.not.allocated(lapolarization)) then
           allocate(lapolarization(na_alloc))
           lapolarization = .false.
        end if
@@ -2119,7 +2121,7 @@ subroutine SetObjectParam2
 
 ! ... calculate massp, massip, momp, and momip
 
-    if (.not.allocated(massp)) then 
+    if (.not.allocated(massp)) then
        allocate(massp(np_alloc), massip(np_alloc), momp(3,np_alloc), momip(3,np_alloc))
        massp = 0.0E+00
        massip = 0.0E+00
@@ -2136,7 +2138,7 @@ subroutine SetObjectParam2
 
 ! ... calculate the maximal atom-com distance, racom
 
-    if (.not.allocated(racom)) then 
+    if (.not.allocated(racom)) then
        allocate(racom(npt))
        racom = 0.0E+00
     end if
@@ -2150,7 +2152,7 @@ subroutine SetObjectParam2
 
 ! ... set r1atat and r2atat
 
-    if (.not.allocated(r1atat)) then 
+    if (.not.allocated(r1atat)) then
        allocate(r1atat(natat), r2atat(natat))
        r1atat = 0.0E+00
        r2atat = 0.0E+00
@@ -2165,7 +2167,7 @@ subroutine SetObjectParam2
 
 ! ... calculate the number of translational and rotational degrees of freedom
 
-    if (.not.allocated(itradegfree)) then 
+    if (.not.allocated(itradegfree)) then
        allocate(itradegfree(1:npt), irotdegfree(1:npt))
        itradegfree = 0
        irotdegfree = 0

@@ -2,11 +2,11 @@
   txtitle ='hs 10:1 system, spherical cell, low dielectric micelle, p-algorithm',
   txmethod= 'mc',     txensemb='nvt',     txbc  ='sph',  txstart ='setconf',
   nstep1   = 2,    nstep2   = 10,
- 
+
   sphrad  = 4.64,
- 
+
   temp  = 6000.,   prsr  = 0.1013,
- 
+
   iseed = 9876543,
   lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.f., lstatic=.f.,limage =.t.,
   itest = 0,   ipart = 1,   iatom = 0,   iaver = 10000, ishow = 1,   iplot = 1,   ilist = 1,
@@ -33,7 +33,7 @@
   ftoltab = 1.0d-3,
   umaxtab = 2.0d5,
   fmaxtab = 2.0d6,
- 
+
   relpermitt = 78.4026,
   luext = .true.
  /
