@@ -193,6 +193,7 @@ subroutine InitCellList(rcell, iStage)
    end do
 
    deallocate(directions, directionindex)
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine InitCellList
 
@@ -265,11 +266,13 @@ subroutine RmIpFromCell(ip, icell)
 end subroutine RmIpFromCell
 
 subroutine UpdateCellip(ip)
-   use MolModule, only: ro
+   use MolModule, only: ro, ltime, uout
    implicit none
    integer(4), intent(in)  :: ip
+   character(40), parameter :: txroutine ='UpdateCellip(ip)'
    type(cell_type), pointer :: cellold
    type(cell_type), pointer :: cellnew
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    cellold => cellip(ip)%p
    cellnew => pcellro(ro(1:3,ip))
@@ -278,6 +281,7 @@ subroutine UpdateCellip(ip)
       call RmIpFromCell(ip, cellold)
       call AddIpToCell(ip, cellnew)
    end if
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine UpdateCellip
 
