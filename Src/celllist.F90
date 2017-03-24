@@ -33,18 +33,16 @@ subroutine InitCellList(rcell, iStage)
    use MolModule, only: ltrace, ltime, uout
    use MolModule, only: lbcbox, boxlen
    use MolModule, only: np
-   use MolModule, only: rcut, rcut2, lPBC
+   use MolModule, only: rcut, rcut2
 
    real(8), intent(in)  :: rcell
    integer(4), intent(in)  :: iStage
    character(40), parameter :: txroutine ='InitCellList'
-   integer(4)  :: ix, iy, iz, neigh(3), ineigh, id, jneigh
-   logical  :: alreadyneighbour
+   integer(4)  :: ix, iy, iz, neigh(3), ineigh, id
    type(cell_type), pointer :: icell
    integer(4), allocatable :: directions(:,:), directionindex(:)
    integer(4) :: idir !
-   real(8)  :: dr(3), r2
-   type(cell_pointer_array), allocatable :: neighcell_tmp(:)
+   real(8)  :: r2
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -142,51 +140,39 @@ subroutine InitCellList(rcell, iStage)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             icell => cell(ix,iy,iz)
 
-            !initialize cell neighbors
+            !get number of cell neighbors
             icell%nneighcell = 0
+            do idir = 1, maxneighcell
+               call getPBCneighcell((/ ix, iy, iz/), directions(1:3, directionindex(idir)), neigh, r2)
+               if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> lbound(cell))) then !neighbour is out of bounds
+                  cycle
+               else if(r2 > rcut2) then ! distance of the cells so large, that it is not needed
+                  cycle
+               end if
+               if(.not. alreadyneighbour(cell(neigh(1), neigh(2), neigh(3))%id, icell)) then
+                  icell%nneighcell = icell%nneighcell + 1
+               end if
+            end do
+
+            !allocate memory
             if(allocated(icell%neighcell)) then
                deallocate(icell%neighcell)
             end if
-            allocate(icell%neighcell(0))
+            allocate(icell%neighcell(icell%nneighcell))
 
+            ! now assign neighbours
+            ineigh = 1
             do idir = 1, maxneighcell
-               neigh(1:3) = (/ ix , iy , iz /) + directions(1:3,directionindex(idir))
-               if(lPBC) then !apply periodic boundary conditions
-                  where (neigh > ubound(cell))
-                     neigh = lbound(cell)
-                  elsewhere (neigh < lbound(cell))
-                     neigh = ubound(cell)
-                  end where
-               else if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> lbound(cell))) then !neighbour is out of bounds
+               call getPBCneighcell((/ ix, iy, iz/), directions(1:3, directionindex(idir)), neigh, r2)
+               if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> lbound(cell))) then !neighbour is out of bounds
+                  cycle
+               else if(r2 > rcut2) then ! distance of the cells so large, that it is not needed
                   cycle
                end if
-
-               dr(1:3) = max(0,abs(directions(1:3, directionindex(idir)))-1)/ircell(1:3) !distance to outer end of cell
-               call PBCr2(dr(1), dr(2), dr(3), r2)
-               if(r2 > rcut2) then
-                  cycle
-               end if
-
-               alreadyneighbour = .false.
-               do jneigh = 1, icell%nneighcell
-                  if (icell%neighcell(jneigh)%p%id .eq. cell(neigh(1), neigh(2), neigh(3))%id) then !neighbour is already set
-                     alreadyneighbour = .true.
-                     exit
-                  end if
-               end do
-
-               if(.not. alreadyneighbour) then
-                  !increase allocated size
-                  ineigh = icell%nneighcell + 1
-                  allocate(neighcell_tmp(ineigh)) !allocate temp
-                  neighcell_tmp(:size(icell%neighcell)) = icell%neighcell
-                  call move_alloc(neighcell_tmp, icell%neighcell) !temp gets deallocated
-
-                  !add neighbour
-                  icell%nneighcell = ineigh
+               if(.not. alreadyneighbour(cell(neigh(1), neigh(2), neigh(3))%id, icell)) then
+                  ineigh = ineigh + 1
                   icell%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
                end if
-
             end do
          end do
       end do
@@ -196,6 +182,42 @@ subroutine InitCellList(rcell, iStage)
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine InitCellList
+
+subroutine getPBCneighcell(cellc, dirc, neighc, r2)
+   use MolModule, only: lPBC
+   implicit none
+   integer(4), intent(in)  :: cellc(3) !cell coordinates
+   integer(4), intent(in)  :: dirc(3)  !direction coordinates
+   integer(4), intent(out) :: neighc(3) !coorinated of neighbour
+   real(8),    intent(out) :: r2 ! squared distance of cell
+   real(8)  :: dr(3)
+
+   neighc(1:3) = cellc + dirc
+   if(lPBC) then !apply periodic boundary conditions
+      where (neighc > ubound(cell))
+         neighc = lbound(cell)
+      elsewhere (neighc < lbound(cell))
+         neighc = ubound(cell)
+      end where
+   end if
+
+   dr(1:3) = max(0,abs(dirc(1:3))-1)/ircell(1:3) !distance to outer end of cell
+   call PBCr2(dr(1), dr(2), dr(3), r2)
+end subroutine getPBCneighcell
+
+pure function alreadyneighbour(id, cell) result(lneigh)
+   integer(4),      intent(in)  :: id
+   type(cell_type), intent(in)  :: cell
+   logical :: lneigh
+   integer(4) :: ineigh
+   lneigh = .false.
+   do ineigh = 1, cell%nneighcell
+      if (cell%neighcell(ineigh)%p%id .eq. id) then !neighbour is already set
+         lneigh = .true.
+         return
+      end if
+   end do
+end function alreadyneighbour
 
 function pcellro(ro) result(icell)
    use MolModule, only: boxlen2
@@ -243,8 +265,8 @@ subroutine RmIpFromCell(ip, icell)
          !no particles are left
          icell%iphead = 0
       else
-      ! make the previous partice the tail
-      ipnext(prevp) = 0
+         ! make the previous partice the tail
+         ipnext(prevp) = 0
       end if
    else ! ip is not at the tail
       if( icell%iphead .eq. ip ) then ! ip is at head
@@ -266,13 +288,11 @@ subroutine RmIpFromCell(ip, icell)
 end subroutine RmIpFromCell
 
 subroutine UpdateCellip(ip)
-   use MolModule, only: ro, ltime, uout
+   use MolModule, only: ro
    implicit none
    integer(4), intent(in)  :: ip
-   character(40), parameter :: txroutine ='UpdateCellip(ip)'
    type(cell_type), pointer :: cellold
    type(cell_type), pointer :: cellnew
-   if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
    cellold => cellip(ip)%p
    cellnew => pcellro(ro(1:3,ip))
@@ -281,7 +301,6 @@ subroutine UpdateCellip(ip)
       call RmIpFromCell(ip, cellold)
       call AddIpToCell(ip, cellnew)
    end if
-   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine UpdateCellip
 
