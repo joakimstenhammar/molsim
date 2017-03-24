@@ -291,17 +291,13 @@ subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
    !use MolModule, only: lmonoatom
    use MolModule, only: lclist
    use MolModule, only: nptpt
-   use MolModule, only: ltime, uout
 
    implicit none
 
    real(8), allocatable, intent(inout) :: dutwob(:)
-   character(40), parameter :: txroutine ='DUFlexLJ'
    real(8), intent(inout)              :: dutot
    logical, intent(inout)              :: lhsoverlap
    real(8)  :: dutwbold
-
-   if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
    lhsoverlap =.true.
    dutwbold = dutwob(0)
@@ -310,8 +306,6 @@ subroutine DUFlexLJ(dutwob, dutot, lhsoverlap)
    else
          call DUFlexLJMono(dutwob, lhsoverlap)
    end if
-
-   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
 
    if(lhsoverlap) then
       return
