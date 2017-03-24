@@ -40,9 +40,10 @@ subroutine InitCellList(rcell, iStage)
    character(40), parameter :: txroutine ='InitCellList'
    integer(4)  :: ix, iy, iz, neigh(3), ineigh, id
    type(cell_type), pointer :: icell
-   integer(4), allocatable :: directions(:,:), directionindex(:)
+   integer(4), allocatable :: directions(:,:), directionindex(:), tmpidneigh(:)
    integer(4) :: idir !
    real(8)  :: r2
+   type(cell_pointer_array), allocatable :: icellid(:)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -102,6 +103,7 @@ subroutine InitCellList(rcell, iStage)
    !+-----+-----+-----+-----+
 
    !allocate cells and set the id of the cells
+   allocate(icellid(size(cell)))
    id = 0
    do ix = lbound(cell,dim=1), ubound(cell,dim=1)
       do iy = lbound(cell,dim=2), ubound(cell,dim=2)
@@ -112,6 +114,7 @@ subroutine InitCellList(rcell, iStage)
             !allocate(cell(ix,iy,iz)%ip(np)) ! allocate cell particles
             icell%iphead = 0
             icell%npart = 0        ! initialize cell particles
+            icellid(id)%p => icell
          end do
       end do
    end do
@@ -120,6 +123,7 @@ subroutine InitCellList(rcell, iStage)
    maxneighcell = product(2*ceiling(rcut*ircell(1:3))+1)
    allocate(directions(3,maxneighcell))
    allocate(directionindex(maxneighcell))
+   allocate(tmpidneigh(maxneighcell))
    idir = 0
    do ix = -ceiling(rcut*ircell(1)), ceiling(rcut*ircell(1))
       do iy = -ceiling(rcut*ircell(2)), ceiling(rcut*ircell(2))
@@ -141,7 +145,9 @@ subroutine InitCellList(rcell, iStage)
             icell => cell(ix,iy,iz)
 
             !get number of cell neighbors
+            ineigh = 0
             icell%nneighcell = 0
+            tmpidneigh = 0
             do idir = 1, maxneighcell
                call getPBCneighcell((/ ix, iy, iz/), directions(1:3, directionindex(idir)), neigh, r2)
                if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> lbound(cell))) then !neighbour is out of bounds
@@ -149,8 +155,10 @@ subroutine InitCellList(rcell, iStage)
                else if(r2 > rcut2) then ! distance of the cells so large, that it is not needed
                   cycle
                end if
-               if(.not. alreadyneighbour(cell(neigh(1), neigh(2), neigh(3))%id, icell)) then
-                  icell%nneighcell = icell%nneighcell + 1
+               if(.not. alreadyneighbour(cell(neigh(1), neigh(2), neigh(3))%id, tmpidneigh(1:ineigh))) then
+                  ineigh = ineigh + 1
+                  icell%nneighcell = ineigh
+                  tmpidneigh(ineigh) = cell(neigh(1), neigh(2), neigh(3))%id
                end if
             end do
 
@@ -161,24 +169,15 @@ subroutine InitCellList(rcell, iStage)
             allocate(icell%neighcell(icell%nneighcell))
 
             ! now assign neighbours
-            ineigh = 1
-            do idir = 1, maxneighcell
-               call getPBCneighcell((/ ix, iy, iz/), directions(1:3, directionindex(idir)), neigh, r2)
-               if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> lbound(cell))) then !neighbour is out of bounds
-                  cycle
-               else if(r2 > rcut2) then ! distance of the cells so large, that it is not needed
-                  cycle
-               end if
-               if(.not. alreadyneighbour(cell(neigh(1), neigh(2), neigh(3))%id, icell)) then
-                  ineigh = ineigh + 1
-                  icell%neighcell(ineigh)%p => cell(neigh(1), neigh(2), neigh(3))
-               end if
+            ineigh = 0
+            do ineigh = 1, icell%nneighcell
+               icell%neighcell(ineigh)%p => icellid(tmpidneigh(ineigh))%p
             end do
          end do
       end do
    end do
 
-   deallocate(directions, directionindex)
+   deallocate(directions, directionindex, tmpidneigh, icellid)
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine InitCellList
@@ -202,21 +201,21 @@ subroutine getPBCneighcell(cellc, dirc, neighc, r2)
    end if
 
    dr(1:3) = max(0,abs(dirc(1:3))-1)/ircell(1:3) !distance to outer end of cell
-   call PBCr2(dr(1), dr(2), dr(3), r2)
+   if(lPBC) then
+      call PBC(dr(1), dr(2), dr(3))
+   end if
+   r2 = sum(dr(1:3)**2)
 end subroutine getPBCneighcell
 
-pure function alreadyneighbour(id, cell) result(lneigh)
+pure function alreadyneighbour(id, oldid) result(lneigh)
    integer(4),      intent(in)  :: id
-   type(cell_type), intent(in)  :: cell
+   integer(4), intent(in)  :: oldid(:)
    logical :: lneigh
-   integer(4) :: ineigh
-   lneigh = .false.
-   do ineigh = 1, cell%nneighcell
-      if (cell%neighcell(ineigh)%p%id .eq. id) then !neighbour is already set
-         lneigh = .true.
-         return
-      end if
-   end do
+   if(any(oldid(:) .eq. id)) then
+      lneigh = .true.
+   else
+      lneigh = .false.
+   end if
 end function alreadyneighbour
 
 function pcellro(ro) result(icell)
