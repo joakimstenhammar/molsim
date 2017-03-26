@@ -150,7 +150,7 @@ subroutine InitCellList(rcell, iStage)
             tmpidneigh = 0
             do idir = 1, maxneighcell
                call getPBCneighcell((/ ix, iy, iz/), directions(1:3, directionindex(idir)), neigh, r2)
-               if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> lbound(cell))) then !neighbour is out of bounds
+               if(any(neigh(1:3) < lbound(cell)) .or. any(neigh(1:3)> ubound(cell))) then !neighbour is out of bounds
                   cycle
                else if(r2 > rcut2) then ! distance of the cells so large, that it is not needed
                   cycle
@@ -325,7 +325,7 @@ subroutine TestCellList(output)
    implicit none
    integer(4), intent(in) :: output
    character(80), parameter :: txheading ='cell list testing'
-   character(40), parameter :: txroutine ='InitCellList'
+   character(40), parameter :: txroutine = 'TestCellList'
    integer(4)  :: ix, iy, iz, ineigh
    type(cell_type), pointer   :: icell, tncell
    integer(4)  :: ip, jp, incell, jploc, jpneigh
