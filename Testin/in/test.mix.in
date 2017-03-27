@@ -118,7 +118,7 @@
   idist = 20 ,
   rcutdist = 10,
  /
- 
+
  &nmlDump idump = 1, ldpos =.true., ldori =.true., ldliv =.true., ldanv =.true., ldfor =.true., ldtor =.true. /
  &nmlGroup ref  ='benzene_in_water_1', field='type=water', lwref =.true. /
 
@@ -142,7 +142,7 @@
  &nmlSurfaceArea ipt = 2, wradat = 1.3, 2.5, nrandom = 1000 /
  &nmlTrajectory iskip = 1, rmin = -11.0, -11.0, -11.0, rmax = -9.0, -9.0, -9.0 /
 
- &nmlDynamic 
+ &nmlDynamic
  /
 
  &nmlMixed

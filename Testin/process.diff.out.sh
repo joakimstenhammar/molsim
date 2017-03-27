@@ -1,24 +1,24 @@
-#!/bin/bash - 
+#!/bin/bash -
 #===============================================================================
 #
 #          FILE: process.diff.out.sh
-# 
-#         USAGE: ./process.diff.out.sh 
-# 
-#   DESCRIPTION: 
-# 
+#
+#         USAGE: ./process.diff.out.sh
+#
+#   DESCRIPTION:
+#
 #       OPTIONS: ---
 #  REQUIREMENTS: ---
 #          BUGS: ---
 #         NOTES: ---
 #        AUTHOR: Cornelius Hofzumahaus (CH), hofzumahaus@pc.rwth-aachen.de
-#  ORGANIZATION: 
+#  ORGANIZATION:
 #       CREATED: 11/11/16 10:12:32
 #      REVISION:  ---
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
-set +e 
+set +e
 set +x
 
 # ... some declarations
@@ -39,13 +39,13 @@ sedc='/total cpu time since start/d; /\*\* *version/d; /cpu time/q; /^[0-9]\{4\}
 diffhead=$( for i in {1..110}; do echo -ne "-"; done )
 
 # ... Has ./goall.sh been executed?
-if [ ! -d $d_out ]; then 
+if [ ! -d $d_out ]; then
    echo -e "\n You have to run ./goall.sh first! \n\tExiting ..."
    exit
 fi
 
 # ... some preliminaries
-if [ ! -f $f_don ]; then 
+if [ ! -f $f_don ]; then
    touch $f_don
    rm -rf $d_bak
 else
@@ -68,7 +68,7 @@ do
    if [ $( grep $txfile $f_don | wc -l ) -gt 0 ]; then continue; fi
    lmenu=true
    while $lmenu
-   do 
+   do
       echo -e "\n! ! ! ! $txfile differs ! ! ! !\n"
       echo -e "How would you like to procede? Choose from"
       for iopt in `seq 1 1 $nopt`; do echo -e "\t${iopt}) ${txopt[iopt]}"; done

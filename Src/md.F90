@@ -210,12 +210,10 @@ subroutine VelVer(iStage)
    real(8), allocatable, save  :: quado(:,:)
    real(8)    :: fac
    integer(4) :: iplow, ipupp, ip, m
-   integer(4) :: par_len, par_len2
-   integer(4) :: load, imyid(2)
 
    if (ltrace) call WriteTrace(2, txroutine, iSimulationStep)
 
-   if(.not.allocated(quado)) then 
+   if(.not.allocated(quado)) then
       allocate(quado(0:3,np))
       quado = 0.0E+00
    end if

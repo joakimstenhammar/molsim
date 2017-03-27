@@ -117,7 +117,7 @@
   idist = 20 ,
   rcutdist = 10,
  /
- 
+
  &nmlDump idump = 1, ldpos =.true., ldori =.true., ldliv =.true., ldanv =.true., ldfor =.true., ldtor =.true. /
  &nmlGroup ref  ='benzene_in_water_1', field='type=water', lwref =.true. /
 

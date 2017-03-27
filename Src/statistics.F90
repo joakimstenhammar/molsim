@@ -137,6 +137,7 @@ end subroutine ScalarSample
 subroutine ScalarSampleBlock(iStage, ilow, iupp, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8),    parameter :: Zero = 0.0d0, One = 1.0d0
@@ -144,8 +145,8 @@ subroutine ScalarSampleBlock(iStage, ilow, iupp, var)
    integer(4),       intent(in)  :: ilow      ! lower variable
    integer(4),       intent(in)  :: iupp      ! upper variable
    type(scalar_var), intent(out) :: var(*)    ! scalar variable
-   integer(4) :: i, ibl
-   real(8)    :: InvInt, norm, norm1
+   integer(4) :: i
+   real(8)    :: norm, norm1
 
    select case (iStage)
    case (3)  ! before simulation
@@ -214,6 +215,7 @@ end subroutine ScalarSampleBlock
 subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8),    parameter :: Zero = 0.0d0, One = 1.0d0
@@ -224,7 +226,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
    integer(4), save :: blocklen(mnblocklen)
    real(8),    save :: blockleni(mnblocklen)
    integer(4) :: i, ibl, nblocklen
-   real(8)    :: InvInt, InvFlt, norm, norm1
+   real(8)    :: InvFlt, norm, norm1
    real(8)    :: xfit(50), yfit_av(50), yfit_fl(50), wfit(50), afit_av(0:2), afit_fl(0:2), PolVal, dum1, dum2
 
    select case (iStage)
@@ -592,6 +594,7 @@ end subroutine ScalarAllReduce
 subroutine DistFuncSample(iStage, nvar, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8), parameter :: Zero = 0.0d0, One = 1.0d0
@@ -599,7 +602,7 @@ subroutine DistFuncSample(iStage, nvar, var)
    integer(4),   intent(in)    :: nvar     ! number of distribution functions
    type(df_var), intent(inout) :: var(*)   ! distribution functions
    integer(4) :: i, ibin
-   real(8)    :: norm, norm1, InvInt
+   real(8)    :: norm, norm1
 
    select case (iStage)
    case (2)  ! read input
@@ -884,6 +887,7 @@ end subroutine DistFuncAverValue
 subroutine DistFuncAverDist(nvar2, ilow, iupp, var, var2, var2_spread)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4),   intent(in)  :: nvar2                 ! number of distribution functions
@@ -893,7 +897,6 @@ subroutine DistFuncAverDist(nvar2, ilow, iupp, var, var2, var2_spread)
    type(df_var), intent(inout) :: var2(*)               ! average of var from ilow to iupp
    real(8)     , intent(out) :: var2_spread(*)        ! var%avsd averaged over 0 to nbin-1
    integer(4) :: i, ibin, ncount, il, iu
-   real(8)    :: InvInt
 
    do i = 1, nvar2
 
@@ -975,6 +978,7 @@ end subroutine DistFuncAllReduce
 subroutine DistFunc2DSample(iStage, nvar, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8), parameter :: Zero = 0.0d0, One = 1.0d0
@@ -982,7 +986,7 @@ subroutine DistFunc2DSample(iStage, nvar, var)
    integer(4),     intent(in)    :: nvar         ! number of 2d distribution functions
    type(df2d_var), intent(inout) :: var(*)       ! 2d distribution functions
    integer(4) :: i, ibin1, ibin2
-   real(8)    :: InvInt, norm, norm1
+   real(8)    :: norm, norm1
 
    select case (iStage)
    case (2)  ! read input

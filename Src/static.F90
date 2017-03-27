@@ -294,9 +294,8 @@ subroutine SPDF(iStage)
    integer(4),                 save :: nvar
    type(df_var),  allocatable, save :: var(:)
    integer(4),    allocatable, save :: ipnt(:,:)
-   integer(4) :: itype, ivar, ibin, ip, ipt, igr, jp
+   integer(4) :: itype, ivar, ibin, ip, igr, jp
    real(8)    :: r1, r2, ac, norm, vsum, dvol, darea, ui, uuu, fdum(3), pot, InvFlt, angcos
-   real(8)    :: nBulk, nTot, nExe, fac
 
    namelist /nmlSPDF/ vtype
 
@@ -677,7 +676,7 @@ subroutine RDF(iStage)
    type(scalar_var), save :: var_s(nvar_s)
 
    real(8),       save :: rdfvols2, rdfvolfac
-   integer(4) :: itype, ivar, ibin, ip, ipt, jp, jpt, ia, iat, ja, jat, iatjat, igr, jgr, igrjgr, i
+   integer(4) :: itype, ivar, ibin, ip, ipt, jp, jpt, ia, iat, ja, jat, iatjat, igr, jgr, igrjgr
    real(8)    :: dx, dy, dz, dropbc(3), r1, r2, dvol, darea, InvFlt, dxo, dyo, dzo
 
    namelist /nmlRDF/ vtype, rmax, ndim, func, l2dtwo
@@ -1039,7 +1038,7 @@ subroutine RDF(iStage)
                      iatjat = iat+nat*(jat-1)
                      ivar = ipnt(iatjat,igrjgr,3)
                      rcont = radat(iat)+radat(jat)
-                     call gcontact(var(ivar)%min, var(ivar)%bin, var(ivar)%avs2(-1), tauvar(ivar)%min, tauvar(ivar)%bin, tauvar(ivar)%avs2(-1), rcont, gcont)
+                     call gcontact(var(ivar)%min, var(ivar)%bin, var(ivar)%avs2(-1), tauvar(ivar)%avs2(-1), rcont, gcont) ! tauvar(ivar)%min and tauvar(ivar)%bin are not needed and therefore removed
                      term = rcont**2*densiat*densjat*gcont
                      prsrhs = prsrhs + term
                   end do
@@ -1051,22 +1050,23 @@ subroutine RDF(iStage)
          prsrhs = TwoPi/(Three*denst)*prsrhs
       end subroutine PressureContact
 
-      subroutine GContact(vlow, vbin, vs2, tlow, tbin, tauvar, rcont, gcont)
+      !subroutine GContact(vlow, vbin, vs2, tlow, tbin, tauvar, rcont, gcont) ! tlow and tbin is not used
+      subroutine GContact(vlow, vbin, vs2, tauvar, rcont, gcont)
          implicit none
-	 real(8), intent(in) :: vlow
-	 real(8), intent(in) :: vbin
-	 real(8), intent(in) :: vs2(-1:*)
-	 real(8), intent(in) :: tlow
-	 real(8), intent(in) :: tbin
-	 real(8), intent(in) :: tauvar(-1:*)
+     real(8), intent(in) :: vlow
+     real(8), intent(in) :: vbin
+     real(8), intent(in) :: vs2(-1:*)
+     !real(8), intent(in) :: tlow
+     !real(8), intent(in) :: tbin
+     real(8), intent(in) :: tauvar(-1:*)
          real(8), intent(in) :: rcont
          real(8), intent(out):: gcont
 
          integer(4), parameter :: npol = 2, ndp = npol+1
           integer(4) :: i, ihs
 
-	 real(8) :: xx(ndp), yy(ndp), tt(ndp), ww(ndp), a(0:npol), dum1, dum2
-	 real(8), external :: PolVal
+     real(8) :: xx(ndp), yy(ndp), tt(ndp), ww(ndp), a(0:npol), dum1, dum2
+     real(8), external :: PolVal
 
          ihs = int((rcont-vlow-1.0d-10)/vbin)
          xx(1:ndp) = vlow + vbin * ( 0.5d0+ [ ( ihs+i, i=1, ndp )] )
@@ -1106,6 +1106,7 @@ end subroutine RDF
 subroutine RDFChain(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1123,7 +1124,7 @@ subroutine RDFChain(iStage)
    real(8), save :: rdfvols2
    type(chainprop_var) :: ChainProperty
    integer(4) :: itype, ivar, ibin, ic, jc, ict, jct, ictjct
-   real(8)    :: r1, r2, dvol, darea, dcx, dcy, dcz, dropbc(3), InvInt, InvFlt
+   real(8)    :: r1, r2, dvol, dcx, dcy, dcz, dropbc(3), InvFlt
 
    namelist /nmlRDFChain/ vtype, rmax, func
 
@@ -1302,7 +1303,7 @@ subroutine RDFSph(iStage)
    integer(4),    save :: ipsph                   ! particle on which the projection should be made
    integer(4),    save :: iptrdfsph, jptrdfsph    ! particle types for rdf
    real(8),       save :: radsph, radsphi
-   integer(4) :: ivar, ibin, ip, ipt, jp, jpt
+   integer(4) :: ivar, ibin, ip, jp
    real(8) :: dx1, dy1, dz1, dx2, dy2, dz2, theta, thetalow, thetaupp, arclen, fac, angcos
 
    namelist /nmlRDFSph/ ipsph, iptrdfsph, jptrdfsph, nbin, func
@@ -1445,7 +1446,7 @@ subroutine RDFCond(iStage)
    integer(4),    allocatable, save :: ipnt(:,:)
    real(8),       save :: rdfvols2, rdfvolfac
    integer(4) :: itype, ivar, ibin, ip, jp
-   real(8)    :: dx, dy, dz, dropbc(3), r1, r2, dvol, darea, norm, angcos, ac, InvFlt
+   real(8)    :: dx, dy, dz, dropbc(3), r1, r2, dvol, norm, angcos, ac, InvFlt
 
    namelist /nmlRDFCond/ vtype, rmax
 
@@ -1593,7 +1594,7 @@ subroutine G3Dist(iStage)
    character(40), parameter :: txroutine ='G3Dist'
    character(80), parameter :: txheading ='three-particle distribution functions'
    real(8), allocatable :: g2(:), g3(:,:,:)
-   integer(4) :: snbin, tnbin, anbin, nsamp1, nsamp2, ivar, ibin, m
+   integer(4) :: snbin, tnbin, anbin, nsamp1
    integer(4) :: nskip
    integer(4) :: ip1, ipt1, ip2, ipt2, ip3, ipt3
    integer(4) :: ip1low, ip1upp, ip2low, ip2upp, ip3low, ip3upp
@@ -2136,12 +2137,12 @@ subroutine ScatIntens(nbin, q, sfpar)
    real(8) :: si(nbin)                       ! scattering intensity
    real(8) :: ff(nbin)                       ! effective form factor
    real(8) :: sftot(nbin)                    ! total structure factor
-   real(8) :: fac, arg, bin, fnorm2aver
-   integer(4) :: ipt, jpt, iptjpt, ishell, m, nplot, ibin
+   real(8) :: fac, arg, fnorm2aver
+   integer(4) :: ipt, jpt, iptjpt, ishell, ibin
 
    namelist /nmlScatIntens/ nshell, rshell, cshell
 
-    if (.not.allocated(nshell)) then 
+    if (.not.allocated(nshell)) then
        allocate(nshell(npt), rshell(mnshell,npt), cshell(mnshell,npt))
        nshell = 0
        rshell = 0.0E+00
@@ -2457,7 +2458,7 @@ subroutine AngDF(iStage)
    type(df_var),  allocatable, save :: var(:)
    integer(4),    allocatable, save :: ipnt(:,:)
    integer(4) :: ivar, ibin, itype, m
-   integer(4) :: ip, ipt, jp, kp, jpt, ia, ialow, ja, jalow, kl, igr, jgr, igrjgr, jjgr, id, jd
+   integer(4) :: ip, jp, kp, ia, ialow, ja, jalow, kl, igr, jgr, igrjgr, jjgr, id, jd
    real(8)    :: dx, dy, dz, r2, ac, actemp, dxoh, dyoh, dzoh, dkx, dky, dkz, dlx, dly, dlz
    real(8)    :: dxx, dyy, dzz, angcos, dmx, dmy, dmz
    integer(4), save :: klstep(4) = [ 1,1,0,0 ]
@@ -2909,7 +2910,7 @@ subroutine OriDipDF(iStage)
             One, One,Zero,   One,Zero, One,  Zero, One, One, -One, One,Zero,  -One,Zero, One,  Zero,-One, One, &
             One, One, One,  -One, One, One,   One,-One, One,  One, One,-One] , [3,ndir(1)] )
    integer(4)   , parameter :: ipntdir(1:ndir(1)) = [1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3]
-   integer(4) :: itype, ivar, idir, ibin, ip, idir2
+   integer(4) :: itype, ivar, idir, ibin, ip
    real(8)    :: ac, angcos
 
    namelist /nmlOriDipDF/ vtype
@@ -3424,6 +3425,7 @@ end subroutine RadAngDF
 subroutine Kirkwoodgk(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -3436,8 +3438,8 @@ subroutine Kirkwoodgk(iStage)
    integer(4),                 save :: nvar
    type(df_var),  allocatable, save :: var(:)
    integer(4),    allocatable, save :: ipnt(:,:)
-   integer(4) :: itype, ivar, ibin, ip, ipt, jp, kp, jpt, iptjpt
-   real(8)    :: dx, dy, dz, r2, ac, angcos, InvInt
+   integer(4) :: itype, ivar, ibin, ip, ipt, jp, jpt, iptjpt
+   real(8)    :: dx, dy, dz, r2, ac, angcos
 
    namelist /nmlKirkwoodgk/ vtype, rmax
 
@@ -3609,7 +3611,7 @@ subroutine OriPolDF(iStage)
    integer(4),    allocatable, save :: ipnt(:,:)
    real(8),                    save :: radius(mnrad), radius2(mnrad)
    integer(4)    :: itype, ivar, irad, ibin, ivar2, ip, jp
-   real(8)       :: dx, dy, dz, r2, dropbc(3), angcos, pol(mnrad,3), InvFlt
+   real(8)       :: dx, dy, dz, r2, angcos, pol(mnrad,3), InvFlt
    real(8)       :: value(3)                ! total, parallel, and perpendicular polarization
    character(5)  :: txrad
 
@@ -3800,6 +3802,7 @@ end subroutine OriPolDF
 subroutine NNHB(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -3814,7 +3817,7 @@ subroutine NNHB(iStage)
    integer(4), save :: nsamp1
    real(8),    save :: rmax
    integer(4) :: ip, jp, igr, jgr, ith, inn, ihb
-   real(8)    :: dx, dy, dz, r2, uuu, fdum(3), aver, term, norm, norm1, InvInt
+   real(8)    :: dx, dy, dz, r2, uuu, fdum(3), aver, term, norm, norm1
 
    namelist /nmlNNHB/ nthnn, thnn, nthhb, thhb, nnnhb, rmax
 
@@ -4002,7 +4005,7 @@ end subroutine NNHB
    integer(4),                 save :: nvar
    type(df_var), allocatable,  save :: var(:)
    real(8)     , allocatable,  save :: r2low(:)
-   integer(4) :: itpe, ivar, ibin, ip, jp, igr, jgr
+   integer(4) :: ivar, ibin, ip, jp, igr, jgr
    real(8)    :: dx, dy, dz, r1, r2
 
    namelist /nmlNNDF/ vtype
@@ -4647,7 +4650,7 @@ end subroutine ChainTypeExtDF
    type(df_var), allocatable,  save :: var(:)
    integer(4),   allocatable,  save :: ipnt(:,:)
    integer(4) :: iseg, ic, ict, ip, iploc, jp, jploc, ivar, ibin
-   real(8) ::  dx, dy, dz, r2, norm
+   real(8) ::  dx, dy, dz, r2
    character(6) :: str1, str2
 
    namelist /nmlCBPC/ iptpart, rcontact
@@ -4789,7 +4792,6 @@ subroutine LoopTailTrain(iStage)
    type(scalar_var), allocatable, save :: var(:)
    integer(4),       allocatable, save :: nadschain(:), nadsseg(:)
 
-   integer(4) :: nseg                                ! number of segments in a chain
    logical    :: ladschain                           ! .true. if chain is adsorbed
    logical,          allocatable, save :: ladsseg(:) ! .true. if segment is adsorbed
    integer(4) :: nobj(3)                             ! number of objects
@@ -4814,7 +4816,7 @@ subroutine LoopTailTrain(iStage)
       call LowerCase(adscond%txobject)
       call LowerCase(adscond%txsurface)
 
-      if (.not.allocated(ladsseg)) then 
+      if (.not.allocated(ladsseg)) then
          allocate(ladsseg(maxval(npct(1:nct))))
          ladsseg = .false.
       end if
@@ -5024,8 +5026,7 @@ end subroutine CheckAdsChainSeg
    integer(4) :: iclusteriobj(mnobj)                     ! pointer: object -> its cluster
    integer(4) :: ncluster, nsizemax, nsizedist(mnsizemax)
    integer(4) :: nsizemax2d(2), nsizedist2d(0:mnsizemax2d,0:mnsizemax2d)
-   integer(4) :: iptloc, ipt, ip, ictloc, ict, ic, isize, isize1, isize2, ivar
-   real(8) :: norm, an, fac
+   integer(4) :: iptloc, ipt, ip, ictloc, ict, ic, isize, isize1, isize2
    integer(4), save :: nsizemax_save = 0, nsizemax2d_save(2) = 0
    logical :: Perculation, lreturn
 
@@ -5040,7 +5041,7 @@ end subroutine CheckAdsChainSeg
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(iobjt)) then 
+      if (.not.allocated(iobjt)) then
          allocate(iobjt(npt))
          iobjt = 0
       end if
@@ -5064,7 +5065,7 @@ end subroutine CheckAdsChainSeg
 
    case (iWriteInput)
 
-     if (.not.allocated(txobjt)) then 
+     if (.not.allocated(txobjt)) then
         allocate(txobjt(nobjt))
      end if
 
@@ -5702,7 +5703,7 @@ subroutine MultipoleDF(iStage)
    character(2)          :: txSph(0:1) = [' R', ' I']
    character(2)          :: str1, str2
    character(6)          :: str3
-   integer(4)            :: l, m, s, ibin, ip, ivar, ilvar, irad, nmom
+   integer(4)            :: l, m, s, ibin, ip, ivar, ilvar, irad
    real(8)               :: origin(1:3), value(0:1)
 
    type(df_var),      allocatable, save :: var(:)      ! distribution function
@@ -5927,7 +5928,7 @@ subroutine CalcMultipole(mlmax, mnrad, lmax, nrad, radius, origin, mpm)
 
    real(8)    :: w3j(0:mlmax-1,0:mlmax,0:1,-(mlmax-1):mlmax-1,-mlmax:mlmax,-1:1)
    logical    :: first = .true.
-   integer(4) :: jp, irad, ntemp, m
+   integer(4) :: jp, irad, m
    real(8)    :: fac, radius2(mnrad), dx, dy, dz, r2, r1, theta, phi
    complex(8) :: q(-1:1), CCLM
 
@@ -6202,6 +6203,7 @@ end subroutine EnergyDF
    subroutine Widom1(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -6217,9 +6219,8 @@ end subroutine EnergyDF
    type(scalar_var), allocatable, save :: var(:)
    integer(4),       save :: nvar, ivol, iacc, iide, iexe
    integer(4) :: iset, itimes, iseedWidom
-   real(8)    :: duwidom(0:npt), InvInt
+   real(8)    :: duwidom(0:npt)
    logical    :: lhsoverlap
-   character(1) :: nchar
 
    namelist /nmlWidom1/ ntimes, nset, nptset, iptset
 
@@ -6365,7 +6366,7 @@ end subroutine Widom1
    real(8),          allocatable, save :: utop(:,:), ubot(:,:), uratio(:)
    real(8),          allocatable, save :: zati(:)
    real(8),          save :: dlam
-   integer(4) :: itimes, iset, ilam, ipt, iseedWidom
+   integer(4) :: itimes, iset, ilam, iseedWidom
    real(8)    :: lam, duel, duwidom(0:npt), npi, Trap, fac
    logical    :: lhsoverlap
 
@@ -6543,7 +6544,7 @@ subroutine DUWidomx(nptset, iptset, iseedWidom, duwidom, lhsoverlap)
    logical, intent(out)   :: lhsoverlap
 
    integer(4) :: ip, jp, ipt, jpt
-   integer(4) :: ia, ja, iat, jat
+   integer(4) :: ja, iat, jat
    real(8) :: roset(3,3), uuu, dxpbc, dypbc, dzpbc
    real(8) :: Random
 
@@ -6666,7 +6667,7 @@ subroutine UTwoBodyWidom(ipt, roi, jpt, roj, usum, lhsoverlap)
    real(8), intent(out)   :: usum
    logical, intent(out)   :: lhsoverlap
    integer(4) :: iptjpt, ibuf
-   real(8) :: dx, dy, dz, r2, d, uewald
+   real(8) :: dx, dy, dz, r2, d
 
    lhsoverlap =.true.
    usum = Zero
@@ -6727,7 +6728,7 @@ subroutine UTwoBodyWidomP(iat, roi, jat, roj, usum, lhsoverlap)
    real(8), intent(out)   :: usum
    logical, intent(out)   :: lhsoverlap
    integer(4) :: iatjat, ibuf
-   real(8) :: dx, dy, dz, r2, d, uewald
+   real(8) :: dx, dy, dz, r2, d
 
    lhsoverlap =.true.
    usum = Zero
@@ -6987,7 +6988,7 @@ subroutine MeanForce2(iStage)
 
    integer(4) :: ip, jp, ipt, ia, iat
    real(8) :: uuu, fff(3), usum,  fsum(3), ubondacross, fbondacross(3), partsum, shs1, shs2
-   real(8) :: r1, data(12), huge
+   real(8) :: data(12), huge
 
    namelist /nmlMeanForce2/ thickness, dz
 
@@ -7293,7 +7294,7 @@ subroutine PotMeanForce(iStage)
    real(8),       save :: rpmfzero
    integer(4),    save :: nbin, nvar
    type(df_var), allocatable,  save :: var(:)
-   integer(4) ::  ivar, ibin, m
+   integer(4) ::  ivar, ibin
    real(8) :: value, weight, MCWeightInverse
 
    namelist /nmlPotMeanForce/ iptpmf, rpmfzero
@@ -7429,8 +7430,8 @@ subroutine SurfaceArea(iStage)
    real(8)   , allocatable,       save :: wradat(:)        ! van der waal radius of atom types
    integer(4),                    save :: nrandom          ! number of random numbers
    integer(4),                    save :: nvar
-   integer(4) :: ip, jp, ia, ja, ialoc, ialow, iat, jat, ivar, jvar, m
-   real(8) :: xtry, ytry, ztry, radiat, norm, dx, dy, dz, r2
+   integer(4) :: ip, ia, ja, ialoc, ialow, iat, jat, ivar, jvar, m
+   real(8) :: xtry, ytry, ztry, radiat, dx, dy, dz, r2
    character(4) :: charip, charia
 
    namelist /nmlSurfaceArea/ ipt, rprobe, wradat, nrandom
@@ -7438,7 +7439,7 @@ subroutine SurfaceArea(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(wradat)) then 
+      if (.not.allocated(wradat)) then
          allocate(wradat(nat))
          wradat = 0.0E+00
       end if
@@ -7809,6 +7810,7 @@ end subroutine ExcessAmount
 subroutine SubStructureDF(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
 
    implicit none
 
@@ -7833,9 +7835,9 @@ subroutine SubStructureDF(iStage)
    real(8)   , save  :: ntitri            ! CHZA: inverse number of titratable groups in substructure (type 8)
 
    real(8)    :: rcom(3), rgsub, alpha
-   integer(4) :: ipt, ip, ivar, ibin, itype, igr, ict, ic, ia
-   real(8)    :: InvFlt, InvInt
-   real(8)    :: r2, r1, dr(3), vsum, norm, value, dvol
+   integer(4) :: ipt, ip, ivar, ibin, itype, igr, ict, ic
+   real(8)    :: InvFlt
+   real(8)    :: r2, r1, dr(3), vsum, norm, dvol
 
    namelist /nmlSubStructureDF/ vtype, lptinsub
 

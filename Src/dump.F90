@@ -232,7 +232,7 @@ subroutine DoDump(str)
 
    character(*), intent(in) :: str
 
-   integer(4)   :: ip, ia, m, idum = 0, ierr, ipp, ipo
+   integer(4)   :: ip, ia, m, idum = 0
    real(8)      :: dum
    logical      :: ldum
 

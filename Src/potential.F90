@@ -179,10 +179,9 @@ subroutine IOPotTwoBody(iStage)
 
    character(40), parameter :: txroutine ='IOPotTwoBody'
    character(80), parameter :: txheading ='two-body potential data'
-   integer(4) :: ipt, jpt, iptjpt, iat, jat, iatjat, m, Getnkvec, Getnkvec2d, ierr
-   real(8)    :: sig, eps, ucoffaim, fac1, fac2, NetCharge, raddiag2
+   integer(4) :: iptjpt, iat, jat, iatjat, m, Getnkvec, Getnkvec2d
+   real(8)    :: ucoffaim, fac1, fac2, NetCharge, raddiag2
    logical, allocatable    :: lucoffmod(:)
-   real(8)    :: volfac, lenfac, GammaLn
    real(8)    :: EwaldErrorUReal, EwaldErrorURec
    namelist /nmlPotential/ r2uminin, utoltab, ftoltab, umaxtab, fmaxtab,            &
                            rcut, txpot, npot, ipot, ucoff, relpermitt,              &
@@ -207,7 +206,7 @@ subroutine IOPotTwoBody(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(txpot)) then 
+      if (.not.allocated(txpot)) then
          allocate(txpot(nptpt), npot(natat), ipot(mninpot,natat), ucoff(mninpot,natat))
          txpot = ""
          npot = 0
@@ -412,7 +411,7 @@ subroutine IOPotTwoBody(iStage)
 
 ! ... check that ucoff(1,:) is consistent to zat(:)
 
-      if(.not.allocated(lucoffmod)) then 
+      if(.not.allocated(lucoffmod)) then
          allocate(lucoffmod(natat))
          lucoffmod = .false.
       end if
@@ -461,7 +460,7 @@ subroutine IOPotTwoBody(iStage)
       if (npotm > mninpot) call Stop(txroutine, 'npotm > mninpot', uout) ! largest number of terms
       if (ipotm > mninpot) call Stop(txroutine, 'ipotm > mninpot', uout) ! largest exponent
 
-      if(.not.allocated(ucoffx)) then 
+      if(.not.allocated(ucoffx)) then
          allocate(ucoffx(ipotm,natat))
          ucoffx = 0.0E+00
       end if
@@ -768,7 +767,7 @@ subroutine PotTwoBodyTab1(lwrite)
 
    if (ltrace) call WriteTrace(2, txroutine, iWriteInput)
 
-   if(.not.allocated(nugrid)) then 
+   if(.not.allocated(nugrid)) then
       allocate(iubuflow(natat), nugrid(natat), rumin(natat), rumax(natat), r2umin(natat), r2umax(natat))
       iubuflow = 0
       nugrid = 0
@@ -777,7 +776,7 @@ subroutine PotTwoBodyTab1(lwrite)
       r2umin = 0.0E+00
       r2umax = 0.0E+00
    end if
-   if(.not.allocated(lsetatat)) then 
+   if(.not.allocated(lsetatat)) then
       allocate(lsetatat(natat))
       lsetatat = .false.
    end if
@@ -1942,7 +1941,7 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
    if (str(1:4) == 'init') then
 
-      if(.not.allocated(nab)) then 
+      if(.not.allocated(nab)) then
          allocate(nab(natat), &
         qa(natat), qb(natat), aab(natat), bab(natat), cab(natat), dab(natat), eab(natat), fab(natat), &
         acht(natat), kcht(natat) )
@@ -2152,7 +2151,7 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
                        cab(iatjat), dab(iatjat), eab(iatjat), fab(iatjat), nab(iatjat), u0, u1, u2)
       else if (ptype == nemop(7)) then
          call NemoType7(r1, acht(iatjat), kcht(iatjat), aab(iatjat), bab(iatjat), &
-                       cab(iatjat), dab(iatjat), eab(iatjat), fab(iatjat), nab(iatjat), u0, u1, u2)
+                       cab(iatjat), dab(iatjat), eab(iatjat), fab(iatjat), u0, u1, u2) !nab(iatjat) is not needed
       else
          call Stop(txroutine, 'illegal value of ptype in calc', uout)
       end if
@@ -2498,11 +2497,12 @@ end subroutine NemoType6
 !          + eab*exp(-fab*r)
 !
 
-subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, nab, ur, urp, urpp)
+!subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, nab, ur, urp, urpp) !nap is not used
+subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, ur, urp, urpp)
 
    implicit none
 
-   integer(4), intent(in)  :: nab
+   !integer(4), intent(in)  :: nab
    real(8),    intent(in)  :: r, acht, kcht, aab, bab, cab, dab, eab, fab
    real(8),    intent(out) :: ur, urp, urpp
 
@@ -2665,7 +2665,7 @@ subroutine PlotPotTwoBodyTab
 
    character(40), parameter :: txroutine ='PlotPotTwoBodyTab'
    integer(4), parameter :: ncheck = 101
-   integer(4) :: ipt, jpt, iat, jat, iatjat, icheck, ibuf, idum
+   integer(4) :: ipt, jpt, iat, jat, iatjat, icheck, ibuf
    real(8)    :: dr, rlow, rupp, r1, r2, d, u0, dum(1)
    real(8)    :: distance(1:ncheck), potential(1:ncheck)
 
@@ -2673,7 +2673,7 @@ subroutine PlotPotTwoBodyTab
 
    call WriteHead(3, txroutine, uout)
 
-   if(.not.allocated(lsetatat)) then 
+   if(.not.allocated(lsetatat)) then
       allocate(lsetatat(1:natat))
       lsetatat = .false.
    end if
@@ -2742,7 +2742,7 @@ subroutine TestPotTwoBodyTab(iStage, unit)
    character(40), parameter :: txroutine ='TestPotTwoBodyTab'
    integer(4) :: m
    real(8) :: t0, t1
-   real(8) :: Second, tsetnn
+   real(8) :: SecondsSinceStart, tsetnn
 
    call WriteHead(3, txroutine, unit)
 
@@ -2750,9 +2750,9 @@ subroutine TestPotTwoBodyTab(iStage, unit)
    lmc   =.false.
    lmcall =.false.
 
-   t0 = Second()
+   t0 = SecondsSinceStart()
    call NList(1)
-   tsetnn = Second()-t0
+   tsetnn = SecondsSinceStart()-t0
    write(unit,'(a,f12.3)') 'Neighbour list: cpu time ', tsetnn
 
    write(unit,'()')
@@ -2762,11 +2762,11 @@ subroutine TestPotTwoBodyTab(iStage, unit)
       utoltab = 10.0d0**(-m)
       ftoltab = 10.0d0**(-m)
       call PotTwoBodyTab1(.false.)
-      t0 = Second()
+      t0 = SecondsSinceStart()
       if (lintsite) call SetAtomPos(1, np, lintsite)
       call UTotal(iStage)
       if (lintsite) call SetAtomPos(1, np, .false.)
-      t1 = Second()-t0
+      t1 = SecondsSinceStart()-t0
       write(uout,'(es8.1,t20,f15.8,t45,f15.8,t70,f8.3)') utoltab, u%tot/np, prsr, t1
    end do
    write(unit,'()')
@@ -2921,7 +2921,7 @@ real(8) function EwaldErrorUReal(lq2sum, q2sum, l, alpha, rcut, unit)
    real(8),    intent(in) :: unit    ! unit factor
 
    real(8),    parameter :: Pi = 3.14159265359d0
-   real(8) :: fac, b, c, facbc
+   real(8) :: fac, facbc
 
    fac = (alpha*rcut)**2
    if (lq2sum == 0) EwaldErrorUReal = unit*q2sum*sqrt(rcut/(2.0d0*l**3))/fac*exp(-fac) ! kolafa and perram
@@ -2999,7 +2999,6 @@ subroutine TestEwaldStd(iStage)
    integer(4) :: i,nnstep
    integer(4) :: iewaldoptsave, ncutsave
    real(8) :: uewaldtolsave, ualphasave, ualpharedsave, rcutsave
-   real(8) :: EwaldErrorUReal, EwaldErrorURec
    real(8) :: uexact
 
    call WriteHead(3, txroutine, uout)
@@ -3147,9 +3146,8 @@ subroutine TestEwaldSPM(iStage)
    integer(4) :: iorder, inmesh
    integer(4) :: iewaldoptsave, ordersave, nmeshsave
    real(8) :: uewaldtolsave, ualphasave, ualpharedsave, rcutsave
-   real(8) :: EwaldErrorUReal, Second, Gettime_ewald
-   integer(4) :: idum
-   real(8) :: dum, uexact, urec
+   real(8) :: Gettime_ewald
+   real(8) :: uexact
    character(2) :: str
 
    if(master) call WriteHead(3, txroutine, uout)
@@ -3261,7 +3259,7 @@ contains
 
 subroutine WriteExactSub(unit)
    integer(4), intent(in) :: unit
-   real(8) :: EwaldErrorUReal, EwaldErrorURec
+   real(8) :: EwaldErrorUReal
    write(unit,'(a)')     '''exact'' calculation'
    write(unit,'(a)')     '-------------------'
    write(unit,'(a,t35,a)')      'txewaldrec                     = ', txewaldrec
@@ -3289,7 +3287,7 @@ end subroutine WriteHeadSub
 
 subroutine WriteBodySub(unit)
    integer(4), intent(in) :: unit
-   real(8) :: EwaldErrorUReal, EwaldErrorURec
+   real(8) :: EwaldErrorUReal
    write(unit,'((i4,a),(g12.5,a),3(f10.5,a),2(i4,a),(f20.12,a),2(g12.5,a))') &
    iewaldopt, tab, uewaldtol, tab, ualphared, tab, ualpha, tab,  &
    rcut, tab, order, tab, nmesh, tab, u%rec/np, tab, &
@@ -3325,15 +3323,15 @@ subroutine SetImageSph(iplow, ipupp, mode)
    real(8), save          :: rad2img, zfac
 
    if (first) then
-      if (.not.allocated(zimg)) then 
+      if (.not.allocated(zimg)) then
          allocate(zimg(na_alloc))
          zimg = 0.0E+00
       end if
-      if (.not.allocated(rimg)) then 
+      if (.not.allocated(rimg)) then
          allocate(rimg(3,na_alloc))
          rimg = 0.0E+00
       end if
-      if (.not.allocated(dipimg)) then 
+      if (.not.allocated(dipimg)) then
          allocate(dipimg(3,na_alloc))
          dipimg = 0.0E+00
       end if
@@ -3416,7 +3414,6 @@ subroutine IOPotChain(iStage)
 
    character(40), parameter :: txroutine ='IOPotChain'
    character(80), parameter :: txheading ='ipotchain data'
-   integer(4) :: icl
 
    namelist /nmlPotentialChain/ bond, angle, clink, itestpotchain
 
@@ -3425,10 +3422,10 @@ subroutine IOPotChain(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(bond)) then 
+      if (.not.allocated(bond)) then
          allocate(bond(nct))
       end if
-      if (.not.allocated(angle)) then 
+      if (.not.allocated(angle)) then
          allocate(angle(nct))
       end if
 
@@ -3591,11 +3588,11 @@ subroutine BondLengthTab(action, ictx, b)
 
    if (action == 'setup') then
 
-      if(.not.allocated(btab)) then 
+      if(.not.allocated(btab)) then
          allocate(btab(0:nbin,nct))
          btab = 0.0E+00
       end if
-      if(.not.allocated(ptab)) then 
+      if(.not.allocated(ptab)) then
          allocate(ptab(0:nbin,nct))
          ptab = 0.0E+00
       end if
@@ -3689,11 +3686,11 @@ subroutine BondAngleTab(action, ictx, a)
 
    if (action == 'setup') then
 
-      if(.not.allocated(atab)) then 
+      if(.not.allocated(atab)) then
          allocate(atab(0:nbin,nct))
          atab = 0.0E+00
       end if
-      if(.not.allocated(ptab)) then 
+      if(.not.allocated(ptab)) then
          allocate(ptab(0:nbin,nct))
          ptab = 0.0E+00
       end if
@@ -3793,14 +3790,14 @@ subroutine IOPotExternal(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(sigma_ext)) then 
+      if (.not.allocated(sigma_ext)) then
          allocate(sigma_ext(nat), epsilon_ext(nat), z3coeff_ext(nat), z9coeff_ext(nat))
          sigma_ext = 0.0E+00
          epsilon_ext = 0.0E+00
          z3coeff_ext = 0.0E+00
          z9coeff_ext = 0.0E+00
       end if
-      if (.not.allocated(txuext)) then 
+      if (.not.allocated(txuext)) then
          allocate(txuext(npt), ruext(3,npt), ruexti(3,npt))
          txuext = ""
          ruext = 0.0E+00
@@ -3904,7 +3901,7 @@ subroutine IOPotExternal(iStage)
          endif
       end do
 
-      if(.not.allocated(zmin_ext)) then 
+      if(.not.allocated(zmin_ext)) then
          allocate(zmin_ext(nat), delta_ext(nat))
          zmin_ext = 0.0E+00
          delta_ext = 0.0E+00

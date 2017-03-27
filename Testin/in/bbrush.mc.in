@@ -6,7 +6,7 @@
 !        O O ... O                 O O ... O
 !        O O     O                 O O     O
 !        O O     O                 O O     O
- 
+
  &nmlSystem
   txtitle ='bottle-brush: small, 2 molecules, uneven side-chain distribution',
   txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',

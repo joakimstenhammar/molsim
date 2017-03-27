@@ -75,5 +75,5 @@
  /
  &nmlImage lvrml =.true. /
  &nmlVRML txwhen =  'after_run', atsize = 0.90,    0.0,   2.0,             0.0, rgbcolor =    1.0, 0.0, 0.0,    0.0, 0.0, 0.0,  0.0,0.0,1.0,  0.0,0.0,0.0, blmax  =      5.0, bondr =       0.3 /
- 
- 
+
+
