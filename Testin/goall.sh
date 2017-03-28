@@ -289,6 +289,9 @@ $molsim fnw.nwt2.mc               $core
 #copolymer sequence
 $molsim chain.sequence.fnw.mc     $core
 
+#weakcharge and ewald
+$molsim salt.mc.weakcharge.ewald  $core
+
 echo
 echo "Remove group and dump files"
 echo
