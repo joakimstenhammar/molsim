@@ -2555,7 +2555,7 @@ subroutine DistFunc(iStage)
 ! ... check condition
 
       if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine, 'vtype%nbin > mnbin_df', uout)
-      if (lmc .and. (rcutdist < rcut)) call Warn(txroutine, 'lmc .and. (rcutdist < rcut): distfunc considers larger region then energy evaluation',uout)
+      if (lmc .and. (rcutdist < rcut)) call Warn(txroutine, 'lmc .and. (rcutdist < rcut): distfunc considers smaller region then energy evaluation',uout)
 
    case (iWriteInput)
 
