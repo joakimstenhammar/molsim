@@ -2,7 +2,7 @@
 %                                                                                                            %
 %                                 w a r n i n g   f r o m   D i s t F u n c                                  %
 %                                                                                                            %
-%                                        lmc .and. (rcutdist < rcut)                                         %
+%           lmc .and. (rcutdist < rcut): distfunc considers smaller region then energy evaluation            %
 %                                                                                                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 **************************************************************************************************************
@@ -13,7 +13,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.2.0                                           **
+**                                          version 6.4.7, v2.4.1                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -35,7 +35,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-05     15:53:09
+2017-03-28     11:17:18
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -540,7 +540,7 @@ S2                     =                  0.01341
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-05     15:53:09
+2017-03-28     11:17:18
 
 title   : hard ellipsoids                                                                           
 
@@ -1298,20 +1298,20 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.00         0.01
+         Coordinate             0.00         0.02
          ControlAver            0.00         0.01
-         MainAver               0.00         0.02
+         MainAver               0.00         0.04
          DistFunc               0.00         0.05
-         Group                  0.00         0.03
-         StaticDriver           0.02         0.25
+         Group                  0.00         0.02
+         StaticDriver           0.02         0.28
           CylDistFunc           0.00         0.05 
-          SFPBC2D               0.02         0.19 
+          SFPBC2D               0.02         0.20 
          ImageDriver            0.00         0.01
-         IOMolsim               0.00         0.02
+         IOMolsim               0.00         0.04
          SetVList               0.00         0.00
-         MCPass                 0.05         0.60
-          SPartMove             0.01         0.08 
-          DUTotal               0.03         0.36 
-           DUTwoBody            0.01         0.15  
+         MCPass                 0.04         0.53
+          SPartMove             0.01         0.07 
+          DUTotal               0.02         0.22 
+           DUTwoBody            0.01         0.08  
  
-total cpu time since start (s)        0.10
+total cpu time since start (s)        0.09

@@ -2,7 +2,7 @@
 %                                                                                                            %
 %                                 w a r n i n g   f r o m   D i s t F u n c                                  %
 %                                                                                                            %
-%                                        lmc .and. (rcutdist < rcut)                                         %
+%           lmc .and. (rcutdist < rcut): distfunc considers smaller region then energy evaluation            %
 %                                                                                                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 **************************************************************************************************************
@@ -13,7 +13,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.2.0                                           **
+**                                          version 6.4.7, v2.4.1                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -35,7 +35,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-05     15:52:40
+2017-03-28     11:16:57
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -262,7 +262,7 @@ total potential energy (NkT)   =        -31.13744
 pressure (NkT/V)(excl. contact)=          3.81194
 pressure (kT) (excl. contact)  =      7.28027E-06
  
-total cpu time since start (s)        0.09
+total cpu time since start (s)        0.08
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -335,7 +335,7 @@ number density                 =      1.90986E-06
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-05     15:52:42
+2017-03-28     11:16:58
 
 title   : pentrable charged sphere + ions                                                           
 
@@ -1247,7 +1247,7 @@ number of images made          =    1
  
          section          cpu time (s)     fraction
          -------          ------------     --------
-         Coordinate             0.02         0.01
+         Coordinate             0.01         0.01
          ControlAver            0.00         0.00
          MainAver               0.00         0.00
          DistFunc               0.01         0.01
@@ -1255,12 +1255,12 @@ number of images made          =    1
          StaticDriver           0.00         0.00
           SPDF                  0.00         0.00 
          ImageDriver            0.01         0.00
-         IOMolsim               0.03         0.02
-         SetVList               0.15         0.10
-         MCPass                 1.23         0.85
-          SPartMove             0.02         0.01 
-          DUTotal               1.18         0.81 
-           DUTwoBody            1.12         0.77  
-           DUExternal           0.02         0.01  
+         IOMolsim               0.03         0.03
+         SetVList               0.12         0.09
+         MCPass                 1.07         0.85
+          SPartMove             0.01         0.01 
+          DUTotal               1.03         0.81 
+           DUTwoBody            0.98         0.77  
+           DUExternal           0.01         0.01  
  
-total cpu time since start (s)        1.54
+total cpu time since start (s)        1.34

@@ -2,7 +2,7 @@
 %                                                                                                            %
 %                                 w a r n i n g   f r o m   D i s t F u n c                                  %
 %                                                                                                            %
-%                                        lmc .and. (rcutdist < rcut)                                         %
+%           lmc .and. (rcutdist < rcut): distfunc considers smaller region then energy evaluation            %
 %                                                                                                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 **************************************************************************************************************
@@ -13,7 +13,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.2.0                                           **
+**                                          version 6.4.7, v2.4.1                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -35,7 +35,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-05     15:50:22
+2017-03-28     11:15:11
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -277,7 +277,7 @@ total potential energy (NkT)   =         -8.97096
 pressure (NkT/V)(excl. contact)=          1.69853
 pressure (kT) (excl. contact)  =      6.53014E-02
  
-total cpu time since start (s)        0.22
+total cpu time since start (s)        0.21
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -350,7 +350,7 @@ number density                 =      3.84458E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-05     15:50:26
+2017-03-28     11:15:16
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -7745,27 +7745,27 @@ number of images made          =    1
          Coordinate                    0.00         0.00
          ControlAver                   0.00         0.00
          MainAver                      0.00         0.00
-         DistFunc                      0.03         0.01
+         DistFunc                      0.02         0.01
          Group                         0.00         0.00
-         StaticDriver                  1.26         0.33
+         StaticDriver                  1.16         0.26
           RDF                          0.05         0.01
-          AngDF                        0.04         0.01
+          AngDF                        0.03         0.01
           Kirkwoodgk                   0.04         0.01
           OriPolDF                     0.05         0.01
-          MultipolDF                   0.95         0.25
-          DomainDriver                 0.12         0.03
-         ImageDriver                   0.00         0.00
+          MultipolDF                   0.87         0.19
+          DomainDriver                 0.11         0.02
+         ImageDriver                   0.01         0.00
          IOMolsim                      0.04         0.01
-         SetVList                      0.03         0.01
-         MCPass                        2.48         0.64
-          SPartMove                    0.00         0.00
-          DUTotal                      2.42         0.63
-           DUTwoBody                   0.13         0.03
-           DUDipole                    2.28         0.59
-            DUDipoleEwald              2.02         0.53
-           DUDipoleEwaldRecSPM         2.02         0.53
-             DUMakeGQMesh              0.17         0.04
-             DUMakeFFT                 1.58         0.41
-             DUCalcGIF                 0.26         0.07
+         SetVList                      0.04         0.01
+         MCPass                        3.24         0.72
+          SPartMove                    0.01         0.00
+          DUTotal                      3.15         0.70
+           DUTwoBody                   0.16         0.04
+           DUDipole                    2.98         0.66
+            DUDipoleEwald              2.71         0.60
+           DUDipoleEwaldRecSPM         2.71         0.60
+             DUMakeGQMesh              0.28         0.06
+             DUMakeFFT                 2.06         0.46
+             DUCalcGIF                 0.36         0.08
  
-total cpu time since start (s)        4.13
+total cpu time since start (s)        4.81
