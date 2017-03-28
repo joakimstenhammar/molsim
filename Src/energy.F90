@@ -6523,22 +6523,6 @@ subroutine EwaldSetup
    integer(C_SIZE_T) :: size_fftw_alloc
 # endif
 
-! ... check upper limit of rcut
-
-   if (lbcbox .and. (rcut > minval(boxlen2(1:3)))) then
-      write(uout,'(a,1g15.5)') 'rcut = ', rcut
-      write(uout,'(a,3g15.5)') 'boxlen2 = ', boxlen2(1:3)
-      call Warn(txroutine, 'lewald .and. (rcut > minval(boxlen2(1:3)))', uout)
-   else if (lbcrd .and. (rcut > sqrt(Two/Three)*cellside)) then
-      write(uout,'(a,1g15.5)') 'rcut = ', rcut
-      write(uout,'(a,3g15.5)') 'sqrt(2/3)*cellside', sqrt(Two/Three)*cellside
-      call Warn(txroutine, 'lewald .and. (rcut > sqrt(2/3)*cellside)', uout)
-   else if (lbcto .and. (rcut > sqrt(Three/Two)*cellside)) then
-      write(uout,'(a,1g15.5)') 'rcut = ', rcut
-      write(uout,'(a,3g15.5)') 'sqrt(3/2)*cellside', sqrt(Three/Two)*cellside
-      call Warn(txroutine, 'lewald .and. (rcut > sqrt(3/2)*cellside)', uout)
-   end if
-
 ! ... determination of lq2sum and q2sum (for error analysis)
 
    q2sum = sum(az(1:na)**2)/np
@@ -6935,6 +6919,22 @@ subroutine EwaldSetup
          end do
       end do
 # endif
+   end if
+
+! ... check upper limit of rcut
+
+   if (lbcbox .and. (rcut > minval(boxlen2(1:3)))) then
+      write(uout,'(a,1g15.5)') 'rcut = ', rcut
+      write(uout,'(a,3g15.5)') 'boxlen2 = ', boxlen2(1:3)
+      call Warn(txroutine, 'lewald .and. (rcut > minval(boxlen2(1:3)))', uout)
+   else if (lbcrd .and. (rcut > sqrt(Two/Three)*cellside)) then
+      write(uout,'(a,1g15.5)') 'rcut = ', rcut
+      write(uout,'(a,3g15.5)') 'sqrt(2/3)*cellside', sqrt(Two/Three)*cellside
+      call Warn(txroutine, 'lewald .and. (rcut > sqrt(2/3)*cellside)', uout)
+   else if (lbcto .and. (rcut > sqrt(Three/Two)*cellside)) then
+      write(uout,'(a,1g15.5)') 'rcut = ', rcut
+      write(uout,'(a,3g15.5)') 'sqrt(3/2)*cellside', sqrt(Three/Two)*cellside
+      call Warn(txroutine, 'lewald .and. (rcut > sqrt(3/2)*cellside)', uout)
    end if
 
 ! ... set other numerical constants for Ewald summation
