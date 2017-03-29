@@ -559,7 +559,7 @@ subroutine NList(iStage)
 
    case (iSimulationStep)
 
-      if(.not. lclist) then   !do not update the celllist regulary, instead update the celllist in mc.F90 after an successful step
+      if(lvlist .or. lllist) then   !do not update the celllist regulary, instead update the celllist in mc.F90 after an successful step
          if (inlist == 0) then                             ! adjusted update interval
             r2max1 = Zero
             r2max2 = Zero
