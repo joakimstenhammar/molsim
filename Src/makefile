@@ -136,7 +136,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none
 
   OPT_format = -ffree-form -ffree-line-length-none
-  OPT_normal = $(OPT_format) -fast
+  OPT_normal = $(OPT_format) -O2
   OPT_quick := $(OPT_format) -O0	#quick compilation
   OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
   OPT_debug := $(OPT_format) -O0 -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan   # provide useful info at exceptions (use for debug)
