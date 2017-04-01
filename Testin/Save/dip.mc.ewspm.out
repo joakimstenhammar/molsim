@@ -13,7 +13,7 @@
 **                                                                                                          **
 **                  integrated md/mc/bd simulation program belonging to the molsim package                  **
 **                                                                                                          **
-**                                          version 6.4.7, v2.2.0                                           **
+**                                          version 6.4.7, v2.4.2                                           **
 **                                                                                                          **
 **                                                                                                          **
 **                                                Per Linse                                                 **
@@ -35,7 +35,7 @@
 **************************************************************************************************************
 **************************************************************************************************************
  
-2017-01-05     15:50:22
+2017-03-31     17:29:39
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -277,7 +277,7 @@ total potential energy (NkT)   =         -8.97096
 pressure (NkT/V)(excl. contact)=          1.69853
 pressure (kT) (excl. contact)  =      6.53014E-02
  
-total cpu time since start (s)        0.22
+total cpu time since start (s)        0.23
 
 **************************************************************************************************************
 *                                                                                                            *
@@ -328,10 +328,10 @@ orientation order, z'-axis     =                0.9981
 
 quantity                                  average    fluctuation          check
 &&------                                  -------    -----------          -----
-total potential energy         =        -22.89685        0.00000     -0.990E-13
+total potential energy         =        -22.89685        0.00000     -0.987E-13
  total two-body energy         =         -9.65629        0.00000     -0.250E-12
   LJ-LJ                        =         -9.65629        0.00000     -0.250E-12
- electrostatic energy          =        -13.24056        0.00000      0.109E-13
+ electrostatic energy          =        -13.24056        0.00000      0.111E-13
 enthalpy                       =        -18.43733        0.00000
 cv                             =          0.00000
 temperature                    =        315.77700        0.00000
@@ -350,7 +350,7 @@ number density                 =      3.84458E-02
 *                                                                                                            *
 **************************************************************************************************************
 
-2017-01-05     15:50:26
+2017-03-31     17:29:43
 
 title   : LJ-particles with embedded dipole moment                                                  
 
@@ -7745,27 +7745,27 @@ number of images made          =    1
          Coordinate                    0.00         0.00
          ControlAver                   0.00         0.00
          MainAver                      0.00         0.00
-         DistFunc                      0.03         0.01
+         DistFunc                      0.02         0.01
          Group                         0.00         0.00
-         StaticDriver                  1.26         0.33
-          RDF                          0.05         0.01
-          AngDF                        0.04         0.01
+         StaticDriver                  1.18         0.35
+          RDF                          0.05         0.02
+          AngDF                        0.03         0.01
           Kirkwoodgk                   0.04         0.01
           OriPolDF                     0.05         0.01
-          MultipolDF                   0.95         0.25
+          MultipolDF                   0.88         0.26
           DomainDriver                 0.12         0.03
          ImageDriver                   0.00         0.00
          IOMolsim                      0.04         0.01
-         SetVList                      0.03         0.01
-         MCPass                        2.48         0.64
+         SetVList                      0.04         0.01
+         MCPass                        2.13         0.62
           SPartMove                    0.00         0.00
-          DUTotal                      2.42         0.63
-           DUTwoBody                   0.13         0.03
-           DUDipole                    2.28         0.59
-            DUDipoleEwald              2.02         0.53
-           DUDipoleEwaldRecSPM         2.02         0.53
-             DUMakeGQMesh              0.17         0.04
-             DUMakeFFT                 1.58         0.41
-             DUCalcGIF                 0.26         0.07
+          DUTotal                      2.07         0.61
+           DUTwoBody                   0.13         0.04
+           DUDipole                    1.92         0.56
+            DUDipoleEwald              1.69         0.50
+           DUDipoleEwaldRecSPM         1.69         0.50
+             DUMakeGQMesh              0.19         0.06
+             DUMakeFFT                 1.23         0.36
+             DUCalcGIF                 0.27         0.08
  
-total cpu time since start (s)        4.13
+total cpu time since start (s)        3.70
