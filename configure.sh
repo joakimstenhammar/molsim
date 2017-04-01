@@ -57,6 +57,10 @@ if locate -l 1 fftw3.f03 > /dev/null && locate -l 1 libfftw3 > /dev/null ; then 
    echo "FFTW_PATH = $fftwpath" >> Src/make.fftwpath
    fftwlib=`dirname $(locate libfftw3 | tail -n 1)`
    echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
+elif [ -f "$HOME/.fftw/include/fftw3.f03" ]; then # check for local installation
+   echo "FFTW_PATH = $HOME/.fftw" >> Src/make.fftwpath
+   fftwlib=`ls -d $HOME/.fftw/lib*`
+   echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
 else
    echo "FFTW3 is not installed"
    read -e -p "Install under ~/.fftw? " -i "n" dofftw
@@ -112,6 +116,9 @@ else
       ;;
       * )
          echo "Error: FFTW Required for MOLSIM"
+      echo "FFTW_PATH = $HOME/.fftw" >> Src/make.fftwpath
+      fftwlib=`ls -d $HOME/.fftw/lib*`
+      echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
    esac
 fi
 echo "yes"
