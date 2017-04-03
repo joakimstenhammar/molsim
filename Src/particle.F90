@@ -2158,8 +2158,14 @@ subroutine SetObjectParam2
     do iat = 1, nat
        do jat = iat, nat
           iatjat = iatat(iat,jat)
-          r1atat(iatjat) = (radat(iat)+radat(jat))
-          r2atat(iatjat) = (radat(iat)+radat(jat))**2
+          if ((radat(iat) == Zero) .or. (radat(jat) == Zero)) then
+             ! ignore particles where the the radius equals 0 in the calculation
+             ! of the hard core overlaps
+             r1atat(iatjat) = Zero
+          else
+             r1atat(iatjat) = (radat(iat)+radat(jat))
+          end if
+          r2atat(iatjat) = (r1atat(iatjat))**2
        end do
     end do
 
