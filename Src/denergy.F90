@@ -3874,7 +3874,7 @@ end if
                dz = rtm(3,ialoc)-r(3,ja)-dzopbc
                r2 = dx**2+dy**2+dz**2
                if (r2 < r2atat(iatjat)) goto 400
-               if ((.not.laztm(ialoc)) .or. (.not. laz(ja))) cycle  ! ia uncharged
+               if ((.not.laztm(ialoc)) .or. (.not. laz(ja))) cycle  ! ia or ja uncharged
 !               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
 
                if (r2 < r2umin(iatjat)) goto 400       ! outside lower end
