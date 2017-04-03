@@ -3862,13 +3862,11 @@ end if
             iat = iatan(ia)
             ialoc = ialoc+1
         !    write(uout,*) '  ia, ialoc, laztm(ialoc)', ia, laztm(ialoc), ialoc
-            if (.not.laztm(ialoc)) cycle  ! ia uncharged
             jalow = ianpn(jp)
             jaupp = jalow+napt(jpt)-1
             if (jp == ip .and. (nptm /= natm)) jalow = ia + 1
             do ja = jalow, jaupp
                if (ja == ia) cycle
-               if (.not.laz(ja)) cycle       ! ja uncharged
                jat = iatan(ja)
                iatjat = iatat(iat,jat)
                dx = rtm(1,ialoc)-r(1,ja)-dxopbc
@@ -3876,6 +3874,7 @@ end if
                dz = rtm(3,ialoc)-r(3,ja)-dzopbc
                r2 = dx**2+dy**2+dz**2
                if (r2 < r2atat(iatjat)) goto 400
+               if ((.not.laztm(ialoc)) .or. (.not. laz(ja))) cycle  ! ia uncharged
 !               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
 
                if (r2 < r2umin(iatjat)) goto 400       ! outside lower end
