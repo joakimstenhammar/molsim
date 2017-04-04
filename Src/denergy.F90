@@ -3840,20 +3840,23 @@ end if
        !  write(uout,*) ' jp', jp
          jpt = iptpn(jp)
          iptjpt = iptpt(ipt,jpt)
-         dx = rotm(1,iploc)-ro(1,jp)
-         dy = rotm(2,iploc)-ro(2,jp)
-         dz = rotm(3,iploc)-ro(3,jp)
-         call PBC2(dx,dy,dz,dxopbc,dyopbc,dzopbc)
-         dx = dx-dxopbc
-         dy = dy-dyopbc
-         dz = dz-dzopbc
-         r2 = dx**2+dy**2+dz**2
-         if (r2 > rcut2) cycle
-         if (lellipsoid) Then
-            if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),radellipsoid2,aellipsoid)) goto 400
-         end if
-         if (lsuperball) Then
-            if (SuperballOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp))) goto 400
+         if (ip /= jp) then
+            ! if ip == jp then there is no overlap
+            dx = rotm(1,iploc)-ro(1,jp)
+            dy = rotm(2,iploc)-ro(2,jp)
+            dz = rotm(3,iploc)-ro(3,jp)
+            call PBC2(dx,dy,dz,dxopbc,dyopbc,dzopbc)
+            dx = dx-dxopbc
+            dy = dy-dyopbc
+            dz = dz-dzopbc
+            r2 = dx**2+dy**2+dz**2
+            if (r2 > rcut2) cycle
+            if (lellipsoid) Then
+               if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),radellipsoid2,aellipsoid)) goto 400
+            end if
+            if (lsuperball) Then
+               if (SuperballOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp))) goto 400
+            end if
          end if
 
          usum = Zero
@@ -3869,13 +3872,30 @@ end if
                if (ja == ia) cycle
                jat = iatan(ja)
                iatjat = iatat(iat,jat)
-               dx = rtm(1,ialoc)-r(1,ja)-dxopbc
-               dy = rtm(2,ialoc)-r(2,ja)-dyopbc
-               dz = rtm(3,ialoc)-r(3,ja)-dzopbc
-               r2 = dx**2+dy**2+dz**2
-               if (r2 < r2atat(iatjat)) goto 400
-               if ((.not.laztm(ialoc)) .or. (.not. laz(ja))) cycle  ! ia or ja uncharged
-!               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
+               if (ip == jp) then
+                  ! when calculating interaction within an particle
+                  ! both atoms have moved
+                  jaloc = ialoc + ja - ia
+                  if ((.not.laztm(ialoc)) .or. (.not. laztm(jaloc))) then
+                     ! ia or ja is uncharged, therefore the energy is zero
+                     cycle
+                  end if
+                  dx = rtm(1,ialoc)-rtm(1,jaloc)
+                  dy = rtm(2,ialoc)-rtm(2,jaloc)
+                  dz = rtm(3,ialoc)-rtm(3,jaloc)
+                  r2 = dx**2+dy**2+dz**2
+                  ! no check for overlap as both atoms are in the same particle
+               else
+                  dx = rtm(1,ialoc)-r(1,ja)-dxopbc
+                  dy = rtm(2,ialoc)-r(2,ja)-dyopbc
+                  dz = rtm(3,ialoc)-r(3,ja)-dzopbc
+                  r2 = dx**2+dy**2+dz**2
+                  if (r2 < r2atat(iatjat)) goto 400
+                  if ((.not.laztm(ialoc)) .or. (.not. laz(ja))) then
+                     ! ia or ja is uncharged, therefore the energy is zero
+                     cycle
+                  end if
+               end if
 
                if (r2 < r2umin(iatjat)) goto 400       ! outside lower end
                ibuf = iubuflow(iatjat)
