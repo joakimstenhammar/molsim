@@ -3879,11 +3879,10 @@ end if
                dy = rtm(2,ialoc)-r(2,ja)-dyopbc
                dz = rtm(3,ialoc)-r(3,ja)-dzopbc
                r2 = dx**2+dy**2+dz**2
-               if (r2 < r2atat(iatjat)) goto 400
+               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
                if (.not.laztm(ialoc)) cycle  ! ia uncharged
                if (.not.laz(ja)) cycle       ! ja uncharged
                ! do not check for overlap within one particle
-               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
 
                if (r2 < r2umin(iatjat)) goto 400       ! outside lower end
                ibuf = iubuflow(iatjat)
