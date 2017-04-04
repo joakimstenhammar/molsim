@@ -3832,6 +3832,19 @@ end if
       do jploc = 0, nneighpn(ip)
          if (jploc == 0) then
             if (.not.lintrapartint) cycle
+            !do not calculate the intrapartenergy for a non charge change move
+            if (nptm /= natm) cycle
+
+            !if nptm == natm and the move was not a ChargeChangeMove then the
+            !number of atoms for the moved particles is one. Therefore the
+            !interaction for ip == jp is not calculated. Explanation:
+            !ialow = ianatm(iploc) = ianpn(ip) (as 1 Atom per particle, see also SetTrialAtomProp
+            !as iaupp = ialow: ia = ianpn(ip) (see loop)
+            !jalow = ianpn(jp) = ianpn(ip) (see below)
+            !as jaupp = jalow: ja = ianpn(ip) (see loop)
+            !therefore ja = ia and no intraparticle energies are calculated
+            !as this case is always skipped
+
             jp = ip
          else
             jp = jpnlist(jploc,iploc)
@@ -3861,12 +3874,6 @@ end if
          do ia = ialow, iaupp
             iat = iatan(ia)
             ialoc = ialoc+1
-            if((ip == jp) .and. ( laz(ia) == laztm(ialoc))) then
-               !charge was not changed therefore do not calculate interaction
-               !within the particle
-               cycle
-            end if
-
         !    write(uout,*) '  ia, ialoc, laztm(ialoc)', ia, laztm(ialoc), ialoc
             jalow = ianpn(jp)
             jaupp = jalow+napt(jpt)-1
@@ -4064,6 +4071,7 @@ end if
       do jploc = 0, nneighpn(ip)
          if (jploc == 0) then
             if (.not.lintrapartint) cycle
+            if (nptm /= natm) cycle
             jp = ip
          else
             jp = jpnlist(jploc,iploc)
