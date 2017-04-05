@@ -137,7 +137,7 @@ fi
 echo "yes"
 
 
-#creating pdot.conf where user parameters are stored
+#creating version.conf where user parameters are stored
 conffile="version.conf"
 
 if [[ -e "$conffile" ]]; then
