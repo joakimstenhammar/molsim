@@ -3847,7 +3847,7 @@ end if
 
             jp = ip
          else
-            jp = jpnlist(jploc,iploc)
+            jp = jpnlist(jploc,ip)
          end if
          if (lptm(jp) .and. jp /= ip) cycle
        !  write(uout,*) ' jp', jp
@@ -4074,7 +4074,7 @@ end if
             if (nptm /= natm) cycle
             jp = ip
          else
-            jp = jpnlist(jploc,iploc)
+            jp = jpnlist(jploc,ip)
          end if
          if (lptm(jp) .and. jp /= ip) cycle
          jpt = iptpn(jp)
