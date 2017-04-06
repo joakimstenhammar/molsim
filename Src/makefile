@@ -297,6 +297,7 @@ OBJS1=mol.o           \
       sso.o	      \
       mesh.o	      \
       celllist.o      \
+      genericneighbour.o	\
       ljenergy.o
 
 OBJS2=mol.o           \
@@ -323,6 +324,7 @@ OBJS2=mol.o           \
       sso_par.o       \
       mesh_par.o      \
       celllist_par.o  \
+      genericneighbour_par.o	\
       ljenergy_par.o
 
 OBJS3=mol.o           \
@@ -379,7 +381,9 @@ nlist.o         : nlist.F90       mol.o celllist.o
 	$(COMP_SER) $(FLAG_SER) -c nlist.F90
 celllist.o      : celllist.F90    mol.o
 	$(COMP_SER) $(FLAG_SER) -c celllist.F90
-ljenergy.o      : ljenergy.F90    mol.o celllist.o
+genericneighbour.o	: genericneighbour.F90    mol.o celllist.o
+	$(COMP_SER) $(FLAG_SER) -c genericneighbour.F90
+ljenergy.o      : ljenergy.F90    mol.o genericneighbour.o
 	$(COMP_SER) $(FLAG_SER) -c ljenergy.F90
 energy.o        : energy.F90      mol.o	mollib.o ljenergy.o
 	$(COMP_SER) $(FLAG_SER) -c energy.F90
@@ -455,7 +459,9 @@ sso_par.o      : sso.F90  mc_par.o	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o sso_par.o -c sso.F90
 celllist_par.o      : celllist.F90    mol.o
 	$(COMP_SER) $(FLAG_PAR) -o celllist_par.o -c celllist.F90
-ljenergy_par.o      : ljenergy.F90    mol.o celllist_par.o
+genericneighbour_par.o	: genericneighbour.F90    mol_par.o celllist_par.o
+	$(COMP_SER) $(FLAG_SER) -c genericneighbour.F90
+ljenergy_par.o      : ljenergy.F90    mol.o genericneighbour_par.o
 	$(COMP_SER) $(FLAG_PAR) -o ljenergy_par.o -c ljenergy.F90
 
 #*****************************************************************
