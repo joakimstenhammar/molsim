@@ -186,7 +186,7 @@
 
             ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               read(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters
             else
                curdtranpt(1:npt) = dtransso(1:npt)
                ssos=step(0, Zero, Zero)
@@ -308,7 +308,7 @@
 
          case (iAfterMacrostep)
 
-               write(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               write(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters
 
          case (iAfterSimulation)
 
