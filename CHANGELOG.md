@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.4] - 2017-04-12 - Quapsel
+### Fixed
+- fixes a bug in the sso routine, which lead to "Not a Number" error.
+- using the system wide fftw version, instead of a locally installed. One needs to run the configure script once when updating
+
 ## [2.4.3] - 2017-04-12 - Quapsel
 ### Fixed
 - fixes a bug where sso calculated no results when using txstart=`continue`
