@@ -189,7 +189,7 @@
             if (txstart == 'continue') then
                read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, &
                   tots, SSOParameters, nstepOld
-               if(nstepOld .ne. nstep) then
+               if(nstepOld /= nstep) then
                   call Stop(txroutine, 'can not continue SSO with different &
                      &number of steps. Consider using zero instead.', uout)
                end if
