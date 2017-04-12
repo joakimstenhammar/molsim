@@ -34,7 +34,7 @@ then
    if [ ! -f $Project.pos ]
    then
       dir=`pwd`
-      hpcdir=$(echo $dir | sed "s|^.*.$USER|/lustreb/hpcwork/$USER|g" )
+      hpcdir=$(echo $dir | sed "s|^.*.$USER|/hpcwork/$USER|g" )
       if [ ! "$dir" == "$hpc" ]
       then
          mkdir -p $hpcdir

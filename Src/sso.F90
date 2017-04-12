@@ -386,7 +386,11 @@
                   !else: average displacement is displacement divided by number of steps; error calculated from variance
                   invntot = One/real(stepbin%n)
                   Mobility(ibin)%val = stepbin%d2 * invntot
-                  Mobility(ibin)%error = sqrt((stepbin%d4 * invntot - (Mobility(ibin)%val)**2)*invntot)
+                  if(stepbin%n > 1) then
+                     Mobility(ibin)%error = sqrt((stepbin%d4 * invntot - (Mobility(ibin)%val)**2)*invntot)
+                  else
+                     Mobility(ibin)%error = Zero
+                  end if
                end if
             end do
 
@@ -395,7 +399,6 @@
             dy = Mobility(0:nssobin)%error
             !smooth using spline
             call Smooth(nssobin + 1, x, y, dy, real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), a, btmp, ctmp, dtmp)
-
             Mobility(0:nssobin)%smooth = a
 
 

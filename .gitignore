@@ -6,6 +6,7 @@
 Bin/
 version.conf
 Src/make.arch
+Src/make.fftwpath
 Testin/out/
 Testin/diff.out
 Testin/bak/
