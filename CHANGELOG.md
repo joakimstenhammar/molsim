@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.3] - 2017-04-12 - Quapsel
+### Fixed
+- fixes a bug where sso calculated no results when using txstart=`continue`
+
 ## [2.4.2] - 2017-04-06 - Quapsel
 ### Fixed
 - Fixed #33: the interactions of systems with weak charges and polyatomic particles was calculated wrongly
-
 
 ## [2.4.1] - 2017-03-22 - Quapsel
 ### Fixed
