@@ -65,6 +65,7 @@
          integer(4)  :: ipt
          integer(4)  :: maxmobbin, upperbin, lowerbin ! bin where the maximumlocal mobility is found and upper and lower boundary
          integer(4)  :: ibin, ipart
+         integer(4)  :: nstepOld
 
          !input variables--------------------------------------------------------------------------
          real(8), allocatable, save :: dtransso(:) ! initial displacement parameters
@@ -186,7 +187,12 @@
 
             ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               read(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, &
+                  tots, SSOParameters, nstepOld
+               if(nstepOld /= nstep) then
+                  call Stop(txroutine, 'can not continue SSO with different &
+                     &number of steps. Consider using zero instead.', uout)
+               end if
             else
                curdtranpt(1:npt) = dtransso(1:npt)
                ssos=step(0, Zero, Zero)
@@ -308,7 +314,8 @@
 
          case (iAfterMacrostep)
 
-               write(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               write(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, &
+                  tots, SSOParameters, nstep
 
          case (iAfterSimulation)
 
