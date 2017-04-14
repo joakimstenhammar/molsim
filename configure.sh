@@ -51,9 +51,19 @@ echo "yes"
 #done
 
 echo -n "checking FFTW3 .."
-if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
-   echo "FFTW3 is not installed under ~/.fftw"
-   read -e -p "Install? " -i "n" dofftw
+if locate -l 1 fftw3.f03 > /dev/null && locate -l 1 libfftw3 > /dev/null ; then # found fftw3
+   fftwpath1=`dirname $(locate -b fftw3.f03 | tail -n 1)`
+   fftwpath=`dirname $fftwpath1`
+   echo "FFTW_PATH = $fftwpath" >> Src/make.fftwpath
+   fftwlib=`dirname $(locate libfftw3 | tail -n 1)`
+   echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
+elif [ -f "$HOME/.fftw/include/fftw3.f03" ]; then # check for local installation
+   echo "FFTW_PATH = $HOME/.fftw" >> Src/make.fftwpath
+   fftwlib=`ls -d $HOME/.fftw/lib*`
+   echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
+else
+   echo "FFTW3 is not installed"
+   read -e -p "Install under ~/.fftw? " -i "n" dofftw
    case ${dofftw:0:1} in
        y|Y )
 
@@ -106,6 +116,9 @@ if [ ! -f "$HOME/.fftw/include/fftw3.f03" ]; then
       ;;
       * )
          echo "Error: FFTW Required for MOLSIM"
+      echo "FFTW_PATH = $HOME/.fftw" >> Src/make.fftwpath
+      fftwlib=`ls -d $HOME/.fftw/lib*`
+      echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
    esac
 fi
 echo "yes"
@@ -124,7 +137,7 @@ fi
 echo "yes"
 
 
-#creating pdot.conf where user parameters are stored
+#creating version.conf where user parameters are stored
 conffile="version.conf"
 
 if [[ -e "$conffile" ]]; then

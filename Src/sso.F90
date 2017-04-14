@@ -65,6 +65,7 @@
          integer(4)  :: ipt
          integer(4)  :: maxmobbin, upperbin, lowerbin ! bin where the maximumlocal mobility is found and upper and lower boundary
          integer(4)  :: ibin, ipart
+         integer(4)  :: nstepOld
 
          !input variables--------------------------------------------------------------------------
          real(8), allocatable, save :: dtransso(:) ! initial displacement parameters
@@ -186,7 +187,12 @@
 
             ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               read(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, &
+                  tots, SSOParameters, nstepOld
+               if(nstepOld /= nstep) then
+                  call Stop(txroutine, 'can not continue SSO with different &
+                     &number of steps. Consider using zero instead.', uout)
+               end if
             else
                curdtranpt(1:npt) = dtransso(1:npt)
                ssos=step(0, Zero, Zero)
@@ -308,7 +314,8 @@
 
          case (iAfterMacrostep)
 
-               write(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               write(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, &
+                  tots, SSOParameters, nstep
 
          case (iAfterSimulation)
 
@@ -379,7 +386,11 @@
                   !else: average displacement is displacement divided by number of steps; error calculated from variance
                   invntot = One/real(stepbin%n)
                   Mobility(ibin)%val = stepbin%d2 * invntot
-                  Mobility(ibin)%error = sqrt((stepbin%d4 * invntot - (Mobility(ibin)%val)**2)*invntot)
+                  if(stepbin%n > 1) then
+                     Mobility(ibin)%error = sqrt((stepbin%d4 * invntot - (Mobility(ibin)%val)**2)*invntot)
+                  else
+                     Mobility(ibin)%error = Zero
+                  end if
                end if
             end do
 
@@ -388,7 +399,6 @@
             dy = Mobility(0:nssobin)%error
             !smooth using spline
             call Smooth(nssobin + 1, x, y, dy, real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), a, btmp, ctmp, dtmp)
-
             Mobility(0:nssobin)%smooth = a
 
 

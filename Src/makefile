@@ -57,13 +57,19 @@ CBIND = TRUE
 ifeq ($(CBIND), TRUE)          #F03 c-bindings
 
   ifeq ($(ARCH), LOCAL_INTEL)
-    FFTW_PATH=/home/$(USER)/.fftw
+    FFTW_PATH=/usr/local
   endif
   ifeq ($(ARCH), LOCAL_GFORTRAN)
-    FFTW_PATH=/home/$(USER)/.fftw
+    FFTW_PATH=/usr/local
   endif
   ifeq ($(ARCH), ALARIK_INTEL)
-    FFTW_PATH=/home/$(USER)/.fftw
+    FFTW_PATH=/$(FFTW3_HOME)
+  endif
+
+  FFTWLIB = none
+  FFTWFILE = make.fftwpath
+  ifneq ("$(wildcard $(FFTWFILE))","")
+     include $(FFTWFILE)
   endif
 
 endif
@@ -136,7 +142,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none
 
   OPT_format = -ffree-form -ffree-line-length-none
-  OPT_normal = $(OPT_format) -fast
+  OPT_normal = $(OPT_format) -O2
   OPT_quick := $(OPT_format) -O0	#quick compilation
   OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
   OPT_debug := $(OPT_format) -O0 -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan   # provide useful info at exceptions (use for debug)
@@ -260,12 +266,15 @@ endif
 #                          Common libraries
 #-----------------------------------------------------------------
 
+ifeq ($(FFTWLIB), none)
+   FFTWLINK=$(FFTW_PATH)/lib
+endif
 
 ifeq ($(ARCH), LOCAL_INTEL)
-   LLIB += -L$(wildcard $(FFTW_PATH)/lib*) -lfftw3 -lm
+   LLIB += -L$(FFTWLIB) -lfftw3 -lm
 endif
 ifeq ($(ARCH), LOCAL_GFORTRAN)
-   LLIB += -L$(wildcard $(FFTW_PATH)/lib*) -lfftw3 -lm
+   LLIB += -L$(FFTWLIB) -lfftw3 -lm
 endif
 ifeq ($(ARCH), ALARIK_INTEL)
    LLIB += $(FFTW3_HOME)/lib/libfftw3.so  #linker issues with ifort on Alarik => workaround
