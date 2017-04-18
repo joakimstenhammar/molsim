@@ -2645,7 +2645,7 @@ subroutine SetNetworkGenerationPointer
    integer(4)  :: ic
 
    do ip = 1, np
-      if ((nbondcl(ip) > Zero) .and. (icnpn(ip) == Zero)) then ! ip is a node: It got crosslinks but it's no part of a chain
+      if ((nbondcl(ip) > 0) .and. (icnpn(ip) == 0)) then ! ip is a node: It got crosslinks but it's no part of a chain
          do ibondcl = 1, nbondcl(ip)
             ic = icnpn(bondcl(ibondcl,ip))
             nclcn(ic) = nclcn(ic) + 1
