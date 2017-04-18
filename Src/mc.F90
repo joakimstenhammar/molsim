@@ -3410,7 +3410,6 @@ end if
          laz(ianatm(ialoc)) = laztm(ialoc)    ! update charge status
          if (lewald) az(ianatm(ialoc)) = aztm(ialoc) ! update atom charge
       end do
-      !if (lewald) call EwaldSetup    ! I don't think this is needed, even though the number of charges changes
    end if
 
 if (itest == 90) then
