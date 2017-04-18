@@ -1361,6 +1361,7 @@ subroutine DUWeakChargeEwald
 ! ... calculate
    if (txewaldrec == 'std') then
        call DUWeakChargeEwaldRecStd
+       if (lewald2dlc) call Stop(txroutine,'invalid choice of lewald2dlc .and. lweakcharge',uout)
    else
       call Stop(txroutine,'invalid choice of txewaldrec .and. lweakcharge',uout)
    end if
