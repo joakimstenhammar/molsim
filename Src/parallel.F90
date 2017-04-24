@@ -272,7 +272,7 @@ subroutine par_bc_int(buff)
    integer(4)               :: ierr
 
    call mpi_bcast(buff,1,mpi_integer4,rootid,mpi_comm_world,ierr)
-   if (ierr/=mpi_success) call par_error('par_bc_ints8',ierr)
+   if (ierr/=mpi_success) call par_error('par_bc_int',ierr)
 
 end subroutine par_bc_int
 
