@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.5] - 2017-04-24 - Quapsel
+### Fixed
+- fixes a bug in the sso routine, which prevented continuation of parallel simulations
+
 ## [2.4.4] - 2017-04-12 - Quapsel
 ### Fixed
 - fixes a bug in the sso routine, which lead to "Not a Number" error.
