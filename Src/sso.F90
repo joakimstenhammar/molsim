@@ -368,7 +368,8 @@
 
       !........................................................................
 
-         contains 
+         contains
+
          subroutine CalcCurrentMobility(ipt)
 
             implicit none
