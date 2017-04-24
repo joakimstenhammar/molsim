@@ -51,7 +51,7 @@
 
          use MolModule, only: ltrace, txstart
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-         use MolModule, only: uin, uout, ucnf, master
+         use MolModule, only: uin, uout, ucnf, master, lsim
          use MolModule, only: Zero, Half, One, Two
          use MolModule, only: npt, nstep, istep
          use MolModule, only: lbcbox, lbcrd, lbcto, lbcsph, lbcell, lbccyl, boxlen, cellside, sphrad, ellrad, cylrad, cyllen
@@ -187,7 +187,7 @@
 
             ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               if(master) then
+               if(lsim .and. master) then
                   read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters, nstepOld
                   if(nstepOld /= nstep) then
                      call Stop(txroutine, 'can not continue SSO with different number of steps. Consider using zero instead.', uout)
@@ -332,7 +332,7 @@
 
          case (iAfterMacrostep)
 
-               if(master) then
+               if(lsim .and. master) then
                   write(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters, nstep
                end if
 
