@@ -94,6 +94,7 @@ Inform everyone about the new available version by adding a comment to [this iss
 ## Appendix: Checklist
 * [ ] Make sure, that the [Testin](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin) runs clean! For further informations confer the corresponding [Wiki entry](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin).
 * [ ] Ascertain, that the compilation with `mode=warn` does not trigger any warnings
-* [ ] Ascertain, that running a test input file covering your modifications runs clean after compiling with `mode=debug`
+* [ ] ascertain, that running a test input file covering your modifications runs clean after compiling with `mode=debug`
+* [ ] Make sure that your code runs in parallel mode, and if not add a error message which prevents from running your code in parallel
 * [ ] Describe all changes in the [Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home)!
 * [ ] Change the version number corresponding to [Semantic Versioning](http://semver.org/)!
