@@ -7,8 +7,8 @@ Bin/
 version.conf
 Src/make.arch
 Src/make.fftwpath
-Testin/out/
+Testin/Out/
+Testin/Save/
+Testin/.current.md5sum
 Testin/diff.out
-Testin/bak/
-Testin/process.done.txt
 .nfs*
