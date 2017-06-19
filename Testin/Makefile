@@ -190,7 +190,7 @@ $(OutDir)/pb.bd.asd2.user.diff: $(OutDir)/p.bd.ads2.user $(OutDir)/p.bd.ads.user
 # molsim files #
 ################
 
-%.out %.wrl %.pos %.cnf %.user: %.in
+%.out %.wrl %.pos %.cnf %.user: %.in | molsim_exe
 	cd $(@D); $(molsim) $(*F)
 
 $(OutDir)/%.in: $(InDir)/%.in
