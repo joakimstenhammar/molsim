@@ -7,18 +7,7 @@
 ###########
 
 diffscript = scripts/diff1.sh
-
-versionfile = ../version.conf
-ifneq ("$(wildcard $(versionfile))","")
-version := `cat $(versionfile)`
-else
-version :=
-endif
-ifeq ($(version),)
-molsim = "$$HOME/bin/molsim_ser.$(version)"
-else
-molsim = "$$HOME/bin/molsim_ser"
-endif
+molsim = scripts/molsim_save.sh
 
 rm = rm -rf
 mkdirp = mkdir -p
@@ -50,11 +39,13 @@ difffiles = $(addsuffix .diff,$(outfiles))
 sourcefiles := $(wildcard ../Src/*.F90)
 sourcefiles += ../Src/makefile ../configure.sh
 
-stable = stable.md5sum
-current = .current.md5sum
+# also adapt the variables in script/molsim_save.sh
+stable="stable.md5sum"
+current=".current.md5sum"
 
-.PRECIOUS: $(outfiles) $(outinfiles) $(savefiles) $(difffiles)
-.PHONY: save declarestable clean cleansave cleanout checkcurrent molsim_exe diff out
+.SECONDARY: $(outfiles) $(outinfiles) $(savefiles) $(difffiles)
+.DELETE_ON_ERROR:
+.PHONY: save declarestable clean cleansave cleanout molsim_exe diff out
 
 ########
 # diff #
@@ -80,24 +71,23 @@ $(OutDir)/%.diff: $(OutDir)/% $(SaveDir)/%
 
 save: $(savefiles)
 
-$(savefiles): | checkcurrent
-
-checkcurrent: $(stable) $(current)
-	@cmp --silent $(stable) $(current) || { echo "the current version is not the stable one"; exit 1 ; }
+$(savefiles): $(stable)
 
 $(current): $(sourcefiles)
-	@echo $(sourcefiles) > $@
-	@cat $(sourcefiles) | md5sum >> $@
+	echo $(sourcefiles)  > $(current)
+	cat $(sourcefiles) | md5sum >> $(current)
 
 declarestable:
-	@echo $(sourcefiles)  > $(stable)
-	@cat $(sourcefiles) | md5sum >> $(stable)
+	echo $(sourcefiles)  > $(stable)
+	cat $(sourcefiles) | md5sum >> $(stable)
 
 #############
 # out files #
 #############
 
 out: $(outfiles)
+
+$(outfiles): $(sourcefiles)
 
 ##########
 # molsim #
@@ -128,17 +118,17 @@ cleanall: clean cleansave
 
 %.ana.out: %.pos %.ana.in
 	for i in pos ori liv anv for tor group utot; do rm -f $*.ana.$$i; ln -s $$(pwd)/$*.$$i $*.ana.$$i ; done
-	cd $(@D); $(molsim) $(basename $(@F))
+	$(molsim) $@
 	for i in pos ori liv anv for tor group utot; do rm -f $*.ana.$$i; done
 
 %/dip.md.ew.out: %/dip.md.ew.cnf %/dip.md.ew.in
-	cd $(@D); $(molsim) $(basename $(@F))
+	$(molsim) $@
 
 %/dip.md.ew.cnf:
 	cp $(InDir)/dip.md.ew.cnf.save $@
 
 %/daniel.out: %/daniel.cnf %/daniel.in
-	cd $(@D); $(molsim) $(basename $(@F))
+	$(molsim) $@
 
 %/daniel.cnf:
 	cp $(InDir)/daniel.cnf.save $@
@@ -147,7 +137,7 @@ cleanall: clean cleansave
 	@echo ""
 
 %/p.bd.ads2.out %/p.bd.ads2.user: %/p.bd.ads2.cnf %/p.bd.ads2.in
-	cd $(@D); $(molsim) $(basename $(@F))
+	$(molsim) $@
 	rm $<
 
 %/p.bd.ads2.cnf: %/p.bd.ads1.cnf
@@ -157,41 +147,41 @@ $(OutDir)/pb.bd.asd2.user.diff: $(OutDir)/p.bd.ads2.user $(OutDir)/p.bd.ads.user
 	$(diffscript) $^ > $@
 
 %/sb_xz.out: %/sb_xz.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_x.out: %/sb_x.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_xyz.out: %/sb_xyz.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_y.out: %/sb_y.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_z.out: %/sb_z.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_z_y090.out: %/sb_z_y090.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_z_y180.out: %/sb_z_y180.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_z_y030.out: %/sb_z_y030.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_z_y045.out: %/sb_z_y045.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 %/sb_z_xyz.out: %/sb_z_xyz.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 ################
 # molsim files #
 ################
 
 %.out %.wrl %.pos %.cnf %.user: %.in | molsim_exe
-	cd $(@D); $(molsim) $(*F)
+	$(molsim) $@
 
 $(OutDir)/%.in: $(InDir)/%.in
 	$(mkdirp) $(@D)
