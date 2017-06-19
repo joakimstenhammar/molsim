@@ -19,7 +19,7 @@ version := `cat $(versionfile)`
 else
 version :=
 endif
-ifeq ($(version),)
+ifneq ($(version),)
 molsim_bin = $(HOME)/bin/molsim_ser.$(version)
 else
 molsim_bin = $(HOME)/bin/molsim_ser
