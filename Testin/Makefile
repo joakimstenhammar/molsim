@@ -16,9 +16,9 @@ mkdirp = mkdir -p
 # Dirs #
 ########
 
-SaveDir = Save
-OutDir = Out
-InDir = In
+SaveDir = save
+OutDir = out
+InDir = in
 
 #########
 # files #
@@ -40,8 +40,8 @@ sourcefiles := $(wildcard ../Src/*.F90)
 sourcefiles += ../Src/makefile ../configure.sh
 
 # also adapt the variables in script/molsim_save.sh
-stable="stable.md5sum"
-current=".current.md5sum"
+stable=stable.md5sum
+current=.current.md5sum
 
 .SECONDARY: $(outfiles) $(outinfiles) $(savefiles) $(difffiles)
 .DELETE_ON_ERROR:
