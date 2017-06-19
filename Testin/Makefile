@@ -45,7 +45,7 @@ current=".current.md5sum"
 
 .SECONDARY: $(outfiles) $(outinfiles) $(savefiles) $(difffiles)
 .DELETE_ON_ERROR:
-.PHONY: save declarestable clean cleansave cleanout molsim_exe diff out
+.PHONY: diff out save declarestable clean cleansave cleanout molsim_exe
 
 ########
 # diff #
