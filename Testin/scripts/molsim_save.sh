@@ -11,10 +11,10 @@ then
     version="$(cat ../version.conf)"
 fi
 molsim="$HOME/bin/molsim_ser"
-if [ ! -z "$VAR" ]; then
+if [ ! -z "$version" ]; then
     molsim="$molsim.$version"
 fi
-if [ "$dir" == "Save" ]; then
+if [ "$dir" == "save" ]; then
     if ! `cmp --silent $stable $current`; then
         echo "The current version is not the stable one. Not creating $1".
         if [ -f $1 ]; then
