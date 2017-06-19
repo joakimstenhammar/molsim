@@ -54,13 +54,15 @@ stable = stable.md5sum
 current = .current.md5sum
 
 .PRECIOUS: $(outfiles) $(outinfiles) $(savefiles) $(difffiles)
-.PHONY: save declarestable clean cleansave cleanout
+.PHONY: save declarestable clean cleansave cleanout checkcurrent molsim_exe diff out
 
 ########
 # diff #
 ########
 
 all: diff.out
+
+diff: diff.out
 
 diff.out:	$(difffiles)
 	cat $^ > $@
@@ -77,13 +79,11 @@ $(OutDir)/%.diff: $(OutDir)/% $(SaveDir)/%
 ##############
 
 save: $(savefiles)
-	$(rm) .StableVer
 
-$(savefiles): .StableVer
+$(savefiles): | checkcurrent
 
-.StableVer: $(stable) $(current)
+checkcurrent: $(stable) $(current)
 	@cmp --silent $(stable) $(current) || { echo "the current version is not the stable one"; exit 1 ; }
-	echo "currently_stable" >  $@
 
 $(current): $(sourcefiles)
 	@echo $(sourcefiles) > $@
@@ -92,6 +92,23 @@ $(current): $(sourcefiles)
 declarestable:
 	@echo $(sourcefiles)  > $(stable)
 	@cat $(sourcefiles) | md5sum >> $(stable)
+
+#############
+# out files #
+#############
+
+out: $(outfiles)
+
+##########
+# molsim #
+##########
+
+$(outfiles) $(savefiles): | molsim_exe
+
+molsim_exe:
+	@echo recompiling molsim_ser
+	cd ../Src/ && make clean && make ser mode=test && cd ../Testin
+
 
 #########
 # clean #
@@ -127,7 +144,7 @@ cleanall: clean cleansave
 	cp $(InDir)/daniel.cnf.save $@
 
 %/ads_20-mer:	%/p.bd.ads2.out
-	@echo "ads_20-mer is created"
+	@echo ""
 
 %/p.bd.ads2.out %/p.bd.ads2.user: %/p.bd.ads2.cnf %/p.bd.ads2.in
 	cd $(@D); $(molsim) $(basename $(@F))
@@ -140,7 +157,34 @@ $(OutDir)/pb.bd.asd2.user.diff: $(OutDir)/p.bd.ads2.user $(OutDir)/p.bd.ads.user
 	$(diffscript) $^ > $@
 
 %/sb_xz.out: %/sb_xz.in
-	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "sb_xz exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_x.out: %/sb_x.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_xyz.out: %/sb_xyz.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_y.out: %/sb_y.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_z.out: %/sb_z.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_z_y090.out: %/sb_z_y090.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_z_y180.out: %/sb_z_y180.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_z_y030.out: %/sb_z_y030.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_z_y045.out: %/sb_z_y045.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+
+%/sb_z_xyz.out: %/sb_z_xyz.in
+	cd $(@D); $(molsim) $(basename $(@F)); if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
 
 ################
 # molsim files #
