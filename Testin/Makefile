@@ -15,9 +15,9 @@ molsim = scripts/molsim_save.sh
 #mechanism to get the correctly named molsim script
 versionfile = ../version.conf
 ifneq ("$(wildcard $(versionfile))","")
-version := `cat $(versionfile)`
+   version := $(shell cat $(versionfile))
 else
-version :=
+   version :=
 endif
 ifneq ($(version),)
 molsim_bin = $(HOME)/bin/molsim_ser.$(version)
