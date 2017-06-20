@@ -68,6 +68,9 @@ sourcefiles = $(sort $(sourcefiles_un))
 stable=stable.md5sum
 current=.current.md5sum
 
+#file where all diffs are collected
+diffout = diff.out
+
 # these files are not neccecarily needed, when all prerequisites are met, but we do not want to delete then automatically:
 .SECONDARY: $(outfiles) $(outinfiles) $(savefiles) $(difffiles)
 #we always need to make sure molsim is compiled, and store when we comiled it in the timestamp of $(compiled):
@@ -80,19 +83,19 @@ current=.current.md5sum
 # use save to compile the save directory. Do this when the current stable version is represented in the source files (the master branch)
 # use out to generate the output files with the current version
 # use decarestable to declare the current version as a stable one
-# use clean to delete the out directory
-# use cleansave to delete the save directory
-# use cleanall to delete the save and the out directory
+# use clean to delete the out directory, the $(current) and the $(diffout) file
+# use cleansave to delete the save directory  the $(current) and the $(diffout) file
+# use cleanall to run clean and cleansave
 
 ########
 # diff #
 ########
 
-all: diff.out
+all: $(diffout)
 
-diff: diff.out
+diff: $(diffout)
 
-diff.out:	$(difffiles)
+$(diffout):	$(difffiles)
 	cat $^ > $@
 
 $(OutDir)/%.diff: $(OutDir)/% $(SaveDir)/%
@@ -145,10 +148,10 @@ $(current): $(molsim_bin) $(sourcefiles)
 #various clean commands
 #by default only clean the out dir
 clean:
-	$(rm) $(OutDir)
+	$(rm) $(OutDir) $(current) $(diffout)
 
 cleansave:
-	$(rm) $(SaveDir)
+	$(rm) $(SaveDir) $(current) $(diffout)
 
 cleanall: clean cleansave
 
