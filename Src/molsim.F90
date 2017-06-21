@@ -219,14 +219,14 @@ subroutine IOMolsim(iStage)
 
       !set filenames
       call get_command_argument(command_argument_count(), project)
-      fin   = trim(adjustl(project//'.in')
-      fout  = trim(adjustl(project//'.out')
-      fcnf  = trim(adjustl(project//'.cnf')
-      flist = trim(adjustl(project//'.list')
-      fuser = trim(adjustl(project//'.user')
-      fimg  = trim(adjustl(project//'.img')
-      fvtf  = trim(adjustl(project//'.vtf')
-      ftcl  = trim(adjustl(project//'.tcl')
+      fin   = trim(adjustl(project))//'.in'
+      fout  = trim(adjustl(project))//'.out'
+      fcnf  = trim(adjustl(project))//'.cnf'
+      flist = trim(adjustl(project))//'.list'
+      fuser = trim(adjustl(project))//'.user'
+      fimg  = trim(adjustl(project))//'.img'
+      fvtf  = trim(adjustl(project))//'.vtf'
+      ftcl  = trim(adjustl(project))//'.tcl'
 
 ! ... open FIN and FOUT
 
