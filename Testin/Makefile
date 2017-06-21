@@ -128,7 +128,7 @@ $(molsim_bin): $(sourcefiles)
 # when $(current) does not exist, it is assumed that a recompilation is needed. From then on, molsim_bin is older than $(current) except for the case where the source files are newer than the script (which triggers a touch of the script) or MOLSIM was recompiled. Under these circumstances, the current state of the compilation is unknown, and therefore we need to recompile.
 #how to make the current file
 $(current): $(molsim_bin) $(sourcefiles)
-	cd ../Src/ && make clean && make ser mode=test && cd ../Testin
+	+cd ../Src/ && make clean && make ser mode=test && cd ../Testin
 	echo $(sourcefiles)  > $(current)
 	cat $(sourcefiles) | md5sum >> $(current)
 	$(molsim_bin) -v >> $(current)
