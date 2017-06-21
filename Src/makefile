@@ -271,6 +271,8 @@ ifeq ($(ARCH), ALARIK_GFORTRAN)
  FLAG_PAR += -I$(FFTW3_HOME)/include
 endif
 
+mollib = $(abspath molsim.lib)
+
 #-----------------------------------------------------------------
 #                          Common libraries
 #-----------------------------------------------------------------
@@ -385,7 +387,7 @@ moldyn.o        : moldyn.F90	statistics.o
 particle.o      : particle.F90    mol.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c particle.F90
 potential.o     : potential.F90   mol.o
-	$(COMP_SER) $(FLAG_SER) -c potential.F90
+	$(COMP_SER) -DFLIBMACRO=\"$(mollib)\" $(FLAG_SER) -c potential.F90
 coordinate.o    : coordinate.F90  mol.o
 	$(COMP_SER) $(FLAG_SER) -c coordinate.F90
 md.o            : md.F90        mol.o
@@ -431,7 +433,7 @@ molsim_par.o    : molsim.F90      mol.o      statistics_par.o mollib_par.o
 particle_par.o  : particle.F90    mol.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90
 potential_par.o : potential.F90   mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o potential_par.o -c potential.F90
+	$(COMP_PAR) -DFLIBMACRO=\"$(mollib)\" $(FLAG_PAR) -o potential_par.o -c potential.F90
 coordinate_par.o : coordinate.F90 mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o coordinate_par.o -c coordinate.F90
 md_par.o        : md.F90      mol.o

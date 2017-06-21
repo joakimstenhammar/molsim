@@ -63,7 +63,8 @@ module PotentialModule
 
 ! ... external unit
 
-   character(10) :: flib  = 'FLIB '
+#define STRINGIFY(x) x
+   character(255) :: flib = trim(adjustl(STRINGIFY(FLIBMACRO)))
    integer(4)    :: ulib  = 4
 
 end module PotentialModule
