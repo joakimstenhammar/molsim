@@ -25,7 +25,7 @@ if [ "$dir" == "save" ]; then
       echo "ERROR: $1 must generated with a stable version."; exit 1
    fi
 fi
-cd $dir && pwd && $molsim $pro; e = $? && cd -
+cd $dir && pwd && $molsim $pro; e=$? && cd -
 if [ "$dir" == "save" ]; then
    cat $current > $dir/$pro.version
 fi
