@@ -39,24 +39,6 @@ module DumpModule
 
 ! ... external units
 
-   character(10) :: fpos  = 'FPOS '  ! position data
-   character(10) :: fori  = 'FORI '  ! orientation data
-   character(10) :: fliv  = 'FLIV '  ! linear velocity data
-   character(10) :: fanv  = 'FANV '  ! angular velocity data
-   character(10) :: ffor  = 'FFOR '  ! force data
-   character(10) :: ftor  = 'FTOR '  ! torque data
-   character(10) :: fidm  = 'FIDM '  ! induced dipole moment data
-   character(10) :: flaz  = 'FLAZ'   ! atom charge status
-   character(10) :: futot = 'FUTOT'  ! potential energy data
-   integer(4)    :: upos  = 20       ! position data
-   integer(4)    :: uori  = 21       ! orientation data
-   integer(4)    :: uliv  = 22       ! linear velocity data
-   integer(4)    :: uanv  = 23       ! angular velocity data
-   integer(4)    :: ufor  = 24       ! force data
-   integer(4)    :: utor  = 25       ! torque data
-   integer(4)    :: uidm  = 26       ! induced dipole moment data
-   integer(4)    :: ulaz  = 27       ! atom charge status
-   integer(4)    :: uutot = 28       ! potential energy data
 
 end module DumpModule
 

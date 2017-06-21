@@ -862,7 +862,7 @@ subroutine CFCalc(iStage, txfunc, sfdata, sf, cf)
       if (cf%legendre < 1 .or. cf%legendre > 3) call stop(txroutine, 'cf%legendre < 1 .or. cf%legendre > 3', 6)
       if (cf%nmean == 1 .and. cf%nolevel > 1) call warn(txroutine, 'cf%nmean == 1: cf%nolevel = 1 is sufficient', 6)
 
-      if (itestdyn == 1) call FileOpen(uuser, 'FUSER', 'form/noread')
+      if (itestdyn == 1) call FileOpen(uuser, fuser, 'form/noread')
 
    case (iSimulationStep)                    ! sample time correlation function one time
 

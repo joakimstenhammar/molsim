@@ -195,11 +195,11 @@ subroutine IOMolsim(iStage)
    case (iReadInput)
 
       !parse command line arguments
-      do i = 1, command_argument_count() - 1
+      do i = 1, command_argument_count()
 	 call get_command_argument(i, arg)
 
 	 select case (arg)
-	 case ('-v', '--version')
+	 case ('-v', '--version', '-V')
 	    write(*,'(a)') txVersionDate
 # ifdef _TEST_
 	    write(*,'(a)') "mode = test"
@@ -211,13 +211,10 @@ subroutine IOMolsim(iStage)
 	    write(*,'(a)') "mode = debug"
 # endif
 	    stop 0
-	 case default
-	    print '(a,a,/)', 'Unrecognized command-line option: ', arg
-	    stop 1
 	 end select
       end do
 
-      !set filenames
+      !set filenames from the last argument
       call get_command_argument(command_argument_count(), project)
       fin   = trim(adjustl(project))//'.in'
       fout  = trim(adjustl(project))//'.out'
@@ -227,6 +224,17 @@ subroutine IOMolsim(iStage)
       fimg  = trim(adjustl(project))//'.img'
       fvtf  = trim(adjustl(project))//'.vtf'
       ftcl  = trim(adjustl(project))//'.tcl'
+      fpos  = trim(adjustl(project))//'.pos'
+      fpos  = trim(adjustl(project))//'.pos'
+      fori  = trim(adjustl(project))//'.ori'
+      fliv  = trim(adjustl(project))//'.liv'
+      fanv  = trim(adjustl(project))//'.anv'
+      ffor  = trim(adjustl(project))//'.for'
+      ftor  = trim(adjustl(project))//'.tor'
+      fidm  = trim(adjustl(project))//'.idm'
+      flaz  = trim(adjustl(project))//'.laz'
+      futot = trim(adjustl(project))//'.utot'
+      futot = trim(adjustl(project))//'.utot'
 
 ! ... open FIN and FOUT
 

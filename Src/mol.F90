@@ -194,14 +194,25 @@ module MolModule
 
    character(240) :: project ! name of the project (15 characters shorter than the filenames to have enough space for suffixes
    ! filenames
-   character(255) :: fin
-   character(255) :: fout
-   character(255) :: fcnf
-   character(255) :: flist
-   character(255) :: fuser
-   character(255) :: fimg
-   character(255) :: fvtf
-   character(255) :: ftcl
+   character(255) :: fin     ! input data
+   character(255) :: fout    ! output data
+   character(255) :: fcnf    ! configuration data
+   character(255) :: flist   ! list data
+   character(255) :: fuser   ! user-provided data
+   character(255) :: fimg    ! image data
+   character(255) :: fvtf    ! VMD: vtf data
+   character(255) :: ftcl    ! VMD: tcl script
+   character(255) :: fgroup  ! group data
+   character(255) :: fpos    ! position data
+   character(255) :: fori    ! orientation data
+   character(255) :: fliv    ! linear velocity data
+   character(255) :: fanv    ! angular velocity data
+   character(255) :: ffor    ! force data
+   character(255) :: ftor    ! torque data
+   character(255) :: fidm    ! induced dipole moment data
+   character(255) :: flaz    ! atom charge status
+   character(255) :: futot   ! potential energy data
+
    integer(4),    parameter :: uin   = 1   ! input data
    integer(4),    parameter :: uout  = 2   ! output data
    integer(4),    parameter :: ucnf  = 3   ! configuration data
@@ -210,6 +221,16 @@ module MolModule
    integer(4),    parameter :: uimg  = 10  ! image data
    integer(4),    parameter :: uvtf  = 11  ! VMD: vtf data
    integer(4),    parameter :: utcl  = 12  ! VMD: tcl script
+   integer(4),    parameter :: ugroup= 15  ! group data
+   integer(4),    parameter :: upos  = 20       ! position data
+   integer(4),    parameter :: uori  = 21       ! orientation data
+   integer(4),    parameter :: uliv  = 22       ! linear velocity data
+   integer(4),    parameter :: uanv  = 23       ! angular velocity data
+   integer(4),    parameter :: ufor  = 24       ! force data
+   integer(4),    parameter :: utor  = 25       ! torque data
+   integer(4),    parameter :: uidm  = 26       ! induced dipole moment data
+   integer(4),    parameter :: ulaz  = 27       ! atom charge status
+   integer(4),    parameter :: uutot = 28       ! potential energy data
 
 ! ... terms
 
