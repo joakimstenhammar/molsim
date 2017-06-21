@@ -232,6 +232,15 @@ ifeq ($(CBIND), TRUE)                      #F03 c-bindings
     ifeq ($(mode),test)
       DEFINES_BASE += -D_TEST_
     endif
+    ifeq ($(mode),normal)
+      DEFINES_BASE += -D_NORMAL_
+    endif
+    ifeq ($(mode),debug)
+      DEFINES_BASE += -D_DEBUG_
+    endif
+    ifeq ($(mode),warn)
+      DEFINES_BASE += -D_WARN_
+    endif
 endif
 
 
@@ -349,6 +358,9 @@ ver	:
 install:
 	cp molsim_ser $(HOME)/bin/molsim_ser$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_ser$(VER)
 	cp molsim_par $(HOME)/bin/molsim_par$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_par$(VER)
+
+uninstall:
+	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_par$(VER)
 
 molsim_ser     : molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
