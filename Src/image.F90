@@ -197,9 +197,9 @@ subroutine ImageVRML(iStage, iimage)
 
    case (iWriteInput)
 
-! ... open FIMG
+! ... open FWRL
 
-      if (master) call FileOpen(uimg, fimg, 'form/noread')
+      if (master) call FileOpen(uwrl, fwrl, 'form/noread')
 
    case (iBeforeSimulation)
 
@@ -216,12 +216,12 @@ subroutine ImageVRML(iStage, iimage)
                if (txwhen == 'after_iimage') nfac = nstep2/iimage
                do m = 0, nfac*(nstep1beg-1)                                       ! number of frames to be read
                   do m2 = 1, 10000
-                     read(uimg,'(a)') string
+                     read(uwrl,'(a)') string
                      if (string(1:6) == txwrap(2)) exit
                   end do
-                  if (m2 > 10000) call stop(txroutine, 'error in advancing FIMG', uout)
+                  if (m2 > 10000) call stop(txroutine, 'error in advancing FWRL', uout)
                end do
-               if (m > nfac*(nstep1beg-1)+1) call stop(txroutine, 'error in advancing FIMG', uout)
+               if (m > nfac*(nstep1beg-1)+1) call stop(txroutine, 'error in advancing FWRL', uout)
             end if
          end if
       end if
@@ -273,7 +273,7 @@ subroutine ImageVRML(iStage, iimage)
 
       if (allocated(atsize)) deallocate(atsize, rgbcolor)
 
-      close(uimg)
+      close(uwrl)
 
    end select
 
@@ -292,15 +292,15 @@ subroutine ImageVRMLSub
    write(str,'(i10)') iframe                              ! get frame number
    if (txfile == 'merged') then                           ! a single vrml file
       if (txwhen == 'after_run') then
-         call VRMLSub(tximage, 'image after run', atsize, rgbcolor, blmax, bondr, lgr, uimg)
+         call VRMLSub(tximage, 'image after run', atsize, rgbcolor, blmax, bondr, lgr, uwrl)
       else if (txwhen == 'after_macro') then
-         write(uimg,'(a)') txwrap(1)//'macrostep.'//trim(adjustl(str))//'.wrl'
-         call VRMLSub(tximage, 'image after macrostep'//str, atsize, rgbcolor, blmax, bondr, lgr, uimg)
-         write(uimg,'(a)') txwrap(2)
+         write(uwrl,'(a)') txwrap(1)//'macrostep.'//trim(adjustl(str))//'.wrl'
+         call VRMLSub(tximage, 'image after macrostep'//str, atsize, rgbcolor, blmax, bondr, lgr, uwrl)
+         write(uwrl,'(a)') txwrap(2)
       else if (txwhen == 'after_iimage') then
-         write(uimg,'(a)') txwrap(1)//'frame.'//trim(adjustl(str))//'.wrl'
-         call VRMLSub(tximage, 'image after frame'//str, atsize, rgbcolor, blmax, bondr, lgr, uimg)
-         write(uimg,'(a)') txwrap(2)
+         write(uwrl,'(a)') txwrap(1)//'frame.'//trim(adjustl(str))//'.wrl'
+         call VRMLSub(tximage, 'image after frame'//str, atsize, rgbcolor, blmax, bondr, lgr, uwrl)
+         write(uwrl,'(a)') txwrap(2)
       else
          call Stop(txroutine, 'unsupported value of txwhen', uout)
       end if

@@ -221,10 +221,10 @@ subroutine IOMolsim(iStage)
       fcnf  = trim(adjustl(project))//'.cnf'
       flist = trim(adjustl(project))//'.list'
       fuser = trim(adjustl(project))//'.user'
-      fimg  = trim(adjustl(project))//'.img'
+      fwrl  = trim(adjustl(project))//'.wrl'
       fvtf  = trim(adjustl(project))//'.vtf'
       ftcl  = trim(adjustl(project))//'.tcl'
-      fpos  = trim(adjustl(project))//'.pos'
+      fgroup= trim(adjustl(project))//'.group'
       fpos  = trim(adjustl(project))//'.pos'
       fori  = trim(adjustl(project))//'.ori'
       fliv  = trim(adjustl(project))//'.liv'
@@ -582,7 +582,7 @@ subroutine IOSystem(iStage)
          write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', fout
          if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', fcnf
          if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', flist
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uimg,   'fimg ', fimg
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uwrl,   'fwrl ', fwrl
          if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', fvtf
          if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', ftcl    ! TO BE FIXED
       end if

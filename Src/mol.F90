@@ -199,7 +199,7 @@ module MolModule
    character(255) :: fcnf    ! configuration data
    character(255) :: flist   ! list data
    character(255) :: fuser   ! user-provided data
-   character(255) :: fimg    ! image data
+   character(255) :: fwrl    ! image data in wrl format
    character(255) :: fvtf    ! VMD: vtf data
    character(255) :: ftcl    ! VMD: tcl script
    character(255) :: fgroup  ! group data
@@ -218,7 +218,7 @@ module MolModule
    integer(4),    parameter :: ucnf  = 3   ! configuration data
    integer(4),    parameter :: ulist = 8   ! list data
    integer(4),    parameter :: uuser = 9   ! user-provided data
-   integer(4),    parameter :: uimg  = 10  ! image data
+   integer(4),    parameter :: uwrl  = 10  ! image data
    integer(4),    parameter :: uvtf  = 11  ! VMD: vtf data
    integer(4),    parameter :: utcl  = 12  ! VMD: tcl script
    integer(4),    parameter :: ugroup= 15  ! group data
