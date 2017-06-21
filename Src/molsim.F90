@@ -184,12 +184,50 @@ subroutine IOMolsim(iStage)
    character(40), parameter :: txroutine ='IOMolsim'
    character(4) :: txistep1
 
+   character(len=128) :: arg
+   character(len=251) :: project
+   integer(4) :: i
+
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
    if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
+
+      !parse command line arguments
+      do i = 1, command_argument_count() - 1
+	 call get_command_argument(i, arg)
+
+	 select case (arg)
+	 case ('-v', '--version')
+	    write(*,'(a)') txVersionDate
+# ifdef _TEST_
+	    write(*,'(a)') "mode = test"
+# elif _NORMAL_
+	    write(*,'(a)') "mode = normal"
+# elif _WARN_
+	    write(*,'(a)') "mode = warn"
+# elif _DEBUG_
+	    write(*,'(a)') "mode = debug"
+# endif
+	    stop 0
+	 case default
+	    print '(a,a,/)', 'Unrecognized command-line option: ', arg
+	    stop 1
+	 end select
+      end do
+
+      !set filenames
+      call get_command_argument(command_argument_count(), project)
+      fin   = trim(adjustl(project//'.in')
+      fout  = trim(adjustl(project//'.out')
+      fcnf  = trim(adjustl(project//'.cnf')
+      flist = trim(adjustl(project//'.list')
+      fuser = trim(adjustl(project//'.user')
+      fimg  = trim(adjustl(project//'.img')
+      fvtf  = trim(adjustl(project//'.vtf')
+      ftcl  = trim(adjustl(project//'.tcl')
 
 ! ... open FIN and FOUT
 
