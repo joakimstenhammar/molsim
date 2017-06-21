@@ -578,13 +578,13 @@ subroutine IOSystem(iStage)
          write(uout,'(a)') '--------------'
          write(uout,'(a,t15,a,t35,a)')  'number', 'generic name', 'file name'
          write(uout,'(a,t15,a,t35,a)')  '------', '------------', '---------'
-         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', fin
-         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', fout
-         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', fcnf
-         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', flist
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uwrl,   'fwrl ', fwrl
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', fvtf
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', ftcl    ! TO BE FIXED
+         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', trim(fin)
+         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', trim(fout)
+         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', trim(fcnf)
+         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', trim(flist)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uwrl,   'fwrl ', trim(fwrl)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', trim(fvtf)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', trim(ftcl)    ! TO BE FIXED
       end if
 
    case (iAfterSimulation)
