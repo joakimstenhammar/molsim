@@ -183,16 +183,16 @@ subroutine IODump(iStage)
          write(uout,'()')
          write(uout,'(a,t20,a)') 'quantity', 'external unit'
          write(uout,'(a,t20,a)') '--------', '-------------'
-         if (ldpos)     write(uout,'(a,a)') 'positions              ', fpos
-         if (ldori)     write(uout,'(a,a)') 'orientations           ', fori
-         if (ldliv)     write(uout,'(a,a)') 'linear velocities      ', fliv
-         if (ldanv)     write(uout,'(a,a)') 'angular velocities     ', fanv
-         if (ldfor)     write(uout,'(a,a)') 'forces                 ', ffor
-         if (ldtor)     write(uout,'(a,a)') 'torques                ', ftor
-         if (ldidm)     write(uout,'(a,a)') 'ind dip mom            ', fidm
-         if (ldlaz)     write(uout,'(a,a)') 'atom charge state      ', flaz
-         if (ldutot)    write(uout,'(a,a)') 'potential energy       ', futot
-         if (ldumpuser) write(uout,'(a,a)') 'user dump              ', fuser
+         if (ldpos)     write(uout,'(a,a)') 'positions              ', trim(fpos)
+         if (ldori)     write(uout,'(a,a)') 'orientations           ', trim(fori)
+         if (ldliv)     write(uout,'(a,a)') 'linear velocities      ', trim(fliv)
+         if (ldanv)     write(uout,'(a,a)') 'angular velocities     ', trim(fanv)
+         if (ldfor)     write(uout,'(a,a)') 'forces                 ', trim(ffor)
+         if (ldtor)     write(uout,'(a,a)') 'torques                ', trim(ftor)
+         if (ldidm)     write(uout,'(a,a)') 'ind dip mom            ', trim(fidm)
+         if (ldlaz)     write(uout,'(a,a)') 'atom charge state      ', trim(flaz)
+         if (ldutot)    write(uout,'(a,a)') 'potential energy       ', trim(futot)
+         if (ldumpuser) write(uout,'(a,a)') 'user dump              ', trim(fuser)
       end if
 
    end select
