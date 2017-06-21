@@ -192,14 +192,14 @@ module MolModule
 
 ! ... external units
 
-   character(10), parameter :: fin   = 'FIN  '
-   character(10), parameter :: fout  = 'FOUT '
-   character(10), parameter :: fcnf  = 'FCNF '
-   character(10), parameter :: flist = 'FLIST'
-   character(10), parameter :: fuser = 'FUSER'
-   character(10), parameter :: fimg  = 'FIMG '
-   character(10), parameter :: fvtf  = 'FVTF '
-   character(10), parameter :: ftcl  = 'FTCL '
+   character(255) :: fin
+   character(255) :: fout
+   character(255) :: fcnf
+   character(255) :: flist
+   character(255) :: fuser
+   character(255) :: fimg
+   character(255) :: fvtf
+   character(255) :: ftcl
    integer(4),    parameter :: uin   = 1   ! input data
    integer(4),    parameter :: uout  = 2   ! output data
    integer(4),    parameter :: ucnf  = 3   ! configuration data
