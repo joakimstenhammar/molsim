@@ -15,13 +15,18 @@ if [ ! -z "$version" ]; then
     molsim="$molsim.$version"
 fi
 if [ "$dir" == "save" ]; then
-    if ! `cmp --silent $stable $current`; then
-        echo "The current version is not the stable one. Not creating $1".
-        if [ -f $1 ]; then
-            echo "Using existing version of $1"; exit 0
-        else
-            echo "ERROR: $1 must generated with a stable version."; exit 1
-        fi
-    fi
+   if [ -f $dir/$pro.version ]; then
+      if `cmp --silent $stable $dir/$pro.version`; then
+         echo "This file was created with the currently stable version. Not running molsim again."
+         exit 0
+      fi
+   fi
+   if ! `cmp --silent $stable $current`; then
+      echo "ERROR: $1 must generated with a stable version."; exit 1
+   fi
 fi
-cd $dir && pwd && $molsim $pro
+cd $dir && pwd && $molsim $pro; e = $? && cd -
+if [ "$dir" == "save" ]; then
+   cat $current > $dir/$pro.version
+fi
+exit $e
