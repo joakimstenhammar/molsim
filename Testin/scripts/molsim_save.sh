@@ -6,14 +6,7 @@ dir=$(dirname $1)
 file=$(basename $1)
 pro=${file%.*}
 
-if [ -f "../version.conf" ]
-then
-    version="$(cat ../version.conf)"
-fi
-molsim="$HOME/bin/molsim_ser"
-if [ ! -z "$version" ]; then
-    molsim="$molsim.$version"
-fi
+molsim="../../Bin/molsim_ser.exe"
 if [ "$dir" == "save" ]; then
    if [ -f $dir/$pro.version ]; then
       if `cmp --silent $stable $dir/$pro.version`; then

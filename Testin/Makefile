@@ -14,16 +14,7 @@ molsim = scripts/molsim_save.sh
 
 #mechanism to get the correctly named MOLSIM script
 versionfile = ../version.conf
-ifneq ("$(wildcard $(versionfile))","")
-   version := $(shell cat $(versionfile))
-else
-   version :=
-endif
-ifneq ($(version),)
-molsim_bin = $(HOME)/bin/molsim_ser.$(version)
-else
-molsim_bin = $(HOME)/bin/molsim_ser
-endif
+molsim_bin = ../Bin/molsim_ser.exe
 
 #commands to make directories and delete stuff
 rm = rm -rf
@@ -140,6 +131,7 @@ $(current): $(molsim_bin) $(sourcefiles)
 	cd ../Src/ && make clean && make ser mode=test && cd ../Testin
 	echo $(sourcefiles)  > $(current)
 	cat $(sourcefiles) | md5sum >> $(current)
+	$(molsim_bin) -v >> $(current)
 
 
 #########
