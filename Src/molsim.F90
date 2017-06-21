@@ -185,7 +185,6 @@ subroutine IOMolsim(iStage)
    character(4) :: txistep1
 
    character(len=128) :: arg
-   character(len=251) :: project
    integer(4) :: i
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)

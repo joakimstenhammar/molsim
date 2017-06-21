@@ -192,6 +192,8 @@ module MolModule
 
 ! ... external units
 
+   character(240) :: project ! name of the project (15 characters shorter than the filenames to have enough space for suffixes
+   ! filenames
    character(255) :: fin
    character(255) :: fout
    character(255) :: fcnf
