@@ -283,12 +283,14 @@ subroutine IOMolsim(iStage)
 #endif
       if (itest == 1)   call TestSimulation
 
-      if (master) call CpuTot(uout)
       if (master) call FileFlush(uout)
 
    case (iBeforeMacrostep)
 
       if (nstep1 == 0) call Stop(txroutine, 'nstep1 == 0', uout)
+      if (lsim .and. master) write(uout, *)
+      if (lsim .and. master) call WriteDateTime(uout)
+      if (lsim .and. master) call CpuTot(uout)
       if (lsim .and. master) then
          write(txistep1,'(i4)') istep1
          call WriteHead(1, 'result of macrostep '//txistep1, uout)
@@ -306,9 +308,6 @@ subroutine IOMolsim(iStage)
 #else
      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
-      if (lsim .and. master) call WriteDateTime(uout)
-      if (lsim .and. master) call CpuTot(uout)
-      if (lsim .and. master) write(uout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
       if (master) call FileFlush(uout)
       if (lsim .and. master) call WriteDateTime(ustdout)
       if (lsim .and. master) write(ustdout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
