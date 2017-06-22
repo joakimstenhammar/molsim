@@ -200,16 +200,18 @@ subroutine IOMolsim(iStage)
 
 	 select case (arg)
 	 case ('-v', '--version', '-V')
-	    write(*,'(a)') txVersionDate
+            if(master) then
+               write(*,'(a)') txVersionDate
 # ifdef _TEST_
-	    write(*,'(a)') "mode = test"
+               write(*,'(a)') "mode = test"
 # elif _NORMAL_
-	    write(*,'(a)') "mode = normal"
+               write(*,'(a)') "mode = normal"
 # elif _WARN_
-	    write(*,'(a)') "mode = warn"
+               write(*,'(a)') "mode = warn"
 # elif _DEBUG_
-	    write(*,'(a)') "mode = debug"
+               write(*,'(a)') "mode = debug"
 # endif
+            end if
 	    stop 0
 	 end select
       end do
