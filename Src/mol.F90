@@ -232,6 +232,17 @@ module MolModule
    integer(4),    parameter :: ulaz  = 27       ! atom charge status
    integer(4),    parameter :: uutot = 28       ! potential energy data
 
+!define standard output unit
+#ifdef f2003
+   use, intrinsic :: iso_fortran_env, only : ustdout=>output_unit !, &
+                                          ! ustdin=>input_unit !, &
+                                          ! ustderr=>error_unit
+#else
+#define ustdout 6
+! #define stdin  5
+! #define stderr 0
+#endif
+
 ! ... terms
 
    character(90) :: txtitle                ! user-provided title

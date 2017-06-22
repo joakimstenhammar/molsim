@@ -46,7 +46,7 @@ program MolsimDriver
    if (master .and. (nproc > mnproc)) call Stop(txroutine, 'nproc > mnproc',uout)
    call par_comm_rank(myid, master, slave)
    if (master) write(*,'(a,i5,/)') 'Molsim: start of parallel run, number of processes =' ,nproc
-   call par_handshake(myid, master, slave, nproc, 6)
+   call par_handshake(myid, master, slave, nproc, stdout)
    call par_timing('start', master, nproc, uout)
 #endif
 
@@ -307,9 +307,9 @@ subroutine IOMolsim(iStage)
      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (master) call FileFlush(uout)
-      if (lsim .and. master) call WriteDateTime(6)
-      if (lsim .and. master) write(6,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
-      if (lsim .and. master) call FileFlush(6)
+      if (lsim .and. master) call WriteDateTime(ustdout)
+      if (lsim .and. master) write(ustdout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
+      if (lsim .and. master) call FileFlush(ustdout)
 
    case (iAfterSimulation)
 
