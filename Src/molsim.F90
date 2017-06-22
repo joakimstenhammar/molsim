@@ -1472,7 +1472,7 @@ subroutine ThermoAver(iStage)
       var(iekin                  )%label = 'kinetic energy                 = '
       var(iutot                  )%label = 'total potential energy         = '
       var(iutwob                 )%label = ' total two-body energy         = '
-      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'         = '
+      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'        = '
       var(iurec                  )%label = ' pot. energy from rec. space   = '
       var(iustat                 )%label = ' electrostatic energy          = '
       var(iupol                  )%label = ' polarization energy           = '
