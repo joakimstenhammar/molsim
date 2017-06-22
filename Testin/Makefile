@@ -170,48 +170,17 @@ cleanall: clean cleansave
 %/daniel.cnf:
 	cp $(InDir)/daniel.cnf.save $@
 
-%/ads_20-mer:	%/p.bd.ads2.out
-	@echo ""
-
-%/p.bd.ads2.out %/p.bd.ads2.user: %/p.bd.ads2.cnf %/p.bd.ads2.in
-	$(molsim) $@
-	rm $<
-
-%/p.bd.ads2.cnf: %/p.bd.ads1.cnf
-	cp $< $@ ; cp $*/p.bd.ads1.user $*/p.bd.ads2.user
-
-$(OutDir)/pb.bd.asd2.user.diff: $(OutDir)/p.bd.ads2.user $(OutDir)/p.bd.ads.user
+$(OutDir)/p.bd.ads2.user.diff: $(OutDir)/p.bd.ads2.user $(OutDir)/p.bd.ads.user
 	$(diffscript) $^ > $@
 
-%/sb_xz.out: %/sb_xz.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+%/ads_20-mer: %/p.bd.ads.out
+	touch $@
 
-%/sb_x.out: %/sb_x.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_xyz.out: %/sb_xyz.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_y.out: %/sb_y.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_z.out: %/sb_z.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_z_y090.out: %/sb_z_y090.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_z_y180.out: %/sb_z_y180.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_z_y030.out: %/sb_z_y030.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_z_y045.out: %/sb_z_y045.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
-
-%/sb_z_xyz.out: %/sb_z_xyz.in
-	$(molsim) $@ ; if [ $$? = 1 ] ; then echo "exited with exit code 1, as expected"; else echo "sb_xz did not finish as exptected"; exit 1; fi
+%/p.bd.ads2.out: %/p.bd.ads2.in %/p.bd.ads1.in
+	$(molsim) $*/p.bd.ads1.out
+	mv $*/p.bd.ads1.cnf $*/p.bd.ads2.cnf
+	mv $*/p.bd.ads1.user $*/p.bd.ads2.user
+	$(molsim) $*/p.bd.ads2.out
 
 ################
 # MOLSIM files #
