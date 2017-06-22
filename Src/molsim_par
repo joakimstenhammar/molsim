@@ -33,7 +33,7 @@ then
    echo "syntax: molsim_par job cores"
    exit 1
 fi
-   mpiexec -np "${@:1:$(($#-1))}" $bin/molsim_par.exe $1
+   mpiexec -np ${@: -1} $bin/molsim_par.exe "${@:1:$(($#-1))}"
 fi
 if test $ARCH = ALARIK_INTEL
 then
