@@ -306,6 +306,9 @@ subroutine IOMolsim(iStage)
 #else
      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
+      if (lsim .and. master) call WriteDateTime(uout)
+      if (lsim .and. master) call CpuTot(uout)
+      if (lsim .and. master) write(uout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
       if (master) call FileFlush(uout)
       if (lsim .and. master) call WriteDateTime(ustdout)
       if (lsim .and. master) write(ustdout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
