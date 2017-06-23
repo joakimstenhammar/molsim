@@ -406,7 +406,7 @@ dump.o		: dump.F90 	mol.o
 	$(COMP_SER) $(FLAG_SER) -c dump.F90
 group.o		: group.F90	mol.o
 	$(COMP_SER) $(FLAG_SER) -c group.F90
-static.o        : static.F90      mol.o      statistics.o mollib.o
+static.o        : static.F90      mol.o      statistics.o mollib.o potential.o
 	$(COMP_SER) $(FLAG_SER) -c static.F90
 dynamic.o        : dynamic.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c dynamic.F90
@@ -452,7 +452,7 @@ dump_par.o	: dump.F90 	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o dump_par.o -c dump.F90
 group_par.o	: group.F90	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o group_par.o -c group.F90
-static_par.o    : static.F90      mol.o      statistics_par.o mollib_par.o
+static_par.o    : static.F90      mol.o      statistics_par.o mollib_par.o potential.o
 	$(COMP_PAR) $(FLAG_PAR) -o static_par.o -c static.F90
 dynamic_par.o    : dynamic.F90      mol.o      statistics_par.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o dynamic_par.o -c dynamic.F90
