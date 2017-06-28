@@ -1470,7 +1470,7 @@ subroutine SuperballSub(radcir)            ! calculate radius of the circle for 
          end do
          r21(1:3) = ro(1:3,ipnsegcn(1,ic))-ro(1:3,ipnsegcn(2,ic))
          r2 = r21(1)**2 + r21(2)**2 + r21(3)**2
-         of = SuperballOverlapOF(r2,r21,ori(1,1,ipnsegcn(1,ic)),ori(1,1,ipnsegcn(2,ic)))
+         of = SuperballOverlapOF(r21,ori(1,1,ipnsegcn(1,ic)),ori(1,1,ipnsegcn(2,ic)))
          write(*,'(a,i5,2f15.10)') 'SuperballSub (qsuperball < qsuperball_max_nr): iter, radcir, of', iter, radcir, of
       end do
    else
