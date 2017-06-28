@@ -46,7 +46,7 @@ program MolsimDriver
    if (master .and. (nproc > mnproc)) call Stop(txroutine, 'nproc > mnproc',uout)
    call par_comm_rank(myid, master, slave)
    if (master) write(*,'(a,i5,/)') 'Molsim: start of parallel run, number of processes =' ,nproc
-   call par_handshake(myid, master, slave, nproc, stdout)
+   call par_handshake(myid, master, slave, nproc, ustdout)
    call par_timing('start', master, nproc, uout)
 #endif
 
