@@ -105,7 +105,7 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
 
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
 
-   if(.not.allocated(utwobnew)) then 
+   if(.not.allocated(utwobnew)) then
       allocate(utwobnew(0:nptpt), utwobold(0:nptpt))
       utwobnew = 0.0E+00
       utwobold = 0.0E+00
@@ -1056,7 +1056,6 @@ subroutine DUTwoBodyEwaldRecStd
    character(40), parameter :: txroutine ='UEwaldRecStd'
    integer(4) :: kn, nx, ny, nz, ia, ialoc, ikvec2
    real(8)    :: term, termnew, termold
-   real(8)    :: kx, ky, kp, sinhkpztm, coshkpztm, sinhkpz, coshkpz, termi
 
    if (ltime) call CpuAdd('start', txroutine, 3, uout)
 
@@ -1122,7 +1121,7 @@ subroutine DUTwoBodyEwaldRec2dlc
 
    character(40), parameter :: txroutine ='DUTwoBodyEwaldRec2dlc'
 
-   integer(4) :: kn, nx, ny, nz, ia, ialoc, ikvec2
+   integer(4) :: kn, nx, ny, ia, ialoc
    real(8)    :: term, termnew, termold
    real(8)    :: kx, ky, kp, sinhkpztm, coshkpztm, sinhkpz, coshkpz, termi
 
@@ -1199,11 +1198,9 @@ subroutine DUTwoBodyEwaldRecSPM
    implicit none
    character(40), parameter :: txroutine ='DUTwoBodyEwaldRecSPM'
 
-   integer(4) :: m, ia, ialoc, ix, iy, iz, nx, nxa, ny, nya, nz, nza, nxtm, nytm, nztm, kn
+   integer(4) :: m, ia, ialoc, ix, iy, iz, nx, nxa, ny, nya, nz, nza, nxtm, nytm, nztm
    real(8)    :: q, qz, qyz, qtm, qztm, qyztm
-   real(8)    :: spl(0:order-1, 3), splx, sply, splz
-   real(8)    :: psum, esum(3), efgsum(6), Qsum, Qsumtm
-   real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval
+   real(8)    :: Qsum
    complex(8) :: vtm(4)
 
    if (ltime) call CpuAdd('start', txroutine, 3, uout)
@@ -1408,7 +1405,7 @@ subroutine EwaldUpdateArray
    use EnergyModule
    implicit none
 
-   integer(4) :: ia, ialoc, icut, ikvec
+   integer(4) :: ia, ialoc, icut
 
    if (txewaldrec == 'std') then
       do icut = 0, ncut
@@ -1496,7 +1493,7 @@ subroutine DUDipolePNew
    implicit none
 
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt
-   integer(4) :: ia, ialoc, ialow, iaupp, kialow, iat, ja, jalow, jaupp, jat, iatjat
+   integer(4) :: ia, ialoc, ialow, iaupp, kialow, ja, jalow, jaupp
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r1, r2, r1i, r2i, r3i, r5i
    real(8)    :: ex, pot, fldx, fldy, fldz, usum
    real(8)    :: dotj, dotjr5i, ErfLocal
@@ -1582,7 +1579,7 @@ subroutine DUDipolePOld
    implicit none
 
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt
-   integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
+   integer(4) :: ia, ialow, iaupp, ja, jalow, jaupp
    real(8)    :: dx, dy, dz, ex, dxopbc, dyopbc, dzopbc, r1, r2, r1i, r2i, r3i, r5i
    real(8)    :: pot, fldx, fldy, fldz, usum
    real(8)    :: dotj, dotjr5i, ErfLocal
@@ -1789,14 +1786,14 @@ subroutine DUDipoleEwaldRecSPM
    implicit none
    character(40), parameter :: txroutine ='DUDipoleEwaldRecSPM'
 
-   integer(4) :: m, ia, ialoc, ix, iy, iz, nx, nxa, ny, nya, nz, nza, nxtm, nytm, nztm, kn
+   integer(4) :: m, ia, ialoc, ix, iy, iz, nx, nxa, ny, nya, nz, nza, nxtm, nytm, nztm
    real(8)    :: q, q1, dipx, dipx1, qtm, q1tm, dipxtm, dipx1tm
    real(8)    :: dipy, dipy1, dipz, dipz1, dipytm, dipy1tm, dipztm, dipz1tm
    real(8)    :: dipx2, dipy2, dipz2, dipx2tm, dipy2tm, dipz2tm
    real(8)    :: splx, sply, splz, splxtm, splytm, splztm
-   real(8)    :: psum, esum(3), efgsum(6), Qsum
-   real(8)    :: dsdx, dsdy, dsdz, d2sdx, d2sdy, d2sdz, Qval, Qdip
-   real(8)    :: dsdztm, Qsumtm
+   real(8)    :: Qsum
+   real(8)    :: dsdz
+   real(8)    :: dsdztm
    complex(8) :: vtm(4)
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
@@ -2002,8 +1999,8 @@ subroutine DUDipoleSphNew(lhsoverlap,jp)
 
    character(40), parameter :: txroutine ='DUDipoleSphNew'
 
-   integer(4) :: ip, iploc, ipt, jploc, jpt, iptjpt, ibuf
-   real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r1, r2, r1i, r2i, r3i, r5i, d
+   integer(4) :: ip, iploc, ipt, jpt, iptjpt, ibuf
+   real(8)    :: dx, dy, dz, r1, r2, r1i, r2i, r3i, r5i, d
    real(8)    :: pot, fldx, fldy, fldz, usumtwob, usumstat
    real(8)    :: dotj, dotjr5i
 
@@ -2148,8 +2145,8 @@ subroutine DUDipoleSphOld
    implicit none
 
    character(40), parameter :: txroutine ='DUDIpSphOld'
-   integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, ibuf
-   real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r1, r2, r1i, r2i, r3i, r5i, d
+   integer(4) :: ip, iploc, ipt, jp, jpt, iptjpt, ibuf
+   real(8)    :: dx, dy, dz, r1, r2, r1i, r2i, r3i, r5i, d
    real(8)    :: pot, fldx, fldy, fldz, dotj, dotjr5i, usumtwob, usumstat
 
    utwobold(0:nptpt) = Zero
@@ -2342,7 +2339,6 @@ subroutine DUDielDisPlane(lhsoverlap)
    logical,    intent(out) :: lhsoverlap        ! =.true. hard-core overlap
 
    character(40), parameter :: txroutine ='DUDielDisPlane'
-   logical, save :: first = .true.
    integer(4) :: isign, ipt, jpt, ip, jp, iptjpt, iploc, jploc
    real(8) :: dx, dy, dz, r2, ri, rip, rotemp(3), signEpsi1FourPi, signEpsi2FourPi
 
@@ -2432,9 +2428,8 @@ subroutine DUDielDisSph(lhsoverlap)
    logical,    intent(out) :: lhsoverlap        ! =.true. hard-core overlap
 
    character(40), parameter :: txroutine ='DUDielDisSph'
-   logical :: lhepoverlap
-   integer(4) :: isign, ipt, jpt, ip, jp, iptjpt, iploc, jploc, l
-   real(8) :: r1, r2, ri, r12, fac, cosa, ImageIntSph
+   integer(4) :: isign, ipt, jpt, ip, jp, iptjpt, iploc, jploc
+   real(8) :: r1, r2, r12, fac, cosa, ImageIntSph
    real(8) :: signEpsi1FourPi, signEpsi2FourPi, r1temp(3), r2temp(3)
 
    lhsoverlap = .true.
@@ -2537,7 +2532,7 @@ subroutine DUBond
    implicit none
 
    character(40), parameter :: txroutine ='DUBond'
-   integer(4) :: ict, ip, iploc, jp_p, jp_m, ia_last, ia_last_loc, ja_first, ja_first_loc
+   integer(4) :: ict, ip, iploc, jp_p, jp_m
 
    if (ltime) call CpuAdd('start', txroutine, 2, uout)
 
@@ -3011,7 +3006,7 @@ end subroutine DUExternalSquareWellZlow
 !........................................................................
 
 subroutine DUExternalLJWallZ
-   real(8) :: zi3, ulj
+   real(8) :: zi3
    do ia = ianpn(ip), ianpn(ip)+napt(ipt)-1
       ialoc = ialoc+1
       if (abs(rtm(3,ialoc)) > wall_z_ext) then                  ! across one of the walls
@@ -3030,7 +3025,7 @@ end subroutine DUExternalLJWallZ
 !........................................................................
 
 subroutine DUExternalLJWallZts
-   real(8) :: zi3, ulj
+   real(8) :: zi3
    do ia = ianpn(ip), ianpn(ip)+napt(ipt)-1
       ialoc = ialoc+1
       if (abs(rtm(3,ialoc)) > wall_z_ext) then                  ! across one of the walls
@@ -3053,7 +3048,7 @@ end subroutine DUExternalLJWallZts
 !........................................................................
 
 subroutine DUExternalLJWallZMod
-   real(8) :: z1, zi1, zi3, ulj, hx, hy, Onephxhy, utemp
+   real(8) :: z1, zi3, ulj, hx, hy, Onephxhy, utemp
    do ia = ianpn(ip), ianpn(ip)+napt(ipt)-1
       ialoc = ialoc+1
       if (abs(rtm(3,ialoc)) > wall_z_ext) then                  ! across one of the walls
@@ -3094,7 +3089,7 @@ end subroutine DUExternalLJWallZMod
 !........................................................................
 
 subroutine DUExternalLJWallZlow
-   real(8) :: zi3, ulj, flj, udrift, fdrift
+   real(8) :: zi3
       do ia = ianpn(ip), ianpn(ip)+napt(ipt)-1
          ialoc = ialoc+1
          if (abs(rtm(3,ialoc)) > wall_z_ext) then      ! across one of the walls
@@ -3259,7 +3254,7 @@ subroutine DUExternalSphDielBoundary_q
    real(8) :: rfacold, rrold, thetaold, phiold, rratioold
    real(8) :: sum, term
    complex(8) xCCLM
-   integer(4) :: l, m, ialow, iaupp
+   integer(4) :: l, m
    real(8) :: sumnew, sumold
    real(8) :: termnew, termold
 
@@ -3317,7 +3312,7 @@ subroutine DUExternalSphDielBoundary_p(str)
    character(1), intent(in) :: str           ! select equations to be used
                                              ! '0': short expansion
                                              ! '1': long expansion
-   real(8) :: PL, sum, r2(1:3), ufac, fac
+   real(8) :: PL, sum, r2(1:3), ufac
    real(8) :: r1new, r2new, cosanew, tnew, facnew, rfacnew, term1new, term2new, term3new
    real(8) :: r1old, r2old, cosaold, told, facold, rfacold, term1old, term2old, term3old
    integer(4) :: ia, ialoc, ja, l
@@ -3837,9 +3832,22 @@ end if
       do jploc = 0, nneighpn(ip)
          if (jploc == 0) then
             if (.not.lintrapartint) cycle
+            !do not calculate the intrapartenergy for a non charge change move
+            if (nptm /= natm) cycle
+
+            !if nptm == natm and the move was not a ChargeChangeMove then the
+            !number of atoms for the moved particles is one. Therefore the
+            !interaction for ip == jp is not calculated. Explanation:
+            !ialow = ianatm(iploc) = ianpn(ip) (as 1 Atom per particle, see also SetTrialAtomProp
+            !as iaupp = ialow: ia = ianpn(ip) (see loop)
+            !jalow = ianpn(jp) = ianpn(ip) (see below)
+            !as jaupp = jalow: ja = ianpn(ip) (see loop)
+            !therefore ja = ia and no intraparticle energies are calculated
+            !as this case is always skipped
+
             jp = ip
          else
-            jp = jpnlist(jploc,iploc)
+            jp = jpnlist(jploc,ip)
          end if
          if (lptm(jp) .and. jp /= ip) cycle
        !  write(uout,*) ' jp', jp
@@ -3867,21 +3875,21 @@ end if
             iat = iatan(ia)
             ialoc = ialoc+1
         !    write(uout,*) '  ia, ialoc, laztm(ialoc)', ia, laztm(ialoc), ialoc
-            if (.not.laztm(ialoc)) cycle  ! ia uncharged
             jalow = ianpn(jp)
             jaupp = jalow+napt(jpt)-1
             if (jp == ip .and. (nptm /= natm)) jalow = ia + 1
             do ja = jalow, jaupp
                if (ja == ia) cycle
-               if (.not.laz(ja)) cycle       ! ja uncharged
                jat = iatan(ja)
                iatjat = iatat(iat,jat)
                dx = rtm(1,ialoc)-r(1,ja)-dxopbc
                dy = rtm(2,ialoc)-r(2,ja)-dyopbc
                dz = rtm(3,ialoc)-r(3,ja)-dzopbc
                r2 = dx**2+dy**2+dz**2
-               if (r2 < r2atat(iatjat)) goto 400
-!               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
+               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
+               if (.not.laztm(ialoc)) cycle  ! ia uncharged
+               if (.not.laz(ja)) cycle       ! ja uncharged
+               ! do not check for overlap within one particle
 
                if (r2 < r2umin(iatjat)) goto 400       ! outside lower end
                ibuf = iubuflow(iatjat)
@@ -4041,7 +4049,7 @@ subroutine UWeakChargePOld
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, ibuf
    integer(4) :: ia, ialoc, ialow, iaupp, kialow, iat, ja, jalow, jaupp, jat, iatjat
    real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r2, d, usum
-   integer(4) :: jaloc, kjalow, jploclow
+   integer(4) :: jaloc, kjalow
    logical    :: EllipsoidOverlap, SuperballOverlap
 
 if (itest == 90) then
@@ -4063,9 +4071,10 @@ end if
       do jploc = 0, nneighpn(ip)
          if (jploc == 0) then
             if (.not.lintrapartint) cycle
+            if (nptm /= natm) cycle
             jp = ip
          else
-            jp = jpnlist(jploc,iploc)
+            jp = jpnlist(jploc,ip)
          end if
          if (lptm(jp) .and. jp /= ip) cycle
          jpt = iptpn(jp)

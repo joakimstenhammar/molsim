@@ -1,8 +1,33 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [2.4.5] - 2017-04-24 - Quapsel
+### Fixed
+- fixes a bug in the sso routine, which prevented continuation of parallel simulations
+
+## [2.4.4] - 2017-04-12 - Quapsel
+### Fixed
+- fixes a bug in the sso routine, which lead to "Not a Number" error.
+- using the system wide fftw version, instead of a locally installed. One needs to run the configure script once when updating
+
+## [2.4.3] - 2017-04-12 - Quapsel
+### Fixed
+- fixes a bug where sso calculated no results when using txstart=`continue`
+
+## [2.4.2] - 2017-04-06 - Quapsel
+### Fixed
+- Fixed #33: the interactions of systems with weak charges and polyatomic particles was calculated wrongly
+
+## [2.4.1] - 2017-03-22 - Quapsel
+### Fixed
+- removed all warnings occuding during the compilation of the code
+
+## [2.4.0] - 2017-03-21 - Quapsel
+### Changed
+- the distribution of the complexation rate as well as the complexation rate of segments can be measured
 
 ## [2.3.0] - 2017-02-16 - Klikk
 ### Changed
@@ -22,7 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.1.1] - 2016-12-12 - Tangoloss
 ### Fixed
-- when using `txpivot` as `short` or `lower`, all beads connected to the moved particles are also moved 
+- when using `txpivot` as `short` or `lower`, all beads connected to the moved particles are also moved
 
 ## [2.1.0] - 2016-11-29 - Tangoloss
 ### Changed

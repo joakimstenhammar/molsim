@@ -304,7 +304,6 @@ subroutine GroupType(iStage, m, txtype)
    character(20), intent(in) :: txtype(2)
 
    integer(4) :: ip, ipt, igr
-   character(10) :: Lower
 
    select case (iStage)
    case (iReadInput)

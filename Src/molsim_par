@@ -3,7 +3,7 @@
 #*             Link files and execute molsim_par             *
 #*                                                           *
 #*************************************************************
- 
+
 #*************************************************************
 #*      Start of definition section                          *
 #*************************************************************
@@ -17,44 +17,44 @@ bin=
 #*************************************************************
 #*                  Architecture                             *
 #*************************************************************
- 
+
 ARCH=LOCAL_INTEL
 #ARCH=ALARIK_INTEL
- 
+
 Project=$1
- 
+
 echo
 echo '--------------------------------------'
 echo '  Start of molsim_par, Project:' $Project
 echo '--------------------------------------'
 echo
 date
- 
+
 echo
 echo 'Make file links'
 echo
-  
+
 hpc=$3
 ln -fs ./$Project.in       FIN
-if [ "$hpc" == "hpc" ] 
-then 
-   if [ ! -f $Project.pos ] 
-   then 
-      dir=`pwd` 
-      hpcdir=$(echo $dir | sed "s|^.*.$USER|/lustreb/hpcwork/$USER|g" ) 
-      if [ ! "$dir" == "$hpc" ] 
-      then 
-         mkdir -p $hpcdir 
-         echo 
-         echo "save pos dump in HPCWORK" 
-         echo 
-         ln -vfs $hpcdir/$Project.pos $Project.pos 
-         dat="$(date)" 
-         echo "$dat : linked by molsim from $dir" >> $hpcdir/$Project.pos.log 
-      fi 
-   fi 
-fi 
-  
+if [ "$hpc" == "hpc" ]
+then
+   if [ ! -f $Project.pos ]
+   then
+      dir=`pwd`
+      hpcdir=$(echo $dir | sed "s|^.*.$USER|/hpcwork/$USER|g" )
+      if [ ! "$dir" == "$hpc" ]
+      then
+         mkdir -p $hpcdir
+         echo
+         echo "save pos dump in HPCWORK"
+         echo
+         ln -vfs $hpcdir/$Project.pos $Project.pos
+         dat="$(date)"
+         echo "$dat : linked by molsim from $dir" >> $hpcdir/$Project.pos.log
+      fi
+   fi
+fi
+
 ln -fs ./$Project.out      FOUT
 ln -fs ./$Project.cnf      FCNF
 ln -fs $bin/../Src/molsim.lib        FLIB
@@ -97,13 +97,13 @@ echo
 rm FIN;  rm FOUT; rm FCNF; rm FLIB; rm FGROUP; rm FLIST; rm FIMG; rm FVTF; rm FTCL
 rm FPOS; rm FORI; rm FLIV; rm FANV; rm FFOR; rm FTOR; rm FIDM; rm FLAZ; rm FUTOT; rm FUSER
 rm EMOLSIM
- 
- 
+
+
 date
 echo
 echo '--------------------------------------'
 echo '   End of molsim_par, Project:' $Project
 echo '--------------------------------------'
 echo
- 
+
 exit $e

@@ -4,7 +4,7 @@
   txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
   nstep1   = 10,    nstep2   = 5000,
   nstep1   = 1,     nstep2   = 1,
- 
+
   boxlen= 3*861.77,
   boxlen= 3*683.99,
   boxlen= 3*542.88,
@@ -12,9 +12,9 @@
   boxlen= 3*342.00,
   boxlen= 3*271.44,
   boxlen= 3*215.44,
- 
+
   boxlen= 3*342.00,
- 
+
   temp  = 298.0,    prsr = 0.1013,
   iseed = 9876543,
   lcont =.t.,  laver =.t.,    ldist =.t.,  ldump =.f.,  lgroup=.f.,  lstatic =.t.,limage =.f.,
@@ -25,7 +25,7 @@
  &nmlParticle
   npt   = 2,
   txpt  = 'micelle','ion',
- 
+
   nppt  =1280,     76800,
   nppt  = 640,     38400,
   nppt  = 320,     19200,
@@ -33,9 +33,9 @@
   nppt  =  80,      4800,
   nppt  =  40,      2400,
   nppt  =  20,      1200,
- 
+
   nppt  =  20,      1200,
- 
+
   natpt =  1,        1,
   txat  = 'mic',     'ion',
   massat= 460.0,     23.0,
@@ -80,6 +80,6 @@
  &nmlSF nbin = 51 /
  &nmlRDF vtype(1) =.true., , , 100, vtype(2) =.true., , , 100, vtype(3) =.true., , , 100,  rmax=10.0, func='rdf'  /
  &nmlCluster txobj = 'particle', iobjt = 1, rcluster = 50  /
- 
+
  &nmlImage lvrml =.true. /
  &nmlVRML atsize = 20,  2, blmax  = 1.5, bondr =  0.1 /

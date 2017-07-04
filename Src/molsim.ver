@@ -47,7 +47,7 @@ Version    Main changes from previous version
 1.7.34     ATZ->ZAT, ATSIG->SIGAT, ATEPS->EPSAT, ATPOL->POLAT,
            POLATM->POLYATOM, MONATM->MONOATOM
            Namelist INPAR + INDIP -> INPART
- 
+
 2.0        Additional minor corrections
 2.0.1      Makefile introduced and x... removed
 2.0.2      R2CUT, RCUT, RS2CUT: (1:MNPTPT) -> scalar
@@ -162,112 +162,112 @@ Version    Main changes from previous version
 2.1.23    Chain molecules with bonds and angular energy terms
           ENERGY: New routines for MC
           SETPART: New routine for generating a random chain
- 
+
 2.2.0     Major change of tabulation of the two-body interaction
           FIN: NGRID and NPOL has to be removed
                UTOLTAB, FTOLTAB, UMAXTAB, FMAXTAB can be specified
                but the defualtvalues should work
           The new tabulation is more vulnerable for large MC movements and
           MD simulation far from equilibrium
- 
+
 2.2.1     UTABLE and USRPOT: less testing and more compact IAT and LAT loops
- 
+
 2.3.0     STATIC: cluster analysis based on geometrical criterion
           UTABLE: introduced variable RUMAXFAC
- 
+
 2.3.1     ENERGY: streamlining and omtimization of QDSTAT, EIDMREAL, EGRAD,
                   QEWALD, QDSTATEWALD,  DIPEWALD, and EGRADEWALD
- 
+
 2.3.2     ERF: adapted for SGI
           test.in: velocities are now set
- 
+
 2.4.0     Global variable R2(MNA) removed
           Renaming of variables, in particular RR to R2
           Separating geometric and interaction sites (POÅ),
              involves changes of several routines
           Modification of the umbrella sampling
- 
+
 2.4.1     ENERGY: further minor optimization of complex Ewald expressions
           ENERGY: variables FORX, FORY, FORZ removed (improved speed)
- 
+
 2.4.2     IOSUB: WCOORD: changed format of RO
           STATIC: WMAKE: changed format
           DUMP: Possibility to dump quantities of only one particle type, new variable TXPTDUMP
- 
+
 2.4.3     SETPART: SETPART and SETLATTICE modified. The test on TXSETP is now only made in SETPART
           USRLATT: similar rearrangements
           USRLATT: New routine SETCNF
           ENERGY: UBOND, UANGLE, DUBOND, DUANGLE: more consistent use of BONDNN
           IOSUB: IOPARTCHAIN: only bonds for IPART particle is listed
- 
+
 2.5.0     ENERGY: New routine DUTBODYX, content from DUTOTAL
           ENERGY: DUTBODYX and down: USAVE=.F. possible, two new routines
           ENERGY: UTBODYNEW(0:MNPTPT) -> UTOBODYNEW(0:MNPT)
           ENERGY: DUTOTAL and down: Minor simplifications
- 
+
 2.5.1     ENERGY: UTBODYNEWA, UTOBYDNEWP: Added IF(LUSAVE) ... before zeroing UTBODYIJ(1:NP)
           ENERGY: ITERDIM: modify convergence criterion
- 
+
 2.5.2     ENERGY: UTBODYP: NA -> MNA in two declarations
           MOLSIM: AVER -> THERMOAVER + IDMAVER
                   CHAINAVER new
- 
+
 2.5.3     Cluster move for monoatomic system
           Controlled by MCCL
           MOL, MOLSIM, IOSUB, ENERGY, STEP (Several new variables and routines)
- 
+
 2.5.4     MOLSIM: DIST: forces and virial from the reciprocal space is included
- 
+
 2.5.5     Modification of the MCALL implementation. Changes in MOL,
           MOLSIM, IOSUB, STEP, and ENERGY. Specific MCALL routines in ENERGY removed.
           Mean forces calculation between two fixed molecules. Changes in MOL, IOSUB, STEP, and STATIC
- 
+
 2.5.6     TAB=.FALSE. removed  (improved performance due to fewer tests)
           ENERGY: minor rearrangements
           Corrections (compiler warnings) suggested from PO Åstrand included
- 
+
 2.6.0     MOL, MOLSIM, IOSUB, STEP, and ENERGY: several components may form a chain
           and different particle ordering in the chain is possible
           SETPARTCHAIN: can control the angel between consecutive particles
           USRLATT -> USRSETPART
           ENERGY splitted into NLIST and ENERGY
- 
+
 2.6.1     ENERGY: Ewald routines: Change of surface contributions to field and field gradients
- 
+
 2.6.2     STATIC: CLUSTER: New input variable, TXWEIGHT
- 
+
 2.6.3     MOLSIM: DIST: Contact contribution to the pressure is now calculated
           MOLSIM: CHAINAVER: <R(EE)**2/RG**2> now calculated
           FLINK: replaces ln -s with ln -fs
- 
+
 2.6.4     MOLSIM: DIST: Improved calcualtion of contact contribution ...
           MOLSIM: DIST: Fixed bug (appeared in 2.6.3) so SETP='CONTINUE' works
- 
+
 2.6.5     External potential possible if PBC='SPH':
           Changes affecting MOL.F,IOPOT.F,UTOTAL.F,DUTOTAL.F,MCALLSTEP.F
           New routines UEXTERNAL.F DUEXTERNAL.F
           STATIC: WMAKE: Slight change of some values
- 
+
 2.6.6     Damping of electrostatic interaction:
           Affects routines MOL.F, IOPOT, QDSTAT, EIMREAL, EGRAD
           New Nemo potentials
           Correction of cluster move (2.5.3) affecting PCl/=1
- 
+
 2.6.7     STEP: splitting up SCLVEL, SETVEL, and ZEROMOM (the initiation of velocites is affected)
           The assignment of L1 etc and FIN etc is rearranged
           A second parallel version _PAR2_ is included
- 
+
 2.6.8     STATIC: RCN: Change/correct normalization of running coordintion number
           Not "symmetric" any longer
- 
+
 2.6.9     STATIC: WINSOM: bonds drawn for particles connected in chains
                           introduced variable TXWHEN controlling when files for Winsom pictures are made
- 
+
 2.7.0     The following variables have been removed (they must be removed in the input):
           TAB          (only TAB=.TRUE. is supported since previously)
           LNLIST       (only LNLIST=.TRUE. is supported since previously)
           LUSAVE       (only LUSAVE=.FALSE. is now supported)
- 
+
           The following variable/objects have changed name (they must be changed in the input):
           EWALD  -> LEWALD        (better name)
           INSTAT -> INMOLSTAT     (resolve occured name conflict)
@@ -279,67 +279,67 @@ Version    Main changes from previous version
           INMIX4 -> INMOLMIX4
           INMIX5 -> INMOLMIX5
           INMIX6 -> INMOLMIX6
- 
+
           DUMP: dump files are now also flushed
- 
+
           USRG3 is generalized, renamed to G3DIST and moved to STATIC
- 
+
 2.7.2     Ewald summation with LPOL: expressions changed
           USRSTATIC: Bug fix: FUSR -> USR
           STATIC: CLUSTER: Shift of data
           STATIC: WINSOM: Changed name of macro dumping files
- 
+
 2.7.3     STATIC: WINSOM: READ(L3) and WRITE(L3) OF IFRAME
- 
+
 2.7.4     Aggregate move: Still not fully checked and integrated
- 
+
 2.7.5     MNCLUSTER = 500 -> MNCLUSTER = 4880
           RU2MIN() -> R2UMIN
           RU2MAX() -> R2UMAX
           R2UMIN() = 0.1 -> R2UMIN() = R2UMININ which is read in IOPOT (default = 0.1)
- 
+
 2.7.6     MOL.F: IJJLIS(MNNEIGH,MNPARTPERPROC) defined as INTEGER(2)
- 
+
 2.7.7     SETRANDOMCHAIN: error in hard-pshere overlap check fixed
- 
+
 2.7.8     Reconstruction of MCSTEP and cleaner integration of aggregate move
           MCSTEP: No rotation if MONOATOM (affects IRAN)
           Cluster move for particles (not only for atoms). New routines in ENERGY.F
           MOLSIM.F bugfix on line 775  (bug detected by Vladimir)
           SETRANDOMCHAIN: further modifications
           MOLLIB.F: CPUADD: Removed a TRIM statement that upset SGI
- 
+
 2.7.9     Cluster move for particles (not only for atoms). Corrections
           Adapted for DEC alpha processores
- 
+
 2.8.0     MOLSIM.F: DIST: _PAR2_: removed the limitation of size of HELP
           STATIC: WINSOM: always bonds in chains
- 
+
 2.8.1     ENERGY, IOSUB, UTABLE: Modified for reaction-field conditions
              input dipind.md.ew1, dipind.md.ew2, and dipind.md.rf are affected
           UTABLE and USRPOT: interface to EWALDFAC changed
           USRTATIC: Addition of DSP routine
           Adapted for LINUX operating system
- 
+
 2.8.2     STEP.F: MCCLMOVE: Modified the cluster move for chains
- 
+
 2.8.3     SETPART.F: Several routines: Restricted the writing to master only
- 
+
 2.8.4     DUMP.F: IODUMP.F: Corrections with respect to LDCORI
           MOLCIO_XXX.C: Contracted to MOLCIO.C (makefile affected)
- 
+
 2.9.0     Changed and improved description of chain molecules
           Among others, Namelist INPARTCHAIN is removed
- 
+
 2.9.1     Merged single particle and cluster particle energy routines
- 
+
 2.9.2     MOLSIM.F: CHAINAVER: Removed one of Ree**2/RG*22
                                Added persistence length
           STEP.F: CHECKTRIAL: single reflections -> multiple reflections
- 
+
 2.9.3     First step of including Pivot movements (not completed)
           STATIC: WMAKE: write box edges on FUSR... .
- 
+
 2.9.4     Parallelization of MC by TNY. Changes in mol.F, nlist.F, mollib.F,
           energy.F, iosub.F, and parallel.F
           Variable name change: LPCL -> LPTM
@@ -349,48 +349,48 @@ Version    Main changes from previous version
           MCCL: restructured (restruction not completed)
           Optimization of some Ewald routines
           ENERGY: UANGLE and DUANGLE: correction, REANGLE new variable
- 
+
 2.9.5     Trial movements with pivot rotation for chain molecules by FC
           Affects IOSUB, ENERGY, and STEP
           STEP: new routines UPDATEU and UPDATECOORD
- 
+
 2.9.6     Chain translation trial moves by FC
- 
+
 2.9.7     STATIC: Support for vrml graghical viewing by JR and VL
- 
+
 2.9.8     STEP: MCHAINMOVE: minor correction
           STEP: GETROTMAT: change of warning and stop messages
           MOLSIM: CHAINAVER: extended
- 
+
 2.9.9     STEP: CHECPBCTM: generalized to many particle trial move
           MOL, IOSUB, ENERGY: Generalization of external potential
           SETPART: Confinement even with RANDOM start (not completed)
- 
+
 2.9.10    MOLSIM: CHAINAVER: fixed possible sqrt of negative numbers
           SETPART: SETRANDOM and SETRANDOMCHAIN: RCLOW and RCUPP are now used (completed)
           STATIC: BOND: improved treatment of the pbc
           IOSUB: IOPART: varaible TXCOPOLYMER for control of block or alternating copolymer
- 
+
 2.9.11    NLIST: UPDATENLIST: improved performance for _PAR_
           ENERGY: DUTOTAL: improved performance for _PAR_
- 
+
 2.9.12    STATIC: CHAINBEAD_PART_CONTACT: previous PEMIC_STAT and slighly generalized.
           Gives the probability that particles of a given type are close to beads of different chains.
- 
+
 2.9.13    MOLSIM: CHAINAVER: extended with moments along the principal axes
           IOSUB: IOMC: warning message if too long chains (problem with Pivot and PBC)
           IOSUB: IOPOT: new variable RDIELPERM (can now have interal charges and RDIELPERM > 1)
           USREWALD moved from USRPOT to UTABLE and merged with UDEFAULT, call changed from TXPOT()='USREWALD' default
- 
+
           IOSUB: IOPOT: 1/R coefficients need not to be specified if LEWALD
- 
+
 2.9.14    NLIST: Improved performance for _PAR_ (MC) by TNY
           Chemical gel by SS (not completed)
- 
+
 2.9.15    USRPOT: inclusion of call to ELSTAT_SCREEN
- 
+
 2.9.16    NLIST: Improved performance for _PAR_ by TNY (merged loops etc)
- 
+
 3.0.0     MOLMIX: IMODE -> MIXMODE, affects IO
           Throughout: NMODE -> IMODE,
           Throughout: RANF -> RANDOM
@@ -404,111 +404,111 @@ Version    Main changes from previous version
           Most subroutines in IOSUB moved to other files
           Throughout: L1, ..., L20 -> UIN, ..., UGROUP
           MD: simplified call of VELVER and GEAR
- 
+
 3.0.1     MC: GETROTMAT: use of quaternions
           MOL.F: define HALF and used it thoughout
           MD: GETANGACC: removed calculation of ANGVELOD
           MOLAUX: renamed quaterion variables etc
- 
+
 3.0.2     NLIST and MC: changed parallelization (_PAR_)
             distributed neighbourlist, both MC and MD !
- 
+
 3.0.3     MC: MC_PIVOT_MOVE and MCCHAINMOVE: chain number -> chain type when getting the displacement
             (previous simulations with more than one chain were not optimal)
           ENERGY: UTBODYNEWP : KIALOW=KK -> KIALOW=KIALOW+NAPT(IPT)
             (previous simulations with chains plus particles with more than one atom could have been wrong)
- 
+
 3.0.4     MC: cleaning up
           NLIST: cleaning up,
                  separate calculation of NIJTOT -> NTOTPPPAIR and NKLTOT -> NTOTAAPAIR to separate routine
           ENERGY: minor cleaning up
           STATIC: SF: wave vectors in 110 and 111 directions are included (VL)
- 
+
 3.0.5     Additional minor cleaning up
- 
+
 3.0.6     Change of loop variables
           I -> IP, ILOW -> IPLOW, IUPP -> IPUPP, etc
           J -> JP, JLOW -> JPLOW, JUPP -> JPUPP, etc
           K -> IA, KLOW -> IALOW, KUPP -> IAUPP, KAT -> IAT, etc
           L -> JA, LLOW -> JALOW, LUPP -> JAUPP, LAT -> JAT, etc
           KATLAT -> IATJAT
- 
+
 3.0.7     Fixing up remaining changes in variables
           ENERGY: Separated out ULINK
           NLIST: NLISTAVER changed reflecting the change in parallelization (3.0.2)
           NLIST: SETIPMYID simplified (slightly different allocation of particles to processors)
                  and changed inerface
           NLIST: SETIAMYID removed (not used)
- 
+
 3.0.8     MOLSIM: AVER: FLUSH aver IAVER output
           Test output: code moved and made more uniform
           Renamed IY1 -> NSAMP1 and IY2 -> NSAMP2
- 
+
 3.0.9     Gel: changes affecting several routines (Steffi)
           MC: bending moves (Jurij)
- 
+
 3.0.10    STATIC: Support for writing coordinates in "mol" format the Ymol software (Fredrik)
           MC: MCCLMOVE: IPTCL replaced by the local variable IPTCLLOC
- 
+
 3.0.11    NLIST: SETIMYID: addapted for _PAR2_, changed call to SETIMYD
           NLIST: SETNLIST .NOT._PAR: call of SETMDNLIST and SETMCLIST, not  ...2
           NLIST: SETMCLIST: moved initialization of IPNNEIGH
           NLIST: TESTNLIST: addapted for _PAR2_
           NLIST: NLISTAVER: addapted for _PAR2_
- 
+
 3.0.12    MOLSIM: IOSIM: change headings and CLOS(UIN)
           MC: IOMC, IOMCCL, IOMCALL created; MCMEAN moved to MC
           MOLSIM: AVER: MCMEAN gone, different headings
           SETEXTUNIT: changed call
           Created new modules, moved variables to them
- 
+
 3.0.13    MC: IOMC: warning if DTRAN > DRNL or if DTRANCHAIN > DRNL
           STATIC: SF: CORRECTION wave vectors in 110 and 111 directions (VL)
           NLIST: SETVEBOUNDS: adapted for _PAR2_ (affects DUREC)
- 
+
 3.0.14    POTENTIAL: UTBODYTAB3: IDUM -> IDUM1 and IDUM2 (eleminate problem in POTSUM on some machines)
           MOLSIM: MOLSIM: Close UCNF between use
           SETGEL: atom position set
           NLIST: NLIST: NHELP made real
- 
+
 3.0.15    ENERGY: UBOND, UCROSSLINK; MOLSIM: DIST: included contributions
           form BOND and CROSSLINK to the virial
           USRSTATIC: FCSLICE updated (FC)
- 
+
 3.0.16    MC and ENERGY: slithering move for chains (only for MONOTAOM and serial computation)
           New gloal variable LPTMDUTBODY for two-body energy evaluation among moving particles
- 
+
 3.0.17    MC: Improved MC statistics (major charges in MCMEAN, MCCLMEAN, and MCALLMEAN)
           Statistics for cluster move modified
- 
+
 3.0.18    MOLSIM: MOLSIM: moved call of PARTICLE, POTENTIAL, and COORDINATE further up
           (affect the order which namelists are read)
           MC: IOMC: minor matters cleaned up
- 
+
 3.0.19    Minor changes affecting gel simulation
           STATIC: Calculation of the chemical potential using Widom's method
- 
+
 3.0.20    MC: MCSLITHERMOVE: Biased sampling with respect to bond and angular energy
           (Still test version)
- 
+
 3.0.21    MC: NPT ensamble: VOLCHANGE -> MCVOLCHANGE,    (subroutine name changed)
                             (DBOX,IDBOX) -> (PVOL, DVOL) (input variables changed)
           MOLSIM: THERMOAVER: <VOL> instead of VOL is used to calculate reduced pressure
- 
+
 3.0.22    NODES -> IPNODE       (input variable change)
           STRANDS -> IPTSTRAND  (input variable change)
           MC: NPT ensamble: fixed bug in UTOBYA (hard-sphere overlap)
- 
+
 3.1.0     New file: IMAGE containing WINSOM, VRML, MOL, and GISMOS
           These routines are now controlled by variable LIMAGE (working the same way as LSTATIC)
           USRSTATIC: SF2D (new,by VL)
           STATIC: SCATINT: open FIN (used at IMODE = 6)
           MOLAUX: SETEXTUNIT: TRIM(ABC) -> ABC
           Makefile: improved
- 
+
 3.1.1     USRPOT: TRIM(ABC) -> ABC
           Variable LAMBDA for charge integration
- 
+
 3.1.2     MC: Files IOMC and IOMCCL merged, Namelists INMC and INMCCL merged
           IOSIM: METHOD='MCCL' not valid more, cluster move engaged in INMC
           MC: nomeclature: cluster move -> cluster1 move
@@ -516,26 +516,26 @@ Version    Main changes from previous version
                            cluster1 move, cluster2 move + further extentions are referred to as multi-particle moves
           MC: most Namelist variables and other variables dealing with multi-particle moves have changed name, see MC_MODULE
           MC: old MCCLMOVE splitted into MCCL1MOVE and MCCL2MOVE
- 
+
 3.1.3     MOLSIM: DIST: Save energy variables before call of UTOTAL
           MC: MCCL2: Compact the cluster2 formation
           STATIC: CLUSTERSUB: Slight modification
           MOLSIM: CHAINPROPERTIES: New subroutine
           STATIC: CHAINDF and CHAINTYPE: New subroutines for chain distribution functions
- 
+
 3.1.4     IOSUB: IOSYS: the radius of the spherical cell should be assign to RSPH (previous BOXX)
           IOSUB: IOSYS: cylindrical cell implemented: functions the same way as the spheical cell,
                         RCYL and LCYL are new obvious input variables
- 
+
 3.1.5     IMAGE: WINSOMMAKE: cubic frame, perspecitve view, user-selected box displayed (BSIZE -> BOXLOW(1:3) and BOXUPP(1:3))
- 
+
 3.1.6     MOLSIM: THEMOAVER: Bugfix of MNV
           COORDINATE: SETRANDOMCHAIN: Bugfix of bug introduced by 3.1.4
           IMAGE: WINSOMMAKE: some minor improvments
           MC: TRIALPOSITION, TRIALORIENTATION replaces TRADISP and TRAROT
               and are more general
           MC: CLUSTERMEMBERS new routine
- 
+
 3.1.7    STATIC: GETPPAIRLIST: The partcile numbers the N1 and N2 list starts from 1
          MC: MCENDPIVOTCL1 (end-pivot + cluster1 trial move) implemented
          MC: MCCHAINCL1 (chain + cluster1 trial move) implemented
@@ -544,71 +544,71 @@ Version    Main changes from previous version
                    input variables RADCL1 and PSELECT1 are used for all cluster1 moves
                    change of input variable: PCLUSTER1 -> PSPARTCL1 and PCLUSTER2 -> PSPARTCL2
                    translational parameters for chain moves based on chain type (ICT) but written in terms on particle type (IPT)
- 
+
 3.1.8    STATIC: SF: Input varaible LQSORTED introduced. Def. value .TRUE.
                      if .TRUE. then q-sorted list otherwise 100, 110, and 111 directions separated
          MOLDYN: MSD: DR**4 and DR**6 omitted
- 
+
 3.1.9    MOLSIM: PERL2: corrected and improved (Anna/Per)
          Auxilary program PREPGP for gnuplot plotting written
               Change of call to VLIST1 and VLIST2 + other minor changes
          MC: MCENDPIVOTCL1: applied the MI convention of the remaining particles (Alberto/Per)
- 
+
 3.2.0    MC: MCSLITHER: slithering move for POLYATOM
          ENERGY: DUTBODYNEWP, DUTBODYNEWA: slihtering move for POLYATOM
- 
+
 3.2.1    ENERGY: Damping factor increased by factor 1.4
          STATIC: SF: data shifted one bin
          STATIC: SF -> SFPBC
          STATIC: SFNOPBC written (sf with no pbc)
- 
+
 3.2.2    MC: IOMC: modify and extend the tests of sufficent DRNL
          POTENTIAL: TXPOT='SCREEN': New flag LSCRHS to modify the prefactor
                     of the screened Coloumb potential for HS excluded volume
- 
+
 3.2.3    USRSTATIC: updated
- 
+
 3.2.4    Linked lists included, still only on a development stage. Several routines are affected.
          In INSYS, TXINI controls the use of neighbour lists and linked lists.
- 
+
 3.2.5    MOLAUX: CHAINPROPERTIES: more comments and clearer written
- 
+
 3.2.6    PARTICLE: PARTICLE: fix of error in BONDNN appearing if NPCT=MNPCT (Marie/Per)
- 
+
 3.2.7    MC: Enable cluster1 moves for POLYATOM. The primary particle is
          rotated (using DROTCL1), but not the secondary ones do not follow the rotation.
- 
+
 3.2.8    MOLSIM: DIST: initializing and saving PRSRHSSD on UCNF
                        update PRSRHSS1 and PRSRHSSD before saving on UNCF
                        calculate final GCONTACT from VS1, not VS2
               Hard-core contribution to the pressure becomes now correct, even with START=='CONTINUE'
- 
+
 3.2.9    More user-provided routines (Per)
- 
+
 3.3.0    Remove of compressed dumping (file molcio.c removed and makefile affected)
- 
+
 3.3.1    IMAGE: WINSOM: Thickness of frame
          ENERGY: UEXT: Electrostatic field
          COORDINATE: RCLOW, and RCUPP used more uniformly for all PBC
- 
+
 3.3.2    More user-provided routines (Per)
          STATIC: NNDF: inititation of R2LOW corrected for att PBC
          POTENTIAL and ENERGY: External potential generalized to ellipsoids (Alberto)
          STATIC: SFNOPBC: choice of linear or log k-scale (Alberto)
- 
+
 3.3.3    ENERGY: Rearrangement of call of UTBODY(NEW/OLD)...
- 
+
 3.3.4    ENERGY: UTBODYPAIR: now also provides the force
- 
+
 3.3.5    The evaluation of averages of scalar variables has been straighted up
          (New subroutines in MOLAUX, called from MOLSIM:THERMOAVER, IDMAVER,
          CHAINAVER, STATIC:WIDOM, WIDOM2, and USRSTATIC:UFMEAN
          MC: New variable LPTMOVE: Is used to skip particles will all PSPART ... = 0
          (Previously that lead to a volume move)
- 
+
 3.3.6    Umbrella sampling: cleaning up
          Ewald summation for 2d-periodic systems
- 
+
 3.3.7    COORDINATE: SETPLANBRUSH new: TXSETP='SETPLANBRUSH' for planar brush
          COORDINATE: SETSPHBRUSH new: TXSETP='SETSPHBRUSH' for spherical brush
          MC: MCSPARTMOVE: ISPART = 2 for spherical brush
@@ -617,16 +617,16 @@ Version    Main changes from previous version
          STATIC: LTYPE(1:MNTYPE) = .FALSE. as default
          MC: MCENDPIVOTMOVE, MCENDPIVOTCL1MOVE, MCBENDMOVE: ICT -> IPTMOVE when determine size of displacement variable
              (lead to incorrect displacement values for chain moves IF the first particle type was not used in chains, Anya/Per)
- 
+
 3.3.8    USRSTATIC: Included routines for calculating mean force and potential of mean forces
          in cylindrical geometry
- 
+
 3.3.9    STATIC: New routine MEANFORCE1 (mean force between two fixed particles)
          STATIC: New routine MEANFORCE2 (mean force between two fixed particles, cyl geometry)
- 
+
 3.4.0    STATIC: Bugfix in MEANFORCE1 and MEANFORCE2 (affecting Husmodern and Whenim64)
          STATIC: LMEANFORCE -> LMEANFORCE1 and LMEANFORCE2
- 
+
 3.4.1    The use of screened Coloumb potential is changed
          The screened Coloumb potential is evaluated using the default potential routine
          POTENTIAL: IOPOT: The new flag LSCRC control the use of screened Colomb potential
@@ -634,125 +634,125 @@ Version    Main changes from previous version
                            Variable LSCRHS (adds the factor (exp(x)/(1+x)(exp(x)/(1+x)), x = r_hs/scrlen) works only if charges are given
          POTENTIAL: SCREEN removed
          USRPOT: ELSTAT_SCREEN: removed
- 
+
 3.4.2    USRPOT: USREWALD is removed (use default potential routine with LEWALD=.T.)
          STATIC: CHAINDF: Bugfix regarding the x-values of the final averaging
          STATIC: CHAINDF and CHAINTYPEDF: changed order of some of the df (can affect input)
          MC: The concept of bond rotation is integrated into end-pivot rotation,
          which also is extended with rotation around a random direction
- 
+
 3.4.3    MOLAUX: CHAINPROPERTIES: Degree of toroidicity is calculated
          POTENTIAL: IOPOT: Stop if LEWALD and RCUT>MINVAL(BOX2(1:3))
- 
+
 3.4.4    POTENITAL and ENERGY: KCLINK and RECLINK now used (before KBOND and REBOND was used (by mistake)
          POTENITAL and ENERGY: Generalization of bond, angular and crosslink potentials
          from harmonic to arbitrary power. New variables: PBOND, PANGLE, and PCLINK
- 
+
 3.4.5    STATIC: CHAINPROPERTIES: Distribution function of torodicity
          ENERGY: DUBOND and DUANGLE: early exit if IPLOC is not residing in chain
          STATIC: CHAINBEAD_PART_CONTACT: program stops if more than one chain type
- 
+
 3.4.6    MOLAUX: SpecialCorrelation: routine for dumping a single quantity and special correlation analysis
                  Call of SpecialCorrelation has to be inserted by user
          ENERGY: DUTOTAL: Inserted LHSOVERLAP=.F. to satsify some compilers
          MC: MCENDIPIVOTMOVE: New variable DROTMINENDPIVOT which determine the lower angular displacement
          MC: MCENDPIVOTCL1MOVE: New variable DROTMINENDPIVOTCL1 which determine the lower angular displacement
          MC: MCVOLCHANGE: Two calls to SETEWALD (necessary for correct Ewald summation with the NPT ensemble
- 
+
 3.4.7    IMAGE: VRMLPREP: ":" -> "1:3" twice (problem on some machines, Marie)
          STATIC: WIDOM: Previously did not work for LEWALD, now the MI convention is used for LEWALD
- 
+
 3.4.8    STATIC: MEANFORCE1: DR is printed on fort.90
          STATIC: MEANFORCE2: THICKNESS is printed on fort.91
- 
+
 3.4.9    COORIDNATE: SETRANDOMCHAIN: correction for PBC='XY','Z' (Alberto)
          POTENTIAL: IOPOT: change defualt value of RCUT if PBC='XY' or 'Z'
          STATIC: POTMEANFORCE: calculation of potential of mean force
          STATIC: WINSOM: draw frame when PBC='SPH' or 'CYL'
- 
+
 3.5.0    ENERGY: DUTOTAL: modified to be able to handle distplacements of beads belonging to different chains
          IMAGE: VRMLMAKE: change unit 10 to 50 (10 interfer with FDPOS)
                           extend to PBC=='XY' and PBC=='Z'
          MOLSIM: GCONT: avoiding log of rdf with zero value
- 
+
 3.5.1    STATIC: WINSOM: extended to NPT ensemble
- 
+
 3.5.2    MC: MCWEIGHT: enable the use of polynomial and exponential weighting functions
                        for single particle move without and with cluser1 extension
                        Note! Yet only routine POTMENAFORCE correct for the weight
- 
+
 3.5.3    STATIC: CLUSTER_S_D: cluster size distribution generalized.
                  Now calculated for a set particles involving one or several particle types
          STATIC: POTMEANFORCE: restart now working
          STATIC: RADSPH: rdf projected on a sphere
- 
+
 3.5.4    IOSUB: IOCNF: SETP=='ZERO', box lengths are taken from FCNF
          MC: IOMC: fix of write format
          MC: ISPARTCL1_Z_CENTER: improved, make as large adjustment as possible
          MC and MOLAUX: Compiler directive FREDRIC_C for lysozyme at mica surface
- 
+
 3.5.5    STATIC: CLUSTER_S_D: extended to 2d size distribution and extended reorganization
          MC: IOMC: avoid division of PHELP when PHELP is zero
- 
+
 3.5.6    Restore compiler directive
- 
+
 3.5.7    POTENTIAL: enable truncated and shifted LJ-potential (new input variables)
          POTENAIAL: UTBODYTAB4: comment away possibility of NUGRID = 1
- 
+
 3.5.8    MC: MCENDPIVOT: New variable TXENDPIVOT = 'SHORT','LOWER','UPPER'
          MC: MCENDPIVOTCL1: New variable TXENDPIVOTCL1 = 'SHORT','LOWER','UPPER'
          MC: MCENDPIVOT AND MCENDPIVOTCL1: generalized
          MC: TRIALROTATION: rigid-body rotation of a selection of particles
          MC: MCCHAIN: rotation of the chain on a sphere (spherical brush)
- 
+
 3.5.9    Tabulation of data on writing on FLIST and FUSER
- 
+
 3.6.0    Ewald simulation for 2d periodic systems (reorganized)
          To use: PBC='XYZ', LEWALD=.TRUE., ..., LEWALD2DLC=.TRUE., and
          external potential in the z-direction to confine the particles in a region abs(z) < BOXZ2
          Background knowledge of the algorithm is needed.
- 
+
 3.6.1    POTENTIAL and ENERGY: External potential extended with LJ-wall
- 
+
 3.6.2    STATIC: CHAINTYPEDFANISOTR: Chain distribution funcitons related to the lab frame
- 
+
 3.6.3    STATIC: LLT: Loop, tail, and train analysis
          MOLSIM: CHAINAVER: Rewritten but same operations
- 
+
 3.6.4    ENERGY: More robust evaluation of an external LJ-interaction
- 
+
 3.6.5    STATIC: WIDOM and WIDOM2: value of NVAR reduced with one.
          Results from 3.5.1 to 3.6.4 can be subjected to uncontrolled error by cracked array boundaries
- 
+
 3.6.6    MC: MCCHAIN: rotation of the chain on a sphere (spherical brush) (now also for PBC)
          MC: MCSPART: ISPART=3: translation of the brush of a particle
          MC: WEIGHTUMB: fix of WEIGHTUMB (Daniel S)
- 
+
 3.6.7    A call to SETEWALD is now always made after the call of SETBOX
          LEWALD: The check that RCUT<BOX2 is moved to SETEWALD from IOPOT
          (Both changes improves the updates and checks for NPT simulations)
- 
+
 3.6.8    ENERGY: UANGLE: Forces are now calculated (i.e., MD and BD with angular potential is now working)
- 
+
 3.6.9    POTENTIAL: Extended the truncation Ewald truncation error
               (program works as before but considerable new possibilities)
               New variables: IEWALDOPT, UEWALDTOL, UALPHA
- 
+
 3.7.0    STATIC: GETCLUSTERMEMBER: New routine for obtaining primary cluster members, now called from MCSPARTCL2MOVE
- 
+
 3.7.1    MC: MCSPARTDRESSMOVE: single-particle + dress move (presently spherical brush)
              MCSPARTDRESSCL2MOVE: single-particle + dress + cluster2 move (presently spherical brush)
- 
+
          MCSPARTDRESSMOVE should replace TRIALBRUSH (called through ISPART = 3)
- 
+
 4.0.0    Major reconstruction
                .
                .
- 
+
 4.0.1    ImageVRML: Bugfix of output statement (SE)
          Coordinate: SetParticle: Changed defualt values of rclow and rcupp (txbc=='sph' and txbc=='cyl')
          Ellipsoidal geometry implemented
- 
+
 4.0.2    Image: WinsomSub: changes in size of plot frame
          Coordinate: SetPlanBrush, SetSphBrush: parallel growth of chains
          Coordinate: values of txsetparticle: 'setplanbrushrandom', 'setsphbrushrandom', 'setsphbrushlattice'
@@ -763,17 +763,17 @@ Version    Main changes from previous version
          Dump: call UserDump at intervall idump (fix)
          Dump: luser -> ldumpuser (fix)
          Image: luser -> limageuser (fix)
- 
+
 4.0.3    Changes in flink, makefile, and parallel.F for easier porting of Molsim
          For porting: (i) flink: change value of ARCH
                       (ii) makefile: uncomment & comment relevant lines
- 
+
 4.0.4    MC: IOMC: Moved tests from iReadInput to iWriteInput
          MC: Umbrella: reorganization (same function)
          MC: MCPmf: calc of pmf, still not fully tested
          Static: SFPBC: rewritten and generalized to structure factors in the xy-plane
          Static: RCN: generalized to df in the xy-plane
- 
+
 4.0.5    MC: Relabelling: Dress -> Brush
          MC: new variables: lfixzcoord(mnpt)     no displacement in z-direction
                             lfixxycoord(mnpt)    no displacement in xy-plane
@@ -785,7 +785,7 @@ Version    Main changes from previous version
          Coordinate: SetGel and SetNodeBond: rearrangment and simplifications
          Coordinate: SetParticle: parts moved to SetGel
          Particle: Particle: isegcnpn adapted for particles of the same type belonging to chains of different types
- 
+
 4.0.6    MC: merging of SPartMove and SPartCl1Move, PivotMove and PivotCl1Move, ChainMove and ChainCl1Move
              implying new input variables lcl1spart, lcl1pivot, and lcl1chain
                       removal of a number input variables
@@ -794,40 +794,40 @@ Version    Main changes from previous version
          MC and Static: MCWeightDriver: separated into one subroutin and two functions and simplified calls
                                        change of input names (attached mcw to the end)
          MC: TestMCMove called from trial move routines (if itestmc == 3)
- 
+
 4.0.7    Coordinate: SetGel etc: Adapted for several types of strands
          Changes of flink, makefile etc for new pc-clusters and Intel compiler
          MC: MoveBrush: Extend with cluster1 moves
- 
+
 4.0.8    Potential (line 416): IOPotTwoBody: fix: 1:na -> 1:nat (DH)
          nlist.F: calculation of neighbour lists using linked lists
          nlist.F: linked-lists for md
          nlist.F: reorganization
- 
+
 4.0.9    static.F: SPDF: fix of normalization (worked only for the first one)
          energy.F: DUBond: inserted subroutine DUBondSub
          energy.F: DUAngle: inserted subroutine DUAngleSub + changed logics
          energy.F: DUCrosslink: inserted subroutine DUCrossLinkSub + adapted for nptm > 1
          mc.F: Networkmove is implemented (ipptm new global pointer)
          static.F: MeanForce2: generalized to polyatom (some changes in energy.F)
- 
- 
+
+
 4.1.0    static.F: SPDF: rcn as type 2; h*z -> z'*z as type 5
          moldyn.F: relabelled f, g, h -> x', y', and z' orientation tcf
- 
+
 4.1.1    minor fixes
          mc.F SPartMove: ispart = 2 also for pbc
- 
+
 4.1.2    External potential: in_hard_ellipsoid is removed (use txbc == 'ell')
          Extension for capside in a spherical cell (Daniel A)
             New external potentials, energy routines, and intitial configuration
- 
+
 4.1.3    mc.f: MCALLPass -> MCallPass
                MCallPass: recalculate atom coordinates, dipole and quadrupole moments after rejected configuration
          image.f: VRMLSub: fix of bug regarding heading of particle specification
- 
+
 4.1.4    minor changes in coordinate.F, iosub.F, mc.F
- 
+
 4.1.5    changes in flink, makefile, parallel, etc reflecting adaptation to lunarc
                 all: TOTO7 removed
                 flink: mpirun -np x -> mpiexec
@@ -836,51 +836,51 @@ Version    Main changes from previous version
          mc.F: changes in number of calls to and call of WriteTrace
          molaux.F: changes in WriteTrace
          static.F: MeanForce1: hsoverlap_singlemove: fix of call of UTwoBodyANew
- 
+
 4.1.6    image.F: MolSub: fix of call of UnddoPBCChain
          potential.F: SetEwaldParam: more tests, finite loop lengths
          mol.F: variable txuser to be used for user-provide code in the Molsim core
                 txuser ='niklas' for Niklas code
                 txuser ='md_dipole' for code Gunnar's dipole project
          energy.F UExternal: splitted up into subroutines
- 
+
 4.1.7    mol.F: data structure chainprop_var was introduced
          molaux.F merged ChainProperty and ChainPropertyAnisotr => CalcChainProperty
          molaux.F CalcChainProperty: extended with com and ree vector
- 
+
 4.1.8    molmix.F: molmix5: the variable no now means the total number of points
- 
+
 4.1.9    introduced potenergy_var data type and variables u and du
          molmix.F: LineMove: cleaner code with same function
          Static: RCNChain: new routine for chain-chain rdf/rcn
          iosub.F:: IOCnf: change reading of cnf-file for start =='zero'
- 
+
 4.2.0    energy.F: UTwoBodyPNew: bux fix: move of line "kjalow = kjalow+napt(jpt)"
          outside loop over ia
          energy.F: UExternal and DUExternal: extension 'lj_wall_z'
- 
+
 4.2.1    md.F: New routine GetTime returning the time
          static.F: Kirkg2: new routine
- 
+
 4.2.2    static.F: Kirkg2 -> Kirkgk
          moluser.F: Kirkg2_domain: new routine (ideas from Gunnar Karlström)
- 
+
 4.2.3    static.F: Call of Perculation
          molaux.F: Perculation: Calculation of perculation
- 
+
 4.2.4    moluser.F Kirkg2_domain: Extended with rmax distribution function
- 
+
 4.2.5    static.F: Kirkg2: Parallelized
          moluser.F: Kirkg2_domain: Parallelized
- 
+
 4.2.6    md.F: IOMD: lsetvel: default value depends now on the value of start
          static.F: Kirkg2: Bugfix parallelization
          moluser.F: Kirkg2_domain: Bugfix restart
- 
+
 4.2.7    Updates from Daniel Hagberg
          Adaptation to various compilers
          Variable: ruext(1:3) -> ruext(1:3,1:mnpt)
- 
+
 4.2.8    Fixes for change of compiler from aix to intel
             energy.F line 2696  nvec -> nvec2d
             mc.F     line 3197  new do ipt = 1, npt construct
@@ -889,51 +889,51 @@ Version    Main changes from previous version
             energy.F line 2811  check of jp_m /= 0
             moldyn.F line 376   insert ,i8
             molmix.F line 497   new line inserted to obtained correct result with intel compilor, reason unknown
- 
+
 4.3.0    PAR_2 removed (source files, makefile, flink, and bsubmit are affected)
          reorganization of compiler directives
             renaming
             intel9 -> intel10 compiler
             added portland compiler
- 
+
 4.3.1
          static.F  LoopTailTrain: variable boundaryads -> adsoffset and meaning is changed
          static.F: TagChain renamed to TagSegment and minor changes in the routine
- 
+
 4.3.2
          moldyn.F, IOMoldyn: default values: nplow = 1, npupp = np
- 
+
 4.3.3
          mc.F  return to the old Metropolis routine (+using parameters instead of variables)
                (the new Metroplis contained a fatal error) dured -> -dured
- 
+
 4.3.4    mollib.F second: fixed cputime
- 
+
 4.3.5    static: TagChain (obsolete) moved to moluser and renamed to TagChainOld
                  TagChain (new routine)
          moluser: fix of dipmomtot (now idumplocal = 100)
- 
+
 4.3.6    molsim.F, energy.F, mc.F: code for grand canonical ensemble (still under development)
- 
+
 4.3.7    changes in molaux.F, mol.F, mollib.F, parallel.F, potential.F, paraticle.F, molsim.F, molmix.F, and moldyn.F
          for adaptation to Molcas and Nemo
- 
+
 4.3.8    GetInv and RelDiff moved from molaux.F to mollib.F
          Fix of an error introduced in 4.3.7 (affects start='continue')
          Further development of grand canonical ensemble (start = 'zero' and 'continue' is working)
- 
+
 4.3.9    Moluser: Domain analysis extended
- 
+
 4.4.0    Static: RCN and ANGDF parallellized
          Moluser: ConcRDF parallelized
          nlist.F: LoadBalRealSpace: stop if np < nproc
- 
+
 4.4.1    nlist:F LoadBalRealSpace: allows for np < nproc; now also used for balancing chains among nodes
          energy.F code related to impyid alows for ipmyid = 0
          ubond and unangle parallelized
- 
+
 4.4.2    energy.F: UEwald: bug-fix of molecular self-term contribution (error introduced in 4.0.0, Sept 2004)
- 
+
 4.4.3    nlist.F: LoadBalRealSapce: call moved to nlist.F, generalized to atom and chains, extended test output
                   icmyid, ipmyid, and iamyid global variables (concomitant change in energy.F)
          nlist.F: LoadBalRecSpace: kvecmyid and kvecoffmyid global variables, test output (more streamlining can be made)
@@ -941,22 +941,22 @@ Version    Main changes from previous version
          nlist.F: SetNListMC and SetNListMC2 moved to a single routine but still different algorithm for efficiency
          energy.F: some more routines parallelized, packed some communication etc
          (tried to streamline LoadBalRecSpace; idea: same serial and parallel ewald code)
- 
+
 4.4.4    introduced NEOLITH_INTEL in code and scipts
- 
+
 4.4.5    mol.F, particle.F, parallel.F, moluser.F: further adaptation for simulation of large systems using a large number of processes
- 
+
 4.4.6    dump.F: additional call to dumpuser (if molstat)
          moluser: domain routines: extension to (i) molecules with nonideal dipole moment and (ii) two domain definitions
- 
+
 4.4.7    moluser: PolProbFunc: polarization probability distribution function
- 
+
 4.4.8    molsim.F: removed integer overflow appearing for large system / many number of steps in one place
- 
+
 4.4.9    static.F: clusterSD: bugfix of collecting the statistics of the perculation analysis
          energy.F: potential, UManyBodyP, and IterIdm: made the code simples to read
          potenial.F: IOTwoBody: check consistency among ucoff and zat for all potentials
- 
+
 4.5.0    mol.F: introduced the variable txelec with values 'charge', 'dip', and 'pol'. txelec sets the variable lacharge, ladip, and lapol.
          In input files: lpol =.true. should change to txelec = 'pol'
          In input files: &nmlPolarization changed to &nmlPolarizationIter
@@ -964,110 +964,110 @@ Version    Main changes from previous version
          energy.F UManyBodyP: variable forcelec(:,:) and torequeelec(:,:) removed
          In input files: monoatom changed to lmonoatom and lpolyatom changed to lpolyatom
          Subroutine name changes: SetDipMom to SetAtomDipMom and SetPolTens to SetAtomPolTens
- 
+
 4.5.1    molaux.F: CalcDipMomSys changed to CalcSysDipMom
          molaux.F: CalcTotDipMom changed to CalcPartDipMom
          Simplifed routines for txelec='dip' (still beta version)
- 
+
 4.5.2    energy.F: various optimization (e.g, more intermediate scalar, array frec is removed)
- 
+
 4.5.3    energy.F, particle.F, mc.F ..., changes for making possible to perform MC simulation for txelec='dip' (seriel)
- 
+
 4.5.5    start to streamline calls to energy routines, affecting parallel calls.
- 
+
 4.5.6    energy.F EfgEtc and EfgEtc: field from all charges and dipoles + technical changes
- 
+
 4.5.7    energy.F: clean up, changes of routine names
- 
+
 4.5.8    energy.F: simplifying UTotal and changes in UManyBody
- 
+
 4.5.9    potential.F and energy.F: new external potential uext = auext *(r/ruext)**nuext
- 
+
 4.6.0    mol.F: defined parameter FourPi and FourPiThrid and used it elsewhere
          parallell.F extended it with routines par_max_ints, par_max_reals, and par_min_reals
          (moluser.F: extended it with VolumeDriver and its associated routines for volume averages (Joakim S)
          some other minor changes (routine names, spelling errors, etc)
- 
+
 4.6.1    moluser.F: Domain analysis 1) Some changes of Gk_max, ii) nbinloc = 50 to nbinloc = 200, ii) new variable npdomainsearch
- 
+
 4.6.2    static:F: LoopTailTrain: sample only for adsorbed chains, ii) write number of adsorbed chains and beads
          moluser.F: Included routines for polymer adsorption analysis (Niklas K)
- 
+
 4.6.3    md.F: GetTime: also working for molstat
          moluser.F: Frequent changes of rouintes for polymer adsoption analysis (Niklas K/Per L)
          energy.F: DUAngle and DUAngle: quick exit if all kangle == 0
- 
+
 4.6.4    statistics.F: ScalarSample: replaced one division with a multiplication
          molsim.F: ChainAver: fewer sampling in lmd and txuser == 'niklas' to improve speed
- 
+
 4.6.5    moldata.F: new program for manipulating list files
          here and there: trim(abc) -> trim(adjutl(abc)) to remove underscore in file names
- 
+
 4.6.6    moluser.F: LTTfromLPOS: fix bug affected averaging over several chain types
          energy.F: UExternal and DUExternal: LJWall omptimization
- 
+
 4.6.7    mol.F, potential.F, energy.F: new external potential,  modulated 3-9-lj wall-atom interaction
- 
+
 4.6.8    txelec == 'sphadip' : spherical geomery, charges and dipoles, no neighbour list
          txelec == 'sphadipimage' : spherical geomery, charges and dipoles, no neighbour list, image charge
          (Jockim S)
- 
+
 4.6.9    moluser.F: LTTfromLPOL -> ChainAdsDyn and extended to include rg, rg_xy, and rg_z, ltt_data -> chainadsdata
          moluser.F: DetainedChainStatistics and LTTdynamic: removed old code and enabled start == 'continue' for new code
- 
+
 4.7.0    integrated more firmly image charges for charges and dipole with a spherical boundary condition
- 
+
 4.7.1    potential.F and energy.F: new external potential: lj_wall_z_mod2
- 
+
 4.7.2    nlist.F: LoadBalanceRealSpace: changed argumet nobj -> iobjlow, iobjupp
          energy.F: UExternal: changed parallelization from ipt level to ia level
          moluser.F: chainadsdyn: chainadsdata -> ads, extended ouput on ads
- 
+
 4.7.3    potential.F and energy.F removed external potential lj_wall_z_mod and renamed lj_z_wall_mod2 -> lj_wall_z_mod
          moluser.F: ChainAdsDyn: i) written time is now true average and not the time of the last sampling,
                                  ii) logarithim sampling and writing of averages
- 
+
 4.7.4    mol.F, potential.F, energy.F: external potential for charged surfaces and long-range contribution for txbc == 'xy' (Jurij)
          moluser.F: z_df_xy: z-distribution function (Jurij)
          moluser.F: ChainAdsDyn:  bugfix for start == 'continue', buffix for nct > 2 (isum moved down)
- 
+
 4.7.5    moluser.F: ChainAdsDyn: own namelist, read blocklen and facblocklen
          moluser.F: DetainedChainStatistics: new input parameter iinterval
- 
+
 4.7.6    potential.F option "sphadip" and "sphadipimag and variable aimg are removed
          image.F: winsom is removed
          image.F: vrml: if lgr = .t. then coloring is following the group assignment, otherwise atom type as before
          image.F: vrmlSub: drawing of box, cylinder, and sphere is included;
- 
+
 4.7.7    coordinate.F: TooFoldedChain: bugfix: pbd was not correctly implementent (too folded chains passing the box boundary was accepted)
          moluser.F: AdsBondOrder new
          moluser.f: ChainAdsDyn extended with calculation of average bond order
- 
+
 4.7.8    moluser.f: AdsBondOrder: slight changes (correction April 29)
          moluser.f: AdsChainsProperty -> AdsRadGyr and nmlAdsChainProperties -> nmlAdsRadGry
          moluser.f: molstatic.f: SCDF, AdsRadGyr, and AdsBondOrder are only called if lmc
          moluser.f: CalcAvBondOrder: integer(8) -> integer(4) (correction May 3)
- 
+
 4.7.9    image.F: vrml: new variable tximage that controls options such as including frame, walls, and suppress pbc when drawing polymers (by Niklas and Per)
          image.F and moluser.F: new variable limageuser to call user-provided image routines
          general: simplified the evaluation of pbc according to: dx = dx - dpbc(1)*sign(One,dx) -> dx = dx - sign(dpbc(1),dx)
          moldata.f bugfixes affected cases with more than one chain type (correction May 16)
- 
+
 4.8.0    moluser: DetainedChainStatistics: resart is fixed (now also works for interuption in a macrostep)
          moluser: ChainAdsDyn: test that restart is OK
- 
+
 4.8.1    particle.F: ioparticle: new variable lradatbox: for enabeling check that atom including its hs radius are inside hs box edges
          mc.F: CheckAtomBCTM: check boundary conditions of trial atom coordiantes (new); call of CheckAtomBCTM; CheckBCTM -> CheckPartBCTM
          molaux.F: CheckAtomInsideBox: check that atoms are inside box (new); CheckBoxOverlap -> CheckPartInsideBox
          molsim.F: IOMolsim.F: call of CheckAtomInsideBox
- 
+
 4.8.2    all: lgel -> lclink
          coordinate.F: bottle-brush polymers are supported; SetGel has been reorganized (nctstrand has been removed as input variable)
          moldata: a new option: time correlations functions divived by early and late adsorbed polymers
          moluser: DipOri and DipOri2: new, clalculation of projection of dipole moments on lab axes
- 
+
 4.8.3    moldata: MolData3 and MolData4 merged; variable tmax introduced
- 
+
 4.8.4    particle.F: SetChainParticles: txcopolymer == 'block' (as before and default)
                                        txcopolymer == 'regular' (new)
                                        txcopolymer == 'alternating' (removed, now a subset of 'regular')
@@ -1075,62 +1075,62 @@ Version    Main changes from previous version
                               txcluster == 'chain'    (new)
                               txcluster == 'chaincom' (new)
                               change of input variables: nptcluster -> nobjt and iptcluster -> iobjt
- 
+
 4.8.5    parallel computation: mpich -> openmpi; mv of PGI compilar in scripts and fortran code
- 
+
 4.8.7    adjustment to Platon (makefile, flink, mol.F, and parallel.F)
          removal of LOCAL_AIX
- 
+
 4.8.8    static: MultipoleDF new routine for calculation of multipole moment distribution functions and mean square averages
          (by Joakim and Per)
          statistics: ScalarAllReduce new routine for making all reduce of scalar quantities (facilities parallel coding)
          statistics: DistFuncAllreduce new routine for making all reduce of distribution functions (facilities parallel coding)
- 
+
 4.8.9    static: angdf: introdued rmin as a lower separation for making averges
- 
+
 4.9.0    static: futher revision of MultidipoleDF
- 
+
 4.9.1    static: SF: the number of bins given in FOUT is reduced by ndiv (currently = 5)
          moluser: ramp potential (new)
          moluser: square_well (improved output)
          potential and energy: external potential: ramp_ext (new)
          a few minor fixes
- 
+
 4.9.2    particle: particle: output of txcopolymer
          potential: ramp potential moved from moluser
          molsim: distfunc: type = 10 z-number density (new)
          static: RCN: ndim = 2: new input variable l2dtwo;  igr=jgr: correct normalization
          molsim: distfunc and static: spdf: calculation of excess adsorbed amount
- 
+
 4.9.3    statistics: DistFunc2DSample: bugfix affecting ivar > 1
          statistics: DemoScalar, DemoDistFunc, DemoDistFunc2D new templates
          static: radangdf: 2d-df of radius-angular or z-xy distribution function
          static: slice: removed
          static: slight rearrangment of the order of subroutines
          testin: changed some of the input files
- 
+
 4.9.4    update of lib routines
- 
+
 4.9.5    coordinate: SetHierarchichal generate a radom start configuration for hieararchical polymers
          new input variables: ngen, ictmainchain, nsidechain, isegbeg, iseginc
          pointers: changed name convention
          other minor changes
- 
+
 4.9.6    coordinate: TooFoldedChain: call also include bondlength
          coordinate and moluser: SetRandomNeigbour is called in a few more occations
          nmlSetParticle: new input variable: bondscl; change of anglemin
          other minor changes
- 
+
 4.9.7    substantial renaming of rouintes
          statistics: changed output for 2ddf
- 
+
 4.9.8    gerneral: periodic boundary conditions are moved to separate routines (PBC and PBC2) /Jocke
          extension of pbc in real space with rhombic dodchaedral and truncated octahedral cells /Jocke
          further tune up with respect to boundary conditions (more logical variables, reordering of statements etc)
          some changes of variable names: the following ones are input variables:
             srph -> radsph, rcyl -> radcyl, lcyl -> lencyl, rell -> ellrad, boxscl -> lenscl, box -> boxlen
          coordinate: ictmainchain(1:ngen) and ictsidechain(1:ngen) merged to ictgen(0:ngen) to avoid dublication in input
- 
+
 4.9.9    Implementation of Ewald summation in RD and TO geometries (energy.F, potential.F)
 JS       Added support for Ewald summation together with MC for dipoles (energy.F)
          Draw VRML box boundaries for RD and TO geometries (image.F)
@@ -1138,12 +1138,12 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
          Correct an error in rclow and rcupp when setting particles in RD geometry (coordinate.F)
          Added compiler directives for inlining of PBC routines, to be used with -ipo (ifort) (molaux.F)
          Various adaptations and checks related to RD and TO geometries
- 
+
 5.0.0   Fix and simplification of reciprocal summation of the Ewald summation for RD and TO geometries /Jocke
         Fix of round off effects for SetLattice (affected RD and TO geometries)
         New molsim unit: FIMG which replaces FUSER for images. Currently .img is replaced by .wrl (as vrml is mostely used)
         Image: IOVrml: variable txwhen : 'after_run' (deafult), 'after_macro', after_iimage'
- 
+
         GenStartConf           -> SetConfiguration
         lset                   -> lsetconf
         nmlPot                 -> nmlPotential         (nput)
@@ -1164,7 +1164,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
         'seth2o'               -> 'h2olattice'
         'setn2'                -> 'n2lattice'
         'setben'               -> 'benzenelattice'
- 
+
         Static: Mulitpole: bugfix affecting parallel computation /Jocke
         Static: AngExtDF: 2d distribution function
         Minor text polishing
@@ -1177,47 +1177,47 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
         IOSub: EwaldTest: moved to Potential and changed, now loop over different values of control variable which is dependent
                           on iewaldopt
         Coordinate: variable lranori: true implies set of random orientation in SetLatt
- 
+
 5.0.1   Image: Vrml: bugfix for drawing of cylinder
         Uexternal and DUexternal: routines UExternalSphDielBoundary etc are new (for a sphere with different dielectric permittivity)
- 
+
 5.0.2   Energy: Tuning energy evaluation for charges and dipoles
         r2cut -> rcut2, etc
         improved constants
         variable: abc -> str [throughout]
- 
+
 5.0.3   Uexternal and DUexternal: routines UExternalSphDielBoundary -> UExternalSphDielBoundary_q (sum up the moments of the system)
                                            UExternalSphDielBoundary_p (pariwise evaluation, involves only Legendre polynomials)
- 
+
 5.0.4   Static: STPBC : real(nppt(ipt)*nppt(ipt)) -> real(nppt(ipt))*real(nppt(ipt))
         All: filename change: fort.xx -> yyyyy.data, were yyyyy is generaly the name of the routine makeing the the output
         Statistics: ScalarSample: improved output
         /(...)/ -> [...]
- 
+
 5.0.5   split of energy.F into energy.F and denergy.F
- 
+
 5.0.6   now parallel reading from fin and remove broadcast of data of input variables
         systematic formating of "contains"
- 
+
 5.0.7   Static: SFPBC: ndiv = 5 -> ndiv = 1
         Static: RadAngDF: generalized to also incluce angle "psi and thetha 2"
         Statistics: DistFunc2D....: 41f... -> 42f...
         min(-1,max(int -> min(-1,max(floor  (correction of trunction of distribution functions)
- 
+
 5.0.8   Smooth particle mesh Ewald (Björn)
- 
+
 5.0.9   Various adaptation of the smooth particle mesh Ewald implementation
         molsim.F: Chain_aver: output also fluctuation properties
         moluser: Set_Straight_Chain: new routine for setting a single straight chain starting in the origin in the z-direction
- 
+
 5.1.0   coordinate.F: txsetconf='random' -> 'chainrandom' for chains
                                  'chainstraight' new
         mc.F: pivot rotation: ipivotrotmode = 3: now exception handling if the three particles lies on a straight line
         mollib.f: stop: write stop message both on unit "unit" and 6
- 
+
 5.1.1   angles: internal unit: rad;
         ioscale: sang introduced (to do: problem with slither trial move)
- 
+
 5.1.2
         Uexternal and DUexternal: routines UExternalSphDielBoundary_p and DU... are generalized to handel three different expressions
 
@@ -1231,7 +1231,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 5.1.5	potential.F, energy.F, denergy.F: swquare_well and ramp potential for atom-atom and atom-wall interaction
         Note: changed sign conversion of epsilon_ramp_ext
 
-5.1.6   Coordinate.F: MakeCrossLink: crosslinks only made of particles separated by rebond + related modifications	
+5.1.6   Coordinate.F: MakeCrossLink: crosslinks only made of particles separated by rebond + related modifications
 
 5.1.7	MC.F:	Hierarchical move
 
@@ -1263,7 +1263,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
         molsim.F: no overlap test if more than 10000 particles
 	some minor changes in commentes
 
-5.2.8	Ported to Alarik 
+5.2.8	Ported to Alarik
 
 5.2.9	Extended to pivot rotation of hierarchical structures (Erik Wernersson)
         paraticle.F: Set_bondnn: fix (for chains with one particle)
@@ -1280,7 +1280,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
         static.F
         statistics.F
 
-5.3.2	coordinate.F: SetGel: iptstrand (particle type forming strand) changed to ictstrand (chain type forming strand), affecting input	
+5.3.2	coordinate.F: SetGel: iptstrand (particle type forming strand) changed to ictstrand (chain type forming strand), affecting input
         Now possible to have copolymers as strand; however, all strands are idential, before the homopolymers forming the strand could be
         of different length
 
@@ -1293,7 +1293,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
         NEOLITH adaptation removed
 	MOLCAS adaptation removed
         introduced compiler directive NORMAL_N and LARGE_N
-        flink: molsim_par: ALARIK: inserted: 
+        flink: molsim_par: ALARIK: inserted:
                                              mpiexec -pernode ls -1             (necessary for parallel reading when > 1 processor)
                                              mpiexec -bind-to-core EMOLSIM      (otherwise uncontrolled communication time)
 
@@ -1320,7 +1320,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 
 5.4.3	molsim: introduced istep denoting the current step/pass
         potential and energy: various changes affecting TestEwald
-        energy: improved error estimate of StdEwald for dipoles 
+        energy: improved error estimate of StdEwald for dipoles
 
 5.4.4	mol.F: XLARGE compiler directive for platon
         particle: slight modification of output on FOUT
@@ -1353,7 +1353,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 	moluser: extended (Daniel A)
 	Fortran suffix .F is changed to .F90 and flag -RF is removed as a compiler flag in makefile
 
-5.5.3	mollib.F90 updated with library routines for dynamic memory allocation. Interface to routines MatInv and Diag are affected; 
+5.5.3	mollib.F90 updated with library routines for dynamic memory allocation. Interface to routines MatInv and Diag are affected;
         MatInv called by the library routine PolFit and Diag from molsim in a few places
 
 5.5.4	energy and denergy: External potential sphdielboundary: extension with uniform charged background in the inner sphere
@@ -1388,7 +1388,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 
 5.6.3	change of variable name: head -> txheading
         variable txroutine: used in call of stop and warn
-	variable txroutine: used in call of WriteTrace 
+	variable txroutine: used in call of WriteTrace
      	CpuAdd: new input parameter: level; used in call CpuAdd
 
 5.6.4	mc: slithermove: updated, handel now a hierarical polymer of ngen = 1  /Daniel A
@@ -1411,7 +1411,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 5.7.0   UExternalSphDielBoundary removed
 	%self -> %oneb; %tbody -> %twob and related changes of routine names etc
         molaux: PBCr2 new
- 
+
 5.7.1	energy.F90 ImageInt*Sph: minor bug fix (takes care of small values of t)
         nve, nvt, ntp, and mvt -> lnve, lnvt, lntp, and lmvt
         scaling variables: s... -> scl...
@@ -1428,8 +1428,8 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 
         static.F90: edf -> energyDF: variables and namelist
         static.F90: lwidom -> lwidom1, lwidow2; nmlWidom -> nmlWidom1, variables: iptwidom -> iptset, XperY -> XY
-        static.F90 and moluser.F90: introduced data structure: adscond_var for 
-                                    describing adsorption condions 
+        static.F90 and moluser.F90: introduced data structure: adscond_var for
+                                    describing adsorption condions
 
         moluser.F90: ChainAdsDyn -> AdsPropDyn			name of namelist changed
 	moluser.F90: DetainedChainStatistics -> AdsEvents	name of namelist changed
@@ -1445,13 +1445,13 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
         mnctct, mnptpt, mnatat removed; mnctctin, mnptptin, mnatatin introduced for variables in namelists
         mnctin, mnptin, mnatin inroduced
         static.F90: index reordering of ipnt
-        potential.F90: new data structure bond_var 
+        potential.F90: new data structure bond_var
 
 5.7.6   moldata: dynamic allocation
 
 5.7.7   nmlParticle: maxbondcl -> maxnbondcl
         all routines except mol.F: dynamic allocation
-     
+
 5.7.8  static.F90: (TagSegment and TagChain) -> CheckAdsChainSeg
        mnpct removed
        potential.F90: asakura-oosawa potenial for one-component colloid (by Jurij and slight modification of rumin and rumax by Per)
@@ -1476,8 +1476,8 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 5.8.1  Adaptation to gfortran   (Marie and Per)
 
 	mol.F90       : line 155 and 167: real(8) -> integer(4)	bugfix
-	molsim.F90    : line 514, 515, 541, 629-631: nppt(:) -> nppt(1:npt)    semi-bugfix  
-	molstat.F90   : none 
+	molsim.F90    : line 514, 515, 541, 629-631: nppt(:) -> nppt(1:npt)    semi-bugfix
+	molstat.F90   : none
 	moldyn.F90    : none
 	moldata.F90   : line 83, 84, 86, 269, 385: equal length of character strings
                       : line 394: place namelist correctly
@@ -1495,7 +1495,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
                         line 2255, 2357: equal length of character strings
 	dump.F90      : none
 	group.F90     : none
-	static.F90    : line 1353: remove save 
+	static.F90    : line 1353: remove save
                         line 2630: inserted RESHAPE
                         line 2670: equal length of character strings
                         line 3652; 8i -> i8
@@ -1529,7 +1529,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 
 5.8.9  buffixes for parallel (ifort) compilation on alarik (provide sufficiently mememory to MPI)
 
-5.9.0  md.F90: GetZeroLinMom and GetZeroAngMom: improved test output 
+5.9.0  md.F90: GetZeroLinMom and GetZeroAngMom: improved test output
 
 5.9.1  mollib.F90: MatInv and Diag replaced by those from Numerical Recipe
 
@@ -1546,7 +1546,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 5.9.6  extended the number of arguments from 4 to 5 in call of WriteIOStat
 
 5.9.7  mc.F90: changed values of ltestmc (affect input)
-       iMode: start from 1 instead of 0     
+       iMode: start from 1 instead of 0
        all: static variables: precision is calculated by extrapolation, stat eff is written
                               output of intermediate extrapolation data is suppresed by a local variable
 
@@ -1576,11 +1576,11 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 6.0.1  image.F90: BondList: bugfix
 
 6.0.2  potential.F90: IOPotTwoBody: if lsuperball then change boxlen to conserve volume fraction to match the increasing
-                                    volume of the superballs at increasing msuperball 	
+                                    volume of the superballs at increasing msuperball
 
 6.0.3  image.F90: major overview (restructured, change of details, included lsuperball (by Björn))
        "alginate" removed totally
-       statistic.F90, molsim.F90: var()%nbl -> var()%blocklen; 
+       statistic.F90, molsim.F90: var()%nbl -> var()%blocklen;
        statistic.F90: ScalarSampleExtrap: var()%nsamp initiallized
        tuext = 'efield_z_ext' removed, instead use 'efield_ext'
 
@@ -1629,7 +1629,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 
 6.2.3
       static.F90: SubStructureDF: simplification of normalization (Pascal)
-      simulated annealing: controlled by txuser = 
+      simulated annealing: controlled by txuser =
       moluser.F90: BondOrder: bond order analysis, not completed (with Japser)
 
 6.2.4 coordinate.F90: more lattice start; moluser.F90: BondOrder (with Jasper)
@@ -1642,7 +1642,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 6.2.8 titrating system: read pK and pH instead of pHmpK
 
 6.2.9 dynamic.F90: scalar declaration of cf in subroutine MSD etc; zero -> [zero] as argument in call of CalcCF
-      which fixes gfortran compilaration problems 
+      which fixes gfortran compilaration problems
       dynamic.F90: tcf are written on FOUT instead on FUSER (which was conventient under development of dynamic.F90)
 
 6.3.0 select case construct introduced for test of variables against enumeration constants
@@ -1661,7 +1661,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 6.3.3 changes due to chanage of local computers
       fixes for gfortan
       etc
- 
+
 6.3.4 minor small fixes
       mnat removed in mc.F90, instead dynamic allocation
 
@@ -1703,7 +1703,7 @@ JS       Added support for Ewald summation together with MC for dipoles (energy.
 
 6.4.7 rCyl -> rCylinder
       static.F90: spdf: special for Jos
-      moluser.F90: UserJos (new)	
+      moluser.F90: UserJos (new)
 
 .........................................................
 
@@ -1732,7 +1732,7 @@ static.F90:		variable adscond of type adscond_var (defined in mol.F90)
 static.F90:		nmlRCN -> nmlRDF
 static.F90: 		nmlRCNChain -> nmlRDFChain
 static.F90: 		nmlRCNSph -> nmlRDFSph
-static.F90:		nmlWidom -> nmlWidom1;  
+static.F90:		nmlWidom -> nmlWidom1;
 nmlWidom1:		iptwidom -> iptset, nptperset -> nptset, iptperset -> iptset
 nmlWidom2:		iptwidom -> iptset
 nmlStatic:		lchaintypedflab -> lchaintypeextdf

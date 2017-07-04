@@ -136,10 +136,10 @@ module MolModule
       real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
       real(8)    :: torp                    ! toroidicity
    end type chainprop_var
-   
+
 ! ... data structure for network (finite) properties
 
-   type networkprop_var  
+   type networkprop_var
       real(8)    :: ro(3)                   ! center of mass
       real(8)    :: rg2                     ! radius of gyration squared
       real(8)    :: rg2x                    ! radius of gyration squared projected on the x-axis
@@ -187,7 +187,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v2.4.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v2.4.5'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -490,11 +490,11 @@ module MolModule
 
 ! ... pointers
 
-   integer(4), allocatable :: inwtnwn(:)   ! network (1:nnw)               -> its network type (1:nnwt) 
-   integer(4), allocatable :: inwtct(:)    ! chain type (1:nct)            -> its network type (1:nnwt) 
-   integer(4), allocatable :: inwtcn(:)    ! chain (1:nc)                  -> its network type (1:nnwt) 
+   integer(4), allocatable :: inwtnwn(:)   ! network (1:nnw)               -> its network type (1:nnwt)
+   integer(4), allocatable :: inwtct(:)    ! chain type (1:nct)            -> its network type (1:nnwt)
+   integer(4), allocatable :: inwtcn(:)    ! chain (1:nc)                  -> its network type (1:nnwt)
    integer(4), allocatable :: ictcn(:)     ! chain (1:nc)                  -> its chain type (1:nct)
-   integer(4), allocatable :: inwncn(:)    ! chain (1:nc)                  -> its network (1:nnw)       
+   integer(4), allocatable :: inwncn(:)    ! chain (1:nc)                  -> its network (1:nnw)
    integer(4), allocatable :: ictpt(:)     ! particle type (1:npt)         -> its chain type (1:nct)
    integer(4), allocatable :: ihnpn(:)     ! particle (1:np)               -> its hierarchical structure (1:nh)
    integer(4), allocatable :: ictpn(:)     ! particle (1:np)               -> its chain type (1:nct)
@@ -505,7 +505,7 @@ module MolModule
    integer(4), allocatable :: ipnan(:)     ! atom (1:na)                   -> its particle (1:np)
    integer(4), allocatable :: iatan(:)     ! atom (1:na)                   -> its atom type (1:na)
 
-   integer(4), allocatable :: inwnnwt(:)   ! network type (1:nnwt)         -> its first network (1:nnw) 
+   integer(4), allocatable :: inwnnwt(:)   ! network type (1:nnwt)         -> its first network (1:nnw)
    integer(4)              :: ipnhn        ! hierarchical structure        -> its first particle
    integer(4), allocatable :: icnct(:)     ! chain type (1:nct)            -> its first chain (1:nc)
    integer(4), allocatable :: ipnpt(:)     ! particle type (1:npt)         -> its first particle (1:np)
@@ -519,9 +519,9 @@ module MolModule
    integer(4), allocatable :: isegpn(:)    ! particle (1:np)               -> segment number
    integer(4), allocatable :: ipnsegcn(:,:)! seg (1:npct) and chain (1:nc) -> particle (1:np)
    integer(4), allocatable :: icihigen(:,:)! hier (1:nh) and gen (0:ngen)  -> its first chain
-   integer(4), allocatable :: icnclocnwn(:,:)  ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)          
-   integer(4), allocatable :: ipncllocnwn(:,:) ! cross-link (1:nclnwt) and network (1:nnw)    -> its particle (1:np)       
-   integer(4), allocatable :: ipnplocnwn(:,:)  ! local particle (1:npnwt) and network (1:nnw) -> its particle (1:np)       
+   integer(4), allocatable :: icnclocnwn(:,:)  ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)
+   integer(4), allocatable :: ipncllocnwn(:,:) ! cross-link (1:nclnwt) and network (1:nnw)    -> its particle (1:np)
+   integer(4), allocatable :: ipnplocnwn(:,:)  ! local particle (1:npnwt) and network (1:nnw) -> its particle (1:np)
 
 ! ... md
 

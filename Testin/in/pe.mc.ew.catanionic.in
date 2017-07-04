@@ -5,10 +5,10 @@
   boxlen= 200.,   200.,   400.,
   temp  = 298.0,    prsr = 0.1013,
   iseed = 1,
- 
+
   lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.t.,    lstatic =.t., ldump=.f.,
   itest = 0,   ipart = 1,   iatom = 0,   iaver = 0, ishow = 1,   iplot = 1, ilist = 0, limage=.f.,  /
- 
+
  &nmlScale
  /
  &nmlParticle
@@ -16,7 +16,7 @@
   txct(1) =    'pe1',
   ncct(1) =     1,
   npptct(1,1) = 50,
- 
+
   npt   =  4,
   txpt  = 'bead',    'surf+',  'surf-',   'pos',
   nppt  =  50,        500,      500,       50,
@@ -26,7 +26,7 @@
   massat=  20.0,      20.0,     20.0,     20.0,
   radat =  2.0,       2.0,      2.0,      2.0,
   zat =    -1.,       +1,       -1,       +1.,
- 
+
   naatpt(1,1) =  1,
   txaat(1,1) = 'bead',
   naatpt(1,2) =  1,

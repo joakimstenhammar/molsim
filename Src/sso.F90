@@ -17,7 +17,7 @@
       real(8)     :: d4 !displacement**4
    end type step
 
-   !define what happens if two variables of type step are added 
+   !define what happens if two variables of type step are added
    interface operator(+)
       module procedure stepadd
    end interface operator(+)
@@ -29,7 +29,7 @@
 
    contains
 
-      !define what happens if two variables of type step are added 
+      !define what happens if two variables of type step are added
       pure function stepadd(s1, s2) result(add)
          type(step), intent(in) :: s1, s2
          type(step)  :: add
@@ -51,8 +51,8 @@
 
          use MolModule, only: ltrace, txstart
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-         use MolModule, only: uin, uout, ucnf, master
-         use MolModule, only: Zero, Half, One, Two, Three, Five
+         use MolModule, only: uin, uout, ucnf, master, lsim
+         use MolModule, only: Zero, Half, One, Two
          use MolModule, only: npt, nstep, istep
          use MolModule, only: lbcbox, lbcrd, lbcto, lbcsph, lbcell, lbccyl, boxlen, cellside, sphrad, ellrad, cylrad, cyllen
          use MCModule, only: curdtranpt, lssopt
@@ -65,6 +65,7 @@
          integer(4)  :: ipt
          integer(4)  :: maxmobbin, upperbin, lowerbin ! bin where the maximumlocal mobility is found and upper and lower boundary
          integer(4)  :: ibin, ipart
+         integer(4)  :: nstepOld
 
          !input variables--------------------------------------------------------------------------
          real(8), allocatable, save :: dtransso(:) ! initial displacement parameters
@@ -134,7 +135,7 @@
             read(uin,nmlSPartSSO)
             !--------------------------------------------------------------------------------------
 
-         case (iWriteInput) 
+         case (iWriteInput)
 
             ! check conditions---------------------------------------------------------------------
             if (master) then
@@ -186,7 +187,30 @@
 
             ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               read(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               if(lsim .and. master) then
+                  read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters, nstepOld
+                  if(nstepOld /= nstep) then
+                     call Stop(txroutine, 'can not continue SSO with different number of steps. Consider using zero instead.', uout)
+                  end if
+               end if
+
+               ! broadcast values
+#if defined (_PAR_)
+               call par_bc_reals (curdtranpt(:)    , npt )
+               call par_bc_int   (SSOPart%i)
+               call par_bc_int   (SSOPart%nextstep)
+               call par_bc_ints8 (ssos(:,:)%n      , nssobin*npt )
+               call par_bc_reals (ssos(:,:)%d2     , nssobin*npt )
+               call par_bc_reals (ssos(:,:)%d4     , nssobin*npt )
+               call par_bc_ints8 (tots(:)%n        , npt )
+               call par_bc_reals (tots(:)%d2       , npt )
+               call par_bc_reals (tots(:)%d4       , npt )
+               call par_bc_reals (SSOParameters(:,:)%used , npt*SSOPart%n )
+               call par_bc_reals (SSOParameters(:,:)%opt  , npt*SSOPart%n )
+               call par_bc_reals (SSOParameters(:,:)%err  , npt*SSOPart%n )
+               call par_bc_int   (nstepOld)
+#endif
+
             else
                curdtranpt(1:npt) = dtransso(1:npt)
                ssos=step(0, Zero, Zero)
@@ -308,7 +332,9 @@
 
          case (iAfterMacrostep)
 
-               write(ucnf) curdtranpt, SSOPart%i, ssos, tots, SSOParameters
+               if(lsim .and. master) then
+                  write(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters, nstep
+               end if
 
          case (iAfterSimulation)
 
@@ -347,7 +373,7 @@
          subroutine CalcCurrentMobility(ipt)
 
             implicit none
-            
+
             ! particle type to be calculated
             integer(4), intent(in)  :: ipt
 
@@ -366,7 +392,7 @@
             type(step)  :: stepbin ! steps done
 
 
-            stepbin = step(0, Zero, Zero) 
+            stepbin = step(0, Zero, Zero)
             Mobility(0) = mobility_var(Zero, Zero, Zero)
 
             do ibin = 1, nssobin
@@ -379,7 +405,11 @@
                   !else: average displacement is displacement divided by number of steps; error calculated from variance
                   invntot = One/real(stepbin%n)
                   Mobility(ibin)%val = stepbin%d2 * invntot
-                  Mobility(ibin)%error = sqrt((stepbin%d4 * invntot - (Mobility(ibin)%val)**2)*invntot)
+                  if(stepbin%n > 1) then
+                     Mobility(ibin)%error = sqrt((stepbin%d4 * invntot - (Mobility(ibin)%val)**2)*invntot)
+                  else
+                     Mobility(ibin)%error = Zero
+                  end if
                end if
             end do
 
@@ -388,7 +418,6 @@
             dy = Mobility(0:nssobin)%error
             !smooth using spline
             call Smooth(nssobin + 1, x, y, dy, real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), a, btmp, ctmp, dtmp)
-
             Mobility(0:nssobin)%smooth = a
 
 

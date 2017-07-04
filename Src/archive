@@ -18,7 +18,7 @@ prog='molsim'
 
 if [ -z "$1" ]
 then
-   echo "syntax: archive version" 
+   echo "syntax: archive version"
    exit 1
 else
    ver=$1
@@ -35,7 +35,7 @@ tar -zcvf Archive/$prog.$ver.tar.gz Src/*90 \
                                     Src/molsim_ser \
                                     Src/molsim_par \
                                     Src/makefile \
-                                    Src/archive 
+                                    Src/archive
 chmod 444 Archive/$prog.$ver.tar.gz
 
 # copy  ...tar.gz file to /home/Molsim

@@ -328,7 +328,7 @@ subroutine SetConfiguration
                                   radlimit,                                                          &
                                   itestcoordinate
 
-   if (.not.allocated(txsetconf)) then 
+   if (.not.allocated(txsetconf)) then
       allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt),       &
       roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
       txsetconf   = ""
@@ -341,7 +341,7 @@ subroutine SetConfiguration
       bondscl     = 0.0E+00
       anglemin    = 0.0E+00
    end if
-   if (.not.allocated(radatset)) then 
+   if (.not.allocated(radatset)) then
       allocate(radatset(nat))
       radatset = 0.0E+00
    end if
@@ -428,7 +428,7 @@ subroutine SetConfiguration
 
    anglemin = anglemin*sclang
 
-   if (.not.allocated(lpset)) then 
+   if (.not.allocated(lpset)) then
       allocate(lpset(np_alloc))
       lpset = .false.
    end if
@@ -507,7 +507,7 @@ subroutine SetConfiguration
                if (count(ipt == iptclnwt(1:nnwt)) > 1) call stop(txroutine, 'error in iptclnwt', uout)
             end do
             do ict = 1, nct   ! one chain type can only be used in one network type
-               if (count(ncctnwt(ict,1:nnwt) > 0) > 1) call stop(txroutine, 'chain type used for more than one network type', uout)   ! Cornelius Hofzumahaus 
+               if (count(ncctnwt(ict,1:nnwt) > 0) > 1) call stop(txroutine, 'chain type used for more than one network type', uout)   ! Cornelius Hofzumahaus
             end do
          end if
       end if
@@ -545,13 +545,13 @@ subroutine SetConfiguration
          call SetRandomFixOri(ipt)
 
       else if (txsetconf(ipt) =='chainline') then
-         call SetChainLine(ipt)
+         call SetChainLine !(ipt) ipt is not needed
       else if (txsetconf(ipt) =='chaincircle') then
-         call SetChainCircle(ipt)
+         call SetChainCircle !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'chainrandom') then
-         call SetChainRandom(ipt)
+         call SetChainRandom !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'chainrandompos' .or. txsetconf(ipt) == 'chainrandomintori') then
-         call SetChainRandomIntOri(ipt)
+         call SetChainRandomIntOri !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'sphbrushlattice') then
          call SetSphBrush('lattice')
       else if (txsetconf(ipt) == 'sphbrushrandom') then
@@ -1307,12 +1307,12 @@ end subroutine SetRandomFixOri
 ! ... generate a linear configuration for chain particles (only for one chain)
 !     along the x-axis, lab orientation
 
-subroutine SetChainLine(iptset)
+subroutine SetChainLine !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainLine'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, jp, jseg
@@ -1389,12 +1389,12 @@ end subroutine SetChainLine
 ! ... generate a circular configuration for chain particles (only for one chain)
 !     in the xy-plane
 
-subroutine SetChainCircle(iptset)
+subroutine SetChainCircle !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainCircle'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, jseg
@@ -1508,12 +1508,12 @@ end subroutine SetChainCircle
 
 ! ... generate random positions and orientations for chain particles
 
-subroutine SetChainRandom(iptset)
+subroutine SetChainRandom !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainRandom'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp
@@ -1578,12 +1578,12 @@ end subroutine SetChainRandom
 
 ! ... generate random positions and internally fixed orientations for chain particles
 
-subroutine SetChainRandomIntOri(iptset)
+subroutine SetChainRandomIntOri  !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainRandomIntOri'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, ipprev
@@ -1635,7 +1635,7 @@ subroutine SetChainRandomIntOri(iptset)
                r21(2) = ro(2,ipprev)-ro(2,ip)
                r21(3) = ro(3,ipprev)-ro(3,ip)
                call PBC(r21(1), r21(2), r21(3))
-               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector			
+               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector
                call SetPartOriBond('end', r21, r21, ori(1,1,ip))      ! set second paricle to aligne with r12 vector
 
                call SetAtomPos(ipprev,ip,.false.)
@@ -2181,7 +2181,7 @@ subroutine SetNetwork(ipt)
 
 ! ... determine chain type of strand
 
-   do ict = 1, nct   ! Currently only one chain type per network is allowed 
+   do ict = 1, nct   ! Currently only one chain type per network is allowed
       if (ncctnwt(ict,inwt) > 0) exit
    end do
 
@@ -2201,7 +2201,7 @@ subroutine SetNetwork(ipt)
 
 ! ... when particle and chain number don't accord to the neccesary ones: stop excecution and write required numbers
 
-   if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then 
+   if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then
       write(uout,'(a50,i0)') "failed to set network of network type:"       , inwt
       write(uout,'(a50,i0)') "required number of chains:"                   , nstrand*nnwnwt(inwt)
       write(uout,'(a50,i0)') "required number of node particles:"           , nnode*nnwnwt(inwt)
@@ -2431,7 +2431,7 @@ subroutine SetNetworkPos(inwt,radgel, bondlen, npstrand, nnode, ronodeout, nstra
                      allocate(rostrand(3,2*size(vhelp,2)))
                      rostrand = 0.0E+00
                      rostrand = vhelp
-                  end if 
+                  end if
                   if(ilp >= 5) then                             ! distinguish between node symmetry
                         if((idir == 1) .or. (idir == 3)) then   ! chains starting at node
                            rostrand(1:3,jploc) = ronode(1:3,iploc) + iseg*signgel(1:3,idir)*xbondlen
@@ -2461,7 +2461,7 @@ subroutine SetNetworkPos(inwt,radgel, bondlen, npstrand, nnode, ronodeout, nstra
 
    rostrandout = rostrand(1:3,1:np_alloc)
    ronodeout   = ronode(1:3,1:np_alloc)
-   
+
 end subroutine SetNetworkPos
 
 !***********************************************************************
