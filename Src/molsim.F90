@@ -236,7 +236,6 @@ subroutine IOMolsim(iStage)
       fidm  = trim(adjustl(project))//'.idm'
       flaz  = trim(adjustl(project))//'.laz'
       futot = trim(adjustl(project))//'.utot'
-      futot = trim(adjustl(project))//'.utot'
 
 ! ... open FIN and FOUT
 
