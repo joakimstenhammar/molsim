@@ -2197,7 +2197,7 @@ subroutine SetNetwork(ipt)
 
 ! ... determine nnode, ronode, nstrand, rostrand, nclnode
 
-   call SetNetworkPos(inwt,rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
+   call SetNetworkPos(shiftnwt(1:3,inwt), rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
 
 ! ... when particle and chain number don't accord to the neccesary ones: stop excecution and write required numbers
 
@@ -2314,12 +2314,12 @@ end subroutine SetNetwork
 
 !........................................................................
 
-subroutine SetNetworkPos(inwt,radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
+subroutine SetNetworkPos(shiftxyz, radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in)  :: inwt                    ! network type
+   real(8),    intent(in)  :: shiftxyz(3)             ! shift unit cell of diamond cell by shiftxyz in the respective direction
    real(8),    intent(in)  :: radgel                  ! radius of gel
    real(8),    intent(in)  :: bondlen                 ! length of strand bond-length
    integer(4), intent(in)  :: npstrand                ! number of particles in strand
@@ -2368,9 +2368,9 @@ subroutine SetNetworkPos(inwt,radgel, bondlen, npstrand, nnode, ronodeout, nstra
    call SetDiamond(nlp,rol,oril)                   ! get diamond unit cell informations
 
  ! ... shift coordinates of diamond lattice
-   rol(1,1:8) = modulo(rol(1,1:8)+1-shiftnwt(1,inwt),1.0)
-   rol(2,1:8) = modulo(rol(2,1:8)+1-shiftnwt(2,inwt),1.0)
-   rol(3,1:8) = modulo(rol(3,1:8)+1-shiftnwt(3,inwt),1.0)
+   rol(1,1:8) = modulo(rol(1,1:8)+1-shiftxyz(1),1.0)
+   rol(2,1:8) = modulo(rol(2,1:8)+1-shiftxyz(2),1.0)
+   rol(3,1:8) = modulo(rol(3,1:8)+1-shiftxyz(3),1.0)
 
    radgel2 = radgel**2                             ! network radius squared
    celllen = Four*sqrt(Third)*bondlen*(npstrand+1) ! length of one cubic unit cell
