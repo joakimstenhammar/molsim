@@ -228,15 +228,15 @@ module MolModule
    integer(4),    parameter :: uvtf  = 11  ! VMD: vtf data
    integer(4),    parameter :: utcl  = 12  ! VMD: tcl script
    integer(4),    parameter :: ugroup= 15  ! group data
-   integer(4),    parameter :: upos  = 20       ! position data
-   integer(4),    parameter :: uori  = 21       ! orientation data
-   integer(4),    parameter :: uliv  = 22       ! linear velocity data
-   integer(4),    parameter :: uanv  = 23       ! angular velocity data
-   integer(4),    parameter :: ufor  = 24       ! force data
-   integer(4),    parameter :: utor  = 25       ! torque data
-   integer(4),    parameter :: uidm  = 26       ! induced dipole moment data
-   integer(4),    parameter :: ulaz  = 27       ! atom charge status
-   integer(4),    parameter :: uutot = 28       ! potential energy data
+   integer(4),    parameter :: upos  = 20  ! position data
+   integer(4),    parameter :: uori  = 21  ! orientation data
+   integer(4),    parameter :: uliv  = 22  ! linear velocity data
+   integer(4),    parameter :: uanv  = 23  ! angular velocity data
+   integer(4),    parameter :: ufor  = 24  ! force data
+   integer(4),    parameter :: utor  = 25  ! torque data
+   integer(4),    parameter :: uidm  = 26  ! induced dipole moment data
+   integer(4),    parameter :: ulaz  = 27  ! atom charge status
+   integer(4),    parameter :: uutot = 28  ! potential energy data
 
 ! ... terms
 
