@@ -4055,9 +4055,22 @@ end if
       do jploc = 0, nneighpn(ip)
          if (jploc == 0) then
             if (.not.lintrapartint) cycle
+            !do not calculate the intrapartenergy for a non charge change move
+            if (nptm /= natm) cycle
+
+            !if nptm == natm and the move was not a ChargeChangeMove then the
+            !number of atoms for the moved particles is one. Therefore the
+            !interaction for ip == jp is not calculated. Explanation:
+            !ialow = ianatm(iploc) = ianpn(ip) (as 1 Atom per particle, see also SetTrialAtomProp
+            !as iaupp = ialow: ia = ianpn(ip) (see loop)
+            !jalow = ianpn(jp) = ianpn(ip) (see below)
+            !as jaupp = jalow: ja = ianpn(ip) (see loop)
+            !therefore ja = ia and no intraparticle energies are calculated
+            !as this case is always skipped
+
             jp = ip
          else
-            jp = jpnlist(jploc,iploc)
+            jp = jpnlist(jploc,ip)
          end if
          if (lptm(jp) .and. jp /= ip) cycle
        !  write(uout,*) ' jp', jp
@@ -4085,21 +4098,21 @@ end if
             iat = iatan(ia)
             ialoc = ialoc+1
         !    write(uout,*) '  ia, ialoc, laztm(ialoc)', ia, laztm(ialoc), ialoc
-            if (.not.laztm(ialoc)) cycle  ! ia uncharged
             jalow = ianpn(jp)
             jaupp = jalow+napt(jpt)-1
             if (jp == ip .and. (nptm /= natm)) jalow = ia + 1
             do ja = jalow, jaupp
                if (ja == ia) cycle
-               if (.not.laz(ja)) cycle       ! ja uncharged
                jat = iatan(ja)
                iatjat = iatat(iat,jat)
                dx = rtm(1,ialoc)-r(1,ja)-dxopbc
                dy = rtm(2,ialoc)-r(2,ja)-dyopbc
                dz = rtm(3,ialoc)-r(3,ja)-dzopbc
                r2 = dx**2+dy**2+dz**2
-               if (r2 < r2atat(iatjat)) goto 400
-!               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
+               if (jp /= ip .and. r2 < r2atat(iatjat)) goto 400
+               if (.not.laztm(ialoc)) cycle  ! ia uncharged
+               if (.not.laz(ja)) cycle       ! ja uncharged
+               ! do not check for overlap within one particle
 
                if (r2 < r2umin(iatjat)) goto 400       ! outside lower end
                ibuf = iubuflow(iatjat)
@@ -4281,9 +4294,10 @@ end if
       do jploc = 0, nneighpn(ip)
          if (jploc == 0) then
             if (.not.lintrapartint) cycle
+            if (nptm /= natm) cycle
             jp = ip
          else
-            jp = jpnlist(jploc,iploc)
+            jp = jpnlist(jploc,ip)
          end if
          if (lptm(jp) .and. jp /= ip) cycle
          jpt = iptpn(jp)
