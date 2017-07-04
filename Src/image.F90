@@ -219,9 +219,9 @@ subroutine ImageVRML(iStage, iimage)
                      read(uwrl,'(a)') string
                      if (string(1:6) == txwrap(2)) exit
                   end do
-                  if (m2 > 10000) call stop(txroutine, 'error in advancing FWRL', uout)
+                  if (m2 > 10000) call stop(txroutine, 'error in advancing '//fwrl, uout)
                end do
-               if (m > nfac*(nstep1beg-1)+1) call stop(txroutine, 'error in advancing FWRL', uout)
+               if (m > nfac*(nstep1beg-1)+1) call stop(txroutine, 'error in advancing '//fwrl, uout)
             end if
          end if
       end if
