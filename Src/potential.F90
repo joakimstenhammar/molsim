@@ -61,12 +61,6 @@ module PotentialModule
                                            ! =4, call of TestEwaldStd or TestEwaldSPM
    integer(4)    :: itestpotchain          ! =1, call of TestBondLenghtTab and TestBondAngleTab
 
-! ... external unit
-
-#define STRINGIFY(x) x
-   character(255) :: flib = trim(adjustl(STRINGIFY(FLIBMACRO)))
-   integer(4)    :: ulib  = 4
-
 end module PotentialModule
 
 ! relation among potential routines

@@ -203,6 +203,10 @@ module MolModule
    character(255) :: fin     ! input data
    character(255) :: fout    ! output data
    character(255) :: fcnf    ! configuration data
+
+#define STRINGIFY(x) x
+   character(255) :: flib = trim(adjustl(STRINGIFY(FLIBMACRO)))
+
    character(255) :: flist   ! list data
    character(255) :: fuser   ! user-provided data
    character(255) :: fwrl    ! image data in wrl format
@@ -222,6 +226,7 @@ module MolModule
    integer(4),    parameter :: uin   = 1   ! input data
    integer(4),    parameter :: uout  = 2   ! output data
    integer(4),    parameter :: ucnf  = 3   ! configuration data
+   integer(4),    parameter :: ulib  = 4
    integer(4),    parameter :: ulist = 8   ! list data
    integer(4),    parameter :: uuser = 9   ! user-provided data
    integer(4),    parameter :: uwrl  = 10  ! image data
