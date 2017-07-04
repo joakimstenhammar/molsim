@@ -8,7 +8,7 @@ file=$(basename $in)
 pro=${file%.*}
 
 molsim="../../Bin/molsim_ser.exe"
-if [ "$dir" == "save" ]; then
+if [ "$dir" == "out_stable" ]; then
    if [ -f $dir/$pro.version ]; then
       if `cmp --silent $stable $dir/$pro.version`; then
          echo "This file was created with the currently stable version. Not running molsim again."
@@ -21,6 +21,6 @@ if [ "$dir" == "save" ]; then
    fi
 fi
 cd $dir && pwd && $molsim $pro; e=$? && cd -
-if [ "$dir" == "save" ]; then
+if [ "$dir" == "out_stable" ]; then
    cat $current > $dir/$pro.version
 fi
