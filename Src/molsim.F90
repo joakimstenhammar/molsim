@@ -196,10 +196,10 @@ subroutine IOMolsim(iStage)
 
       !parse command line arguments
       do i = 1, command_argument_count()
-	 call get_command_argument(i, arg)
+         call get_command_argument(i, arg)
 
-	 select case (arg)
-	 case ('-v', '--version', '-V')
+         select case (arg)
+         case ('-v', '--version', '-V')
             if(master) then
                write(*,'(a)') txVersionDate
 # ifdef _TEST_
@@ -212,8 +212,8 @@ subroutine IOMolsim(iStage)
                write(*,'(a)') "mode = debug"
 # endif
             end if
-	    stop 0
-	 end select
+            stop 0
+         end select
       end do
 
       !set filenames from the last argument
