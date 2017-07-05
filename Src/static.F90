@@ -8324,8 +8324,6 @@ end subroutine SubStructureDF
 !     1     rg       radius of gyration
 !     2     asph     asphericity
 !     3     alpha    degree of ionization
-!     4     rgchain  chain radius of gyration number df
-!     5     reechain chain end to end distance number df
 
 subroutine NetworkDF(iStage)
 
@@ -8336,7 +8334,7 @@ subroutine NetworkDF(iStage)
 
    character(40), parameter         :: txroutine ='NetworkDF'
    character(80), parameter         :: txheading ='network distribution functions'
-   integer(4)   , parameter         :: ntype = 5
+   integer(4)   , parameter         :: ntype = 3
    type(static1D_var),        save  :: vtype(ntype)
    integer(4),                save  :: nvar
    type(df_var), allocatable, save  :: var(:)
@@ -8365,8 +8363,8 @@ subroutine NetworkDF(iStage)
    case (iReadInput)
 
       vtype%l    = .false.
-      vtype%min  = [ Zero   , Zero   , Zero  , Zero   , Zero   ]
-      vtype%max  = [ 100.d0 , One    , One   , 100.d0 , 100.d0 ]
+      vtype%min  = [ Zero   , Zero   , Zero   ]
+      vtype%max  = [ 100.d0 , One    , One    ]
       vtype%nbin = 100
 
       rewind(uin)
@@ -8378,8 +8376,8 @@ subroutine NetworkDF(iStage)
 
 ! ... set remaining elements of vtype
 
-      vtype%label = ['rg   ','asph ','alpha','rgchain'   ,'reechain'  ]
-      vtype%nvar  = [ nnw   , nnw   , nnw   , ngr(1)*nnw , ngr(1)*nnw ]
+      vtype%label = ['rg   ','asph ','alpha' ]
+      vtype%nvar  = [ nnw   , nnw   , nnw    ]
       ngrloc(1:ntype) = vtype(1:ntype)%nvar / nnw
 
 ! ... set nvartype and nvar as well as allocate memory
@@ -8401,13 +8399,7 @@ subroutine NetworkDF(iStage)
                   var(ivar)%min  = vtype(itype)%min
                   var(ivar)%max  = vtype(itype)%max
                   var(ivar)%nbin = vtype(itype)%nbin
-                  if      (itype == 4) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))//' '//txgr(igrloc)
-                  else if (itype == 5) then
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))//' '//txgr(igrloc)
-                  else
-                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))    ! for those with ngrloc = 1
-                  end if
+                  var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))    ! for those with ngrloc = 1
                end do
             end do
          end if
@@ -8446,27 +8438,6 @@ subroutine NetworkDF(iStage)
                end if
                ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-            end if
-         end do
-
-! ... sample type 4 to 5
-
-         do itype = 4, 5
-            if (vtype(itype)%l) then
-               do ic = 1, nc
-                  igrloc = igrpn(ipnsegcn(1,ic),1) ! group number of first segment of chain ic
-                  if (igrloc <= 0) cycle
-                  ivar = ipnt(igrloc,inw,itype)
-                  call UndoPBCChain(ro(1,ipnsegcn(1,ic)),ic,1,vaux)
-                  call CalcChainProperty(ic,vaux,ChainProperty)
-                  if (itype == 4) then
-                     value = sqrt(ChainProperty%rg2)
-                  else if (itype == 5) then
-                     value = sqrt(ChainProperty%ree2)
-                  end if
-                  ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
-                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-               end do
             end if
          end do
 
