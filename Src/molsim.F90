@@ -46,7 +46,7 @@ program MolsimDriver
    if (master .and. (nproc > mnproc)) call Stop(txroutine, 'nproc > mnproc',uout)
    call par_comm_rank(myid, master, slave)
    if (master) write(*,'(a,i5,/)') 'Molsim: start of parallel run, number of processes =' ,nproc
-   call par_handshake(myid, master, slave, nproc, 6)
+   call par_handshake(myid, master, slave, nproc, ustdout)
    call par_timing('start', master, nproc, uout)
 #endif
 
@@ -184,12 +184,58 @@ subroutine IOMolsim(iStage)
    character(40), parameter :: txroutine ='IOMolsim'
    character(4) :: txistep1
 
+   character(len=128) :: arg
+   integer(4) :: i
+
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
    if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
+
+      !parse command line arguments
+      do i = 1, command_argument_count()
+         call get_command_argument(i, arg)
+
+         select case (arg)
+         case ('-v', '--version', '-V')
+            if(master) then
+               write(*,'(a)') txVersionDate
+# ifdef _TEST_
+               write(*,'(a)') "mode = test"
+# elif _NORMAL_
+               write(*,'(a)') "mode = normal"
+# elif _WARN_
+               write(*,'(a)') "mode = warn"
+# elif _DEBUG_
+               write(*,'(a)') "mode = debug"
+# endif
+            end if
+            stop 0
+         end select
+      end do
+
+      !set filenames from the last argument
+      call get_command_argument(command_argument_count(), project)
+      fin   = trim(adjustl(project))//'.in'
+      fout  = trim(adjustl(project))//'.out'
+      fcnf  = trim(adjustl(project))//'.cnf'
+      flist = trim(adjustl(project))//'.list'
+      fuser = trim(adjustl(project))//'.user'
+      fwrl  = trim(adjustl(project))//'.wrl'
+      fvtf  = trim(adjustl(project))//'.vtf'
+      ftcl  = trim(adjustl(project))//'.tcl'
+      fgroup= trim(adjustl(project))//'.group'
+      fpos  = trim(adjustl(project))//'.pos'
+      fori  = trim(adjustl(project))//'.ori'
+      fliv  = trim(adjustl(project))//'.liv'
+      fanv  = trim(adjustl(project))//'.anv'
+      ffor  = trim(adjustl(project))//'.for'
+      ftor  = trim(adjustl(project))//'.tor'
+      fidm  = trim(adjustl(project))//'.idm'
+      flaz  = trim(adjustl(project))//'.laz'
+      futot = trim(adjustl(project))//'.utot'
 
 ! ... open FIN and FOUT
 
@@ -236,12 +282,14 @@ subroutine IOMolsim(iStage)
 #endif
       if (itest == 1)   call TestSimulation
 
-      if (master) call CpuTot(uout)
       if (master) call FileFlush(uout)
 
    case (iBeforeMacrostep)
 
       if (nstep1 == 0) call Stop(txroutine, 'nstep1 == 0', uout)
+      if (lsim .and. master) write(uout, *)
+      if (lsim .and. master) call WriteDateTime(uout)
+      if (lsim .and. master) call CpuTot(uout)
       if (lsim .and. master) then
          write(txistep1,'(i4)') istep1
          call WriteHead(1, 'result of macrostep '//txistep1, uout)
@@ -260,9 +308,9 @@ subroutine IOMolsim(iStage)
       if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (master) call FileFlush(uout)
-      if (lsim .and. master) call WriteDateTime(6)
-      if (lsim .and. master) write(6,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
-      if (lsim .and. master) call FileFlush(6)
+      if (lsim .and. master) call WriteDateTime(ustdout)
+      if (lsim .and. master) write(ustdout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
+      if (lsim .and. master) call FileFlush(ustdout)
 
    case (iAfterSimulation)
 
@@ -533,13 +581,13 @@ subroutine IOSystem(iStage)
          write(uout,'(a)') '--------------'
          write(uout,'(a,t15,a,t35,a)')  'number', 'generic name', 'file name'
          write(uout,'(a,t15,a,t35,a)')  '------', '------------', '---------'
-         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', fin
-         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', fout
-         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', fcnf
-         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', flist
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uimg,   'fimg ', fimg
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', fvtf
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', ftcl    ! TO BE FIXED
+         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', trim(fin)
+         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', trim(fout)
+         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', trim(fcnf)
+         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', trim(flist)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uwrl,   'fwrl ', trim(fwrl)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', trim(fvtf)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', trim(ftcl)    ! TO BE FIXED
       end if
 
    case (iAfterSimulation)
@@ -1430,7 +1478,7 @@ subroutine ThermoAver(iStage)
       var(iekin                  )%label = 'kinetic energy                 = '
       var(iutot                  )%label = 'total potential energy         = '
       var(iutwob                 )%label = ' total two-body energy         = '
-      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'         = '
+      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'        = '
       var(iurec                  )%label = ' pot. energy from rec. space   = '
       var(iustat                 )%label = ' electrostatic energy          = '
       var(iupol                  )%label = ' polarization energy           = '

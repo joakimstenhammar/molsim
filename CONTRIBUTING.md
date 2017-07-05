@@ -21,7 +21,7 @@ The just created branch exists only locally, to set it up on the remote reposito
 ```sh
 git push --set-upstream origin <NAME-OF-NEW-BRANCH>
 ```
-You're now in your new branch. You may now begin to implement new features/changes.
+You're now in your new branch. You may now begin to implement new features/changes. To be able to measure the changes you introduced to the ouput files, go into the `Testin` directory and run `make save` This will allow you to compare the results of a collection of input files to the results which were generated with the master branch.
 
 ## 2. How to commit features/changes
 The changes you apply to the code should be as efficient and non-invasive as possible. Try to divide your modifications in logically-associated chunks of code. These chunks can then individually be committed and described in a commit message. After you changed something you first have to stage the files in which changes were made and which you'd like to commit.
@@ -62,7 +62,16 @@ When the assignee of your merge request has fully reviewed your modifications, i
 Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still, it is better to resolve it  or discuss with the assignee, why for example it should not be changed.
 
 ## 6. How to merge it
-When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests).
+When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. But first you need to perform some housekeeping:
+
+### 6.1 Update the Changelog
+Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
+
+### 6.2 Declare Stable
+Declare your version as the current stable version. Do this by running `make declarestable` in the `Testin` directory.
+
+### 6.3 Merge Branch
+Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests).
 
 ## 7. How to finalize your merge
 After the merge has been done, there are still a few things in order to finalize your merge request:
@@ -85,10 +94,7 @@ git push --tags
 ```
 in order to synchronize your new tag.
 
-### 7.2 Update the changelog
-Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
-
-### 7.3 Inform everyone about the new version
+### 7.2 Inform everyone about the new version
 Inform everyone about the new available version by adding a comment to [this issue](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/issues/20).
 
 ## Appendix: Checklist

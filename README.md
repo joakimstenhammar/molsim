@@ -20,6 +20,7 @@ Now go to the Src directory and make Molsim:
 ```shell
 cd Molsim/Src
 make all mode=normal
+make install
 ```
 For more details confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem1.lu.se/Molsim/Molsim.htm).
 

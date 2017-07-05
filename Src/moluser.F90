@@ -1642,8 +1642,6 @@ subroutine ChainCOMDump(iStage)
    integer(4) :: m, idum, ic
    integer(4), save :: idumplocal
    type(chainprop_var) :: ChainProperty
-   character(10), save :: fpos  = 'FPOS '
-   integer(4), save    :: upos  = 10
 
    select case (iStage)
    case (iReadInput)
