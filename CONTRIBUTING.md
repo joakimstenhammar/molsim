@@ -68,7 +68,7 @@ When finally all discussions have been resolved and the WIP-prefix has been remo
 Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
 
 ### 6.2 Declare Stable
-Declare your version as the current stable version. Do this by running `make declarestable` in the `Testin` directory.
+Declare your version as the current stable version. Do this by running `make declarestable` in the `Testin` directory and commit/push the new `stable.md5sum` file.
 
 ### 6.3 Merge Branch
 Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests).
