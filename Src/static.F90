@@ -8384,7 +8384,7 @@ subroutine NetworkDF(iStage)
 
 ! ... set nvartype and nvar as well as allocate memory
 
-      nvar = sum(vtype%nvar,dim=1,mask=vtype%l)
+      nvar = sum(vtype(1:ntype)%nvar,dim=1,mask=vtype%l)
       allocate(var(nvar),ipnt(maxval(ngrloc(1:ntype)),nnw,ntype))
       ipnt = 0
 
