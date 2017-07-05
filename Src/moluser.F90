@@ -2540,10 +2540,13 @@ subroutine GroupNetworkGenerations(iStage,m)
 
       ! ... for the allocations in subroutine Group: Set ngr(m) high enough
       ! ... the actual number of generations cannot exceed nc/4 for networks as set by SetNetwork
-      ngr(m) = nc/4
+      ! ... add 1 in order to account for the cross-links of the network
+      ngr(m) = nc/4 + 1
 
       if (.not.lnetwork) then
          call Warn(txroutine,'ref/field == ''networkgenerations'' .and. .not.lnetwork',uout)
+      else if (nnw > 1) then
+         call Warn(txroutine,'ref/field == ''networkgenerations'' .and. nnw > 1',uout)
       end if
 
       ! ... alloctate cross-link related pointers
@@ -2574,7 +2577,8 @@ subroutine GroupNetworkGenerations(iStage,m)
          end if
       end do
 
-      ngr(m) = maxval(igencn(1:nc))
+      ! ... add 1 in order to account for the cross-links of the network as an own group
+      ngr(m) = maxval(igencn(1:nc)) + 1
 
       ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
       str = '      '
@@ -2587,14 +2591,18 @@ subroutine GroupNetworkGenerations(iStage,m)
 
       ! Set igrpn(ip,m) in order to know it for image generation - Group assignment of particles is fixed throughout the simulation
       do ip = 1, np
-         igrpn(ip,m) = igencn(icnpn(ip))
+         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), any(iptpn(ip) == iptclnwt(1:nnwt)))
          grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
       end do
 
    case (iSimulationStep)
 
       do ip = 1, np
-         igrpn(ip,m) = igencn(icnpn(ip))
+         ! particle ip is either:
+         ! -> part of a chain of network (igrpn is then the ID of its respective chain generation igrpn = igencn)
+         ! -> part of the group of cross-links of the network (igrpn is then the highest group number: igrpn = ngr(m))
+         ! -> no part of the network (igrpn is then the ID of its respective chain generations: igrpn = igencn = 0)
+         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), any(iptpn(ip) == iptclnwt(1:nnwt)))
          grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
       end do
 
