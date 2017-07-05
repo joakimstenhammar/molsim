@@ -55,8 +55,7 @@ module StatisticsModule
       integer(4)    :: nbin                              ! number of grid points
       real(8)       :: bin                               ! grid length of df
       real(8)       :: bini                              ! inverse of bin
-      real(8)       :: nsampbin2(-1:mnbin_df)            ! number of values sampled in each bin during macrostep
-      real(8)       :: nsampbin1(-1:mnbin_df)            ! number of values sampled in each bin during simulation
+      real(8)       :: nsampbin(-1:mnbin_df)             ! number of values sampled in each bin during macrostep
       real(8)       :: avs1(-1:mnbin_df)                 ! average of the run
       real(8)       :: avsd(-1:mnbin_df)                 ! precision of average of the run
       real(8)       :: avs2(-1:mnbin_df)                 ! average of a macrostep
@@ -620,7 +619,6 @@ subroutine DistFuncSample(iStage, nvar, var)
          var(i)%nsamp1 = 0                                             ! initiate nsamp1
          var(i)%avs1(-1:var(i)%nbin) = Zero                            ! initiate avs1
          var(i)%avsd(-1:var(i)%nbin) = Zero                            ! initiate avsd
-         var(i)%nsampbin1(-1:var(i)%nbin) = Zero                       ! initiate nsampbin1
       end do
 
    case (4)  ! before a macrostep
@@ -628,7 +626,7 @@ subroutine DistFuncSample(iStage, nvar, var)
       do i = 1, nvar
          var(i)%nsamp2 = 0                                             ! initiate nsamp2
          var(i)%avs2(-1:var(i)%nbin) = Zero                            ! initiate avs2
-         var(i)%nsampbin2(-1:var(i)%nbin) = Zero                       ! initiate nsampbin2
+         var(i)%nsampbin(-1:var(i)%nbin) = Zero                        ! initiate nsampbin
       end do
 
    case (6)  ! after a macrostep

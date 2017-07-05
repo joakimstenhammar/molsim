@@ -514,7 +514,7 @@ subroutine SPDF(iStage)
             end if                                                         ! to here  /Per
             ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
             var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + pot
-            var(ivar)%nsampbin2(ibin)=var(ivar)%nsampbin2(ibin) + One
+            var(ivar)%nsampbin(ibin)=var(ivar)%nsampbin(ibin) + One
          end if
 
 ! ... sample type 10
@@ -590,7 +590,7 @@ subroutine SPDF(iStage)
             ivar = ipnt(igr,itype)
             norm = var(ivar)%nsamp2              ! factor too counteract the normalization in DistFuncSample
             do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin2(ibin))
+               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin(ibin))
             end do
          end if
          itype = 10
@@ -910,7 +910,7 @@ subroutine RDF(iStage)
                         ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                         var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
                         tauvar(ivar)%avs2(ibin) = tauvar(ivar)%avs2(ibin) + (dxo*dx+dyo*dy+dzo*dz)/r1  ! tau = dro.dr/r1
-                        tauvar(ivar)%nsampbin2(ibin) = tauvar(ivar)%nsampbin2(ibin) + One
+                        tauvar(ivar)%nsampbin(ibin) = tauvar(ivar)%nsampbin(ibin) + One
                      end do
                   end do
                end if
@@ -972,7 +972,7 @@ subroutine RDF(iStage)
             do ibin = 0, var(ivar)%nbin
                if (ndim == 3) then
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)*var(ivar)%norm/dvol(ibin,var(ivar)%min,var(ivar)%bin)
-                  tauvar(ivar)%avs2(ibin) = tauvar(ivar)%avs2(ibin)*InvFlt(tauvar(ivar)%nsampbin2(ibin))
+                  tauvar(ivar)%avs2(ibin) = tauvar(ivar)%avs2(ibin)*InvFlt(tauvar(ivar)%nsampbin(ibin))
                end if
                if (ndim == 2) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)*var(ivar)%norm/darea(ibin,var(ivar)%min,var(ivar)%bin)
             end do
@@ -8054,7 +8054,7 @@ subroutine SubStructureDF(iStage)
    case (iBeforeMacrostep)
 
       call DistFuncSample(iStage, nvar, var)    ! iStage: iBeforeMacrostep
-      ! -> Initiate nsamp2, avs2, nsampbin2
+      ! -> Initiate nsamp2, avs2, nsampbin
       call ScalarSample(iStage, 1, nvar, sclvar)! iStage: iBeforeMacrostep
       ! -> Inititate nsamp2, avs2, fls2
 
@@ -8158,7 +8158,7 @@ subroutine SubStructureDF(iStage)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + sqrt(ChainProperty%rg2)
                sclvar(ivar)%value = sclvar(ivar)%value + sqrt(ChainProperty%rg2)
-               var(ivar)%nsampbin2(ibin)=var(ivar)%nsampbin2(ibin) + One
+               var(ivar)%nsampbin(ibin)=var(ivar)%nsampbin(ibin) + One
             end if
          end do
       end if
@@ -8176,7 +8176,7 @@ subroutine SubStructureDF(iStage)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + zat(iatpt(iptpn(ip)))
-               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
+               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
                sclvar(ivar)%value = sclvar(ivar)%value + zat(iatpt(iptpn(ip)))
             end do
          end do
@@ -8189,7 +8189,7 @@ subroutine SubStructureDF(iStage)
          ivar = ipnt(1,itype)
          do ibin = -1, var(ivar)%nbin
             var(ivar)%avs2(ibin) = sum(var(ivar-1)%avs2(-1:ibin))
-            var(ivar)%nsampbin2(ibin) = sum(var(ivar-1)%nsampbin2(-1:ibin))
+            var(ivar)%nsampbin(ibin) = sum(var(ivar-1)%nsampbin(-1:ibin))
             sclvar(ivar)%value = sclvar(ivar-1)%value
          end do
       end if
@@ -8223,10 +8223,10 @@ subroutine SubStructureDF(iStage)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                if (laz(ip)) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
+               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
             end do
          end do
-         sclvar(ivar)%value = sclvar(ivar)%value + sum(var(ivar)%avs2(-1:var(ivar)%nbin)/var(ivar)%nsampbin2(-1:var(ivar)%nbin))
+         sclvar(ivar)%value = sclvar(ivar)%value + sum(var(ivar)%avs2(-1:var(ivar)%nbin)/var(ivar)%nsampbin(-1:var(ivar)%nbin))
       end if
 
       call ScalarSample(iStage, 1, nvar, sclvar)! iStage: iSimulationStep
@@ -8258,7 +8258,7 @@ subroutine SubStructureDF(iStage)
             ivar = ipnt(ict,itype)
             norm = var(ivar)%nsamp2             ! factor to counteract the normalization in DistFuncSample
             do ibin = -1, var(ivar)%nbin
-               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin2(ibin))
+               var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)*InvFlt(var(ivar)%nsampbin(ibin))
             end do
          end do
       end if
@@ -8267,9 +8267,9 @@ subroutine SubStructureDF(iStage)
       if (vtype(itype)%l) then
          ivar = ipnt(1,itype)
          vsum = sum(var(ivar)%avs2(-1:var(ivar)%nbin))
-         norm = var(ivar)%nsamp2 * sum(var(ivar)%nsampbin2(-1:var(ivar)%nbin)) * InvFlt(vsum) ! *nsamp2 in order to counteract wrong normalization in distfuncsample
+         norm = var(ivar)%nsamp2 * sum(var(ivar)%nsampbin(-1:var(ivar)%nbin)) * InvFlt(vsum) ! *nsamp2 in order to counteract wrong normalization in distfuncsample
          do ibin = -1, var(ivar)%nbin
-            if (var(ivar)%nsampbin2(ibin) /= Zero) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin2(ibin)
+            if (var(ivar)%nsampbin(ibin) /= Zero) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / var(ivar)%nsampbin(ibin)
          end do
       end if
 
@@ -8344,10 +8344,9 @@ subroutine NetworkDF(iStage)
    integer(4),   allocatable        :: ilow(:), iupp(:)
    real(8),      allocatable        :: vspread(:)
    type(networkprop_var)            :: NetworkProperty
-   type(chainprop_var)              :: ChainProperty
    integer(4), save                 :: ngrloc(ntype)
 
-   integer(4)     :: itype, ivar, ivar2, ibin, inw, inwt, igrloc, ic
+   integer(4)     :: itype, ivar, ivar2, ibin, inw, inwt, igrloc
    real(8)        :: value
    character(3)   :: txnwn
 
@@ -8537,6 +8536,10 @@ subroutine NetworkRadialDF(iStage)
    type(static1D_var),        save :: vtype(ntype)
    integer(4),                save :: nvar
    integer(4),                save :: ngrloc(ntype)
+   real(8),      allocatable, save :: nsampbin1(:,:)  ! nsampbin1 is raised by One if a property was assigned to a bin within one
+                                                      ! macrostep. After the simulation is done a property was sampled nsampbin1
+                                                      ! times. By dividing the sample by nsampbin1, the actual average of the
+                                                      ! property in that bin is obtained.
    type(df_var), allocatable, save :: var(:)
    integer(4),   allocatable, save :: ipnt(:,:,:)
    type(networkprop_var)           :: NetworkProperty
@@ -8605,8 +8608,8 @@ subroutine NetworkRadialDF(iStage)
 
 ! ... set nvar and allocate memory
 
-      nvar = sum(vtype%nvar,1,vtype%l)
-      allocate(var(nvar),ipnt(maxval(ngrloc(1:ntype)),nnw,ntype))
+      nvar = sum(vtype(1:ntype)%nvar,1,vtype%l)
+      allocate(var(nvar),ipnt(maxval(ngrloc(1:ntype)),nnw,ntype),nsampbin1(nvar,-1:maxval(vtype(1:ntype)%nbin)))
       ipnt = 0
 
 ! ... set ipnt, label, min, max, and nbin
@@ -8642,12 +8645,13 @@ subroutine NetworkRadialDF(iStage)
 
    case (iBeforeSimulation)
 
-      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp1, avs1, avsd, nsampbin1
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp1, avs1, avsd
+      nsampbin1 = Zero
       if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
 
    case (iBeforeMacrostep)
 
-      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp2, avs2, nsampbin2
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp2, avs2, nsampbin
 
    case (iSimulationStep)
 
@@ -8692,7 +8696,7 @@ subroutine NetworkRadialDF(iStage)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + sqrt(ChainProperty%rg2)
-               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
+               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
             end do
          end if
 
@@ -8728,7 +8732,7 @@ subroutine NetworkRadialDF(iStage)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                if (laz(ip)) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
-               var(ivar)%nsampbin2(ibin) = var(ivar)%nsampbin2(ibin) + One
+               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
             end do
          end if
 
@@ -8803,9 +8807,9 @@ subroutine NetworkRadialDF(iStage)
                ivar = ipnt(ict,inw,itype)
                norm = var(ivar)%nsamp2             ! factor to counteract the normalization in DistFuncSample
                do ibin = -1, var(ivar)%nbin
-                  if (var(ivar)%nsampbin2(ibin) > Zero) then
-                     var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)/var(ivar)%nsampbin2(ibin)
-                     var(ivar)%nsampbin1(ibin) = var(ivar)%nsampbin1(ibin)+One
+                  if (var(ivar)%nsampbin(ibin) > Zero) then
+                     var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)/var(ivar)%nsampbin(ibin)
+                     nsampbin1(ivar,ibin) = nsampbin1(ivar,ibin)+One
                   end if
                end do
             end do
@@ -8815,11 +8819,11 @@ subroutine NetworkRadialDF(iStage)
          if (vtype(itype)%l) then
             ivar = ipnt(1,inw,itype)
             vsum = sum(var(ivar)%avs2(-1:var(ivar)%nbin))
-            norm = var(ivar)%nsamp2 * sum(var(ivar)%nsampbin2(-1:var(ivar)%nbin)) * InvFlt(vsum) ! *nsamp2 in order to counteract wrong normalization in distfuncsample
+            norm = var(ivar)%nsamp2 * sum(var(ivar)%nsampbin(-1:var(ivar)%nbin)) * InvFlt(vsum) ! *nsamp2 in order to counteract wrong normalization in distfuncsample
             do ibin = -1, var(ivar)%nbin
-               if (var(ivar)%nsampbin2(ibin) > Zero) then
-                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)*norm/var(ivar)%nsampbin2(ibin)
-                  var(ivar)%nsampbin1(ibin) = var(ivar)%nsampbin1(ibin)+One
+               if (var(ivar)%nsampbin(ibin) > Zero) then
+                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)*norm/var(ivar)%nsampbin(ibin)
+                  nsampbin1(ivar,ibin) = nsampbin1(ivar,ibin)+One
                end if
             end do
          end if
@@ -8840,7 +8844,7 @@ subroutine NetworkRadialDF(iStage)
                ivar = ipnt(ict,inw,itype)
                norm = var(ivar)%nsamp1             ! factor to counteract the normalization in DistFuncSample
                do ibin = -1, var(ivar)%nbin
-                  if (var(ivar)%nsampbin1(ibin) > Zero) var(ivar)%avs1(ibin) = norm*var(ivar)%avs1(ibin)/var(ivar)%nsampbin1(ibin)
+                  if (nsampbin1(ivar,ibin) > Zero) var(ivar)%avs1(ibin) = norm*var(ivar)%avs1(ibin)/nsampbin1(ivar,ibin)
                end do
             end do
          end if
@@ -8850,7 +8854,7 @@ subroutine NetworkRadialDF(iStage)
             ivar = ipnt(1,inw,itype)
             norm = var(ivar)%nsamp1 ! *nsamp1 in order to counteract wrong normalization in distfuncsample
             do ibin = -1, var(ivar)%nbin
-               if (var(ivar)%nsampbin1(ibin) > Zero) var(ivar)%avs1(ibin) = norm*var(ivar)%avs1(ibin)/var(ivar)%nsampbin1(ibin)
+               if (nsampbin1(ivar,ibin) > Zero) var(ivar)%avs1(ibin) = norm*var(ivar)%avs1(ibin)/nsampbin1(ivar,ibin)
             end do
          end if
 
