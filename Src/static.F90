@@ -8766,9 +8766,7 @@ subroutine NetworkRadialDF(iStage)
             if (vtype(itype)%l) then
                do igr = 1, ngr(1)
                   ivar = ipnt(igr,inw,itype)
-                  do ibin = -1, var(ivar)%nbin
-                     var(ivar)%avs2(ibin) = var(ipnt(igr,inw,1))%avs2(ibin)  ! reference to itype 1 in ipnt
-                  end do
+                  var(ivar)%avs2 = var(ipnt(igr,inw,1))%avs2  ! reference to itype 1 in ipnt
                end do
             end if
 
