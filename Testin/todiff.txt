@@ -136,6 +136,7 @@ chain.bd.nohs.out
 p.mc.ads.out
 p.bd.ads.out
 p.bd.ads.user
+p.bd.ads2.user
 ads_20-mer
 pe.mc.sph1.out
 pe.mc.sph2.out

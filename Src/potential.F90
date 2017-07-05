@@ -61,11 +61,6 @@ module PotentialModule
                                            ! =4, call of TestEwaldStd or TestEwaldSPM
    integer(4)    :: itestpotchain          ! =1, call of TestBondLenghtTab and TestBondAngleTab
 
-! ... external unit
-
-   character(10) :: flib  = 'FLIB '
-   integer(4)    :: ulib  = 4
-
 end module PotentialModule
 
 ! relation among potential routines
@@ -3014,7 +3009,7 @@ subroutine TestEwaldStd(iStage)
    call UTotal(iStage)
    call GetPotEnergy(uexact)         ! save for later use
 
-   call WriteExactSub(6)
+   call WriteExactSub(ustdout)
    call WriteExactSub(uout)
 
 ! ... loop over one variable and calculate the error
@@ -3026,7 +3021,7 @@ subroutine TestEwaldStd(iStage)
    rcut = rcutsave
    ncut = ncutsave
 
-   call WriteHeadSub(6)
+   call WriteHeadSub(ustdout)
    call WriteHeadSub(uout)
 
    if (iewaldopt == 0) then
@@ -3056,7 +3051,7 @@ subroutine TestEwaldStd(iStage)
       call EwaldSetup
       if (rcut > boxlenshort) cycle
       call UTotal(iStage)
-      call WriteBodySub(6)
+      call WriteBodySub(ustdout)
       call WriteBodySub(uout)
       call WriteBodySub(ulist)
    end do

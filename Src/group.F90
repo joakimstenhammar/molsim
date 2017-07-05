@@ -42,7 +42,6 @@ subroutine Group(iStage)
    character(1)  :: no(maxngr)    ! for internal reading
    integer(4)    :: ngrvar        ! number of group variables (2+ngr(1)+ngr(2))
    logical       :: lsetconf
-   integer(4)    :: l20
    integer(4)    :: ip, ipt, igr, jgr,  m, ivar
    character(80) :: str
    logical       :: ok
@@ -60,7 +59,6 @@ subroutine Group(iStage)
       ref   = 'type=all'
       field = 'type=all'
       lwref =.false.
-      l20   = 15
 
       rewind(uin)
       call Advance('nmlGroup',uin,str,ok)
@@ -165,7 +163,7 @@ subroutine Group(iStage)
          end do
       end do
 
-      if (lwref .and. master) call FileOpen(l20, 'FGROUP', 'form/noread')   ! open FGROUP
+      if (lwref .and. master) call FileOpen(ugroup, fgroup, 'form/noread')   ! open FGROUP
 
    case (iBeforeSimulation)
 
@@ -193,6 +191,7 @@ subroutine Group(iStage)
 
 ! ... check that particles divided into groups are of right type
 
+
          do ip = 1, np
             igr = igrpn(ip,m)
             if (igr >= 1) then
@@ -206,7 +205,7 @@ subroutine Group(iStage)
 
       call ScalarSample(iStage, 1, ngrvar, grvar)
 
-      if (lwref .and. master) write(l20,'(200i1)') igrpn(1:np,1)   ! write group data
+      if (lwref .and. master) write(ugroup,'(200i1)') igrpn(1:np,1)   ! write group data
 
    case (iAfterMacrostep)
 
