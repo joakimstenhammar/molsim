@@ -131,7 +131,7 @@ $(molsim_bin): $(sourcefiles)
 $(current): $(molsim_bin) $(sourcefiles)
 	+cd ../Src/ && make clean && make ser mode=test && cd ../Testin
 	echo $(sourcefiles)  > $(current)
-	cat $(sourcefiles) | md5sum >> $(current)
+	cat $(sourcefiles) | md5sum | cut -d ' ' -f 1 >> $(current)
 	$(molsim_bin) -v >> $(current)
 
 
