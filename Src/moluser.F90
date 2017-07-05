@@ -2530,7 +2530,9 @@ subroutine GroupNetworkGenerations(iStage,m)
    integer(4), allocatable, save :: ipnclcn(:,:) ! crosslink and chain     -> crosslinked particle
    integer(4), allocatable, save :: nclcn(:)     ! chain number            -> its number of cross-links
 
-   integer(4)                    :: ip, igr, ic
+   integer(4)                    :: ip, igr, ic, ict
+
+   integer(4), parameter         :: inwt = 1 ! Currently works for systems with one network type only
 
    character(10)                 :: str
 
@@ -2580,18 +2582,23 @@ subroutine GroupNetworkGenerations(iStage,m)
       ! ... add 1 in order to account for the cross-links of the network as an own group
       ngr(m) = maxval(igencn(1:nc)) + 1
 
-      ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
+      ! ... Determine iptgr(igr,m)
+      do ict = 1, nct
+         if (inwtct(ict) == inwt) exit
+      end do
+      iptgr(1:ngr(m)-1,m) = iptpn(ipnsegcn(1,icnct(ict))) ! particle type constituting chains of network
+      iptgr(ngr(m),m) = iptclnwt(inwt) ! particle type constituting cross-links of network
+
+      ! ... Determine grvar(igrpnt(m,igr))%label
       str = '      '
       do igr = 1, ngr(m)
          write(str,'(i10)') igr
-         iptgr(igr,m) = 2   ! This implies monomers to be formed of particle type 2!
-                            ! Why can one group not comprise more than one particle type?
          grvar(igrpnt(m,igr))%label = "nw-gen:"//trim(adjustl(str))
       end do
 
       ! Set igrpn(ip,m) in order to know it for image generation - Group assignment of particles is fixed throughout the simulation
       do ip = 1, np
-         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), any(iptpn(ip) == iptclnwt(1:nnwt)))
+         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), iptpn(ip) == iptclnwt(inwt))
          grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
       end do
 
@@ -2602,7 +2609,7 @@ subroutine GroupNetworkGenerations(iStage,m)
          ! -> part of a chain of network (igrpn is then the ID of its respective chain generation igrpn = igencn)
          ! -> part of the group of cross-links of the network (igrpn is then the highest group number: igrpn = ngr(m))
          ! -> no part of the network (igrpn is then the ID of its respective chain generations: igrpn = igencn = 0)
-         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), any(iptpn(ip) == iptclnwt(1:nnwt)))
+         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), iptpn(ip) == iptclnwt(inwt))
          grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
       end do
 
