@@ -7047,7 +7047,7 @@ end function Getnkvec2d
 function Gettime_ewald()
    use EnergyModule
    implicit none
-   integer(4) :: Gettime_ewald
+   real(8) :: Gettime_ewald
    Gettime_ewald = time_ewald
 end function Gettime_ewald
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.5] - 2017-07-05 - Myrapla
+### Fixes
+- fixed some minor bugs
+### Changed
+- changed the way the testin directory works
+- molsim now uses the command line argumends in fortran
+
+
 ## [2.4.5] - 2017-04-24 - Quapsel
 ### Fixed
 - fixes a bug in the sso routine, which prevented continuation of parallel simulations
