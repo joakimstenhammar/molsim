@@ -367,14 +367,6 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    real(8) :: corner(1:3,1:8)
    real(8), save :: rgbcolor_dipole(1:3,1:2) = reshape([One, One, Zero,  Zero, One, One],[3,2])
 
-<<<<<<< HEAD
-=======
-   if (.not.allocated(ro_temp)) then
-      allocate(ro_temp(1:3,1:na))
-      ro_temp = 0.0E+00
-   end if
-
->>>>>>> master
 ! ... initializing label
 
    write(unit,'(a)') '#VRML V2.0 utf8'
@@ -1644,51 +1636,27 @@ subroutine UndoPBC(vhelp)
    use UndoPBCModule
    implicit none
    real(8),    intent(out)  :: vhelp(1:3,*)       ! undone atom position
-! <<<<<<< HEAD
-!    integer :: ip, ipmin, jp
+   integer :: ip, ipmin, jp
 
 
-!    if(.not. allocated(lundo)) then
-!       allocate(lundo(np), rotmp(3,na))
-! =======
-   integer(4) :: ip, ict, ic, ih, igen, jp
-
-   if (lhierarchical) then                                                ! hierarchical structures
-      do ih = 1, nh                                                       ! loop over number of hierarchic structures
-         do igen = 0, ngen                                                ! loop over generations
-            ict = ictgen(igen)                                            ! chain type
-            do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1   ! loop over chains of the structure
-                if ((igen == 0) .and. (ic == 1)) then                     ! UNDO first chain of generation zero
-                   call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
-                else
-                   ip = ipnsegcn(1,ic)                                    ! chain ic has particle ip as its first particle
-                   jp = bondcl(1,ip)                                      ! particle ip is crosslinked to particle jp
-                   call UndoPBCChain(vhelp(1,jp), ic, 1, vhelp)           ! UNDO chain ic, using UNDO position of particle jp
-                end if
-            end do
-         end do
-      end do
-   else                                                                   ! systems with no hierarchical structures
-      do ic = 1, nc
-         call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
-      end do
-! >>>>>>> master
+   if(.not. allocated(lundo)) then
+      allocate(lundo(np), rotmp(3,na))
    end if
 
-   ! lundo = .false.
-   ! rotmp = 0.0
+   lundo = .false.
+   rotmp = 0.0
 
-   ! do ip = 1, np
-   !    if(.not. lundo(ip)) then
-! !          jp = ip
-   !       ipmin = ipatcenter(ip)
-   !       call UndoClPBC(ro(1:3,ipmin),ipmin)
-   !    end if
-   ! end do
+   do ip = 1, np
+      if(.not. lundo(ip)) then
+!          jp = ip
+         ipmin = ipatcenter(ip)
+         call UndoClPBC(ro(1:3,ipmin),ipmin)
+      end if
+   end do
 
-   ! vhelp(1:3,1:na) = rotmp(1:3, 1:na)
+   vhelp(1:3,1:na) = rotmp(1:3, 1:na)
 
-   ! deallocate(lundo, rotmp)
+   deallocate(lundo, rotmp)
 
 end subroutine UndoPBC
 
