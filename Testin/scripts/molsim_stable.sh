@@ -17,7 +17,9 @@ if [ "$dir" == "out_stable" ]; then
       fi
    fi
    if ! `cmp --silent $stable $current`; then
-      echo "ERROR: $in must generated with a stable version."; exit 1
+      echo "ERROR: $in must generated with a stable version."
+      echo "ERROR: $in must generated with a stable version." > $in
+      exit 0
    fi
 fi
 cd $dir && pwd && $molsim $pro; e=$? && cd -

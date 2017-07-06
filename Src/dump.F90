@@ -216,6 +216,7 @@ subroutine DoDump(str)
 
    integer(4)   :: ip, ia, m, idum = 0
    real(8)      :: dum
+   logical      :: ldum
 
    if (str(1:4) == 'open' .and. master) then
 
@@ -240,9 +241,8 @@ subroutine DoDump(str)
          if (ldfor) read(ufor) (dum,dum,dum,ip = iplow,ipupp)
          if (ldtor) read(utor) (dum,dum,dum,ip = iplow,ipupp)
          if (ldidm) read(uidm) (dum,dum,dum,ip = iplow,ipupp)
-         if (ldlaz) read(ulaz) (dum,ia = ialow,iaupp)
+         if (ldlaz) read(ulaz) (ldum,ia = ialow,iaupp)
          if (ldutot) read(uutot,*) dum
-
       end do
 
    else if (str == 'read') then
@@ -256,7 +256,14 @@ subroutine DoDump(str)
          if (ldfor) read(ufor) forceo(1:3,iplow:ipupp)
          if (ldtor) read(utor) torqueo(1:3,iplow:ipupp)
          if (ldidm) read(uidm) idmo(1:3,iplow:ipupp)
-         if (ldlaz) read(ulaz) laz(ialow:iaupp)
+         if (ldlaz) then
+            read(ulaz) laz(ialow:iaupp)
+            where (laz(ialow:iaupp))
+               az(ialow:iaupp) = zat(iatan(ialow:iaupp))
+            elsewhere
+               az(ialow:iaupp) = Zero
+            end where
+         end if
          if (ldutot) read(uutot,*) u%tot
          if (ldutot) u%tot = u%tot/(sclene/(np*GasConstant*temp*scltem))
 
@@ -271,7 +278,8 @@ subroutine DoDump(str)
       if (ldfor) call par_bc_reals(forceo , 3*(ipupp-iplow+1))
       if (ldtor) call par_bc_reals(torqueo, 3*(ipupp-iplow+1))
       if (ldidm) call par_bc_reals(idmo   , 3*(ipupp-iplow+1))
-      if (ldlaz) call Stop("DoDump",'ldlaz .and. _par_ not supported',uout)
+      if (ldlaz) call par_bc_reals(az     ,   (ipupp-iplow+1))
+      if (ldlaz) call par_bc_logicals(laz ,   (ipupp-iplow+1))
       if (ldutot) call par_bc_reals(u%tot*sclene/(np*GasConstant*temp*scltem), 1)
 #endif
 
