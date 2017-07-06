@@ -205,4 +205,3 @@ copoly-seq.mc.out
 complexation.mc.out
 fnw.nwt2.mc.out
 chain.sequence.fnw.mc.out
-salt.mc.weakcharge.ewald.out
