@@ -1453,50 +1453,13 @@ subroutine DUWeakChargeEwaldSelf
    real(8)    :: fac
    integer(4) :: ialoc, ia
 
-!    real(8), external :: ErfLocal
-!    integer(4) :: ip, ipt, ia, ialow, iaupp, ja
-!    real(8)    :: dx, dy, dz, r2, r1, r1i, r2i, r3i, ex
-
 ! ... atomic contribution
 
    fac = ualpha/sqrt(Pi)
    do ialoc = myid+1, natm, nproc   ! adapted for _PAR_
       ia = ianatm(ialoc)
-      du%rec = du%rec - fac*aztm(ialoc)**2 + fac*az(ia)**2
-!       du%rec = du%rec + fac * (az(ia)**2 - aztm(ialoc)**2)
+      du%rec = du%rec + fac * (az(ia)**2 - aztm(ialoc)**2)
    end do
-
-! ! ... molecular contribution
-!
-!    if (lpolyatom) then
-!       do ialoc = 1, natm
-!          ia = ianatm(ialoc)
-!          ip = ipnan(ia)
-!
-!          ipt = iptpn(ip)
-!          ialow = ianpn(ip)
-!          iaupp = ianpn(ip)+napt(ipt)-1
-!          do ia = ialow, iaupp
-!             do ja = ia+1, iaupp
-!                dx = r(1,ia)-r(1,ja)
-!                dy = r(2,ia)-r(2,ja)
-!                dz = r(3,ia)-r(3,ja)
-!                r2 = dx**2 + dy**2 + dz**2
-!
-!                r1 = sqrt(r2)
-!                r1i = One/r1
-!                r2i = r1i**2
-!                ex = exp(-ualpha2*r2)
-!                r1i = r1i*ErfLocal(ualpha*r1)
-!                r3i = r2i*(r1i - ewaldfac1*ex)
-!
-!                u%rec = u%rec &
-!                         - (aztm(ia)*az(ja)*r1i) &
-!                         + (az(ia)*az(ja)*r1i)
-!             end do
-!           end do
-!        end do
-!     end if
 
 end subroutine DUWeakChargeEwaldSelf
 
