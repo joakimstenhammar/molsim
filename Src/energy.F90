@@ -31,6 +31,14 @@
 !       !             !---------- UEwald
 !       !             !   lrf
 !       !             !---------- UIntraReac
+!       !
+!       !   lweakcharge
+!       !--------------
+!       !             !
+!       !             !--------- UWeakCharge(A/P)
+!       !             !  lewald
+!       !             !--------- UEwald
+!       !
 !       !   ldipole
 !       !--------------
 !       !             !
@@ -341,6 +349,8 @@ subroutine UTotal(iStage)
       else
         call UWeakChargeP
       end if
+
+      if (lewald) call UEwald
 
 if (itest == 90) then
       call writehead(3,txroutine, uout)                                     !cc
@@ -789,7 +799,7 @@ subroutine UEwald
    u%rec          = Zero
    virrec         = Zero
 
-! ... calculate
+! ... calculate long range term of electrostatic energy in reciprocal space
 
    if (txewaldrec == 'std') then
        call UEwaldRecStd
@@ -797,12 +807,19 @@ subroutine UEwald
    else if (txewaldrec == 'spm') then
        call UEwaldRecSPM
    end if
+
    if (itest == 3 .and. master) call TestUEwald(u%rec, force, virrec, One, '(rec)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%rec, force, virrec, One, '(rec)_slave', uout)
+
+! ... calculate self interaction term of electrostatic energy in reciprocal space
    call UEwaldSelf
+
    if (itest == 3 .and. master) call TestUEwald(u%rec, force, virrec, One, '(rec + self)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%rec, force, virrec, One, '(rec + self)_slave', uout)
+
+! ... calculate surface term of electrostatic energy in reciprocal space
    if (lsurf) call  UEwaldSurf
+
    if (itest == 3 .and. master) call TestUEwald(u%rec, force, virrec, One, '(rec + self + sur)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%rec, force, virrec, One, '(rec + self + sur)_slave', uout)
 
@@ -811,6 +828,7 @@ subroutine UEwald
    u%rec = EpsiFourPi*u%rec
    u%tot  = u%tot  + u%rec
    virial = virial + EpsiFourPi*virrec
+
    if (itest == 3 .and. master) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)', uout)
    if (itest == 3 .and. slave ) call TestUEwald(u%tot, force, virial, One/EpsiFourPi, '(real + rec + self + sur)_slave', uout)
 
@@ -851,10 +869,10 @@ subroutine UEwaldRecStd
             if (nx == 0 .and. ny == 0 .and. nz == 0) cycle
             kn = kn+1
             do ia = iamyid(1), iamyid(2)
-            sumeikr(kn,1) = sumeikr(kn,1) + az(ia) * conjg(eikx(ia,nx)) * eikyzm(ia)
-            sumeikr(kn,2) = sumeikr(kn,2) + az(ia) * conjg(eikx(ia,nx)) * eikyzp(ia)
-            sumeikr(kn,3) = sumeikr(kn,3) + az(ia) *       eikx(ia,nx)  * eikyzm(ia)
-            sumeikr(kn,4) = sumeikr(kn,4) + az(ia) *       eikx(ia,nx)  * eikyzp(ia)
+               sumeikr(kn,1) = sumeikr(kn,1) + az(ia) * conjg(eikx(ia,nx)) * eikyzm(ia)
+               sumeikr(kn,2) = sumeikr(kn,2) + az(ia) * conjg(eikx(ia,nx)) * eikyzp(ia)
+               sumeikr(kn,3) = sumeikr(kn,3) + az(ia) *       eikx(ia,nx)  * eikyzm(ia)
+               sumeikr(kn,4) = sumeikr(kn,4) + az(ia) *       eikx(ia,nx)  * eikyzp(ia)
             end do
          end do
       end do
@@ -6505,27 +6523,11 @@ subroutine EwaldSetup
    integer(C_SIZE_T) :: size_fftw_alloc
 # endif
 
-! ... check upper limit of rcut
-
-   if (lbcbox .and. (rcut > minval(boxlen2(1:3)))) then
-      write(uout,'(a,1g15.5)') 'rcut = ', rcut
-      write(uout,'(a,3g15.5)') 'boxlen2 = ', boxlen2(1:3)
-      call Warn(txroutine, 'lewald .and. (rcut > minval(boxlen2(1:3)))', uout)
-   else if (lbcrd .and. (rcut > sqrt(Two/Three)*cellside)) then
-      write(uout,'(a,1g15.5)') 'rcut = ', rcut
-      write(uout,'(a,3g15.5)') 'sqrt(2/3)*cellside', sqrt(Two/Three)*cellside
-      call Warn(txroutine, 'lewald .and. (rcut > sqrt(2/3)*cellside)', uout)
-   else if (lbcto .and. (rcut > sqrt(Three/Two)*cellside)) then
-      write(uout,'(a,1g15.5)') 'rcut = ', rcut
-      write(uout,'(a,3g15.5)') 'sqrt(3/2)*cellside', sqrt(Three/Two)*cellside
-      call Warn(txroutine, 'lewald .and. (rcut > sqrt(3/2)*cellside)', uout)
-   end if
-
 ! ... determination of lq2sum and q2sum (for error analysis)
 
-   q2sum = sum(az(1:na)**2)/np
+   q2sum = sum(zat(iatan(1:na))**2)/np
    if (q2sum > Zero) then
-      lq2sum = 0                                            ! system contains charges
+      lq2sum = 0                                   ! system contains charges
    else
       q2sum = Zero
       do ipt = 1, npt
@@ -6914,6 +6916,22 @@ subroutine EwaldSetup
          end do
       end do
 # endif
+   end if
+
+! ... check upper limit of rcut
+
+   if (lbcbox .and. (rcut > minval(boxlen2(1:3)))) then
+      write(uout,'(a,1g15.5)') 'rcut = ', rcut
+      write(uout,'(a,3g15.5)') 'boxlen2 = ', boxlen2(1:3)
+      call Warn(txroutine, 'lewald .and. (rcut > minval(boxlen2(1:3)))', uout)
+   else if (lbcrd .and. (rcut > sqrt(Two/Three)*cellside)) then
+      write(uout,'(a,1g15.5)') 'rcut = ', rcut
+      write(uout,'(a,3g15.5)') 'sqrt(2/3)*cellside', sqrt(Two/Three)*cellside
+      call Warn(txroutine, 'lewald .and. (rcut > sqrt(2/3)*cellside)', uout)
+   else if (lbcto .and. (rcut > sqrt(Three/Two)*cellside)) then
+      write(uout,'(a,1g15.5)') 'rcut = ', rcut
+      write(uout,'(a,3g15.5)') 'sqrt(3/2)*cellside', sqrt(Three/Two)*cellside
+      call Warn(txroutine, 'lewald .and. (rcut > sqrt(3/2)*cellside)', uout)
    end if
 
 ! ... set other numerical constants for Ewald summation

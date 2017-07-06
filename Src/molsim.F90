@@ -278,7 +278,7 @@ subroutine IOMolsim(iStage)
       if (lradatbox) Call WarnAtomOutsideBox(1, na)
 #if defined (ALARIK_INTEL)
 #else
-     if (np < 10000) call WarnHCOverlap(1, np)
+      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (itest == 1)   call TestSimulation
 
@@ -305,7 +305,7 @@ subroutine IOMolsim(iStage)
       if (lradatbox) Call WarnAtomOutsideBox(1, na)
 #if defined (ALARIK_INTEL)
 #else
-     if (np < 10000) call WarnHCOverlap(1, np)
+      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (master) call FileFlush(uout)
       if (lsim .and. master) call WriteDateTime(ustdout)
@@ -769,7 +769,10 @@ subroutine IOCnf(str)
          if (lmvt) np = npread
          read(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
          if (lclink) read(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
-         if (lweakcharge) read(ucnf) laz(1:np)
+         if (lweakcharge) then
+            read(ucnf) laz(1:np)
+            where (.not. laz(1:np)) az(1:np) = Zero
+         end if
          if (lmd .and. .not.GetlSetVel()) then
             read(ucnf,end = 998) (rod(1:3,ip),quad(0:3,ip),ip = 1,np)
  998        continue
@@ -789,6 +792,10 @@ subroutine IOCnf(str)
       if (lclink) then
          call par_bc_ints(nbondcl ,   np)
          call par_bc_ints(bondcl  , maxvalnbondcl*np)
+      end if
+      if (lweakcharge) then
+         call par_bc_logicals(laz ,   np)
+         call par_bc_reals(az     ,   np)
       end if
       if (lmd .and. .not.GetlSetVel()) then
          call par_bc_reals(rod    , 3*np)
@@ -1519,6 +1526,7 @@ subroutine ThermoAver(iStage)
                                       write(uout,fmt1) var(iutot         )%label, u%tot/np
                                       write(uout,fmt1c)(var(iutwob+iptjpt)%label, u%twob(iptjpt)/np,iptjpt = 0,nptpt)
          if (lcharge .and. lewald)    write(uout,fmt1) var(iurec         )%label, u%rec/np
+         if (lweakcharge .and. lewald) write(uout,fmt1) var(iurec         )%label, u%rec/np
          if (ldipole .or. ldipolesph) write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iupol         )%label, u%pol/np
@@ -1658,6 +1666,7 @@ subroutine ThermoAver(iStage)
          call ThermoAverSub(lmc, fmt1, var(ivar )%label, var(ivar )%avs2, var(ivar )%fls2, ucheck%twob(ivar-iutwob))
          end do
          if (lcharge .and. lewald) call ThermoAverSub(lmc, fmt1, var(iurec)%label, var(iurec)%avs2, var(iurec)%fls2, ucheck%rec)
+         if (lweakcharge .and. lewald) call ThermoAverSub(lmc, fmt1, var(iurec)%label, var(iurec)%avs2, var(iurec)%fls2, ucheck%rec)
          if (ldipole .or. ldipolesph) call ThermoAverSub(lmc, fmt1, var(iustat)%label, var(iustat)%avs2, var(iustat)%fls2, ucheck%stat)
          if (lpolarization) call ThermoAverSub(lmc, fmt1, var(iustat)%label, var(iustat)%avs2, var(iustat)%fls2, ucheck%stat)
          if (lpolarization) call ThermoAverSub(lmc, fmt1, var(iupol )%label, var(iupol )%avs2, var(iupol )%fls2, ucheck%pol )
@@ -1724,6 +1733,7 @@ subroutine ThermoAver(iStage)
                   call TempWrite(ivar   ,fmt2,uout)
          end do
          if (lcharge .and. lewald) call TempWrite(iurec ,fmt2,uout)
+         if (lweakcharge .and. lewald) call TempWrite(iurec ,fmt2,uout)
          if (ldipole .or. ldipolesph) call TempWrite(iustat ,fmt2,uout)
          if (lpolarization) call TempWrite(iustat ,fmt2,uout)
          if (lpolarization) call TempWrite(iupol  ,fmt2,uout)
@@ -2593,7 +2603,7 @@ subroutine DistFunc(iStage)
 ! ... check condition
 
       if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine, 'vtype%nbin > mnbin_df', uout)
-      if (lmc .and. (rcutdist < rcut)) call Warn(txroutine, 'lmc .and. (rcutdist < rcut)',uout)
+      if (lmc .and. (rcutdist < rcut)) call Warn(txroutine, 'lmc .and. (rcutdist < rcut): distfunc considers smaller region then energy evaluation',uout)
 
    case (iWriteInput)
 
@@ -2942,6 +2952,7 @@ subroutine DistFunc(iStage)
          if (ltime) call CpuAdd('interrupt', ' ', 0, uout)
          usave = u                   ! save potential energies
          if (lcharge .and. lewald) call UEwald
+         if (lweakcharge .and. lewald) call UEwald
          if (ldipole .and. lewald) call UDipoleEwald
          if (lchain) call UBond
          if (lchain) call UAngle

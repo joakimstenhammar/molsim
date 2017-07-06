@@ -193,7 +193,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v3.1.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v3.2.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -418,6 +418,7 @@ module MolModule
    real(8)                :: sigat(mnat)   !*LJ sigma parpameter for atomes of a given type
    real(8)                :: epsat(mnat)   !*LJ epsilon parameter for atomes of a given type
    real(8), allocatable   :: az(:)         ! atom charge
+   real(8), allocatable   :: aztm(:)       ! atom charge (trial move)
    logical                :: latweakcharge(mnat) !*.true. if weak charge among atoms of a given type
    real(8)                :: pK(mnat)      !*pKa
    real(8)                :: pH            ! pH

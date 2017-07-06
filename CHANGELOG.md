@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.2.0] - 2017-07-05
+### Changed
+- Allow for parallel execution of Molsim of systems containing weak charges
+- Enable the possibility to use Ewald summation together with weak charges
+### Fixed
+- Minor bugs related to weak charges
+
 ## [3.1.0] - 2017-07-05
 ### Changed
 - Extended features for the usage of finite networks
