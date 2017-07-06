@@ -1,0 +1,67 @@
+ &nmlSystem
+  txtitle ='oppositely charged polyions, 20 beads * 20v20 chains',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',      txstart='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*200.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.f.,   lstatic =.t., limage=.f.,
+  itest = 0,   ipart = 100, iatom = 0,   iaver = 0,    ishow = 1,    iplot=0,   ilist =1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   =  2,
+  txct  = '20+mer', '20-mer',
+  ncct  = 20, 20,
+  npptct(1,1) = 20 , 0, 0, 0,
+  npptct(1,2) =  0, 20, 0, 0,
+  npt   = 2,
+  txpt  = 'pe1',   'pe2',
+  nppt  =  400,      400,
+  natpt =  1,        1,
+  txat  = 'bead1', 'bead2',
+  massat= 10.0,    10.0,
+  radat = 2.0, 	   2.0,
+  zat =    1,      -1,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'bead1',
+  naatpt(1,2) =	1,
+  txaat(1,2) = 'bead2',
+ /
+ &nmlPotential
+  rcut = 80,
+  txpot     =   3*'screen',
+  relpermitt = 78.4,
+  scrlen    =   10.6,
+/
+ &nmlPotentialChain bond(1) = 2.4088, 2, 5.0, angle(1) = 0.0, bond(2) = 2.4088, 2, 5.0, angle(2) = 0.0 /
+ &nmlSetConfiguration
+  txsetconf =   'random',  'random',
+ /
+ &nmlMC
+  pspart   = 0.4, 0.4,    dtran      =   50,     5.0,
+  ppivot   = 0.2, 0.2,    drotpivot  = 180.0,  180.0,
+  pchain   = 0.1, 0.1,    dtranchain =   8.0,    8.0,
+  pslither = 0.3, 0.3,
+  itestmc = 2,
+/
+ &nmlGroup ref =		'type=1', field=	'type=1', lwref =	.false. /
+ &nmlIntList inlist = 0, drnlist = 100.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlStatic
+  lrdfchain=.true.,
+  lsf      =.true.,
+  lcluster =.true.,
+ /
+ &nmlRDFChain vtype =.true., 0.0, 200.0, 100, rmax = 200.0, func = 'rcn' /
+ &nmlSF nbin = 50, lsi =.true. /
+ &nmlScatIntens
+  nshell = 1, 1,
+  rshell = 10, 10,
+  cshell = 1, 1,
+/
+ &nmlCluster txobj = 'chain', l1d = .true.,  l2d = .true.,  nobjt = 2,  iobjt = 1, 2,  rcluster=8.0,  txweight='mass',  itestcluster = 0 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML tximage(3) = 'undopbc' /
+

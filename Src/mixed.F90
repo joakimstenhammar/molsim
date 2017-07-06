@@ -46,8 +46,7 @@ subroutine MixedDriver(iStage)
    character(10) :: txpt1, txpt2
    integer(4), save ::  mode(mnchoice), nchoice, iseedst, ip
    real(8), save :: coord1(12), coord2(12)
-   integer(4) :: i, ipt, iopt
-   real(8)    :: Second, dum
+   integer(4) :: ipt, iopt
 
    namelist /nmlMixed/ mode, txpt1, txpt2, coord1, coord2, ip
 
@@ -358,7 +357,7 @@ subroutine Mixed4(ip)
    ('x','y','z',m = 1,4)
    ino = 0
    do itry = 1, ntry
-      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1,ip))
+      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1:3,ip))
       call SetPartOriRandom(iseed, ori(1,1,ip))
       call SetAtomProp(ip, ip, .false.)
       call UTwoBodyPair(1, 2, utwob, dum)
@@ -394,8 +393,8 @@ subroutine Mixed5(ip)
 
    character(80), parameter :: txheading ='second virial coefficient'
    integer(4) :: nblock
-   integer(4) :: iwr, no, ntry, m, mm
-   real(8)    :: rlow, rupp, thlow, thupp, filow, fiupp, ulow, uupp, dum, utwob
+   integer(4) :: iwr, no, m
+   real(8)    :: rlow, rupp, thlow, thupp, filow, fiupp, dum(3), utwob
    real(8)    :: sum, sum1, sum2, term, r1, rfac, fac
 
    namelist /nmlMixed5/ iwr, rlow, rupp, thlow, thupp, filow, fiupp, no, nblock
@@ -421,7 +420,7 @@ subroutine Mixed5(ip)
    sum2 = Zero
    do m = 1, no
       if (mod(m-1,no/nblock) == 0) sum = Zero
-      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1,ip))
+      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1:3,ip))
       call SetPartOriRandom(iseed, ori(1,1,ip))
       call SetAtomProp(ip, ip, .false.)
       call UTwoBodyPair(1, 2, utwob, dum)
@@ -506,7 +505,7 @@ subroutine Mixed6(ip)
    uboltz = Zero
    uw = Zero
    do ino = 1, no
-      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1,ip))
+      call RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, ro(1:3,ip))
       call SetPartOriRandom(iseed, ori(1,1,ip))
       call SetAtomProp(ip, ip, .false.)
       call UTwoBodyPair(1, 2, utwob, dum)
@@ -648,7 +647,7 @@ subroutine RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, r)
 
    implicit none
 
-   integer(4), intent(in)  :: iseed         ! seed to random number generator
+   integer(4), intent(inout)  :: iseed         ! seed to random number generator
    integer(4), intent(in)  :: iwr           ! radial weigth
    real(8),    intent(in)  :: rlow, rupp    ! lower and upper radial distance
    real(8),    intent(in)  :: thlow, thupp  ! lower and upper theta angle

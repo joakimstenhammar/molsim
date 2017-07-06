@@ -47,13 +47,8 @@ module CoordinateModule
    integer(4)    :: iptnode                   ! particle type of nodes (for SetPeriodicNetwork)
    integer(4)    :: ictstrand                 ! chain type of strands
 
-   integer(4), parameter :: mnnetworkt  = 2   ! maximum number of network types (for SetNetwork)
-   integer(4)    :: nnetworkt                 ! number of network types
-   integer(4)    :: nnetwork(mnnetworkt)      ! number of networks of network type inetworkt
-   real(8)       :: rnetwork(mnnetworkt)      ! radius of network type inetworkt
-   integer(4)    :: iptnodenwt(mnnetworkt)    ! particle type of nodes of different network types
-   integer(4)    :: ictstrandnwt(mnnetworkt)  ! chain type of strands of different network types
-   character(8)  :: txorigin(mnnetworkt)      ! network center of net type inetworkt ("origin" and "random")
+   real(8),      allocatable :: rnwt(:)       ! radius of network type inwt [Allocate with nnwt]
+   character(8), allocatable :: txoriginnwt(:)! network center of network type inwt ("origin" and "random") [Allocate with nnwt]
 
    real(8)       :: radlimit(2)               ! lower and upper radial limit of particles (for SetCoreCell)
 
@@ -96,7 +91,8 @@ subroutine Coordinate(iStage)
 
       if (txstart == 'setconf') then                    ! configuration from SetConfiguration
 
-         if (lweakcharge) call SetChargeWeakCargeCase
+         if (lweakcharge) call SetChargeWeakChargeCase
+
          call SetConfiguration
 
          if (lmd) then
@@ -116,7 +112,7 @@ subroutine Coordinate(iStage)
 
       else if (txstart == 'readfin') then               ! coordinates from fin
 
-         if (lweakcharge) call SetChargeWeakCargeCase
+         if (lweakcharge) call SetChargeWeakChargeCase
 
          rewind(uin)
          read(uin,*) (ro(1:3,ip),ori(1:3,1:3,ip),ip = 1,np)
@@ -276,6 +272,7 @@ subroutine CrossLink_Steffi    ! Steffi
        do i=1,nbondcl(ip)
           jp=bondcl(i,ip)
           if (jp==0) cycle
+          ncl = ncl + 1
           nbondcl(jp)=nbondcl(jp)+1
           bondcl(nbondcl(jp),jp)=ip
        end do
@@ -286,13 +283,13 @@ end subroutine Coordinate
 
 !************************************************************************
 !*                                                                      *
-!*     SetChargeWeakCargeCase                                           *
+!*     SetChargeWeakChargeCase                                          *
 !*                                                                      *
 !************************************************************************
 
 ! ... initiate charge of for the weak-charge case
 
-subroutine SetChargeWeakCargeCase
+subroutine SetChargeWeakChargeCase
    use CoordinateModule
    implicit none
    where (abs(az(1:na)) > 1d-10)
@@ -300,7 +297,7 @@ subroutine SetChargeWeakCargeCase
    elsewhere
       laz(1:na) = .false. !
    endwhere
-end subroutine SetChargeWeakCargeCase
+end subroutine SetChargeWeakChargeCase
 
 !************************************************************************
 !*                                                                      *
@@ -318,7 +315,7 @@ subroutine SetConfiguration
    character(40), parameter :: txroutine ='SetConfiguration'
    character     :: charfmt*1
    logical       :: lsetconf
-   integer(4)    :: ipt, ict, iptgen0, igen, isign, imagn, inetworkt
+   integer(4)    :: ipt, ict, iptgen0, igen, isign, imagn, inwt
 
    external SetOrigin, SetSq2D, SetHex2D, SetPC, SetBCC, SetFCC, SetSM2, SetDiamond, SetH2O, SetN2, SetBenzene
 
@@ -326,27 +323,36 @@ subroutine SetConfiguration
                                   radatset, lranori,  bondscl, anglemin,                             &
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
-                                  nnetworkt, nnetwork, rnetwork, iptnodenwt, ictstrandnwt, txorigin, &
+                                  rnwt, txoriginnwt,                                                 &
                                   radlimit,                                                          &
                                   itestcoordinate
 
-    if (.not.allocated(txsetconf)) then 
-       allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt), &
-     roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
-       txsetconf = ""
-       nucell = 0
-       rclow = 0.0E+00
-       rcupp = 0.0E+00
-       roshift = 0.0E+00
-       radatset = 0.0E+00
-       lranori = .false.
-       bondscl = 0.0E+00
-       anglemin = 0.0E+00
-    end if
-    if (.not.allocated(radatset)) then 
-       allocate(radatset(nat))
-       radatset = 0.0E+00
-    end if
+   if (.not.allocated(txsetconf)) then
+      allocate(txsetconf(npt), nucell(3,npt), rclow(3,npt), rcupp(3, npt),       &
+      roshift(3,npt), radatset(nat), lranori(npt), bondscl(nct), anglemin(nct))
+      txsetconf   = ""
+      nucell      = 0
+      rclow       = 0.0E+00
+      rcupp       = 0.0E+00
+      roshift     = 0.0E+00
+      radatset    = 0.0E+00
+      lranori     = .false.
+      bondscl     = 0.0E+00
+      anglemin    = 0.0E+00
+   end if
+   if (.not.allocated(radatset)) then
+      allocate(radatset(nat))
+      radatset = 0.0E+00
+   end if
+
+   if (lnetwork) then
+      if(.not.allocated(rnwt)) then
+         allocate(rnwt(nnwt))
+      end if
+      if(.not.allocated(txoriginnwt)) then
+         allocate(txoriginnwt(nnwt))
+      end if
+   end if
 
 ! ... read input data
 
@@ -390,21 +396,20 @@ subroutine SetConfiguration
       rcupp(2,1:npt) = +ellrad(2)
       rcupp(3,1:npt) = +ellrad(3)
    end if
-   roshift                     = Zero
-   radatset                    = radat
-   lranori                     =.false.
-   lfixedori                   =.false.
-   bondscl                     = One
-   anglemin                    = Zero
-   iptnode                     = 0
-   ictstrand                   = 0
-   nnetworkt                   = 0
-   nnetwork(1:mnnetworkt)      = 0
-   rnetwork (1:mnnetworkt)     = 10.0
-   iptnodenwt (1:mnnetworkt)   = 0
-   ictstrandnwt (1:mnnetworkt) = 0
-   txorigin (1:mnnetworkt)     = 'origin'
-   itestcoordinate             = 0
+   roshift           = Zero
+   radatset          = radat
+   lranori           =.false.
+   lfixedori         =.false.
+   bondscl           = One
+   anglemin          = Zero
+   iptnode           = 0
+   ictstrand         = 0
+   itestcoordinate   = 0
+
+   if (lnetwork) then
+      rnwt(1:nnwt)        = 10.0
+      txoriginnwt(1:nnwt) = 'origin'
+   end if
 
    rewind(uin)
    read(uin,nmlSetConfiguration)
@@ -412,13 +417,13 @@ subroutine SetConfiguration
    do ipt = 1, npt
      call LowerCase(txsetconf(ipt))
    end do
-   do inetworkt = 1, nnetworkt
-      call LowerCase(txorigin(inetworkt))
+   do inwt = 1, nnwt
+      call LowerCase(txoriginnwt(inwt))
    end do
 
    anglemin = anglemin*sclang
 
-   if (.not.allocated(lpset)) then 
+   if (.not.allocated(lpset)) then
       allocate(lpset(np_alloc))
       lpset = .false.
    end if
@@ -433,8 +438,7 @@ subroutine SetConfiguration
 
   if (lclink) then
      if (count(txsetconf == 'periodicnetwork') + count(txsetconf(:)(1:12) == 'hierarchical') + count(txsetconf == 'network') == 0) &
-        call Stop(txroutine, 'lclink: no call of SetPeriodicNetwork or SetHierarchical', uout)
-     if (count(txsetconf == 'periodicnetwork') > 0) ncl = 4*nppt(iptnode)
+        call Stop(txroutine, 'lclink: no call of SetPeriodicNetwork, SetNetwork or SetHierarchical', uout)
   end if
 
 ! ... if hierarchical structures, copy particle type data from generation zero
@@ -489,29 +493,20 @@ subroutine SetConfiguration
          end if
          if (count(txsetconf == 'network') > 0) then
             write(uout,'()')
-            write(uout,'(a,t45,5i8)') 'number of network types                     = ', nnetworkt
-            write(uout,'(a,t45,5i8)') 'number of networks of the network types     = ', nnetwork(1:nnetworkt)
-            write(uout,'(a,t45,5f8.2)') 'radius of networks of the network types     = ', rnetwork(1:nnetworkt)
-            write(uout,'(a,t45,5i8)') 'particle type of nodes of the network types = ', iptnodenwt(1:nnetworkt)
-            write(uout,'(a,t45,5i8)') 'chain type of strands of the network types  = ', ictstrandnwt(1:nnetworkt)
-            write(uout,'(a,t45,5a)')  'gel center of the diferenty network types   = ', txorigin(1:nnetworkt)
+            write(uout,'(a,t60,2i8)')    'number of network types                                 = ', nnwt
+            write(uout,'(a,t60,2i8)')    'number of networks of the network types                 = ', nnwnwt(1:nnwt)
+            write(uout,'(a,t60,2f8.2)')  'radius of networks of the network types                 = ', rnwt(1:nnwt)
+            write(uout,'(a,t60,2i8)')    'particle type of nodes of the network types             = ', iptclnwt(1:nnwt)
+            write(uout,'(a,t60,2x,2a8)') 'position of gel center of the different network types   = ', txoriginnwt(1:nnwt)
             do ipt = 1, npt   ! one particle type can only be used in one network type
-               if (count(ipt == iptnodenwt(1:nnetworkt)) > 1) call stop(txroutine, 'error in iptnodenwt', uout)
+               if (count(ipt == iptclnwt(1:nnwt)) > 1) call stop(txroutine, 'error in iptclnwt', uout)
             end do
             do ict = 1, nct   ! one chain type can only be used in one network type
-               if (count(ict == ictstrandnwt(1:nnetworkt)) > 1) call stop(txroutine, 'error in ictstrandnwt', uout)
+               if (count(ncctnwt(ict,1:nnwt) > 0) > 1) call stop(txroutine, 'chain type used for more than one network type', uout)   ! Cornelius Hofzumahaus
             end do
          end if
       end if
    end if
-
-! ... initialize for crosslinked structures made by MakeCrossLink
-
-    if (lclink .and. .not.lhierarchical) then
-       ncl = 0
-       nbondcl = 0
-       bondcl = 0
-    end if
 
 ! ... set particles
 
@@ -545,13 +540,13 @@ subroutine SetConfiguration
          call SetRandomFixOri(ipt)
 
       else if (txsetconf(ipt) =='chainline') then
-         call SetChainLine(ipt)
+         call SetChainLine !(ipt) ipt is not needed
       else if (txsetconf(ipt) =='chaincircle') then
-         call SetChainCircle(ipt)
+         call SetChainCircle !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'chainrandom') then
-         call SetChainRandom(ipt)
+         call SetChainRandom !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'chainrandompos' .or. txsetconf(ipt) == 'chainrandomintori') then
-         call SetChainRandomIntOri(ipt)
+         call SetChainRandomIntOri !(ipt) ipt is not needed
       else if (txsetconf(ipt) == 'sphbrushlattice') then
          call SetSphBrush('lattice')
       else if (txsetconf(ipt) == 'sphbrushrandom') then
@@ -574,12 +569,14 @@ subroutine SetConfiguration
       end if
    end do
 
-   if (lclink) then
-      if (count(txsetconf == 'periodicnetwork') > 0) then
-         write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
-      end if
-      if (count(txsetconf == 'network') > 0) then
-         write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
+   if (master) then
+      if (lclink) then
+         if (count(txsetconf == 'periodicnetwork') > 0) then
+            write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
+         end if
+         if (count(txsetconf == 'network') > 0) then
+            write(uout,'(a,t60,i8)') 'number of crosslinks                     = ', ncl
+         end if
       end if
    end if
 
@@ -1304,20 +1301,19 @@ end subroutine SetRandomFixOri
 !*                                                                      *
 !************************************************************************
 
-! ... generate a linar configuration for chain particles (only for one chain)
+! ... generate a linear configuration for chain particles (only for one chain)
 !     along the x-axis, lab orientation
 
-subroutine SetChainLine(iptset)
+subroutine SetChainLine !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainLine'
-   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, jseg
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc
-   real(8)    :: Random
+   integer(4) :: ntry, itry, iseg, ic, ict, ip, jp, jseg
+   real(8)    :: bondloc
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -1390,19 +1386,19 @@ end subroutine SetChainLine
 ! ... generate a circular configuration for chain particles (only for one chain)
 !     in the xy-plane
 
-subroutine SetChainCircle(iptset)
+subroutine SetChainCircle !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainCircle'
-   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, jseg
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc
+   integer(4) :: ntry, itry, iseg, ic, ict, ip, jseg
+   real(8)    :: bondloc
    real(8)    :: radcir, angle0
    logical    :: first =.true.
-   logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
+   logical    :: CheckPartOutsideBox, lWarnHCOverlap
 
    if (lclink) call Stop(txroutine, 'lclink is true', uout)
    ntry = 1
@@ -1433,7 +1429,7 @@ subroutine SetChainCircle(iptset)
             ro(2,ip) = radcir*sin((iseg-1)*angle0)
             ro(3,ip) = zero
             if (CheckPartOutsideBox(ip)) cycle              ! check if particle is outside the box
-            call SetOriCircle(ro(1,ip),ori(1,1,ip))         ! set orientation, z'-axis in the tangient
+            call SetOriCircle(ro(1:3,ip),ori(1:3,1:3,ip))         ! set orientation, z'-axis in the tangient
             call SetAtomPos(ip,ip,.false.)                  ! set atom positions
             if (lWarnHCOverlap(ip, radatset, .true.)) cycle ! check if atom-atom hard-core overlap
             lpset(ip) =.true.                               ! configuration accepted
@@ -1469,12 +1465,12 @@ subroutine SuperballSub(radcir)            ! calculate radius of the circle for 
             ro(1,ip) = radcir*cos((iseg-1)*angle0)
             ro(2,ip) = radcir*sin((iseg-1)*angle0)
             ro(3,ip) = zero
-            call SetOriCircle(ro(1,ip),ori(1,1,ip))
+            call SetOriCircle(ro(1:3,ip),ori(1:3,1:3,ip))
       !       write(*,'(a,3(3f10.3,5x))') 'setoricircle',  ro(1:3,ip), ori(1:3,2,ip), ori(1:3,3,ip)
          end do
          r21(1:3) = ro(1:3,ipnsegcn(1,ic))-ro(1:3,ipnsegcn(2,ic))
          r2 = r21(1)**2 + r21(2)**2 + r21(3)**2
-         of = SuperballOverlapOF(r2,r21,ori(1,1,ipnsegcn(1,ic)),ori(1,1,ipnsegcn(2,ic)))
+         of = SuperballOverlapOF(r21,ori(1,1,ipnsegcn(1,ic)),ori(1,1,ipnsegcn(2,ic)))
          write(*,'(a,i5,2f15.10)') 'SuperballSub (qsuperball < qsuperball_max_nr): iter, radcir, of', iter, radcir, of
       end do
    else
@@ -1509,17 +1505,16 @@ end subroutine SetChainCircle
 
 ! ... generate random positions and orientations for chain particles
 
-subroutine SetChainRandom(iptset)
+subroutine SetChainRandom !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainRandom'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc
-   real(8)    :: Random
+   real(8)    :: bondloc
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -1535,7 +1530,11 @@ subroutine SetChainRandom(iptset)
          ip = ipnsegcn(1,ic)
          ipt = iptpn(ip)
          if ((ipt == iptnode) .or. (ict == ictstrand)) cycle ! exclude chains which are nodes or strands
-         if(ihnpn(ip) /= 0) cycle                           ! exclude chains which are in hierarchical structure
+         if (lhierarchical) then
+            if(ihnpn(ip) /= 0) cycle                        ! exclude chains which are in hierarchical structure
+         else if (lnetwork) then
+            if (sum(ncctnwt(ict,1:nnwt)) > 0) cycle         ! exclude chains which are in finite network structure
+         end if
       ! MORE
       end if
       do iseg = 1, npct(ict)
@@ -1576,17 +1575,16 @@ end subroutine SetChainRandom
 
 ! ... generate random positions and internally fixed orientations for chain particles
 
-subroutine SetChainRandomIntOri(iptset)
+subroutine SetChainRandomIntOri  !(iptset) iptset is not needed
 
    use CoordinateModule
    implicit none
 
-   integer(4), intent(in) :: iptset                ! type of particle type in chain
+   !integer(4), intent(in) :: iptset                ! type of particle type in chain
 
    character(40), parameter :: txroutine ='SetChainRandomIntOri'
    integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, ipprev
-   real(8)    :: dx, dy, dz, r2, dro(3), dxx, dyy, dzz, bondloc, r21(3), r23(3)
-   real(8)    :: Random
+   real(8)    :: bondloc, r21(3), r23(3)
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
 
@@ -1634,7 +1632,7 @@ subroutine SetChainRandomIntOri(iptset)
                r21(2) = ro(2,ipprev)-ro(2,ip)
                r21(3) = ro(3,ipprev)-ro(3,ip)
                call PBC(r21(1), r21(2), r21(3))
-               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector			
+               call SetPartOriBond('end',-r21,-r21, ori(1,1,ipprev))  ! set first particle to align with r12 vector
                call SetPartOriBond('end', r21, r21, ori(1,1,ip))      ! set second paricle to aligne with r12 vector
 
                call SetAtomPos(ipprev,ip,.false.)
@@ -1900,54 +1898,72 @@ subroutine SetHierarchical(txfirstseg)
 
    character(40), parameter :: txroutine ='SetHierarchical'
    real(8)    :: bondloc
-   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, isegmc, icmc, icmcloc, igen, icscloc, isidechain
+   integer(4) :: ntry, itry, iseg, ic, ict, ip, ipt, jp, igen
    logical    :: first =.true.
    logical    :: CheckPartOutsideBox, CheckTooFoldedChain, lWarnHCOverlap
+   integer(4) :: iattempt
 
    if (.not.first) return                                           ! should be called only once
    first =.false.
    ntry = ntrydef
 
-   do igen = 0, ngen                                                ! loop over generations
-      ict = ictgen(igen)                                            ! chain type
-      bondloc = bondscl(ict)*bond(ict)%eq                           ! bond length to be used
-      do ic = icnct(ict), icnct(ict)+ncct(ict)-1                    ! loop over chains
-         do iseg = 1, npct(ict)                                     ! loop over segments
-            ip = ipnsegcn(iseg,ic)                                  ! particle to be set
-            ipt = iptpn(ip)                                         ! particle type
-
-            do itry = 1, ntry                                       ! loop over attempts to set the particle
-               if (iseg == 1) then                                  ! a first segment?
-                  if (igen == 0) then                               ! zeroth generation?
-                     call SetFirstSegment                           ! set first particle of a component
-                  else                                              ! generation 1 or higher
-                     jp = bondcl(1,ip)                              ! particle to which ip is crosslinked to
-                     call SetPartPosRandomN(ip, jp, bondloc)
-                  end if
-               else                                                 ! not a first segment
-                  jp = ipnsegcn(iseg-1,ic)                          ! id of particle to which jp will be a neigbor
-                  call SetPartPosRandomN(ip, jp, bondloc)
-               end if
-               if (CheckPartOutsideBox(ip)) cycle                   ! check if particle is outside the box
-               if (CheckTooFoldedChain(ip,bondloc)) cycle           ! check if a too folded chain
-               call SetPartOriRandom(iseed,ori(1,1,ip))             ! set random particle orientation
-               call SetAtomPos(ip,ip,.false.)                       ! set atom positions
-               if (lWarnHCOverlap(ip, radatset, .true.)) cycle      ! check if atom-atom hard-core overlap
-               lpset(ip) =.true.                                    ! configuration accepted
-               exit
+   attempt: do iattempt = 1, ntry                                      ! attempt multiple times to set the structure
+      !initialize all relevant lpset to .false.
+      do igen = 0, ngen                                                ! loop over generations
+         ict = ictgen(igen)                                            ! chain type
+         do ic = icnct(ict), icnct(ict)+ncct(ict)-1                    ! loop over chains
+            do iseg = 1, npct(ict)                                     ! loop over segments
+               ip = ipnsegcn(iseg,ic)                                  ! particle to be set
+               lpset(ip) = .false.
             end do
-
-            if (itry > ntry) then                                   ! number of attempts exceeds the maximal one?
-               if (master) then
-                  write(uout,'(5(a,i5,2x))') 'igen =', igen, 'ic =', ic, 'segment =', iseg, 'npct(ict) =', npct(ict)
-                  write(*,'(i5,3f10.3)') (jp, ro(1:3,jp), jp = 1, ip-1)
-                  call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
-               end if
-            end if
-
          end do
       end do
-   end do
+
+      do igen = 0, ngen                                                ! loop over generations
+         ict = ictgen(igen)                                            ! chain type
+         bondloc = bondscl(ict)*bond(ict)%eq                           ! bond length to be used
+         do ic = icnct(ict), icnct(ict)+ncct(ict)-1                    ! loop over chains
+            do iseg = 1, npct(ict)                                     ! loop over segments
+               ip = ipnsegcn(iseg,ic)                                  ! particle to be set
+               ipt = iptpn(ip)                                         ! particle type (needed for SetFirstSegment)
+
+               do itry = 1, ntry                                       ! loop over attempts to set the particle
+                  if (iseg == 1) then                                  ! a first segment?
+                     if (igen == 0) then                               ! zeroth generation?
+                        call SetFirstSegment                           ! set first particle of a component
+                     else                                              ! generation 1 or higher
+                        jp = bondcl(1,ip)                              ! particle to which ip is crosslinked to
+                        call SetPartPosRandomN(ip, jp, bondloc)
+                     end if
+                  else                                                 ! not a first segment
+                     jp = ipnsegcn(iseg-1,ic)                          ! id of particle to which jp will be a neigbor
+                     call SetPartPosRandomN(ip, jp, bondloc)
+                  end if
+                  if (CheckPartOutsideBox(ip)) cycle                   ! check if particle is outside the box
+                  if (CheckTooFoldedChain(ip,bondloc)) cycle           ! check if a too folded chain
+                  call SetPartOriRandom(iseed,ori(1,1,ip))             ! set random particle orientation
+                  call SetAtomPos(ip,ip,.false.)                       ! set atom positions
+                  if (lWarnHCOverlap(ip, radatset, .true.)) cycle      ! check if atom-atom hard-core overlap
+                  lpset(ip) =.true.                                    ! configuration accepted
+                  exit
+               end do
+
+               if (itry > ntry) then                                   ! number of attempts exceeds the maximal one?
+                  cycle attempt                                        ! have another attempt at setting the structure
+               end if
+            end do
+         end do
+      end do
+      exit                                                             ! if the attempt was successfull: accept configuration
+   end do attempt
+
+   if (iattempt > ntry) then                                   ! number of attempts exceeds the maximal one?
+      if (master) then
+         write(uout,'(5(a,i5,2x))') 'igen =', igen, 'ic =', ic, 'segment =', iseg, 'npct(ict) =', npct(ict)
+         write(*,'(i5,3f10.3)') (jp, ro(1:3,jp), jp = 1, ip-1)
+         call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
+      end if
+   end if
 
 contains
 
@@ -2013,7 +2029,7 @@ subroutine SetPeriodicNetwork(ipt)
                                                       +One, +One, -One ], &
                                                 [ 3, 4 ])
 
-   integer(4) :: ip, ic, ict, idir, inode, iseg, ix, iy, iz, nnode, nstrand, nclmade
+   integer(4) :: ip, ic, idir, inode, iseg, ix, iy, iz, nnode, nstrand, nclmade
    real(8)    :: rlen(3), rorigin(3), nnsep(0:3), nnsepreq
    real(8), allocatable :: rbond(:,:), r2bond(:)
    integer(4) :: npclend                  ! number of particles that ends a crosslink
@@ -2115,7 +2131,7 @@ end subroutine SetPeriodicNetwork
 ! ... generate a nonperiodic network
 
 !  unit cell: diamond-like containing 8 nodes and 16 strands
-!  input variables: nnetworkt, nnetwork, rnetwork, iptnodenwt, ictstrandnwt, txorigin
+!  input variables: nnwt (nmlParticle), nnwnwt (nmlParticle), ncctnwt (nmlParticle), rnwt, iptclnwt (nmlParticle), txoriginnwt
 !  boundary condition: txbc == 'xyz' or txbc == 'sph'
 
 subroutine SetNetwork(ipt)
@@ -2127,14 +2143,14 @@ subroutine SetNetwork(ipt)
 
    integer(4), intent(in)  :: ipt        ! particle type
 
-   integer(4)     :: iipt, iict, iploc, jploc
+   integer(4)     :: iploc, jploc
    integer(4)     :: ic                  ! chain counter
    integer(4)     :: iseg                ! segment counter
    integer(4)     :: ip                  ! particle counter
    integer(4)     :: npclend             ! counter crosslinkable strand particles
    integer(4)     :: ict                 ! chain type of strand
-   integer(4)     :: inetworkt           ! network type counter
-   integer(4)     :: inetwork            ! network counter
+   integer(4)     :: inwt                ! network type counter
+   integer(4)     :: inw                 ! network counter
    integer(4)     :: ntry, itry          ! counter attempts to set gel
    integer(4)     :: nclmade             ! number of crossliks formed
    integer(4), allocatable :: ipclbeg(:) ! id of particles that begin crosslinks
@@ -2153,14 +2169,22 @@ subroutine SetNetwork(ipt)
 
    ntry = ntrydef
 
-   if (count(ipt == iptnodenwt(1:nnetworkt)) == 0) return   ! ipt is not a node
-   do inetworkt = 1, nnetworkt                                   ! determine network type
-      if (ipt == iptnodenwt(inetworkt)) exit                ! ipt is a node
+! ... determine network type
+
+   if (count(ipt == iptclnwt(1:nnwt)) == 0) return   ! ipt is not a node
+   do inwt = 1, nnwt                                 ! determine network type
+      if (ipt == iptclnwt(inwt)) exit                ! ipt is a node of network type inwt
    end do
 
 ! ... determine chain type of strand
 
-   ict = ictstrandnwt(inetworkt)
+   do ict = 1, nct   ! Currently only one chain type per network is allowed
+      if (ncctnwt(ict,inwt) > 0) exit
+   end do
+
+! ... check condition
+
+   if ((txoriginnwt(inwt) == 'origin') .and. (nnwnwt(inwt) > One)) call Stop(txroutine, 'txoriginnwt == origin .and. nnwnwt(inwt) > One', uout)
 
 ! ... allocate memory
 
@@ -2170,14 +2194,16 @@ subroutine SetNetwork(ipt)
 
 ! ... determine nnode, ronode, nstrand, rostrand, nclnode
 
-   call SetNetworkPos(rnetwork(inetworkt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
+   call SetNetworkPos(rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
 
-   if(nnode*nnetwork(inetworkt) /= nppt(ipt) .or. nstrand*nnetwork(inetworkt) /= ncct(ict)) then ! stop of particle number to not fit
-      write(*,*) "failed to set network with nodes of type" , ipt
-      write(*,*) "required number of node particles: ", nnode*nnetwork(inetworkt)
-      write(*,*) "required number chains of strand",   nstrand*nnetwork(inetworkt)
-      write(*,*) "required total number particles beloging to strand",   nstrand*nnetwork(inetworkt)*npct(ict)
-      call Stop (txroutine, 'Please adjust nppt(node) and ncct(strand)', uout)
+! ... when particle and chain number don't accord to the neccesary ones: stop excecution and write required numbers
+
+   if(nnode*nnwnwt(inwt) /= nppt(ipt) .or. nstrand*nnwnwt(inwt) /= ncct(ict)) then
+      write(uout,'(a50,i0)') "failed to set network of network type:"       , inwt
+      write(uout,'(a50,i0)') "required number of chains:"                   , nstrand*nnwnwt(inwt)
+      write(uout,'(a50,i0)') "required number of node particles:"           , nnode*nnwnwt(inwt)
+      write(uout,'(a50,i0)') "required (total) number of strand particles:" , nstrand*nnwnwt(inwt)*npct(ict)
+      call Stop (txroutine, "Please adjust nppt(node) and ncct(strand)", uout)
    end if
 
 ! ... allocate memory
@@ -2190,12 +2216,12 @@ subroutine SetNetwork(ipt)
 
    maxnbondcl(ipt) = nclnode
 
-   do inetwork = 1, nnetwork(inetworkt)! loop over all networks of network type inetworkt
+   do inw = 1, nnwnwt(inwt)! loop over all networks of network type inwt
 try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
 !  ... set network origin
 
-         if (txorigin(inetworkt) == 'origin') then
+         if (txoriginnwt(inwt) == 'origin') then
             rorigin = Zero
          else
             if (lbcsph) then
@@ -2218,13 +2244,13 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 ! ... set node particles
 
          do iploc = 1 , nnode
-            ip = ipnpt(ipt) + iploc - 1 + (inetwork - 1)*nnode
+            ip = ipnpt(ipt) + iploc - 1 + (inw - 1)*nnode
             ro(1:3,ip) = rorigin(1:3) + ronode(1:3,iploc)
             call PBC(ro(1,ip),ro(2,ip),ro(3,ip))
             call SetPartOriRandom(iseed,ori(1,1,ip))              ! set random particle orientation
             call SetAtomPos(ip, ip, .false.)                      ! set atom positions
-            if (lWarnHCOverlap(ip, radatset, .true.)) exit try    ! check for hard-core overlap
-            if (CheckPartOutsideBox(ip)) exit try                 ! check that particle is inside box
+            if (lWarnHCOverlap(ip, radatset, .true.)) cycle try   ! check for hard-core overlap
+            if (CheckPartOutsideBox(ip)) cycle try                ! check that particle is inside box
             lpset(ip) =.true.                                     ! position accepted
             ipclbeg(iploc) = ip
          end do
@@ -2233,7 +2259,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
          jploc = 0
          npclend = 0
-         do ic = icnct(ict) + (inetwork - 1)*nstrand, icnct(ict) + (inetwork)*nstrand - 1
+         do ic = icnct(ict) + (inw - 1)*nstrand, icnct(ict) + (inw)*nstrand - 1
             do iseg = 1, npct(ict)
                jploc = jploc + 1
                ip = ipnsegcn(iseg,ic)
@@ -2241,8 +2267,8 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
                call PBC(ro(1,ip),ro(2,ip),ro(3,ip))
                call SetPartOriRandom(iseed,ori(1,1,ip))              ! set random particle orientation
                call SetAtomPos(ip, ip, .false.)                      ! set atom positions
-               if (lWarnHCOverlap(ip, radatset, .true.)) exit try    ! check for hard-core overlap
-               if (CheckPartOutsideBox(ip)) exit try                 ! check that particle is inside bo
+               if (lWarnHCOverlap(ip, radatset, .true.)) cycle try   ! check for hard-core overlap
+               if (CheckPartOutsideBox(ip)) cycle try                ! check that particle is inside bo
                lpset(ip) =.true.                                     ! position accepted
                if((iseg == 1) .or. (iseg == npct(ict))) then
                   npclend = npclend + 1
@@ -2270,7 +2296,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
       end do try
 
       if (itry > ntry) then                         ! number of  attempts exceeds the maximal one ?
-         if (master) write(uout,'(2(a,i5,2x))') 'particle type =', ipt,'inetwork =', inetwork
+         if (master) write(uout,'(2(a,i5,2x))') 'network type =', inwt,'network number =', inw
          call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
       end if
 
@@ -2283,19 +2309,21 @@ end subroutine SetNetwork
 
 !........................................................................
 
-subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rostrand, nclnode)
+subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
 
    use CoordinateModule
    implicit none
 
-   real(8),    intent(in)  :: radgel         ! radius of gel
-   real(8),    intent(in)  :: bondlen        ! length of strand bond-length
-   integer(4), intent(in)  :: npstrand       ! number of particles in strand
-   integer(4), intent(out) :: nnode          ! number of nodes
-   real(8),    intent(out) :: ronode(3,np)   ! coordinates of nodes
-   integer(4), intent(out) :: nstrand        ! number of stand chains
-   real(8),    intent(out) :: rostrand(3,np) ! coordiantes of strand particles
-   integer(4), intent(out) :: nclnode        ! number of crosslinks of a node (diamond: nclnode = 4)
+   real(8),    intent(in)  :: radgel                  ! radius of gel
+   real(8),    intent(in)  :: bondlen                 ! length of strand bond-length
+   integer(4), intent(in)  :: npstrand                ! number of particles in strand
+   integer(4), intent(out) :: nnode                   ! number of nodes
+   real(8),    allocatable :: ronode(:,:)             ! coordinates of nodes
+   real(8),    intent(out) :: ronodeout(3,np_alloc)   ! coordinates of nodes for output
+   integer(4), intent(out) :: nstrand                 ! number of stand chains
+   real(8),    allocatable :: rostrand(:,:)           ! coordinates of strand particles
+   real(8),    intent(out) :: rostrandout(3,np_alloc) ! coordinates of strand particles for output
+   integer(4), intent(out) :: nclnode                 ! number of crosslinks of a node (diamond: nclnode = 4)
 
    character(40), parameter :: txroutine ='SetNetworkPos'
 
@@ -2314,6 +2342,8 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rost
 
    integer(4)     :: ilp, ix, iy, iz, idir, iseg, jp, iploc, jploc, npart_strand
    real(8)        :: InvFlt
+
+   real(8), allocatable :: vhelp(:,:)
 
    real(8), parameter   :: ddelta = 1.0d-5
 
@@ -2334,11 +2364,20 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rost
    celllen = Four*sqrt(Third)*bondlen*(npstrand+1) ! length of one cubic unit cell
    xbondlen = sqrt(Third) * bondlen                ! bond length projected on an external axis
    ncell = int(Two*radgel*InvFlt(celllen)) + 1     ! number of required unit cells
-   if(modulo(ncell,2) == 1) ncell = ncell + 1      ! odd nucell -> even nucell in order to guarantee particle at ( 0 0 0 )
+   if(modulo(ncell,2) == 1) ncell = ncell + 1      ! odd ncell -> even ncell in order to guarantee particle at ( 0 0 0 )
 
    nnode = 0
    nstrand = 0
    npart_strand = 0
+   if(.not.allocated(rostrand)) then
+      allocate(rostrand(3,np_alloc), ronode(3,np_alloc))
+      rostrand = 0.0E+00
+      ronode = 0.0E+00
+   end if
+   rostrand = 0.00E+00
+   ronode   = 0.00E+00
+   ronodeout   = 0.00E+00
+   rostrandout   = 0.00E+00
 
 ! ... loop over all lattice points and try to set particles at those
 
@@ -2350,11 +2389,20 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rost
 ! ... set node particles
 
                iploc = nnode+1
-               if(iploc >= np) call Stop (txroutine, 'number of nodes in network > number of particles', uout)
+               if(iploc > size(ronode,2)) then
+                  if (allocated(vhelp)) deallocate(vhelp)
+                  allocate(vhelp(3,size(ronode,2)))
+                  vhelp = 0.0E+00
+                  vhelp = ronode
+                  deallocate(ronode)
+                  allocate(ronode(3,2*size(vhelp,2)))
+                  ronode = 0.0E+00
+                  ronode = vhelp
+               end if
                ronode(1,iploc) = (ix - Half*ncell + rol(1,ilp))*celllen
                ronode(2,iploc) = (iy - Half*ncell + rol(2,ilp))*celllen
                ronode(3,iploc) = (iz - Half*ncell + rol(3,ilp))*celllen
-               if(sum(ronode(1:3,iploc)**2) > radgel2) cycle    ! restric to inside radgel
+               if(sum(ronode(1:3,iploc)**2) > radgel2) cycle    ! restrict to inside radgel
                nnode = nnode + 1                                ! update nnode
 
 ! ... set strand particles
@@ -2362,7 +2410,16 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rost
                do idir = 1, 4                                   ! loop over all four directions from each node particle
      segment:     do iseg = 1, npstrand                         ! loop over all particles of each chain
                   jploc = npart_strand+1
-                  if(jploc > np) call Stop (txroutine, 'number of strand particles in network > number of particles', uout)
+                  if(jploc > size(rostrand,2)) then
+                     if (allocated(vhelp)) deallocate(vhelp)
+                     allocate(vhelp(3,size(rostrand,2)))
+                     vhelp = 0.0E+00
+                     vhelp = rostrand
+                     deallocate(rostrand)
+                     allocate(rostrand(3,2*size(vhelp,2)))
+                     rostrand = 0.0E+00
+                     rostrand = vhelp
+                  end if
                   if(ilp >= 5) then                             ! distinguish between node symmetry
                         if((idir == 1) .or. (idir == 3)) then   ! chains starting at node
                            rostrand(1:3,jploc) = ronode(1:3,iploc) + iseg*signgel(1:3,idir)*xbondlen
@@ -2383,11 +2440,15 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronode, nstrand, rost
                      if(iseg == npstrand) nstrand = nstrand + 1 ! update nstrand
                   end do segment
                end do
-
             end do
          end do
       end do
    end do
+
+   if (allocated(vhelp)) deallocate(vhelp)
+
+   rostrandout = rostrand(1:3,1:np_alloc)
+   ronodeout   = ronode(1:3,1:np_alloc)
 
 end subroutine SetNetworkPos
 

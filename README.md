@@ -19,10 +19,16 @@ cd Molsim
 Now go to the Src directory and make Molsim:
 ```shell
 cd Molsim/Src
-make all
+make all mode=normal
+make install
 ```
 For more details confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem1.lu.se/Molsim/Molsim.htm).
 
 Usage
 -----
 Confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem1.lu.se/Molsim/Molsim.htm) for the standard commands. Confer the [wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home) for additional changes and features.
+
+Additional Notes
+----------------
+* Cygwin
+  * To install `FFTW` in cygwin you can either install it with the configure script (slow), or install the package `libfftw3-devel`. Either way you have to run `updatedb` afterwards to update the database of your file system.

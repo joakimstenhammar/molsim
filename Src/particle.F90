@@ -38,6 +38,16 @@ module ParticleModule
    real(8)       :: raintin(3,mnapt,mnpt)  !*interaction site coordinates in input frame, cf rain
    integer(4)    :: itestpart              !*=10, call of TestChainPointer
 
+   type :: block_type
+      integer(4)  :: pt  !particle type
+      integer(4)  :: np  !number of particles
+   end type block_type
+
+   type(block_type), allocatable :: rep_iblock_ict(:,:)
+   integer(4)  :: nblockict(mnct)
+
+   integer(4), allocatable :: iptsegct(:,:) ! particle type ipt of segment number iseg of chain type ict
+
 end module ParticleModule
 
 !************************************************************************
@@ -57,16 +67,26 @@ subroutine Particle(iStage)
 
    character(40), parameter :: txroutine ='Particle'
    character(80), parameter :: txheading ='particle data'
-   integer(4) :: igen, ialoc, ict, ipt, iat, iatloc, m
+   integer(4) :: igen, ialoc, inwt, ict, ic, jc, iseg, ipt, iat, iatloc, m
+   logical                   :: luniformsequence
+   character(10)             :: txhelp  ! auxiliary
 
    namelist /nmlParticle/ txelec,                                                       &
                           lclink, lmultigraft, maxnbondcl,                              &
+                          nnwt,                                                         &
                           ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,              &
                           nct, txct, ncct, npptct, txcopolymer, lspma,                  &
+                          nblockict,                                                    &
                           npt, txpt, nppt, natpt,                                       &
                           txat, massat, radat, zat, zatalpha, sigat, epsat, latweakcharge, pK, pH, jatweakcharge, &
                           naatpt, txaat, rain, dipain, polain, lintsite, raintin,       &
                           lradatbox, itestpart
+
+   namelist /nmlRepeating/  rep_iblock_ict
+
+   namelist /nmlCopolymerSequence/ iptsegct
+
+   namelist /nmlNetworkConfiguration/ nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -78,6 +98,7 @@ subroutine Particle(iStage)
       txelec                ='charge'
       lclink                =.false.
       lmultigraft           =.false.
+      nnwt                  = 0
       maxnbondcl            = 1
       ngen                  =-1
       ictgen(0:mngen)       = 1
@@ -88,6 +109,8 @@ subroutine Particle(iStage)
       npptct          = 0
       txcopolymer     = 'block'
       lspma           = .false.
+      nblockict       = 0
+      massat          = One
       zat             = Zero
       zatalpha        = Zero
       sigat           = Zero
@@ -104,7 +127,7 @@ subroutine Particle(iStage)
       lradatbox       =.false.
       itestpart       = 0
 
-! ... read input data
+! ... read input data (nmlParticle)
 
       rewind(uin)
       read(uin,nmlParticle)
@@ -113,6 +136,59 @@ subroutine Particle(iStage)
       do ict = 1, nct
          call LowerCase(txcopolymer(ict))
       end do
+
+! ... read input data (nmlRepeating)
+
+      if(any(txcopolymer(1:nct) == 'repeating')) then
+         if(.not. allocated(rep_iblock_ict)) then
+            allocate(rep_iblock_ict(maxval(nblockict(1:nct)),nct))
+         end if
+
+         rep_iblock_ict = block_type(0,0)
+         rewind(uin)
+         read(uin,nmlRepeating)
+      end if
+
+! ... read input data (nmlCopolymerSequence)
+
+      if(any(txcopolymer(1:nct) == 'sequence')) then
+         do ict = 1, nct
+            npct(ict) = sum(npptct(1:npt,ict))  ! npct needed for following allocation
+         end do
+         if(.not. allocated(iptsegct)) then
+            allocate(iptsegct(maxval(npct(1:nct)),nct))
+         end if
+         iptsegct = 0
+         rewind(uin)
+         read(uin,nmlCopolymerSequence)
+      end if
+
+! ... read input data (nmlNetworkConfiguration)
+
+      if (nnwt > 0) then
+         if (.not.allocated(nnwnwt)) then
+            allocate(nnwnwt(nnwt),ncctnwt(nct,nnwt),iptclnwt(nnwt),txtoponwt(nnwt), &
+                     txnwt(nnwt),nctnwt(nnwt),ncnwt(nnwt),npnwt(nnwt),nclnwt(nnwt), &
+                     npweakchargenwt(nnwt),lptnwt(npt,nnwt))
+            nctnwt          = 0
+            ncnwt           = 0
+            npnwt           = 0
+            nclnwt          = 0
+            npweakchargenwt = 0
+            lptnwt          = .false.
+         end if
+
+         ! ... default values of input variables
+         nnwnwt(1:nnwt)        = 0
+         ncctnwt(1:nct,1:nnwt) = 0
+         iptclnwt(1:nnwt)      = 0
+         txtoponwt(1:nnwt)     = 'default'
+         txnwt(1:nnwt)         = 'network'
+
+         ! ... read input
+         rewind(uin)
+         read(uin,nmlNetworkConfiguration)
+      end if
 
 ! ... determine types of atoms
 
@@ -163,105 +239,111 @@ subroutine Particle(iStage)
 
       call SetObjectParam1
 
+! ... check condition
+
+      if (lweakcharge .and. lnetwork .and. lpolyatom) then
+         call Stop(txroutine,'(lweakcharge .and. lnetwork) not adapted for monoatomic systems',uout)
+      end if
+
 ! ... allocate memory
 
-      if (.not.allocated(ro)) then 
+      if (.not.allocated(ro)) then
          allocate(ro(3,np_alloc))
          ro = 0.0E+00
       end if
-      if (.not.allocated(rotm)) then 
+      if (.not.allocated(rotm)) then
          allocate(rotm(3,np_alloc))
          rotm = 0.0E+00
       end if
-      if (.not.allocated(drotm)) then 
+      if (.not.allocated(drotm)) then
          allocate(drotm(3,np_alloc))
          drotm = 0.0E+00
       end if
-      if (.not.allocated(ori)) then 
+      if (.not.allocated(ori)) then
          allocate(ori(3,3,np_alloc))
          ori = 0.0E+00
       end if
-      if (.not.allocated(oritm)) then 
+      if (.not.allocated(oritm)) then
          allocate(oritm(3,3,np_alloc))
          oritm = 0.0E+00
       end if
-      if (.not.allocated(rod)) then 
+      if (.not.allocated(rod)) then
          allocate(rod(3,np_alloc))
          rod = 0.0E+00
       end if
-      if (.not.allocated(qua)) then 
+      if (.not.allocated(qua)) then
          allocate(qua(0:3,np_alloc))
          qua = 0.0E+00
       end if
-      if (.not.allocated(quad)) then 
+      if (.not.allocated(quad)) then
          allocate(quad(0:3,np_alloc))
          quad = 0.0E+00
       end if
-      if (.not.allocated(r)) then 
+      if (.not.allocated(r)) then
          allocate(r(3,na_alloc))
          r = 0.0E+00
       end if
-      if (.not.allocated(rtm)) then 
+      if (.not.allocated(rtm)) then
          allocate(rtm(3,na_alloc))
          rtm = 0.0E+00
       end if
 
-      if (.not.allocated(dip)) then 
+      if (.not.allocated(dip)) then
          allocate(dip(3,na_alloc))
          dip = 0.0E+00
       end if
-      if (.not.allocated(diptm)) then 
+      if (.not.allocated(diptm)) then
          allocate(diptm(3,na_alloc))
          diptm = 0.0E+00
       end if
-      if (.not.allocated(idm)) then 
+      if (.not.allocated(idm)) then
          allocate(idm(3,na_alloc))
          idm = 0.0E+00
       end if
-      if (.not.allocated(idm1)) then 
+      if (.not.allocated(idm1)) then
          allocate(idm1(3,na_alloc))
          idm1 = 0.0E+00
       end if
-      if (.not.allocated(idm2)) then 
+      if (.not.allocated(idm2)) then
          allocate(idm2(3,na_alloc))
          idm2 = 0.0E+00
       end if
-      if (.not.allocated(idmo)) then 
+      if (.not.allocated(idmo)) then
          allocate(idmo(3,np_alloc))
          idmo = 0.0E+00
       end if
-      if (.not.allocated(diptot)) then 
+      if (.not.allocated(diptot)) then
          allocate(diptot(3,na_alloc))
          diptot = 0.0E+00
       end if
-      if (.not.allocated(vaux)) then 
+      if (.not.allocated(vaux)) then
          allocate(vaux(3,max(1000,2*na_alloc)))
          vaux = 0.0E+00
       end if
 
-      if (.not.allocated(angvelo)) then 
+      if (.not.allocated(angvelo)) then
          allocate(angvelo(3,np_alloc))
          angvelo = 0.0E+00
       end if
-      if (.not.allocated(forceo)) then 
+      if (.not.allocated(forceo)) then
          allocate(forceo(3,np_alloc))
          forceo = 0.0E+00
       end if
-      if (.not.allocated(torqueo)) then 
+      if (.not.allocated(torqueo)) then
          allocate(torqueo(3,np_alloc))
          torqueo = 0.0E+00
       end if
-      if (.not.allocated(force)) then 
+      if (.not.allocated(force)) then
          allocate(force(3,na_alloc), torque(3,na_alloc))
          force = 0.0E+00
          torque = 0.0E+00
       end if
-      if (.not.allocated(drostep)) then 
+      if (.not.allocated(drostep)) then
          allocate(drostep(3,np_alloc))
          drostep = 0.0E+00
       end if
 
-      if (.not.allocated(laztm)) then 
+      if (.not.allocated(laztm)) then
          allocate(laztm(na_alloc))
          laztm = .false.
       end if
@@ -275,150 +357,208 @@ subroutine Particle(iStage)
    case (iWriteInput)
 
       if (master) then
-      do igen = 0, ngen-1
-         ipt = ipnsegcn(1,icnct(ictgen(igen)))
-         if (ibranchpbeg(igen) + ibranchpinc(igen)*(nbranch(igen)-1) > npct(ictgen(igen))) call Stop(txroutine,'chain too short', uout)
-         if (nbranch(igen) * ncct(ictgen(igen)) /= ncct(ictgen(igen+1))) call Stop(txroutine, 'no matching of number of chains',uout)
-      end do
-
-! ... particle data
-
-      call WriteHead(2, txheading, uout)
-      if (txelec == 'charge') then
-         write(uout,'(a)') 'charged atoms enabled'
-      else if (txelec == 'dip') then
-         write(uout,'(a)') 'charged and dipolar atoms enabled'
-      else if (txelec == 'pol') then
-         write(uout,'(a)') 'charged, dipolar, and polarizable atoms enabled'
-      end if
-      write(uout,'()')
-
-      if (lhierarchical) &
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of hierarchical struc.  = ', nh
-      if (lchain) then
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains               = ', nc
-      end if
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particles            = ', np
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atoms                = ', na
-      if (lchain) then
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains types         = ', nct, '(',mnct,')'
-      end if
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particle types       = ', npt, '(',mnpt,')'
-      write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atom types           = ', nat, '(',mnat,')'
-
-      if (lmultigraft) then
-         write(uout,'()')
-         write(uout,'(a,t55,l8)')  'multigrafted chain                                  = ', lmultigraft
-      end if
-
-      if (lhierarchical) then
-         write(uout,'()')
-         write(uout,'(a)')         'hierarchical data'
-         write(uout,'(a)')         '-----------------'
-         write(uout,'(a,t55,i8)')  'maximum number of crosslinks of a particle          = ', maxval(maxnbondcl(1:npt))
-         write(uout,'(a,t55,i8)')  'number of generations                               = ', ngen
-         write(uout,'(a,t55,8i8)') 'chain type of the generations                       = ', ictgen(0:ngen)
-         write(uout,'(a,t55,8i8)') 'number of branches                                  = ', nbranch(0:ngen-1)
-         write(uout,'(a,t55,8i8)') 'particle number of chain for first branch point     = ', ibranchpbeg(0:ngen-1)
-         write(uout,'(a,t55,8i8)') 'particle increment of chain between branch points   = ', ibranchpinc(0:ngen-1)
-         write(uout,'(a,t55,5i8)') 'number of crosslinks                                = ', ncl
-      end if
-
-      if (lchain) then
-         write(uout,'()')
-         write(uout,'(a,t20,a,t45,a,t55,a)') 'chain type', 'no of chains', 'topology', 'no of particles of the different types'
-         write(uout,'(a,t20,a,t45,a,t55,a)') '----------', '------------', '--------', '--------------------------------------'
-         do ict = 1, nct
-            write(uout,'(a,t20,i5,t45,a,t55,10i5)') txct(ict), ncct(ict), txcopolymer(ict), npptct(1:npt,ict)
+         do igen = 0, ngen-1
+            ipt = ipnsegcn(1,icnct(ictgen(igen)))
+            if (ibranchpbeg(igen) + ibranchpinc(igen)*(nbranch(igen)-1) > npct(ictgen(igen))) call Stop(txroutine,'chain too short', uout)
+            if (nbranch(igen) * ncct(ictgen(igen)) /= ncct(ictgen(igen+1))) call Stop(txroutine, 'no matching of number of chains',uout)
          end do
-         if (lspma) write(uout,'(a)')
-         if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
-      end if
 
-      write(uout,'()')
-      write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
-      'particle', 'no', 'atom', 'no', 'mass', 'hard core', 'no of unit', 'weak  ', 'pK', 'sigma', 'epsilon', 'zatalpha'
-      write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
-      '        ', '  ', '    ', '  ', '    ', 'radius   ', 'charges   ', 'charge', '      ','     ', '       '
-      write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
-      '--------', '--', '----', '--', '----', '---------', '----------', '------', '--', '-----', '-------', '--------'
+   ! ... particle data
 
-      iat = 0
-      do ipt = 1, npt
-         write(uout,'(a,t12,i6)') txpt(ipt), nppt(ipt)
-         do iatloc = 1, natpt(ipt)
-            iat = iat+1
-            write(uout,'(t26,a,t32,i4,t39,f8.3,t48,f8.3,t60,f10.4,t72,l7,t81,f10.4,t92,f10.4,t102,f10.4,t112,f10.4)') &
-               txat(iat), naat(iat), massat(iat), radat(iat), zat(iat), latweakcharge(iat), pK(iat), sigat(iat), epsat(iat), zatalpha(iat)
+         call WriteHead(2, txheading, uout)
+         if (txelec == 'charge') then
+            write(uout,'(a)') 'charged atoms enabled'
+         else if (txelec == 'dip') then
+            write(uout,'(a)') 'charged and dipolar atoms enabled'
+         else if (txelec == 'pol') then
+            write(uout,'(a)') 'charged, dipolar, and polarizable atoms enabled'
+         end if
+         write(uout,'()')
+
+         if (lnetwork) then
+         write(uout,'(a,i7)')             'number of networks             = ', nnw
+         end if
+         if (lhierarchical) then
+         write(uout,'(a,i7)')             'number of hierarchical struc.  = ', nh
+         end if
+         if (lchain) then
+         write(uout,'(a,i7)')             'number of chains               = ', nc
+         end if
+         write(uout,'(a,i7)')             'number of particles            = ', np
+         write(uout,'(a,i7)')             'number of atoms                = ', na
+         if (lnetwork) then
+         write(uout,'(a,i7)')             'number of network types        = ', nnwt
+         end if
+         if (lchain) then
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of chains types         = ', nct, '(',mnct,')'
+         end if
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of particle types       = ', npt, '(',mnpt,')'
+         write(uout,'(a,i7,5x,a,i7,x,a)') 'number of atom types           = ', nat, '(',mnat,')'
+
+         if (lmultigraft) then
+            write(uout,'()')
+            write(uout,'(a,t55,l8)')  'multigrafted chain                                  = ', lmultigraft
+         end if
+
+         if (lnetwork) then
+            write(txhelp,'(i3)') nct
+            write(uout,'()')
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txhelp))//'(a8,i0,a6,2x))') &
+            ' network  ',' type ', ' no ', ' topology ', ('ncctnwt(',ict,',inwt)',ict = 1, nct)
+            write(uout,'(a,t14,a,t24,a,t32,a,t46,'//trim(adjustl(txhelp))//'(a15,2x))')       &
+            '----------','------', '----', '----------', ('---------------',ict = 1, nct)
+            do inwt = 1, nnwt
+               write(uout,'(1x,a,t14,1x,i2,t24,i2,t32,a,t46,'//trim(adjustl(txhelp))//'(i5,11x))') &
+               txnwt(inwt), inwt, nnwnwt(inwt), txtoponwt(inwt), ncctnwt(1:nct,inwt)
+            end do
+            write(uout,'()')
+         end if
+
+         if (lhierarchical) then
+            write(uout,'()')
+            write(uout,'(a)')         'hierarchical data'
+            write(uout,'(a)')         '-----------------'
+            write(uout,'(a,t55,i8)')  'maximum number of crosslinks of a particle          = ', maxval(maxnbondcl(1:npt))
+            write(uout,'(a,t55,i8)')  'number of generations                               = ', ngen
+            write(uout,'(a,t55,8i8)') 'chain type of the generations                       = ', ictgen(0:ngen)
+            write(uout,'(a,t55,8i8)') 'number of branches                                  = ', nbranch(0:ngen-1)
+            write(uout,'(a,t55,8i8)') 'particle number of chain for first branch point     = ', ibranchpbeg(0:ngen-1)
+            write(uout,'(a,t55,8i8)') 'particle increment of chain between branch points   = ', ibranchpinc(0:ngen-1)
+            write(uout,'(a,t55,5i8)') 'number of crosslinks                                = ', ncl
+         end if
+
+         if (lchain) then
+            write(txhelp,'(i3)') npt
+            write(uout,'()')
+            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txhelp))//'(a7,i0,a5,2x))') &
+            'chain type', 'no of chains', 'topology', ('npptct(',ipt,',ict) ',ipt = 1, npt)
+            write(uout,'(a,t20,a,t45,a,t55,'//trim(adjustl(txhelp))//'(a13,2x))')       &
+            '----------', '------------', '--------', ('-------------', ipt = 1, npt)
+            do ict = 1, nct
+               write(uout,'(a,t20,i5,t45,a,t55,'//trim(adjustl(txhelp))//'(i5,9x))') &
+               txct(ict), ncct(ict), txcopolymer(ict), npptct(1:npt,ict)
+            end do
+            write(uout,'()')
+            do ict = 1, nct
+               if (txcopolymer(ict) == 'block') cycle ! No sequence output for block-like chain types
+               write(txhelp,'(i3)') ict
+               write(uout,'(a)') repeat('- ',13)//'sequence of chain type '//trim(adjustl(txhelp))&
+                                 &//' '''//trim(adjustl(txct(ict)))//''''//repeat(' -',13)
+               write(uout,'()')
+               luniformsequence = .true.
+  testuniform: do ic = icnct(ict), icnct(ict) + ncct(ict) - 1
+                  do jc = ic + 1, icnct(ict) + ncct(ict) - 1
+                     if (any(iptpn(ipnsegcn(1:npct(ict),ic)) /= iptpn(ipnsegcn(1:npct(ict),jc)))) then
+                        luniformsequence = .false.
+                        exit testuniform
+                     end if
+                  end do
+               end do testuniform
+               do ic = icnct(ict), icnct(ict)+ncct(ict)-1
+                  if (.not. luniformsequence) write(uout,'(a5,i0)') 'ic = ', ic
+                  do iseg = 1, npct(ict)
+                     write(txhelp,'(i10)') iptpn(ipnsegcn(iseg,ic))
+                     txhelp = merge(trim(adjustl(txhelp))//' ',trim(adjustl(txhelp))//'-',iseg == npct(ict))
+                     if (modulo(iseg,50) == 0 .or. iseg == npct(ict)) then
+                        write(uout,fmt='(a)',advance='yes') trim(adjustl(txhelp))
+                     else
+                        write(uout,fmt='(a)',advance='no')  trim(adjustl(txhelp))
+                     end if
+                  end do
+                  if (luniformsequence) exit
+                  write (uout,'()')
+               end do
+               write (uout,'()')
+               if (ict == nct) write(uout,'(a)') repeat('- ',45)
+            end do
+            if (lspma) write(uout,'(a)')
+            if (lspma) write(uout,'(a,l5)') 'lspma                                               = ', lspma
+         end if
+
+         write(uout,'()')
+         write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
+         'particle', 'no', 'atom', 'no', 'mass', 'hard core', 'no of unit', 'weak  ', 'pK', 'sigma', 'epsilon', 'zatalpha'
+         write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
+         '        ', '  ', '    ', '  ', '    ', 'radius   ', 'charges   ', 'charge', '      ','     ', '       '
+         write(uout,'(a,t16,a,t26,a,t35,a,t42,a,t50,a,t63,a,t76,a,t86,a,t96,a,t105,a,t114,a)')       &
+         '--------', '--', '----', '--', '----', '---------', '----------', '------', '--', '-----', '-------', '--------'
+
+         iat = 0
+         do ipt = 1, npt
+            write(uout,'(a,t12,i6)') txpt(ipt), nppt(ipt)
+            do iatloc = 1, natpt(ipt)
+               iat = iat+1
+               write(uout,'(t26,a,t32,i4,t39,f8.3,t48,f8.3,t60,f10.4,t72,l7,t81,f10.4,t92,f10.4,t102,f10.4,t112,f10.4)') &
+                  txat(iat), naat(iat), massat(iat), radat(iat), zat(iat), latweakcharge(iat), pK(iat), sigat(iat), epsat(iat), zatalpha(iat)
+            end do
          end do
-      end do
 
-      if (count(latweakcharge(1:nat)) > 0) then
-         write(uout,'()')
-         write(uout,'(a,t6,f8.3)') 'pH = ', pH
-         if (jatweakcharge /= 0) write(uout,'(a,i8)') 'type of monoatomic particle carring counter charge to titratable charge = ', jatweakcharge
-         pHmpK = pH - pK
-      end if
-
-      if (lradatbox) then
-         write(uout,'()')
-         write(uout,'(a)') 'atoms and atom radii are used to examine if particles are inside the box'
-         write(uout,'()')
-      end if
-
-      do ipt = 1, npt
-
-         write(uout,'()')
-         write(uout,'(a,a)') 'molecular input frame: ', txpt(ipt)
-         write(uout,'(a,40a)') '---------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
-         write(uout,'()')
-         write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
-         write(uout,'(a,t20,a)') '----', '------------------'
-         write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), rain(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
-
-         if (ldipole .or. ldipolesph) then
+         if (count(latweakcharge(1:nat)) > 0) then
             write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
-            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), ialoc = 1, napt(ipt))
+            write(uout,'(a,t6,f8.3)') 'pH = ', pH
+            if (jatweakcharge /= 0) write(uout,'(a,i8)') 'type of monoatomic particle carring counter charge to titratable charge = ', jatweakcharge
+            pHmpK = pH - pK
          end if
 
-         if (lpolarization) then
+         if (lradatbox) then
             write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
-             write(uout,'(a,3f10.5,5x,6f10.5)')                                            &
-             (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), polain(1:6,ialoc,ipt), ialoc = 1, napt(ipt))
+            write(uout,'(a)') 'atoms and atom radii are used to examine if particles are inside the box'
+            write(uout,'()')
          end if
+
+         do ipt = 1, npt
+
+            write(uout,'()')
+            write(uout,'(a,a)') 'molecular input frame: ', txpt(ipt)
+            write(uout,'(a,40a)') '---------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
+            write(uout,'()')
+            write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
+            write(uout,'(a,t20,a)') '----', '------------------'
+            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), rain(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
+
+            if (ldipole .or. ldipolesph) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
+               write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), ialoc = 1, napt(ipt))
+            end if
+
+            if (lpolarization) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
+                write(uout,'(a,3f10.5,5x,6f10.5)')                                            &
+                (txaat(ialoc,ipt), dipain(1:3,ialoc,ipt), polain(1:6,ialoc,ipt), ialoc = 1, napt(ipt))
+            end if
+
+            write(uout,'()')
+            write(uout,'(a,a)') 'principal axis frame: ', txpt(ipt)
+            write(uout,'(a,40a)') '--------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
+            write(uout,'()')
+            write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
+            write(uout,'(a,t20,a)') '----', '------------------'
+            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), ra(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
+
+            if (ldipole .or. ldipolesph) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
+               write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
+            end if
+
+            if (lpolarization) then
+               write(uout,'()')
+               write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
+               write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
+               write(uout,'(a,3f10.5,5x,6f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), poltensa(1:6,ialoc,ipt), ialoc = 1,napt(ipt))
+            end if
+
+         end do
 
          write(uout,'()')
-         write(uout,'(a,a)') 'principal axis frame: ', txpt(ipt)
-         write(uout,'(a,40a)') '--------------------- ', ('-',m = 1,len(trim(txpt(ipt))))
-         write(uout,'()')
-         write(uout,'(a,t20,a)') 'atom', 'coordinate (x,y,z)'
-         write(uout,'(a,t20,a)') '----', '------------------'
-         write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), ra(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
-
-         if (ldipole .or. ldipolesph) then
-            write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------'
-            write(uout,'(a,3f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), ialoc = 1,napt(ipt))
-         end if
-
-         if (lpolarization) then
-            write(uout,'()')
-            write(uout,'(a,t20,a,t60,a)') 'atom', 'dipole moment (x,y,z)', 'polarizability (xx,yy,zz,xy,xz,yz)'
-            write(uout,'(a,t20,a,t60,a)') '----', '---------------------', '----------------------------------'
-            write(uout,'(a,3f10.5,5x,6f10.5)') (txaat(ialoc,ipt), dipa(1:3,ialoc,ipt), poltensa(1:6,ialoc,ipt), ialoc = 1,napt(ipt))
-         end if
-
-      end do
-
-      write(uout,'()')
-      write(uout,'(a,t22,a,t37,a,t70,a)') 'particle', 'mass', 'moment of inertia (x,y,z)', 'maximal atom-com distance'
-      write(uout,'(a,t22,a,t37,a,t70,a)') '--------', '----', '-------------------------', '-------------------------'
-      write(uout,'(a,5x,f10.3,5x,3f10.3,10x,f8.3)') (txpt(ipt), masspt(ipt), mompt(1:3,ipt), racom(ipt), ipt = 1,npt)
+         write(uout,'(a,t22,a,t37,a,t70,a)') 'particle', 'mass', 'moment of inertia (x,y,z)', 'maximal atom-com distance'
+         write(uout,'(a,t22,a,t37,a,t70,a)') '--------', '----', '-------------------------', '-------------------------'
+         write(uout,'(a,5x,f10.3,5x,3f10.3,10x,f8.3)') (txpt(ipt), masspt(ipt), mompt(1:3,ipt), racom(ipt), ipt = 1,npt)
       end if
 
    end select
@@ -468,9 +608,11 @@ subroutine SetObjectParam1
    implicit none
 
    character(40), parameter :: txroutine ='SetObjectParam1'
-   integer(4) :: igen, iseg, ic, icloc, ict, jct, ictjct, ip, iplow, iploc, ipt, jpt, iptjpt
-   integer(4) :: ia, ialoc, ia0, ia1, ia2, iat, iatloc, iaat, jat, iatjat
-   integer(4) :: nptemp
+   integer(4) :: ia, ialoc, iat, iatloc         ! atoms
+   integer(4) :: ip, iploc, ipt, nptemp         ! particles
+   integer(4) :: iseg, ic, icloc, ict, nctemp   ! chains
+   integer(4) :: igen                           ! hierarchical
+   integer(4) :: inw, inwt, inwloc, iclloc      ! network
 
 ! ... check some input variables
 
@@ -484,7 +626,7 @@ subroutine SetObjectParam1
 
    do ipt = 1, npt
       nptemp = sum(ncct(1:nct)*npptct(ipt,1:nct))
-      if (nptemp > 0 .and. (nptemp/= nppt(ipt))) then
+      if ( .not.((nptemp == 0).or.(nptemp == nppt(ipt)))) then
          write(uout,'(a,i5)') 'ipt = ', ipt
          write(uout,'(a,i5)') 'sum(ncct(1:nct)*npptct(ipt,1:nct)) = ', sum(ncct(1:nct)*npptct(ipt,1:nct))
          write(uout,'(a,i5)') 'nppt(ipt) = ', nppt(ipt)
@@ -492,6 +634,48 @@ subroutine SetObjectParam1
       end if
    end do
 
+! ... check consistence of npptct and iptsegct (only if txcopolymer = 'sequence')
+   do ict = 1, nct
+      if (txcopolymer(ict) == 'sequence') then
+         do ipt = 1, npt
+            if (npptct(ipt,ict) /= count(iptsegct(1:npct(ict),ict) == ipt)) then
+               write(uout,'(a,i5)') 'ict = ', ict
+               write(uout,'(a,i5)') 'ipt = ', ipt
+               write(uout,'(a,i5)') 'count(iptsegct(1:npct(ict),ict) == ipt) = ', &
+                                     count(iptsegct(1:npct(ict),ict) == ipt)
+               write(uout,'(a,i5)') 'npptct(ipt,ict) = ', npptct(ipt,ict)
+               call Stop(txroutine, 'copolymer sequence: inconsistency among npptct and iptsegct', uout)
+            end if
+         end do
+      end if
+   end do
+
+! ... check consistence among nnwnwt and ncct
+
+   if(nnwt > 0) then
+      do ict = 1, nct
+         nctemp = sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+         if (.not.((nctemp == 0).or.(nctemp == ncct(ict)))) then
+            write(uout,'(a,i5)') 'ict = ', ict
+            write(uout,'(a,i5)') 'sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt)) = ', sum(nnwnwt(1:nnwt)*ncctnwt(ict,1:nnwt))
+            write(uout,'(a,i5)') 'ncct(ict) = ', ncct(ict)
+            call Stop(txroutine, 'inconsistency among nnwnwt, ncctnwt, and ncct', uout)
+         end if
+      end do
+   end if
+
+! ... check whether nppt(iptclnwt(inwt)) is a multiple of nnwnwt(inwt)
+
+   do inwt = 1, nnwt
+      if (.not.(modulo(nppt(iptclnwt(inwt)),nnwnwt(inwt)) == 0)) then
+         write(uout,'(a,i5)') 'inwt = ', inwt
+         write(uout,'(a,i5)') 'nppt(iptclnwt(inwt) = ', nppt(iptclnwt(inwt))
+         write(uout,'(a,i5)') 'nnwnwt(inwt) = ', nnwnwt(inwt)
+         call Stop(txroutine, 'number of node particles no multiple of number of corresponding network', uout)
+      end if
+   end do
+
+   call Set_lnetwork      ! flag for network structures
    call Set_nh            ! number of hierarchical structures
    call Set_lhierarchical ! flag for hierarchical structures
    call Set_lchain        ! flag for chains
@@ -512,26 +696,48 @@ subroutine SetObjectParam1
    call Set_nptpt         ! number of particle type pairs
    call Set_natat         ! number of atom type pairs
 
-   call Set_ipnsegcn      ! chain and segment -> particle
-   call Set_ictcn         ! chain -> its chain type
-   call Set_ictpt         ! partcle type -> its chain type
-   call Set_ictpn         ! particle -> its chain type
-   call Set_icnpn         ! particle -> its chain
-   call Set_iptpn         ! particle -> its particle type
-   call Set_iptat         ! atom type -> its particle type
-   call Set_iptan         ! atom -> its particle type
-   call Set_ipnan         ! atom -> its particle
-   call Set_iatan         ! atom -> its atom type
-   call Set_icnct         ! chain type -> its first chain
-   call Set_ipnpt         ! particle type -> its first particle
-   call Set_iatpt         ! particle type -> its first atom type
-   call Set_ianpn         ! particle -> its first atom
-   call Set_ianat         ! atom type -> its first atom
-   call Set_ictct         ! two chain types -> chain type pair
+   call Set_ipnsegcn      ! chain and segment  -> particle
+   call Set_ictcn         ! chain              -> its chain type
+   call Set_ictpt         ! particle type      -> its chain type
+   call Set_ictpn         ! particle           -> its chain type
+   call Set_icnpn         ! particle           -> its chain
+   call Set_iptpn         ! particle           -> its particle type
+   call Set_iptat         ! atom type          -> its particle type
+   call Set_iptan         ! atom               -> its particle type
+   call Set_ipnan         ! atom               -> its particle
+   call Set_iatan         ! atom               -> its atom type
+   call Set_icnct         ! chain type         -> its first chain
+   call Set_ipnpt         ! particle type      -> its first particle
+   call Set_iatpt         ! particle type      -> its first atom type
+   call Set_ianpn         ! particle           -> its first atom
+   call Set_ianat         ! atom type          -> its first atom
+   call Set_ictct         ! two chain types    -> chain type pair
    call Set_iptpt         ! two particle types -> particle type pair
-   call Set_iatat         ! two atom types -> atom type pair
-   call Set_isegpn        ! particle number -> segment number
-   call Set_bondnn        ! bond and particle -> bonded particle
+   call Set_iatat         ! two atom types     -> atom type pair
+   call Set_isegpn        ! particle number    -> segment number
+   call Set_bondnn        ! bond and particle  -> bonded particle
+
+   if (lnetwork) then
+      call Set_lptnwt     ! particle type ipt used for network type inwt?
+      call Set_nnw        ! number of networks
+      call Set_nclnwt     ! number of cross-links of network type
+      call Set_nctnwt     ! number of chain types of network type inwt
+      call Set_ncnwt      ! number of chains of network type inwt
+      call Set_npnwt      ! number of particles of network type inwt
+      call Set_nnwtnwt    ! number of network type pairs
+      call Set_npweakchargenwt ! number of titratable particles in network type inwt
+
+      call Set_inwtnwn    ! network                                      -> its network type
+      call Set_inwtct     ! chain type (1:nct)                           -> its network type (1:nnwt)
+      call Set_icnclocnwn ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)
+      call Set_inwtcn     ! chain (1:nc)                                 -> its network type (1:nnwt)
+      call Set_inwncn     ! chain (1:nc)                                 -> its network (1:nnw)
+      call Set_inwnnwt    ! network type (1:nnwt)                        -> its first network (1:nnw)
+      call Set_inwtnwt    ! two network types (1:nnwt)                   -> network type pair (1:nnwt)
+      call Set_ipncllocnwn! cross-link (1:nclnwt) and network (1:nnw)    -> its particle (1:np)
+      call Set_ipnplocnwn ! local particle (1:npnwt) and network (1:nnw) -> its particle (1:np)
+      call Set_lpnnwn     ! particle (1:np) part of network (1:nnw)?
+   end if
 
    if (lhierarchical) then
        call Set_ipnhn  ! hierarchical strcture -> its first particle
@@ -540,13 +746,13 @@ subroutine SetObjectParam1
        call Set_ihnpn  ! particle -> its hierarchical structure
    end if
 
-   if (lclink) then
+   if (lclink .and. .not.lhierarchical) then
       maxvalnbondcl = maxval(maxnbondcl(1:npt))
-      if (.not.allocated(nbondcl)) then 
+      if (.not.allocated(nbondcl)) then
          allocate(nbondcl(np_alloc))
          nbondcl = 0
       end if
-      if (.not.allocated(bondcl)) then 
+      if (.not.allocated(bondcl)) then
          allocate(bondcl(maxvalnbondcl,np_alloc))
          bondcl = 0
       end if
@@ -554,10 +760,18 @@ subroutine SetObjectParam1
 
    if (master .and. itestpart == 10) then
       call TestChainPointer(uout)
+      if (lnetwork) call TestNetworkPointer(uout)
       if (lhierarchical) call TestCrosslinkPointer(uout)
    end if
 
 contains
+
+!........................................................................
+
+subroutine Set_lnetwork ! flag for network structures
+   lnetwork =.false.
+   if (nnwt > 0) lnetwork =.true.
+end subroutine Set_lnetwork
 
 !........................................................................
 
@@ -584,7 +798,9 @@ end subroutine Set_lchain
 
 subroutine Set_ncl ! number of cross-links
    ncl = 0
-   if(ngen > -1) ncl = sum(nbranch(0:ngen-1)*ncct(ictgen(0:ngen-1)))
+   if(ngen > -1) then
+      ncl = sum(nbranch(0:ngen-1)*ncct(ictgen(0:ngen-1)))
+   end if
 end subroutine Set_ncl
 
 !........................................................................
@@ -621,7 +837,7 @@ end subroutine Set_nphn
 !........................................................................
 
 subroutine Set_napt  ! number of atoms of a particle type
-   if (.not.allocated(napt)) then 
+   if (.not.allocated(napt)) then
       allocate(napt(npt))
       napt = 0
    end if
@@ -686,7 +902,7 @@ end subroutine Set_nat
 !........................................................................
 
 subroutine Set_naat  ! number of atoms of a given atom type
-   if (.not.allocated(naat)) then 
+   if (.not.allocated(naat)) then
       allocate(naat(nat))
       naat = 0
    end if
@@ -732,8 +948,14 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
 
    character(40), parameter :: txroutine ='Set_ipnsegcn'
    integer(4) :: nrep, irep, nreplen
+   integer(4) :: iblock
+   integer(4) :: iplow
+   integer(4) :: ipt
+   integer(4), allocatable :: npset(:)
+   integer(4), allocatable :: ipstart(:)
+   integer(4), allocatable :: iptiseg(:)
 
-   if (.not.allocated(ipnsegcn)) then 
+   if (.not.allocated(ipnsegcn)) then
       allocate(ipnsegcn(maxval(npct(1:nct)),nc))   ! defined in MolModule
       ipnsegcn = 0
    end if
@@ -773,6 +995,93 @@ subroutine Set_ipnsegcn  ! chain and segment -> particle
                end do
             end do
          end do
+      else if (txcopolymer(ict) == 'repeating') then
+         if(.not. allocated(npset)) allocate(npset(npt))
+         if(.not. allocated(ipstart)) allocate(ipstart(npt))
+         npset = 0
+         ipstart = 0
+         if(any( rep_iblock_ict(1:nblockict(ict),ict)%np .le. 0 ) ) call stop(txroutine,'block of 0 length in repetition', uout)
+         if(any( rep_iblock_ict(1:nblockict(ict),ict)%pt .le. 0 ) ) call stop(txroutine,'block without pt in repetition', uout)
+
+         do icloc = 1, ncct(ict)                               ! loop over chains of type ict
+            ic = ic + 1
+            !repeating structure
+            do ipt = 1, npt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc - 1)*npptct(ipt,ict)
+            end do
+            iseg = 0
+            npset = 0
+            do while (iseg < sum(npptct(1:npt,ict)))
+               do iblock = 1, nblockict(ict)
+                  ipt = rep_iblock_ict(iblock,ict)%pt
+                  do iploc = 1, min(rep_iblock_ict(iblock,ict)%np , npptct(ipt,ict) - npset(ipt))
+                     iseg = iseg + 1
+                     npset(ipt) = npset(ipt) + 1
+                     ipnsegcn(iseg,ic) = npset(ipt) + ipstart(ipt)
+                  end do
+               end do
+            end do
+
+         end do
+
+         deallocate(npset, ipstart)
+
+      else if (txcopolymer(ict) == 'random') then
+
+
+         !prepare allocatable variables
+         if(.not. allocated(ipstart)) allocate(ipstart(npt))
+         allocate(iptiseg(npct(ict)))
+
+         !loob over chains
+         do icloc = 1, ncct(ict)
+            ic = ic+1                                          ! global chain number
+
+            !create fresh list of iptiseg and iplowipt
+            iseg = 0
+            do ipt = 1, npt
+               iptiseg((iseg+1):(iseg+npptct(ipt,ict))) = ipt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+               iseg = iseg+npptct(ipt,ict)
+            end do
+
+            !shuffle iptiseg
+            call KnuthShuffle(iptiseg, size(iptiseg), iseed)
+
+            !assign particles
+            do iseg = 1, npct(ict)
+               ipt = iptiseg(iseg)
+               ipstart(ipt) = ipstart(ipt) + 1
+               ipnsegcn(iseg,ic) = ipstart(ipt)
+            end do
+
+         end do
+
+         deallocate(iptiseg, ipstart)
+
+      else if (txcopolymer(ict) == 'sequence') then
+
+         ! ... prepare allocatable var
+         if(.not. allocated(ipstart))  then
+            allocate(ipstart(npt))
+            ipstart = 0
+         end if
+
+         ! ... loop over chains of type ict
+         do icloc = 1, ncct(ict)
+            ic = ic+1                            ! global chain number
+            do ipt = 1, npt
+               ipstart(ipt) = sum(nppt(1:ipt-1)) + sum(ncct(1:ict-1)*npptct(ipt,1:ict-1)) + (icloc-1)*npptct(ipt,ict)
+            end do
+            do iseg = 1, npct(ict)               ! loop over chain segments
+               ipt = iptsegct(iseg,ict)          ! particle type of segment iseg
+               ipstart(ipt) = ipstart(ipt) + 1   ! increment ipstart
+               ipnsegcn(iseg,ic) = ipstart(ipt)  ! set ipnsegcn
+            end do
+         end do
+
+         deallocate(ipstart)
+
       end if
     end do
 
@@ -781,7 +1090,7 @@ end subroutine Set_ipnsegcn
 !........................................................................
 
 subroutine Set_ictcn  ! chain -> its chain type
-   if (.not.allocated(ictcn)) then 
+   if (.not.allocated(ictcn)) then
       allocate(ictcn(nc))
       ictcn = 0
    end if
@@ -797,7 +1106,7 @@ end subroutine Set_ictcn
 !........................................................................
 
 subroutine Set_ictpt  ! partcle type -> its chain type
-   if (.not.allocated(ictpt)) then 
+   if (.not.allocated(ictpt)) then
       allocate(ictpt(npt))
       ictpt = 0
    end if
@@ -813,11 +1122,11 @@ end subroutine Set_ictpt
 
 subroutine Set_ihnpn  ! particle -> its hierarchical structure
    integer(4) :: ih, igen, ict, ic, iseg, ip
-   if (.not.allocated(ihnpn)) then 
+   if (.not.allocated(ihnpn)) then
       allocate(ihnpn(np_alloc))
       ihnpn = 0
    end if
-   if (.not.allocated(icihigen)) then 
+   if (.not.allocated(icihigen)) then
       allocate(icihigen(nh,0:ngen))
       icihigen = 0
    end if
@@ -839,7 +1148,7 @@ end subroutine Set_ihnpn
 !........................................................................
 
 subroutine Set_ictpn  ! particle -> its chain type
-   if (.not.allocated(ictpn)) then 
+   if (.not.allocated(ictpn)) then
       allocate(ictpn(np_alloc))
       ictpn = 0
    end if
@@ -858,7 +1167,7 @@ end subroutine Set_ictpn
 !........................................................................
 
 subroutine Set_icnpn  ! particle -> its chain
-   if (.not.allocated(icnpn)) then 
+   if (.not.allocated(icnpn)) then
       allocate(icnpn(np_alloc))
       icnpn = 0
    end if
@@ -877,7 +1186,7 @@ end subroutine Set_icnpn
 !........................................................................
 
 subroutine Set_iptpn  ! particle -> its particle type
-   if (.not.allocated(iptpn)) then 
+   if (.not.allocated(iptpn)) then
       allocate(iptpn(np_alloc))
       iptpn = 0
    end if
@@ -893,7 +1202,7 @@ end subroutine Set_iptpn
 !........................................................................
 
 subroutine Set_iptat  ! atom type -> its particle type
-   if (.not.allocated(iptat)) then 
+   if (.not.allocated(iptat)) then
       allocate(iptat(nat))
       iptat = 0
    end if
@@ -909,7 +1218,7 @@ end subroutine Set_iptat
 !........................................................................
 
 subroutine Set_iptan  ! atom -> its particle type
-   if (.not.allocated(iptan)) then 
+   if (.not.allocated(iptan)) then
       allocate(iptan(na_alloc))
       iptan = 0
    end if
@@ -925,7 +1234,7 @@ end subroutine Set_iptan
 !........................................................................
 
 subroutine Set_ipnan  ! atom -> its particle
-   if (.not.allocated(ipnan)) then 
+   if (.not.allocated(ipnan)) then
       allocate(ipnan(na_alloc))
       ipnan = 0
    end if
@@ -946,7 +1255,11 @@ end subroutine Set_ipnan
 !........................................................................
 
 subroutine Set_iatan  ! atom -> its atom type
-   if (.not.allocated(iatan)) then 
+   integer(4)  :: ia0
+   integer(4)  :: ia1
+   integer(4)  :: ia2
+   integer(4)  :: iaat
+   if (.not.allocated(iatan)) then
       allocate(iatan(na_alloc))
       iatan = 0
    end if
@@ -976,7 +1289,7 @@ end subroutine Set_iatan
 !........................................................................
 
 subroutine Set_icnct  ! chain type -> its first chain
-   if (.not.allocated(icnct)) then 
+   if (.not.allocated(icnct)) then
       allocate(icnct(nct))
       icnct = 0
    end if
@@ -990,7 +1303,7 @@ end subroutine Set_icnct
 !........................................................................
 
 subroutine Set_ipnpt  ! particle type -> its first particle
-   if (.not.allocated(ipnpt)) then 
+   if (.not.allocated(ipnpt)) then
       allocate(ipnpt(npt))
       ipnpt = 0
    end if
@@ -1004,7 +1317,7 @@ end subroutine Set_ipnpt
 !........................................................................
 
 subroutine Set_iatpt  ! particle type -> its first atom type
-   if (.not.allocated(iatpt)) then 
+   if (.not.allocated(iatpt)) then
       allocate(iatpt(npt))
       iatpt = 0
    end if
@@ -1018,7 +1331,7 @@ end subroutine Set_iatpt
 !........................................................................
 
 subroutine Set_ianpn  ! particle -> its first atom
-   if (.not.allocated(ianpn)) then 
+   if (.not.allocated(ianpn)) then
       allocate(ianpn(np_alloc))
       ianpn = 0
    end if
@@ -1036,7 +1349,7 @@ end subroutine Set_ianpn
 !........................................................................
 
 subroutine Set_ianat  ! atom type -> its first atom
-   if (.not.allocated(ianat)) then 
+   if (.not.allocated(ianat)) then
       allocate(ianat(nat))
       ianat = 0
    end if
@@ -1067,7 +1380,9 @@ end subroutine Set_ianat
 !........................................................................
 
 subroutine Set_ictct  ! two chain types -> chain type pair
-   if (.not.allocated(ictct)) then 
+   integer(4)  :: jct
+   integer(4)  :: ictjct
+   if (.not.allocated(ictct)) then
       allocate(ictct(nct,nct))
       ictct = 0
    end if
@@ -1084,7 +1399,9 @@ end subroutine Set_ictct
 !........................................................................
 
 subroutine Set_iptpt  ! two particle types -> particle type pair
-   if (.not.allocated(iptpt)) then 
+   integer(4)  :: jpt
+   integer(4)  :: iptjpt
+   if (.not.allocated(iptpt)) then
       allocate(iptpt(npt,npt))
       iptpt = 0
    end if
@@ -1101,7 +1418,9 @@ end subroutine Set_iptpt
 !........................................................................
 
 subroutine Set_iatat  ! two atom types -> atom type pair
-   if (.not.allocated(iatat)) then 
+   integer(4)  :: jat
+   integer(4)  :: iatjat
+   if (.not.allocated(iatat)) then
       allocate(iatat(nat,nat))
       iatat = 0
    end if
@@ -1118,7 +1437,7 @@ end subroutine Set_iatat
 !........................................................................
 
 subroutine Set_isegpn   ! particle number -> segment number
-   if (.not.allocated(isegpn)) then 
+   if (.not.allocated(isegpn)) then
       allocate(isegpn(np_alloc))
       isegpn = 0
    end if
@@ -1135,7 +1454,7 @@ end subroutine Set_isegpn
 !........................................................................
 
 subroutine Set_bondnn   ! bond and particle -> bonded particle
-   if (.not.allocated(bondnn)) then 
+   if (.not.allocated(bondnn)) then
       allocate(bondnn(2,np))
       bondnn = 0
    end if
@@ -1164,18 +1483,299 @@ end subroutine Set_bondnn
 
 !........................................................................
 
+subroutine Set_nnw ! number of networks
+   nnw = sum(nnwnwt(1:nnwt))
+end subroutine Set_nnw
+
+!........................................................................
+
+subroutine Set_nclnwt ! number of cross-links per network of network type inwt
+   do inwt = 1, nnwt
+      nclnwt(inwt) = nppt(iptclnwt(inwt))/nnwnwt(inwt)
+   end do
+end subroutine Set_nclnwt
+
+!........................................................................
+
+subroutine Set_lptnwt ! particle type ipt used for network type inwt?
+   lptnwt = .false.
+   do ipt = 1, npt
+      do inwt = 1, nnwt
+         if (ipt == iptclnwt(inwt)) then ! ... ipt forms the nodes of networks of type inwt
+            lptnwt(ipt,inwt) = .true.
+            exit
+         else if (ictpt(ipt) > 0) then ! ... ipt forms chains ...
+            if (ncctnwt(ictpt(ipt),inwt) > 0) lptnwt(ipt,inwt) = .true. ! ... and is part of networks of type inwt
+         end if
+      end do
+   end do
+end subroutine Set_lptnwt
+
+!........................................................................
+
+subroutine Set_nctnwt ! number of chain types of network type inwt
+   do inwt = 1, nnwt
+      nctnwt(inwt) = count(ncctnwt(1:nct,inwt) > 0)
+   end do
+end subroutine Set_nctnwt
+
+!........................................................................
+
+subroutine Set_ncnwt ! number of chains of network type inwt
+   do inwt = 1, nnwt
+      ncnwt(inwt) = sum(ncctnwt(1:nct,inwt))
+   end do
+end subroutine Set_ncnwt
+
+!........................................................................
+
+subroutine Set_npnwt ! number of particles of network type inwt
+   do inwt = 1, nnwt
+      npnwt(inwt) = nclnwt(inwt)
+      do ict = 1, nct
+         npnwt(inwt) = npnwt(inwt) + npct(ict)*ncctnwt(ict,inwt)
+      end do
+   end do
+end subroutine Set_npnwt
+
+!........................................................................
+
+subroutine Set_nnwtnwt ! number of network type pairs
+   nnwtnwt = (nnwt*(nnwt+1))/2
+end subroutine Set_nnwtnwt
+
+!........................................................................
+
+subroutine Set_npweakchargenwt ! number of titratable particles in networks of type inwt
+   if (lweakcharge) then
+      do inwt = 1, nnwt
+         npweakchargenwt(inwt) = Zero
+         do ipt = 1, npt
+            if ((.not. lptnwt(ipt,inwt)) .or. (.not. latweakcharge(iatpt(ipt)))) cycle
+            npweakchargenwt(inwt) = npweakchargenwt(inwt) + nppt(ipt)/nnwnwt(inwt)
+         end do
+      end do
+   end if
+end subroutine Set_npweakchargenwt
+
+!........................................................................
+
+subroutine Set_inwtnwn ! network -> its network type
+   if (.not.allocated(inwtnwn)) then
+      allocate(inwtnwn(nnw))
+      inwtnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         inwtnwn(inw) = inwt
+      end do
+   end do
+end subroutine Set_inwtnwn
+
+!........................................................................
+
+subroutine Set_inwtct  ! chain type -> its network type
+   if (.not.allocated(inwtct)) then
+      allocate(inwtct(nct))
+      inwtct = 0
+   end if
+   inwtct(1:nct) = 0
+   do inwt = 1, nnwt
+      where (ncctnwt(1:nct,inwt) > 0) inwtct(1:nct) = inwt
+   end do
+end subroutine Set_inwtct
+
+!........................................................................
+
+subroutine Set_icnclocnwn ! local chain and network -> its chain
+   character(40), parameter :: txroutine = 'Set_icnclocnwn'
+   integer(4)               :: iclow
+   integer(4)               :: icctloc
+   if (.not.allocated(icnclocnwn)) then
+      allocate(icnclocnwn(maxval(ncnwt(1:nnwt)),nnw))
+      icnclocnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      if (txtoponwt(inwt) == 'default') then   ! currently only txtoponwt = 'default' is supported
+         do inwloc = 1, nnwnwt(inwt)
+            inw = inw+1
+            icloc = 0
+            do ict = 1, nct
+               iclow = sum(ncct(1:ict-1)) + sum(nnwnwt(1:inwt-1)*ncctnwt(ict,1:inwt-1)) + (inwloc-1)*ncctnwt(ict,inwt)
+               do icctloc = 1, ncctnwt(ict,inwt)
+                  icloc = icloc+1
+                  icnclocnwn(icloc,inw) = iclow + icctloc
+               end do
+            end do
+         end do
+      else
+         call Stop(txroutine, 'txtoponwt /= "default"', uout)
+      end if
+   end do
+end subroutine Set_icnclocnwn
+
+!........................................................................
+
+subroutine Set_inwtcn  ! chain -> its network type
+   if (.not.allocated(inwtcn)) then
+      allocate(inwtcn(nc))
+      inwtcn = 0
+   end if
+   inwtcn(1:nc) = 0
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         do icloc = 1, ncnwt(inwt)
+            inwtcn(icnclocnwn(icloc,inw)) = inwt
+         end do
+      end do
+   end do
+end subroutine Set_inwtcn
+
+!........................................................................
+
+subroutine Set_inwncn ! chain -> its network
+   if (.not.allocated(inwncn)) then
+      allocate(inwncn(nc))
+      inwncn = 0
+   end if
+   inwncn(1:nc) = 0
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         do icloc = 1, ncnwt(inwt)
+            inwncn(icnclocnwn(icloc,inw)) = inw
+         end do
+      end do
+   end do
+end subroutine Set_inwncn
+
+!........................................................................
+
+subroutine Set_inwnnwt ! network type -> its first network
+   if (.not.allocated(inwnnwt)) then
+      allocate(inwnnwt(nnwt))
+      inwnnwt = 0
+   end if
+   inw = 1
+   do inwt = 1, nnwt
+      inwnnwt(inwt) = inw
+      inw = inw + nnwnwt(inwt)
+   end do
+end subroutine Set_inwnnwt
+
+!........................................................................
+
+subroutine Set_inwtnwt  ! two network types -> network type pair
+   integer(4)  :: inwtjnwt
+   integer(4)  :: jnwt
+   if (.not.allocated(inwtnwt)) then
+      allocate(inwtnwt(nnwt,nnwt))
+      inwtnwt = 0
+   end if
+   inwtjnwt = 0
+   do inwt = 1, nnwt
+      do jnwt = inwt, nnwt
+         inwtjnwt = inwtjnwt+1
+         inwtnwt(inwt,jnwt) = inwtjnwt
+         inwtnwt(jnwt,inwt) = inwtjnwt
+      end do
+   end do
+end subroutine Set_inwtnwt
+
+!........................................................................
+
+subroutine Set_ipncllocnwn ! cross-link and network -> its particle
+   if (.not.allocated(ipncllocnwn)) then
+      allocate(ipncllocnwn(maxval(nclnwt(1:nnwt)),nnw))
+      ipncllocnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      ip = ipnpt(iptclnwt(inwt))-1
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         do iclloc = 1, nclnwt(inwt)
+            ip = ip+1
+            ipncllocnwn(iclloc,inw) = ip
+         end do
+      end do
+   end do
+end subroutine Set_ipncllocnwn
+
+!........................................................................
+
+subroutine Set_ipnplocnwn ! local particle and network -> its particle
+   if (.not.allocated(ipnplocnwn)) then
+      allocate(ipnplocnwn(maxval(npnwt(1:nnwt)),nnw))
+      ipnplocnwn = 0
+   end if
+   inw = 0
+   do inwt = 1, nnwt
+      do inwloc = 1, nnwnwt(inwt)
+         inw = inw+1
+         iploc = 0
+         do iclloc = 1, nclnwt(inwt)
+            iploc = iploc+1
+            ip = ipncllocnwn(iclloc,inw)
+            ipnplocnwn(iploc,inw) = ip
+         end do
+         do icloc = 1, ncnwt(inwt)
+            ic = icnclocnwn(icloc,inw)
+            do iseg = 1, npct(ictcn(ic))
+               iploc = iploc+1
+               ip = ipnsegcn(iseg,ic)
+               ipnplocnwn(iploc,inw) = ip
+            end do
+         end do
+      end do
+   end do
+end subroutine Set_ipnplocnwn
+
+!........................................................................
+
+subroutine Set_lpnnwn ! particle part of network?
+   if (.not.allocated(lpnnwn)) then
+      allocate(lpnnwn(np,nnw))
+      lpnnwn = .false.
+   end if
+   do inw = 1, nnw
+      do ip = 1, np
+         if (icnpn(ip) > 0) then
+            if (inwncn(icnpn(ip)) == inw) lpnnwn(ip,inw) =.true.
+         end if
+      end do
+      inwt = inwtnwn(inw)
+      do iclloc = 1, nclnwt(inwt)
+         ip = ipncllocnwn(iclloc,inw)
+         lpnnwn(ip,inw) =.true.
+      end do
+   end do
+end subroutine Set_lpnnwn
+
+!........................................................................
+
 subroutine Set_ipnhn  ! hierarchical strcture -> its first particle
-   igen = 0
-   ict = ictgen(igen)
-   ic = icnct(ict)
-   iseg = 1
-   ipnhn = ipnsegcn(iseg,ic)
+   ! get particle with lowest number in hierarchical strucutre
+   ipnhn = minval(ipnsegcn(1,icnct(ictgen(0:ngen))))
+
+   !old code gets number of first particle in strucutre:
+      !igen = 0
+      !ict = ictgen(igen)
+      !ic = icnct(ict)
+      !iseg = 1
+      !ipnhn = ipnsegcn(iseg,ic)
 end subroutine Set_ipnhn
 
 !........................................................................
 
 subroutine Set_genic  ! chain number -> generation number
-   if (.not.allocated(genic)) then 
+   if (.not.allocated(genic)) then
       allocate(genic(nc))
       genic = 0
    end if
@@ -1195,11 +1795,11 @@ subroutine Set_bondcl   ! crosslink and particle -> crosslinked particle
    integer(4) :: jploc
 
    maxvalnbondcl = maxval(maxnbondcl(1:npt))
-   if (.not.allocated(nbondcl)) then 
+   if (.not.allocated(nbondcl)) then
       allocate(nbondcl(np_alloc))
       nbondcl = 0
    end if
-   if (.not.allocated(bondcl)) then 
+   if (.not.allocated(bondcl)) then
       allocate(bondcl(maxvalnbondcl,np_alloc))
       bondcl = 0
    end if
@@ -1234,11 +1834,11 @@ subroutine Set_bondcl   ! crosslink and particle -> crosslinked particle
                      bondcl(nbondcl(ip),ip) = jp
                      bondcl(nbondcl(jp),jp) = ip
                      if(lmultigraft) then    !   shift all grafting point to the backbone
-!			 write(*,*) ip, jp, nbondcl(ip), nbondcl(jp), bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp)
-!			 write(*,*) bondcl(nbondcl(ip)-1,ip), bondcl(nbondcl(jp)-1,jp)
+!             write(*,*) ip, jp, nbondcl(ip), nbondcl(jp), bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp)
+!             write(*,*) bondcl(nbondcl(ip)-1,ip), bondcl(nbondcl(jp)-1,jp)
                          if(nbondcl(jp)==2) then
-!			    write(*,*) ip, jp, bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp), bondcl(nbondcl(jp)-1,jp)
-                            jploc = bondcl(nbondcl(jp)-1,jp)               ! jploc 				
+!                write(*,*) ip, jp, bondcl(nbondcl(ip),ip), bondcl(nbondcl(jp),jp), bondcl(nbondcl(jp)-1,jp)
+                            jploc = bondcl(nbondcl(jp)-1,jp)               ! jploc
                             bondcl(nbondcl(ip),ip) = jploc                 ! bind ip to jploc
                             nbondcl(jploc) = nbondcl(jploc) + 1            ! update jploc
                             bondcl(nbondcl(jploc),jploc) = ip
@@ -1261,11 +1861,11 @@ end subroutine Set_bondcl
 !........................................................................
 
 subroutine TestChainPointer(unit)
-   integer(4) :: ic, iseg, ip
+   integer(4) :: ic, iseg, ip, ict, jct
    integer(4),   intent(in) :: unit
    call WriteHead(3, 'Test'//trim(txroutine)//' chain', unit)
-   write(unit,'(a,100i5)') 'ictcn(1:nc)', ictcn(1:nc)
-   write(unit,'(a,100i5)') 'ictct(1:nct,nct)', ictct(1:nct,1:nct)
+   write(unit,'(a)') 'ict, jct, ictct'
+   write(unit,'(3i5)') ((ict, jct, ictct(ict, jct), jct = ict, nct), ict = 1, nct)
    write(unit,'()')
    write(unit,'(a)') '        ic, ictcn(ic),      iseg,   ipnsegcn(iseg,ic) = i'
    write(unit,'(4i11)') ((ic,ictcn(ic),iseg,ipnsegcn(iseg,ic),iseg = 1,npct(ictcn(ic))),ic = 1,nc)
@@ -1274,6 +1874,39 @@ subroutine TestChainPointer(unit)
    write(unit,'(7i11)') (ip, iptpn(ip), ictpn(ip), icnpn(ip), bondnn(1,ip), bondnn(2,ip), isegpn(ip) ,ip = 1,np)
 
 end subroutine TestChainPointer
+
+!........................................................................
+
+subroutine TestNetworkPointer(unit)
+   integer(4),   intent(in) :: unit
+   integer(4)               :: inw, inwt, jnwt, icloc, ic, iclloc
+   character(len=3)         :: txfmt
+   call WriteHead(3, 'Test'//trim(txroutine)//' network', unit)
+   write(unit,'(a)') 'inwt, jnwt, inwtnwt'
+   write(unit,'(3i5)') ((inwt, jnwt, inwtnwt(inwt, jnwt), jnwt = inwt, nnwt), inwt = 1, nnwt)
+   write(txfmt,'(i3)') nnwt
+   write(unit,'(a,'//trim(adjustl(txfmt))//'i5)') 'inwnnwt(1:nnwt)', inwnnwt(1:nnwt)
+   write(txfmt,'(i3)') nct
+   write(unit,'(a,'//trim(adjustl(txfmt))//'i5)') 'inwtct(1:nct)', inwtct(1:nct)
+   write(unit,'()')
+   write(unit,'(a)') '        inw, inwtnwn(inw),      icloc,   icnclocnwn(icloc,inw) = i'
+   write(unit,'(4i11)') ((inw,inwtnwn(inw),icloc,icnclocnwn(icloc,inw),icloc = 1,ncnwt(inwtnwn(inw))),inw = 1,nnw)
+   write(unit,'()')
+   write(unit,'(a)') '        ic, ictcn(ic), inwtcn(ic), inwncn(ic)'
+   write(unit,'(4i11)') (ic, ictcn(ic), inwtcn(ic), inwncn(ic),ic = 1,nc)
+   write(unit,'()')
+   write(unit,'(a)') '       iclloc,          inw,    iptclnwt, ipncllocnwn(iclloc,inw)'
+   write(unit,'(4i13)') ((iclloc, inw, iptclnwt(inwtnwn(inw)), ipncllocnwn(iclloc,inw), iclloc = 1,nclnwt(inwtnwn(inw))), inw = 1, nnw)
+   write(unit,'()')
+   write(unit,'(a)') '        ipt,       inwt,       lptnwt(ipt,inwt)'
+   write(unit,'(2i11,12x,l)') ((ipt, inwt, lptnwt(ipt,inwt), ipt = 1,npt), inwt = 1, nnwt)
+   write(unit,'()')
+   write(unit,'(a)') '       ip,      inw,       lpnnwn(ip,inw)'
+   write(unit,'(2i11,12x,l)') ((ip, inw, lpnnwn(ip,inw), ip = 1,np), inw = 1, nnw)
+   write(unit,'()')
+   write(unit,'(a)') '       iploc,         inw,        inwt,  ipnplocnwn'
+   write(unit,'(4i12)') ((iploc, inw, inwtnwn(inw), ipnplocnwn(iploc,inw), iploc = 1, npnwt(inwtnwn(inw))), inw = 1, nnw)
+end subroutine TestNetworkPointer
 
 !........................................................................
 
@@ -1313,24 +1946,33 @@ subroutine SetObjectParam2
    implicit none
 
    character(40), parameter :: txroutine ='SetObjectParam2'
-   integer(4) :: ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ialoc, ja, jalow
-   real(8)    :: term, r2
+   integer(4) :: inwt, jnwt, ict, jct, ip, ipt, jpt, ia, iat, jat, iatjat, iatloc, ntemp, ja
+   real(8)    :: r2
 
-! ... set txctct, txptpt, and txatat
+! ... set txnwtnwt, txctct, txptpt, and txatat
 
-   if (.not.allocated(txctct)) then 
+   if (.not.allocated(txnwtnwt)) then
+      allocate(txnwtnwt(nnwtnwt))
+      txnwtnwt = ""
+   end if
+   if (.not.allocated(txctct)) then
       allocate(txctct(nctct))
       txctct = ""
    end if
-   if (.not.allocated(txptpt)) then 
+   if (.not.allocated(txptpt)) then
       allocate(txptpt(nptpt))
       txptpt = ""
    end if
-   if (.not.allocated(txatat)) then 
+   if (.not.allocated(txatat)) then
       allocate(txatat(natat))
       txatat = ""
    end if
 
+   do inwt = 1, nnwt
+      do jnwt = inwt, nnwt
+         txnwtnwt(inwtnwt(inwt,jnwt)) = trim(txnwt(inwt))//'-'//trim(txnwt(jnwt))
+      end do
+   end do
    do ict = 1, nct
        do jct = ict, nct
           txctct(ictct(ict,jct)) = trim(txct(ict))//'-'//trim(txct(jct))
@@ -1349,7 +1991,7 @@ subroutine SetObjectParam2
 
 ! ... set az
 
-    if (.not.allocated(az)) then 
+    if (.not.allocated(az)) then
        allocate(az(na_alloc))
        az = 0.0E+00
     end if
@@ -1361,12 +2003,12 @@ subroutine SetObjectParam2
 ! ... weak charge: allocate memory, set iatweakcharge, and set pointer iananweakcharge
 
    if (lweakcharge) then
-      if (.not.allocated(laz)) then 
+      if (.not.allocated(laz)) then
          allocate(laz(na_alloc)) ! allocate memory for laz
          laz = .false.
       end if
-      if (jatweakcharge ==0) then   ! no explicit counterions
-      elseif (jatweakcharge > 0) then   ! explcit countersions
+      if (jatweakcharge == 0) then       ! no explicit counterions
+      else if (jatweakcharge > 0) then   ! explicit counterions
          if (count(latweakcharge(1:nat)) /= 1) call Stop(txroutine,'count(latweakcharge(1:nat)) /= 1', uout)
          iatweakcharge = 0
          do iat = 1, nat
@@ -1375,7 +2017,7 @@ subroutine SetObjectParam2
          if (iatweakcharge == 0) call Stop(txroutine,'iatweakcharge == 0', uout)
          if (naat(jatweakcharge) /= 1) call Stop(txroutine,'naat(jatweakcharge) /= 1', uout) ! particle carrying counter charge has to be an ion
 
-         if (.not.allocated(iananweakcharge)) then 
+         if (.not.allocated(iananweakcharge)) then
             allocate(iananweakcharge(na_alloc))
             iananweakcharge = 0
          end if
@@ -1400,7 +2042,7 @@ subroutine SetObjectParam2
 
 ! ... calculate particle masses, masspt, and massipt
 
-    if (.not.allocated(masspt)) then 
+    if (.not.allocated(masspt)) then
        allocate(masspt(npt), massipt(npt))
        masspt = 0.0E+00
        massipt = 0.0E+00
@@ -1415,21 +2057,38 @@ subroutine SetObjectParam2
        if (masspt(ipt) > Zero) massipt(ipt) = One/masspt(ipt)
     end do
 
+! ... calculate network mass massnwt and inverse mass massinwt
+
+   if (lnetwork) then
+      if (.not.allocated(massnwt)) then
+         allocate(massnwt(nnwt), massinwt(nnwt))
+         massnwt = 0.0E+00
+         massinwt = 0.0E+00
+      end if
+      do inwt = 1, nnwt
+         massnwt(inwt)  = sum(masspt(iptpn(1:np)), MASK=lpnnwn(1:np,inwnnwt(inwt)))
+         if (massnwt(inwt) == Zero) then
+            call Warn(txroutine,'NetworkProperties flawed for massnwt(inwt) == Zero',uout)
+         end if
+         if (massnwt(inwt) > Zero) massinwt(inwt) = One/massnwt(inwt)
+      end do
+   end if
+
 ! ... calculate atom coordinates in the principal axes system and mompt and momipt
 
-    if (.not.allocated(poltens)) then 
+    if (.not.allocated(poltens)) then
        allocate(poltens(6,na_alloc))
        poltens = 0.0E+00
     end if
     ntemp = maxval(napt(1:npt))
-    if (.not.allocated(ra)) then 
+    if (.not.allocated(ra)) then
        allocate(ra(3,ntemp,npt), dipa(3,ntemp,npt), poltensa(6,ntemp,npt), rasite(3,ntemp,npt))
        ra = 0.0E+00
        dipa = 0.0E+00
        poltensa = 0.0E+00
        rasite = 0.0E+00
     end if
-    if (.not.allocated(mompt)) then 
+    if (.not.allocated(mompt)) then
        allocate(mompt(3,npt), momipt(3,npt))
        mompt = 0.0E+00
        momipt = 0.0E+00
@@ -1445,7 +2104,7 @@ subroutine SetObjectParam2
 ! ... set lapolarization
 
     if (lpolarization) then
-       if (.not.allocated(lapolarization)) then 
+       if (.not.allocated(lapolarization)) then
           allocate(lapolarization(na_alloc))
           lapolarization = .false.
        end if
@@ -1460,7 +2119,7 @@ subroutine SetObjectParam2
 
 ! ... calculate massp, massip, momp, and momip
 
-    if (.not.allocated(massp)) then 
+    if (.not.allocated(massp)) then
        allocate(massp(np_alloc), massip(np_alloc), momp(3,np_alloc), momip(3,np_alloc))
        massp = 0.0E+00
        massip = 0.0E+00
@@ -1477,7 +2136,7 @@ subroutine SetObjectParam2
 
 ! ... calculate the maximal atom-com distance, racom
 
-    if (.not.allocated(racom)) then 
+    if (.not.allocated(racom)) then
        allocate(racom(npt))
        racom = 0.0E+00
     end if
@@ -1491,7 +2150,7 @@ subroutine SetObjectParam2
 
 ! ... set r1atat and r2atat
 
-    if (.not.allocated(r1atat)) then 
+    if (.not.allocated(r1atat)) then
        allocate(r1atat(natat), r2atat(natat))
        r1atat = 0.0E+00
        r2atat = 0.0E+00
@@ -1506,7 +2165,7 @@ subroutine SetObjectParam2
 
 ! ... calculate the number of translational and rotational degrees of freedom
 
-    if (.not.allocated(itradegfree)) then 
+    if (.not.allocated(itradegfree)) then
        allocate(itradegfree(1:npt), irotdegfree(1:npt))
        itradegfree = 0
        irotdegfree = 0

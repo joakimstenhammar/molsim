@@ -114,7 +114,7 @@ contains
 subroutine ImageDriverSub(iimage)
    integer(4), intent(in) :: iimage
    if (lvrml      .and. master) call ImageVRML(iStage, iimage)
-   if (lvtf       .and. master) call ImageVTF(iStage, iimage)
+   if (lvtf       .and. master) call ImageVTF(iStage)
    if (limageuser .and. master) call ImageUser(iStage)
 end subroutine ImageDriverSub
 
@@ -156,7 +156,7 @@ subroutine ImageVRML(iStage, iimage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(atsize)) then 
+      if (.not.allocated(atsize)) then
          allocate(atsize(nat), rgbcolor(3,nat))
       end if
 
@@ -195,9 +195,9 @@ subroutine ImageVRML(iStage, iimage)
 
    case (iWriteInput)
 
-! ... open FIMG
+! ... open FWRL
 
-      if (master) call FileOpen(uimg, fimg, 'form/noread')
+      if (master) call FileOpen(uwrl, fwrl, 'form/noread')
 
    case (iBeforeSimulation)
 
@@ -214,12 +214,12 @@ subroutine ImageVRML(iStage, iimage)
                if (txwhen == 'after_iimage') nfac = nstep2/iimage
                do m = 0, nfac*(nstep1beg-1)                                       ! number of frames to be read
                   do m2 = 1, 10000
-                     read(uimg,'(a)') string
+                     read(uwrl,'(a)') string
                      if (string(1:6) == txwrap(2)) exit
                   end do
-                  if (m2 > 10000) call stop(txroutine, 'error in advancing FIMG', uout)
+                  if (m2 > 10000) call stop(txroutine, 'error in advancing '//fwrl, uout)
                end do
-               if (m > nfac*(nstep1beg-1)+1) call stop(txroutine, 'error in advancing FIMG', uout)
+               if (m > nfac*(nstep1beg-1)+1) call stop(txroutine, 'error in advancing '//fwrl, uout)
             end if
          end if
       end if
@@ -271,7 +271,7 @@ subroutine ImageVRML(iStage, iimage)
 
       if (allocated(atsize)) deallocate(atsize, rgbcolor)
 
-      close(uimg)
+      close(uwrl)
 
    end select
 
@@ -290,15 +290,15 @@ subroutine ImageVRMLSub
    write(str,'(i10)') iframe                              ! get frame number
    if (txfile == 'merged') then                           ! a single vrml file
       if (txwhen == 'after_run') then
-         call VRMLSub(tximage, 'image after run', atsize, rgbcolor, blmax, bondr, lgr, uimg)
+         call VRMLSub(tximage, 'image after run', atsize, rgbcolor, blmax, bondr, lgr, uwrl)
       else if (txwhen == 'after_macro') then
-         write(uimg,'(a)') txwrap(1)//'macrostep.'//trim(adjustl(str))//'.wrl'
-         call VRMLSub(tximage, 'image after macrostep'//str, atsize, rgbcolor, blmax, bondr, lgr, uimg)
-         write(uimg,'(a)') txwrap(2)
+         write(uwrl,'(a)') txwrap(1)//'macrostep.'//trim(adjustl(str))//'.wrl'
+         call VRMLSub(tximage, 'image after macrostep'//str, atsize, rgbcolor, blmax, bondr, lgr, uwrl)
+         write(uwrl,'(a)') txwrap(2)
       else if (txwhen == 'after_iimage') then
-         write(uimg,'(a)') txwrap(1)//'frame.'//trim(adjustl(str))//'.wrl'
-         call VRMLSub(tximage, 'image after frame'//str, atsize, rgbcolor, blmax, bondr, lgr, uimg)
-         write(uimg,'(a)') txwrap(2)
+         write(uwrl,'(a)') txwrap(1)//'frame.'//trim(adjustl(str))//'.wrl'
+         call VRMLSub(tximage, 'image after frame'//str, atsize, rgbcolor, blmax, bondr, lgr, uwrl)
+         write(uwrl,'(a)') txwrap(2)
       else
          call Stop(txroutine, 'unsupported value of txwhen', uout)
       end if
@@ -359,7 +359,7 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    character(40), parameter :: txroutine ='VRMLSub'
    character(20) :: txcolor
    integer(4), allocatable :: icount(:)
-   integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, ict, ic, ic_loc, ih, igen, iseg, icorner, jp, t(3)
+   integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, icorner, t(3)
    real(8) :: xdir, ydir, zdir, xnorm, ynorm, znorm, xc, yc, zc, height, arg, dangle, rrr(3), mat(4,4), dir
    real(8)     ,  parameter :: cornerref(3,8) = reshape( &
            [-One, One, One,   One, One, One,   One, One,-One,  -One, One,-One, &
@@ -367,6 +367,14 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    real(8) :: corner(1:3,1:8)
    real(8), save :: rgbcolor_dipole(1:3,1:2) = reshape([One, One, Zero,  Zero, One, One],[3,2])
 
+<<<<<<< HEAD
+=======
+   if (.not.allocated(ro_temp)) then
+      allocate(ro_temp(1:3,1:na))
+      ro_temp = 0.0E+00
+   end if
+
+>>>>>>> master
 ! ... initializing label
 
    write(unit,'(a)') '#VRML V2.0 utf8'
@@ -418,7 +426,7 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
 ! ... make bonds
 
    mnbond = 2*na                                          ! maximal number of bonds that can be made
-   if(.not.allocated(bondlist)) then 
+   if(.not.allocated(bondlist)) then
       allocate(bondlist(2,mnbond))
       bondlist = 0
    end if
@@ -802,7 +810,7 @@ end subroutine DrawAtom_jasper
 !........................................................................
 
 subroutine DrawAtom
-      if(.not.allocated(icount)) then 
+      if(.not.allocated(icount)) then
          allocate(icount(nat))
       end if
       icount = 0
@@ -876,13 +884,13 @@ end subroutine VRMLSub
 ! ... generate input files and tcl-script for VMD
 !     by Cornelius Hofzumahaus 03/2015
 
-subroutine ImageVTF(iStage, iimage)
+subroutine ImageVTF(iStage) !iimage is not used
 
    use MolModule
    implicit none
 
    integer(4), intent(in) :: iStage
-   integer(4), intent(in) :: iimage
+   !integer(4), intent(in) :: iimage
 
    character(40), parameter :: txroutine ='ImageVTF'
    character(80), parameter :: txheading ='preparation of vtf file'
@@ -890,11 +898,10 @@ subroutine ImageVTF(iStage, iimage)
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
    real(8),       save :: rgbweakcharge(3), blmax, bondr, bondres, sphres
    character(20), save :: tximage(4)
-   character(19), save :: txwrap(3) =['# Start of image ','timestep ordered   ','# End Image        ' ]
+   character(19), save :: txwrap(3) =['# Start of image   ','timestep ordered   ','# End Image        ' ]
    integer(4),    save :: iframe
    logical,       save :: lgr, lrendwc
    logical, allocatable, save :: lptinnw(:)
-   character(20) :: string
    integer(4)    :: iat, m
 
    character(1),  parameter :: vmdname(36) = (/ '0','1','2','3','4','5','6','7','8'&    ! vmdname is being used for VMD to identify different particle types as such
@@ -911,7 +918,7 @@ subroutine ImageVTF(iStage, iimage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not.allocated(atsize)) then 
+      if (.not.allocated(atsize)) then
          allocate(atsize(nat), rgbcolor(3,nat), lptinnw(mnpt))
          atsize = 0.0E+00
          rgbcolor = 0.0E+00
@@ -922,7 +929,7 @@ subroutine ImageVTF(iStage, iimage)
 
       txwhen        = 'after_run'                        ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
       atsize(1:nat) = radat(1:nat)
-      tximage       = ['frame','     ','     ','      '] ! define here which kind of options shall be applied
+      tximage       = ['frame','     ','     ','     '] ! define here which kind of options shall be applied
       do iat = 1, 3
          if (iat > nat) exit
          rgbcolor(1:3,iat) = [ Zero, Zero, Zero ]
@@ -931,7 +938,7 @@ subroutine ImageVTF(iStage, iimage)
       do iat = 4, 6
          if (iat > nat) exit
          rgbcolor(1:3,iat) = [ One, One, One ]
-         rgbcolor(iat,iat) = Zero
+         rgbcolor(iat-3,iat) = Zero
       end do
       do iat = 7, nat
          if (iat > nat) exit
@@ -1104,7 +1111,7 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
 ! ... determine connectivity of atoms
 
    mnbond = 2*na
-   if (.not. allocated(bondlist)) then 
+   if (.not. allocated(bondlist)) then
       allocate(bondlist(2,mnbond))
       bondlist = 0
    end if
@@ -1146,7 +1153,7 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
    real(8)                             :: rcom(3), InvFlt
    logical,                       save :: first = .true., lnomassnw = .false.
    integer(4),                    save :: ipref
-   integer(4)                          :: ia, ip, ipt
+   integer(4)                          :: ip, ipt
 
 ! ... find reference particle within network in order to determine center of mass of network
 
@@ -1169,7 +1176,7 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
       end if
    end if
 
-   if (.not. allocated(ro_vtf)) then 
+   if (.not. allocated(ro_vtf)) then
       allocate(ro_vtf(1:3,1:na))
       ro_vtf = 0.0E+00
    end if
@@ -1251,9 +1258,7 @@ subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,txi
    integer(4),    intent(in) :: unit
 
    character(40),  parameter :: txroutine = 'WriteTCLScript'
-   integer(4),          save :: jframe
-   integer(4)                :: ia, iat, ipt, icolor, icube, icorner, ird
-   character(10)             :: str
+   integer(4)                :: iat, icolor, icube, ird
    real(8)      ,  parameter :: cornerref(3,8) = reshape( &
            [ One, One, One,   -One, One, One,  -One, One,-One,  One, One,-One, &
              One,-One, One,   -One,-One, One,  -One,-One,-One,  One,-One,-One ] , [3,8] )
@@ -1415,13 +1420,13 @@ subroutine DrawWeakChargesTCL(iCall,vmdname,rgbweakcharge,lrendwc,icolor,unit)
    case (4)
 
       write(unit,'(a)')     '   display update off'
-      write(unit,'(a16,i)') '   animate goto ', jframe
+      write(unit,'(a16,i0)') '   animate goto ', jframe
       write(unit,'(a)')     '   $selection set name $txuncharged'
       write(unit,'(a)')     '   set selection [atomselect $molID "index\'
       do ia = 1, na
          ipt = iptpn(ipnan(ia))
          if((.not. latweakcharge(iatan(ia))) .or. (.not. ipt == 1)) cycle
-         if(laz(ia)) write(unit,'(a3,i,a2)') '   ', ia, ' \'
+         if(laz(ia)) write(unit,'(a3,i0,a2)') '   ', ia, ' \'
       end do
       write(unit,'(a)')     '   "]'
       write(unit,'(a)')     '   $selection set name $txcharged'
@@ -1639,27 +1644,51 @@ subroutine UndoPBC(vhelp)
    use UndoPBCModule
    implicit none
    real(8),    intent(out)  :: vhelp(1:3,*)       ! undone atom position
-   integer :: ip, ipmin, jp
+! <<<<<<< HEAD
+!    integer :: ip, ipmin, jp
 
 
-   if(.not. allocated(lundo)) then
-      allocate(lundo(np), rotmp(3,na))
+!    if(.not. allocated(lundo)) then
+!       allocate(lundo(np), rotmp(3,na))
+! =======
+   integer(4) :: ip, ict, ic, ih, igen, jp
+
+   if (lhierarchical) then                                                ! hierarchical structures
+      do ih = 1, nh                                                       ! loop over number of hierarchic structures
+         do igen = 0, ngen                                                ! loop over generations
+            ict = ictgen(igen)                                            ! chain type
+            do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1   ! loop over chains of the structure
+                if ((igen == 0) .and. (ic == 1)) then                     ! UNDO first chain of generation zero
+                   call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
+                else
+                   ip = ipnsegcn(1,ic)                                    ! chain ic has particle ip as its first particle
+                   jp = bondcl(1,ip)                                      ! particle ip is crosslinked to particle jp
+                   call UndoPBCChain(vhelp(1,jp), ic, 1, vhelp)           ! UNDO chain ic, using UNDO position of particle jp
+                end if
+            end do
+         end do
+      end do
+   else                                                                   ! systems with no hierarchical structures
+      do ic = 1, nc
+         call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
+      end do
+! >>>>>>> master
    end if
 
-   lundo = .false.
-   rotmp = 0.0
+   ! lundo = .false.
+   ! rotmp = 0.0
 
-   do ip = 1, np
-      if(.not. lundo(ip)) then
-!          jp = ip
-         ipmin = ipatcenter(ip)
-         call UndoClPBC(ro(1:3,ipmin),ipmin)
-      end if
-   end do
+   ! do ip = 1, np
+   !    if(.not. lundo(ip)) then
+! !          jp = ip
+   !       ipmin = ipatcenter(ip)
+   !       call UndoClPBC(ro(1:3,ipmin),ipmin)
+   !    end if
+   ! end do
 
-   vhelp(1:3,1:na) = rotmp(1:3, 1:na)
+   ! vhelp(1:3,1:na) = rotmp(1:3, 1:na)
 
-   deallocate(lundo, rotmp)
+   ! deallocate(lundo, rotmp)
 
 end subroutine UndoPBC
 

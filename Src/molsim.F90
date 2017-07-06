@@ -46,7 +46,7 @@ program MolsimDriver
    if (master .and. (nproc > mnproc)) call Stop(txroutine, 'nproc > mnproc',uout)
    call par_comm_rank(myid, master, slave)
    if (master) write(*,'(a,i5,/)') 'Molsim: start of parallel run, number of processes =' ,nproc
-   call par_handshake(myid, master, slave, nproc, 6)
+   call par_handshake(myid, master, slave, nproc, ustdout)
    call par_timing('start', master, nproc, uout)
 #endif
 
@@ -83,7 +83,7 @@ program MolsimDriver
 
 ! ............... initiate one macrostep  ................
 
-      if (maxcpu > 0) call CpuLeft(maxcpu, master, uout)
+      if (maxcpu > 0) call CpuLeft(maxcpu, uout)
       call IOMolsim(iBeforeMacrostep)
       call IOSystem(iBeforeMacrostep)
       call MolsimDriverSub(iBeforeMacrostep)
@@ -182,8 +182,10 @@ subroutine IOMolsim(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='IOMolsim'
-   integer(4) :: i
    character(4) :: txistep1
+
+   character(len=128) :: arg
+   integer(4) :: i
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -191,6 +193,49 @@ subroutine IOMolsim(iStage)
 
    select case (iStage)
    case (iReadInput)
+
+      !parse command line arguments
+      do i = 1, command_argument_count()
+         call get_command_argument(i, arg)
+
+         select case (arg)
+         case ('-v', '--version', '-V')
+            if(master) then
+               write(*,'(a)') txVersionDate
+# ifdef _TEST_
+               write(*,'(a)') "mode = test"
+# elif _NORMAL_
+               write(*,'(a)') "mode = normal"
+# elif _WARN_
+               write(*,'(a)') "mode = warn"
+# elif _DEBUG_
+               write(*,'(a)') "mode = debug"
+# endif
+            end if
+            stop 0
+         end select
+      end do
+
+      !set filenames from the last argument
+      call get_command_argument(command_argument_count(), project)
+      fin   = trim(adjustl(project))//'.in'
+      fout  = trim(adjustl(project))//'.out'
+      fcnf  = trim(adjustl(project))//'.cnf'
+      flist = trim(adjustl(project))//'.list'
+      fuser = trim(adjustl(project))//'.user'
+      fwrl  = trim(adjustl(project))//'.wrl'
+      fvtf  = trim(adjustl(project))//'.vtf'
+      ftcl  = trim(adjustl(project))//'.tcl'
+      fgroup= trim(adjustl(project))//'.group'
+      fpos  = trim(adjustl(project))//'.pos'
+      fori  = trim(adjustl(project))//'.ori'
+      fliv  = trim(adjustl(project))//'.liv'
+      fanv  = trim(adjustl(project))//'.anv'
+      ffor  = trim(adjustl(project))//'.for'
+      ftor  = trim(adjustl(project))//'.tor'
+      fidm  = trim(adjustl(project))//'.idm'
+      flaz  = trim(adjustl(project))//'.laz'
+      futot = trim(adjustl(project))//'.utot'
 
 ! ... open FIN and FOUT
 
@@ -237,12 +282,14 @@ subroutine IOMolsim(iStage)
 #endif
       if (itest == 1)   call TestSimulation
 
-      if (master) call CpuTot(uout)
       if (master) call FileFlush(uout)
 
    case (iBeforeMacrostep)
 
       if (nstep1 == 0) call Stop(txroutine, 'nstep1 == 0', uout)
+      if (lsim .and. master) write(uout, *)
+      if (lsim .and. master) call WriteDateTime(uout)
+      if (lsim .and. master) call CpuTot(uout)
       if (lsim .and. master) then
          write(txistep1,'(i4)') istep1
          call WriteHead(1, 'result of macrostep '//txistep1, uout)
@@ -261,9 +308,9 @@ subroutine IOMolsim(iStage)
      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (master) call FileFlush(uout)
-      if (lsim .and. master) call WriteDateTime(6)
-      if (lsim .and. master) write(6,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
-      if (lsim .and. master) call FileFlush(6)
+      if (lsim .and. master) call WriteDateTime(ustdout)
+      if (lsim .and. master) write(ustdout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
+      if (lsim .and. master) call FileFlush(ustdout)
 
    case (iAfterSimulation)
 
@@ -292,7 +339,7 @@ subroutine IOSystem(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='IOSystem'
-   real(8) :: Second
+   real(8) :: SecondsSinceStart
 
    namelist /nmlSystem/ txtitle,                                                               &
                         txmode,                                                                &
@@ -344,6 +391,7 @@ subroutine IOSystem(iStage)
       call LowerCase(txbc)
       call LowerCase(txstart)
       call LowerCase(txuser)
+
 
 ! ... set lsim and lana
 
@@ -441,7 +489,8 @@ subroutine IOSystem(iStage)
       tempst = temp
       prsrst = prsr
       volst  = vol
-      if (iseed <= 0) iseed = int(1.0e+6*Second())
+      if (iseed <= 0) iseed = int(1.0e+6*SecondsSinceStart())
+      iseed = -abs(iseed)     !the first seed should be negative, as the random seed generator is only initialized properly when the passed seed is negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed) when iseed > 0
 
    case (iWriteInput)
 
@@ -487,7 +536,7 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         write(uout,'(a,t35,i10)') 'seed of random generator       = ', iseed
+         write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
          write(uout,'()')
          if (maxcpu > 0) then
             write(uout,'(a,t35,i10)') 'maximum cpu time (seconds)     = ', maxcpu
@@ -532,13 +581,13 @@ subroutine IOSystem(iStage)
          write(uout,'(a)') '--------------'
          write(uout,'(a,t15,a,t35,a)')  'number', 'generic name', 'file name'
          write(uout,'(a,t15,a,t35,a)')  '------', '------------', '---------'
-         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', fin
-         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', fout
-         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', fcnf
-         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', flist
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uimg,   'fimg ', fimg
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', fvtf
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', ftcl    ! TO BE FIXED
+         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', trim(fin)
+         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', trim(fout)
+         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', trim(fcnf)
+         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', trim(flist)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uwrl,   'fwrl ', trim(fwrl)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', trim(fvtf)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', trim(ftcl)    ! TO BE FIXED
       end if
 
    case (iAfterSimulation)
@@ -577,7 +626,7 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         write(uout,'(a,t35,i10)') 'seed of random generator       = ', iseed
+         write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
          write(uout,'()')
 
       end if
@@ -681,6 +730,7 @@ end subroutine IOScale
 subroutine IOCnf(str)
 
    use MolModule
+   use Random_Module, only: am, ix, iy
    implicit none
 
    character(*) :: str
@@ -710,7 +760,9 @@ subroutine IOCnf(str)
                read(ucnf) nstep1done, iaux, raux, raux, raux !  2007-03-16-
             end if
          else if (txstart == 'continue') then
-            read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30-
+            read(ucnf) nstep1done, iseed, am, ix, iy, boxlen             ! 2017-01-05-
+
+            !read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30-2017-01-05
 !           read(ucnf) nstep1done, iseed, raux, raux, raux   !  1999-12-21--2003-09-30
          end if
          read(ucnf) npread, iaux, raux, raux, laux, laux
@@ -728,12 +780,15 @@ subroutine IOCnf(str)
 #if defined (_PAR_)
       call par_bc_ints (nstep1done, 1   )
       call par_bc_ints (iseed     , 1   )
+      call par_bc_reals (am     , 1   )
+      call par_bc_ints (ix     , 1   )
+      call par_bc_ints (iy     , 1   )
       call par_bc_reals(boxlen    , 3   )
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
       if (lclink) then
-         call par_bc_ints(nbondcl  , np         )
-         call par_bc_ints(bondcl   , maxvalnbondcl*np)
+         call par_bc_ints(nbondcl ,   np)
+         call par_bc_ints(bondcl  , maxvalnbondcl*np)
       end if
       if (lmd .and. .not.GetlSetVel()) then
          call par_bc_reals(rod    , 3*np)
@@ -757,7 +812,7 @@ subroutine IOCnf(str)
 
       rewind(ucnf)
       if (lmc .or. lmcall) call OriToQua(np, 1, np, ori, qua)
-      write(ucnf) istep1, iseed, boxlen
+      write(ucnf) istep1, iseed, am, ix, iy, boxlen
       write(ucnf) np, iaux, raux, raux, laux, laux
       write(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
       if (lclink) write(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
@@ -824,6 +879,7 @@ end subroutine ControlAver
 subroutine MDAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -837,14 +893,14 @@ subroutine MDAver(iStage)
    real(8), allocatable, save :: ttras2(:),   ttras1(:)   ! translational temp
    real(8), allocatable, save :: trots2(:),   trots1(:)   ! rotational temp
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm, fac
+   real(8)    :: norm, fac
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(for2s2)) then 
+      if(.not.allocated(for2s2)) then
          allocate( for2s2(npt), for2s1(npt), tor2s2(3,npt), tor2s1(3,npt), &
          lims2(3,npt), lims1(3,npt), anms2(3,npt), anms1(3,npt), ttras2(npt), ttras1(npt), trots2(npt), trots1(npt) )
          for2s2 = 0.0E+00
@@ -976,6 +1032,7 @@ end subroutine MDAver
 subroutine DispAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -986,14 +1043,14 @@ subroutine DispAver(iStage)
    real(8), allocatable, save :: rr2(:), rr2sd(:)       ! mean square displacement/step for particle type ipt
    real(8), allocatable, save :: rr3(:), rr3sd(:)       ! mean square displacement/step for particle type ipt
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm, term
+   real(8)    :: norm, term
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(dros2)) then 
+      if(.not.allocated(dros2)) then
          allocate(dros2(3,np_alloc), dros1(3,np_alloc), rr2(npt), rr2sd(npt), rr3(npt), rr3sd(npt))
          dros2 = 0.0E+00
          dros1 = 0.0E+00
@@ -1113,6 +1170,7 @@ end subroutine DispAver
 subroutine OriOrderAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1122,14 +1180,14 @@ subroutine OriOrderAver(iStage)
    real(8), allocatable, save :: orist(:,:,:)               ! initial orientation of particle ip
    real(8), allocatable, save :: oris2(:,:), oris1(:,:)     ! orientational order parameter (0 to 1)
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm
+   real(8)    :: norm
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(orist)) then 
+      if(.not.allocated(orist)) then
          allocate(orist(3,3,np_alloc), oris2(3,npt), oris1(3,npt))
          orist = 0.0E+00
          oris2 = 0.0E+00
@@ -1202,6 +1260,7 @@ end subroutine OriOrderAver
 subroutine PosOriAver(iStage)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1211,14 +1270,14 @@ subroutine PosOriAver(iStage)
    real(8), allocatable, save :: roavs2(:,:), roavs1(:,:)       ! average of ro for particles of type ipt
    real(8), allocatable, save :: oriavs2(:,:,:), oriavs1(:,:,:) ! average of ori for particles of type ipt
    integer(4) :: ip, ipt
-   real(8)    :: InvInt, norm
+   real(8)    :: norm
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iBeforeSimulation)
 
-      if(.not.allocated(roavs2)) then 
+      if(.not.allocated(roavs2)) then
          allocate(roavs2(3,npt), roavs1(3,npt), oriavs2(3,3,npt), oriavs1(3,3,npt))
          roavs2 = 0.0E+00
          roavs1 = 0.0E+00
@@ -1319,7 +1378,8 @@ subroutine MainAver(iStage)
    if (lweakcharge)   call ChargeAver(iStage)
    if (lpolarization) call IndDipMomAver(iStage)
    if (lchain)        call ChainAver(iStage)
-   if (lhierarchical) call HierarichalAver(iStage)
+   if (lnetwork)      call NetworkAver(iStage)
+   if (lhierarchical) call HierarchicalAver(iStage)
    if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
 end subroutine MainAver
@@ -1361,6 +1421,7 @@ end subroutine MainAver
 subroutine ThermoAver(iStage)
 
    use MolModule
+   use, intrinsic :: IEEE_ARITHMETIC
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1410,7 +1471,7 @@ subroutine ThermoAver(iStage)
       var(iekin                  )%label = 'kinetic energy                 = '
       var(iutot                  )%label = 'total potential energy         = '
       var(iutwob                 )%label = ' total two-body energy         = '
-      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'         = '
+      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'        = '
       var(iurec                  )%label = ' pot. energy from rec. space   = '
       var(iustat                 )%label = ' electrostatic energy          = '
       var(iupol                  )%label = ' polarization energy           = '
@@ -1528,11 +1589,11 @@ subroutine ThermoAver(iStage)
          end if
       end if
 
-  10 continue
+     continue
 
    case (iAfterMacrostep)
 
-      if(.not.allocated(ucheck%twob)) then 
+      if(.not.allocated(ucheck%twob)) then
          allocate(ucheck%twob(0:nptpt))
       end if
       if (lmc) then
@@ -1563,7 +1624,13 @@ subroutine ThermoAver(iStage)
 
       rtemp = GasConstant*(var(itemp)%avs2*scltem)
       rtemp2 = GasConstant*(var(itemp)%avs2*scltem)**2
-      if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
+      if (lnve) then
+         if(rtemp == 0.0d0) then !prevent division by zero
+            cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+         else
+            cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
+         end if
+      end if
       if (lnvt) cv = (var(iutot)%fls2*sclene)**2/(rtemp2*sclhca*np)
       if (lntp) cp = (var(ihtot)%fls2*sclene)**2/(rtemp2*sclhca*np)
 
@@ -1630,7 +1697,13 @@ subroutine ThermoAver(iStage)
          call ScalarSample(iStage, 1, nvar, var)
          rtemp = GasConstant*(var(itemp)%avs1*scltem)
          rtemp2 = GasConstant*(var(itemp)%avs1*scltem)**2
-         if (lnve) cv = 1.5*GasConstant/(one-(var(iekin)%fls1*sclene)**2/(1.5*np*rtemp**2))/sclhca
+         if (lnve) then
+            if(rtemp == 0.0d0) then !prevent division by zero
+               cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+            else
+               cv = 1.5*GasConstant/(one-(var(iekin)%fls1*sclene)**2/(1.5*np*rtemp**2))/sclhca
+            end if
+         end if
          if (lnvt) cv = (var(iutot)%fls1*sclene)**2/(rtemp2*sclhca*np)
          if (lntp) cp = (var(ihtot)%fls1*sclene)**2/(rtemp2*sclhca*np)
 
@@ -1761,7 +1834,7 @@ subroutine ChargeAver(iStage)
    character(80), parameter :: txheading ='charge averages'
    integer(4),       save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ip, ipt, ia, iat, ivar
+   integer(4) :: ia, iat, ivar
    real(8) :: InvFlt
 
    if (slave) return   ! master only
@@ -1930,6 +2003,7 @@ end subroutine IndDipMomAver
 subroutine ChainAver(iStage)
 
    use MolModule
+   use, intrinsic :: IEEE_ARITHMETIC
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1940,7 +2014,7 @@ subroutine ChainAver(iStage)
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
    type(chainprop_var) :: ChainProperty
-   integer(4) :: ic, ict, ioffset, itype
+   integer(4) :: ic, ict, ioffset
    real(8) :: PerLengthRg, Asphericity, InvFlt
 
    if (slave) return   ! master only
@@ -2026,8 +2100,13 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs2**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs2))+Half*(var(1+ioffset)%avs2)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs2**2, (npct(ict)-1)*(var(1+ioffset)%avs2))
-         write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
-           (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
+         if (var(10+ioffset)%avs2 == One) then
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            IEEE_VALUE((var(10+ioffset)%avs2),IEEE_QUIET_NAN)
+         else
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
+         end if
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs2**2*InvFlt(var(3+ioffset)%avs2**2)
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
@@ -2051,8 +2130,13 @@ subroutine ChainAver(iStage)
            var(2+ioffset)%avs1**2*InvFlt(Two*(npct(ict)-1)*(var(1+ioffset)%avs1))+Half*(var(1+ioffset)%avs1)
          write(uout,'(a,t35,2f15.5)') 'persist. l. (<r(g)**2>)        = ', &
            PerLengthRg(var(3+ioffset)%avs1**2, (npct(ict)-1)*(var(1+ioffset)%avs1))
-         write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
-           (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
+         if (var(10+ioffset)%avs1 == One) then
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            IEEE_VALUE((var(10+ioffset)%avs1),IEEE_QUIET_NAN)
+         else
+            write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+            (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
+         end if
          write(uout,'(a,t35,2f15.5)') '<r(ee)**2>/<r(g)**2>           = ', &
            var(2+ioffset)%avs1**2*InvFlt(var(3+ioffset)%avs1**2)
          write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
@@ -2066,26 +2150,156 @@ subroutine ChainAver(iStage)
 
 end subroutine ChainAver
 
-!***********************************************************************
+!************************************************************************
 !*                                                                      *
-!*     HierarichalAver                                                  *
+!*     NetworkAver                                                      *
 !*                                                                      *
 !************************************************************************
 
-! ... calculate averages of chain quantities
+! ... calculate averages of network quantities
 
-subroutine HierarichalAver(iStage)
+subroutine NetworkAver(iStage)
 
    use MolModule
    implicit none
 
    integer(4), intent(in) :: iStage
 
-   character(40), parameter :: txroutine ='HierarichalAver'
+   character(40), parameter :: txroutine ='NetworkAver'
+   character(80), parameter :: txheading ='network quantities'
+   integer(4)   , save      :: ntype ! number of types of properties is being set below
+   integer(4)   , save      :: nvar
+   type(scalar_var), allocatable, save :: var(:)
+   type(networkprop_var) :: NetworkProperty
+   integer(4) :: inw, inwt, ioffset
+   real(8) :: Asphericity
+
+   if (slave) return   ! master only
+
+   if (ltrace) call WriteTrace(2, txroutine, iStage)
+
+   select case (iStage)
+   case (iReadInput)
+
+      ntype = merge(12,11,lweakcharge) ! ntype equals 12 only if lweakcharge, else ntype = 11
+
+      nvar = nnwt*ntype
+      allocate(var(nvar))
+
+      ! ... please note, that properties of type 1-7 are "rms" quantities. They have to be normalized by "ScalarNorm" with
+      ! ... iopt = 2. If new properties are wished to be incorporated, please adjust the call of "ScalarNorm" below for
+      ! ... both stages, "IAfterMacrostep" and "IAfterSimulation".
+
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         var(1+ioffset)%label  = '<r(g)**2>**0.5                 = ' ! rms radius of gyration
+         var(2+ioffset)%label  = '<r(g)**2_x>**0.5               = ' ! rms radius of gyration projection on the x-axis
+         var(3+ioffset)%label  = '<r(g)**2_y>**0.5               = ' ! rms radius of gyration projection on the y-axis
+         var(4+ioffset)%label  = '<r(g)**2_z>**0.5               = ' ! rms radius of gyration projection on the z-axis
+         var(5+ioffset)%label  = 'smallest rms mom. p.a.         = ' ! smallest rms moment along a prinical axis
+         var(6+ioffset)%label  = 'intermediate rms mom. p.a.     = ' ! intermediate rms moment along a prinical axis
+         var(7+ioffset)%label  = 'largest rms mom. p.a.          = ' ! largest rms moment along a prinical axis
+         var(8+ioffset)%label  = '<asphericity>                  = ' ! asphericity
+         var(9+ioffset)%label  = '<xtheta>                       = ' ! angle of axes of largest extension and x-axes of main frame
+         var(10+ioffset)%label = '<ytheta>                       = ' ! angle of axes of largest extension and y-axes of main frame
+         var(11+ioffset)%label = '<ztheta>                       = ' ! angle of axes of largest extension and z-axes of main frame
+         if (lweakcharge) &
+         var(12+ioffset)%label = '<alpha>                        = ' ! degree of ionization
+         var(1+ioffset:ntype+ioffset)%norm = One/nnwnwt(inwt)
+     end do
+
+   case (iBeforeSimulation)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      if (lsim .and. master .and. txstart == 'continue') read(ucnf) var
+
+   case (iBeforeMacrostep)
+
+      call ScalarSample(iStage, 1, nvar, var)
+
+   case (iSimulationStep)
+
+      var%value = Zero
+      do inw = 1, nnw
+         inwt = inwtnwn(inw)
+         ioffset = ntype*(inwt-1)
+         call CalcNetworkProperty(inw, NetworkProperty)
+         var(1+ioffset)%value  = var(1+ioffset)%value  + NetworkProperty%rg2
+         var(2+ioffset)%value  = var(2+ioffset)%value  + NetworkProperty%rg2x
+         var(3+ioffset)%value  = var(3+ioffset)%value  + NetworkProperty%rg2y
+         var(4+ioffset)%value  = var(4+ioffset)%value  + NetworkProperty%rg2z
+         var(5+ioffset)%value  = var(5+ioffset)%value  + NetworkProperty%rg2s
+         var(6+ioffset)%value  = var(6+ioffset)%value  + NetworkProperty%rg2m
+         var(7+ioffset)%value  = var(7+ioffset)%value  + NetworkProperty%rg2l
+         var(8+ioffset)%value  = var(8+ioffset)%value  + NetworkProperty%asph
+         var(9+ioffset)%value  = var(9+ioffset)%value  + NetworkProperty%theta(1)
+         var(10+ioffset)%value = var(10+ioffset)%value + NetworkProperty%theta(2)
+         var(11+ioffset)%value = var(11+ioffset)%value + NetworkProperty%theta(3)
+         if (lweakcharge) &
+         var(12+ioffset)%value = var(12+ioffset)%value + NetworkProperty%alpha
+      end do
+      call ScalarSample(iStage, 1, nvar, var)
+
+   case (iAfterMacrostep)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      if (lsim .and. master) write(ucnf) var
+      call WriteHead(2, txheading, uout)
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2)
+         call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
+         if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
+         if (nnwt > 1) write(uout,'(a)')  '------------------'
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout)
+         write(uout,'()')
+         write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
+           Asphericity(var(5+ioffset)%avs2**2,var(6+ioffset)%avs2**2,var(7+ioffset)%avs2**2)
+         write(uout,'()')
+      end do
+
+   case (iAfterSimulation)
+
+      call ScalarSample(iStage, 1, nvar, var)
+      call WriteHead(2, txheading, uout)
+      do inwt = 1, nnwt
+         ioffset = ntype*(inwt-1)
+         call ScalarNorm(iStage, 1+ioffset, 7+ioffset, var, 2)
+         call ScalarNorm(iStage, 8+ioffset, ntype+ioffset, var, 0)
+         if (nnwt > 1) write(uout,'(2a)') 'network: ', txnwt(inwt)
+         if (nnwt > 1) write(uout,'(a)')  '------------------'
+         call ScalarWrite(iStage, 1+ioffset, ntype+ioffset, var, 1, '(a,t35,4f15.5,f15.0)', uout)
+         write(uout,'()')
+         write(uout,'(a,t35,2f15.5)') 'asphericity (<2:nd moments>)   = ', &
+           Asphericity(var(5+ioffset)%avs1**2,var(6+ioffset)%avs1**2,var(7+ioffset)%avs1**2)
+         write(uout,'()')
+      end do
+
+      deallocate(var)
+
+   end select
+
+end subroutine NetworkAver
+
+!***********************************************************************
+!*                                                                      *
+!*     HierarchicalAver                                                 *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate averages of chain quantities
+
+subroutine HierarchicalAver(iStage)
+
+   use MolModule
+   implicit none
+
+   integer(4), intent(in) :: iStage
+
+   character(40), parameter :: txroutine ='HierarchicalAver'
    character(80), parameter :: txheading ='hierarchical quantities'
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ic, ict, iht, ioffset, itype, ivar
    real(8) :: rg
 
    if (slave) return   ! master only
@@ -2178,7 +2392,7 @@ end subroutine HierarchicalRg
 
 !........................................................................
 
-end subroutine HierarichalAver
+end subroutine HierarchicalAver
 
 !************************************************************************
 !*                                                                      *
@@ -2203,7 +2417,6 @@ subroutine ThermoInteg(iStage)
    real(8),          save :: powerkangle
    integer(4),       save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   integer(4) :: ict, iat, ia
    real(8) :: data(9)
 
    namelist /nmlThermoInteg/ lambda, powercharge, powerkbond, powerkangle
@@ -2342,7 +2555,7 @@ subroutine DistFunc(iStage)
    integer(4) :: ip, ipt, jp, jpt, iptjpt, ia, ialoc, ialow, iat, iatloc, ja, jaloc, jalow, jat, iatjat
    integer(4) :: iatx, natx, iatjatx, natatx
    real(8), allocatable, save :: ubind(:), gcont(:)
-   real(8)    :: dx, dy, dz, rr, dropbc(3), d, usum, fsum, virtwob, virmolecule
+   real(8)    :: dx, dy, dz, dropbc(3), d, usum, fsum, virtwob, virmolecule
    real(8)    :: raa2, raa1, rpp2, rpp1, dipm, norm, dvol, vols2, utobdypp
 
    integer(4), parameter :: nvar_s = 2
@@ -2388,7 +2601,7 @@ subroutine DistFunc(iStage)
 
       rcutdist2 = rcutdist**2
 
-      if (.not.allocated(ixat)) then 
+      if (.not.allocated(ixat)) then
          allocate(ixat(nat), ixatat(nat,nat))
          ixat = 0
          ixatat = 0
@@ -3015,7 +3228,7 @@ subroutine PressureContact(ipnt, var, vols2, prsrhs)
    real(8),      intent(in)  :: vols2
    real(8),      intent(out) :: prsrhs
 
-   integer(4) :: ipt, jpt, iptjpt, ivar, ihs
+   integer(4) :: ipt, jpt, iptjpt, ivar
    real(8)    :: denst, densipt, densjpt, rcont, gcont, term
 
    prsrhs = Zero

@@ -1,0 +1,95 @@
+ &nmlSystem
+  txtitle ='test complexation',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*200.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic=.t., limage=.f.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 100, ishow = 1,   iplot = 0,   ilist = 0
+  txuser='comp'
+  ltrace = .f.,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct    =  3,
+  txct   =  'center',   'PDM',   'PPO',
+  ncct   =  1,          3,       1,
+  npptct(1,1)  = 1,0,0,
+  npptct(1,2)  = 0, 50 ,0,
+  npptct(1,3)  = 0,0,100,
+  npt    =  3,
+  txpt   =  'center',   'DM',    'PO',
+  nppt   =  1,          150,     100,
+  natpt  =  1,          1,       1,
+  txat   =  'center',   'DM',    'PO',
+  massat =  0.0,        0.0,     0.0,
+  radat  =  2.0,        2.0,     2.0,
+  zat    =  0.0,        0.0,     0.0,
+  sigat  =  0.0,        4.0,     4.0,
+  epsat  =  0.0,        1.486628,  1.486628,
+  naatpt(1,1)  =  1,
+  txaat(1,1)   = 'bead',
+  naatpt(1,2)  =  1,
+  txaat(1,2)   = 'bead',
+  naatpt(1,3)  =  1,
+  txaat(1,3)   = 'bead',
+  lclink = .t.,
+  maxnbondcl = 8, 1, 1,
+  ngen = 2,
+  ictgen    =  3, 1, 2,
+  nbranch   =  1, 3 ,
+  ibranchpbeg  =  1,  1,
+  ibranchpinc  =  0, 0,
+ /
+ &nmlPotential
+   relpermitt = 78.5,
+   txpot(5) = '(1,6,12)',
+ /
+ &nmlPotentialChain
+  bond(1) = 2.4777, 2, 6.0,
+  bond(2) = 2.4777, 2, 6.0,
+  bond(3) = 2.4777, 2, 6.0,
+  clink = 2.4777, 2, 6.0,
+ /
+ &nmlSetConfiguration
+  txsetconf = 'hierarchicalrandom','hierarchicalrandom','hierarchicalrandom'
+ /
+ &nmlMC
+  isamp     = 1,
+  pspart = 1.0, 1.0, 1.0, dtran = 0.0, 0.0, 0.0,
+  pspartsso = 0.0,   0.0,   0.0,
+  ppivot    = 0.0,   0.1,   0.1,
+  drotpivot = 0.0, 180.0, 180.0,
+  txpivot   = '', 'upper', 'upper',
+ /
+ &nmlSPartSSO
+  indtransso = 4.0,  4.0,  4.0,
+  nstepzero  = 1000,
+  nstepend   = 30000,
+  nssobin    = 20,
+  ltestsso   = .t.,
+ /
+ &nmlGroup
+ /
+ &nmlIntList
+ /
+ &nmlDist /
+ &nmlStatic
+ istatic = 1,
+ lstaticuser = .t.,
+ /
+ &nmlChainTypeDF
+ vtype(2) = .t., 0.0, 200.0, 200,
+ /
+ &nmlComplexation
+  rcut_complexation = 6.25,
+  lComplexFraction = .true.,
+  lClusterDF = .true.,
+  lSegmentComplex = .true.,
+  lComplexDist = .true.,
+ /
+ &nmlComplexDist
+ vtype(1) = .true.
+ /

@@ -1,0 +1,78 @@
+ &nmlSystem
+  txtitle ='hd 20-mer adsorption',
+  txmethod='bd',    txensemb='nvt',     txbc='xy',        txstart='setconf',    txuser= 'chainads',
+  nstep1= 2,       nstep2= 100,
+  boxlen= 2*200,    240.0,
+ boxlen= 2*100,    240.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed  = 1,
+  lcont =.f.,  laver =.t.,  ldist =.f.,  ldump =.f.,  lgroup=.t.,  lstatic =.t.,  limage =.f.,
+  itest = 0,   ipart = 0, iatom = 0,   iaver = 0,    ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct         = 1,	      ! no of chain types
+  txct        ='20-mer',
+  ncct        = 1056,         ! no of chains of each chain type
+ ncct        = 264,          ! no of chains of each chain type
+  npptct(1,1) = 20,	      ! no of part (ipt) belonging to chain (ict)
+  npt         = 1,	      ! no of particle types
+  txpt        ='polymer',
+  nppt        = 21120,        ! no of particles of each particle type
+ nppt        = 5280,         ! no of particles of each particle type
+  natpt       = 1,	      ! no of atom types of each particle type
+  txat        ='bead',
+  massat      = 10.0,
+  radat       = 1.2,
+  sigat       = 3.405,
+  epsat       = 0.99606555,
+  naatpt(1,1) = 1,
+  txaat(1,1)  ='bead',
+ /
+ &nmlPotential
+  rcut  = 10,
+  txpot  = '(1,6,12)',
+  lljcut =.true.,
+  luext =.true.,
+ /
+ &nmlPotentialExternal txuext ='lj_wall_z', sigma_ext = 3.5d0, epsilon_ext = 25d-1, wall_z_ext = 120.0 /
+ &nmlPotentialChain bond = 2.4088, 2, 5.0, angle = 0.0 /
+ &nmlSetConfiguration
+  txsetconf ='random',
+  radatset = 1.7,
+  rclow(3,1) =-100.0,
+  rcupp(3,1) = 100.0,
+  rcupp(3,1) = 117.0,
+  rclow(3,1) =-117.0,
+ /
+ &nmlMC
+  dtran	     = 3.0,
+  pslither   = 0.05,
+  pchain     = 0.05,
+  dtranchain = 3.0,
+ /
+ &nmlBD tstep = 0.025, dcoeff = 1.0 /
+ &nmlIntList inlist = 0, drnlist = 12.0 /
+ &nmlDist idist = 100, vtype(5) =.true., 0.0, 50.0, 200 /
+ &nmlMolstat /
+ &nmlDump idump = 400, ldpos =.true., ldumpuser = .f.,
+ &nmlGroup /
+ &nmlStatic
+  istatic = 40,
+  lspdf =.true.,
+  lltt  =.true.,
+  lstaticuser =.true.,
+ /
+ &nmlSPDF vtype(3) =.true., 80.0, 120.0, 200 /
+ &nmlLoopTailTrain adscond = 'plane_xy', '-|+', 6.0d0 /
+ &nmlSCDF vtype%l = .true., .true., .true., .true., .true., vtype%min = 0, 80, 80, 80, 80, vtype%max = 120, 120, 120, 120, 120, vtype%nbin = 200, 200, 200, 200, 200, lsym=.true. /
+ &nmlAdsRadGyr vtype%l = .true., .true., .true., .true., .true., .true., vtype%min= 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, vtype%max = 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, vtype%nbin = 200, 200, 200, 200, 200, 200, adscond = 'plane_xy', '-|+', 6.0d0 /
+ &nmlAdsBondOrder vtype%l  =.true., adscond = 'plane_xy', '-|+', 6.0d0, nradius = 3, radius = 10.0, 20.0, 50.0 /
+ &nmlAdsPropDyn adscond = 'plane_xy', '-|+', 6.0d0, blocklen  = 10, facblocklen = 1.1 /
+ &nmlAdsEventDyn adscond = 'plane_xy', '-|+', 6.0d0, iinterval = 10 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML txwhen ='after_run', atsize = 1.5, rgbcolor = 1, 0, 0, blmax = 5.01, bondr = 0.3 /
+ &nmlAdsExam2 vmax = 500 /
+ &nmlAdsExam3 ltype(4) = .true., tdiv = 20.0, tmax = 800.0, vmax = 200, nbin = 50 /
+ &nmlAdsExam4 ntype = 5, tlow = 0.0, tupp = 100.0, vmax = 200, nbin = 10 /

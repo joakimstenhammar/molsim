@@ -1,0 +1,56 @@
+ &nmlSystem
+  txtitle ='test of molsim: lmcsep (branch sso)',
+  txmode ='simulation',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 10,
+  boxlen = 3*1200.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic =.f.,  limage=.f.,
+  itest = 0,   ipart = 0,   iatom = 1,   iaver = 0,   ishow = 1,     iplot = 0,   ilist = 0,
+  ltrace = .f.,
+/
+ &nmlScale
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct    =  1,
+  txct   =  'chain',
+  ncct   =  1,
+  npptct(1,1)  = 100,
+  npt    =  1,
+  txpt   =  'bead',
+  nppt   =  100,
+  natpt  =  1,
+  txat   =  'abead',
+  massat =  0.0,
+  radat  =  1.0,
+  zat    =  0.0,
+  sigat  =  2.0,
+  epsat  =  3.0,
+  naatpt(1,1)  =  1,
+  txaat(1,1)   = 'bead',
+ /
+ &nmlPotential
+  txpot(1) = '(1,6,12)',
+  rcut = 25.0,
+ /
+ &nmlPotentialChain
+  bond(1) = 2.4777, 2, 3.0,
+ /
+ &nmlSetConfiguration
+  txsetconf = 'chainrandom'
+ /
+ &nmlMC
+  isamp     = 1,
+  pspart = 0.9,
+  dtran = 5.00,
+  ppivot    = 0.1,
+  drotpivot = 360.0,
+  txpivot   = 'short',
+  lmcsep = .true.,
+ /
+ &nmlIntList
+ drnlist = 10.0,
+ /

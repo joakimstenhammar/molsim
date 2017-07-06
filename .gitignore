@@ -2,9 +2,13 @@
 *.mod
 *.i90
 *.swp
+*__genmod*
 Bin/
 version.conf
-Testin/in/
-Testin/Save/
+Src/make.arch
+Src/make.fftwpath
 Testin/out/
+Testin/out_stable/
+Testin/.current.md5sum
 Testin/diff.out
+.nfs*

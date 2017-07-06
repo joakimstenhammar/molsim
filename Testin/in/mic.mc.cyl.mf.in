@@ -1,0 +1,68 @@
+ &nmlSystem
+  txtitle ='2*(60:1) hs system, ucorr',
+  txmethod='mc',    txensemb='nvt',     txbc ='cyl',  txstart ='zero',
+  txmethod='mc',    txensemb='nvt',     txbc ='cyl',  txstart ='setconf', txuser = 'twocomponentmodel_corr',
+  nstep1  = 2,      nstep2   = 100,
+
+  cylrad = 80.0,  cyllen = 398.0,
+  temp  = 298.,   prsr = 0.1013,
+
+  iseed = 9876543,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  ldump =.f.,  lgroup=.f.,  lstatic=.true.,limage =.f.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 10000, ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 3,
+  txpt  = 'macroion','ion1', 'ion2',
+  nppt  =  2,        60,    60,
+  natpt =  1,        1,    1,
+  txat  = 'macroion','ion1', 'ion2',
+  massat= 230.0,    23.0,     23.0,
+  zat   = -60.0,      1.0,         1.0,
+  radat = 20.0,       2.0,         2.0
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'os',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'na',
+  naatpt(1,3) =  1,
+  txaat(1,3) = 'na',
+ /
+ &nmlPotential
+  r2uminin= 1.0d-3,
+  utoltab = 1.0d-4,
+  ftoltab = 1.0d-3,
+  umaxtab = 2.0d5,
+  fmaxtab = 2.0d6,
+
+  relpermitt = 78.4026,
+ /
+ &nmlSetConfiguration txsetconf='pclattice', 'random', 'random',
+  nucell(1,1) = 1, 1, 2,
+  rclow(1,1) = -80.0, -80.0, -45.0,
+  rcupp(1,1) =  80.0,  80.0,  45.0,
+  roshift(1,1) = 0.5, 0.5, 0.5,
+  rclow(1,2) = -80.0, -80.0, -198.0,
+  rcupp(1,2) =  80.0,  80.0,  0.0,
+  rclow(1,3) = -80.0, -80.0,  0.0,
+  rcupp(1,3) =  80.0,  80.0,  198.0,
+ /
+ &nmlMC
+  isamp = 0,
+  pspart     = 1.0,  1.0,   1.0,        dtran     = 0.0,   20.0,  20.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 200.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 10.0, 500 /
+ &nmlGroup ref ='type=1', field='type=1' , lwref =.false. /
+ &nmlStatic
+  istatic = 10,
+  lmeanforce1=.true.,
+  lmeanforce2=.true.,
+  lstaticuser =.true.,
+ /
+ &nmlMeanForce1 dr = 0.01 /
+ &nmlMeanForce2 thickness = 0.2, dz = 0.5 /
+ &nmlMacroionTwoCyl vtype(1:8)%l = .true., .true., .true., .true., .true., .true., .true., .true., vtype(1:2)%nbin = 199, 199 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 20, 2,   2, blmax  = 0.0, bondr =  0.1 /

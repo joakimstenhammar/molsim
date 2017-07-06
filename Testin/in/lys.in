@@ -1,0 +1,223 @@
+ &nmlSystem
+  txtitle ='1 lysozyme (ph7)  and 1 chain (60 segments), no counterions',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',
+  nstep1= 1,        nstep2= 10,
+  boxlen= 3*400,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  ldump =.f.,  lgroup=.t.,  lstatic =.t.,limage =.t.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,   ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='60-mer',
+  ncct  = 1,
+  npptct(1,1) = 60,	0,
+  npt   = 2,
+  txpt  = 'pe',		'protein',
+  nppt  =  60,		1,
+  natpt =  1,		5,
+
+  txat  = 'bead',	'plus_aa',	'minus_aa',	'neutr_aa', 'p_center',
+  massat= 8.0,		0.0,		0.0,		0.0,	    1430,
+  radat = 2.0,		1,		1,		1,	    18.54,
+  zat   = -1,		1,		-1,		0,	    0,
+
+  naatpt(1,1) =  1,
+  naatpt(1,2) =  18,
+  naatpt(2,2) =  10,
+  naatpt(3,2) =  4,
+  naatpt(5,2) =  1,
+
+  txaat( 1,1) = 'pebead',
+  txaat(01,2) = 'asp    66',
+  txaat(02,2) = 'asp    18',
+  txaat(03,2) = 'asp    87',
+  txaat(04,2) = 'asp   119',
+  txaat(05,2) = 'glu     7',
+  txaat(06,2) = 'leu n 129',
+  txaat(07,2) = 'asp    52',
+  txaat(08,2) = 'asp    48',
+  txaat(09,2) = 'asp   101',
+  txaat(10,2) = 'his    15',
+  txaat(11,2) = 'glu    35',
+  txaat(12,2) = 'lys n   1',
+  txaat(13,2) = 'tyr    23',
+  txaat(14,2) = 'tyr    20',
+  txaat(15,2) = 'lys    97',
+  txaat(16,2) = 'lys   116',
+  txaat(17,2) = 'lys    13',
+  txaat(18,2) = 'lys    33',
+  txaat(19,2) = 'lys     1',
+  txaat(20,2) = 'lys    96',
+  txaat(21,2) = 'tyr    53',
+  txaat(22,2) = 'arg     5',
+  txaat(23,2) = 'arg    14',
+  txaat(24,2) = 'arg    21',
+  txaat(25,2) = 'arg    45',
+  txaat(26,2) = 'arg    61',
+  txaat(27,2) = 'arg    68',
+  txaat(28,2) = 'arg    73',
+  txaat(29,2) = 'arg   112',
+  txaat(30,2) = 'arg   114',
+  txaat(31,2) = 'arg   125',
+  txaat(32,2) = 'arg   128',
+  txaat(33,2) = 'pr_ctr',
+
+  rain(1,01,2) =   5.126, -11.854, -10.333,
+  rain(1,02,2) =  -0.702,  -7.539, -14.705,
+  rain(1,03,2) =   3.495,   8.745, -13.597,
+  rain(1,04,2) = -10.463,   6.727, -10.902,
+  rain(1,05,2) =  -7.570,  -2.096, -14.556,
+  rain(1,06,2) =  -9.895,   8.925,   9.797,
+  rain(1,07,2) =  13.082,   3.171,  -9.611,
+  rain(1,08,2) =   8.802, -13.722,   2.795,
+  rain(1,09,2) =   5.766,  -6.678,  13.990,
+  rain(1,10,2) =   5.670, -13.952,   6.838,
+  rain(1,11,2) =  -2.546,  -2.933,  16.078,
+  rain(1,12,2) = -16.474,   0.674,  -1.310,
+  rain(1,13,2) = -12.314,  -3.209,  10.566,
+  rain(1,14,2) =   8.586,   7.351,  12.076,
+  rain(1,15,2) =  15.378,   5.967,  -1.223,
+  rain(1,16,2) =   5.048,  13.214,   8.571,
+  rain(1,17,2) =   3.171,  13.585,  -8.887,
+  rain(1,18,2) =  -1.812,   3.788, -15.998,
+  rain(1,19,2) =   1.956,   0.711, -16.409,
+  rain(1,20,2) =  -8.602,  12.428,  -6.717,
+  rain(1,21,2) =  14.865,  -0.636,   7.226,
+  rain(1,22,2) =   8.389,  -7.142,  12.337,
+  rain(1,23,2) =  11.645,  -6.551,   9.750,
+  rain(1,24,2) =   4.206, -13.252,   8.960,
+  rain(1,25,2) =  -8.795, -10.613,  -9.142,
+  rain(1,26,2) =  -8.486,  -1.776,  14.086,
+  rain(1,27,2) =   2.566,  15.276,  -5.799,
+  rain(1,28,2) =  -7.532,   8.046, -12.333,
+  rain(1,29,2) = -12.898,  -6.073,  -8.387,
+  rain(1,30,2) = -14.496,   4.210,   6.762,
+  rain(1,31,2) =  -3.688,  13.485,   8.838,
+  rain(1,32,2) =   4.912, -14.181,   6.953,
+  rain(1,33,2) =   7.317,  -7.410, -12.850,
+  rain(1,34,2) =  -0.985,  -6.809,  15.041,
+  rain(1,35,2) =  -7.057,  -7.230,  13.096,
+  rain(1,36,2) =  11.143,   6.345,  10.447,
+  rain(1,37,2) =  -6.366,   7.069, -13.531,
+ /
+ &nmlPotential
+  rcut = 67,
+
+  npot(1)   = 	1,
+  ipot(1,1) = 	1,
+  ucoff(1,1) = 	1,
+
+  npot(2) =	1,
+  ipot(1,2) =	1,
+  ucoff(1,2) =	1,
+
+  npot(3) =	1,
+  ipot(1,3) =	1,
+  ucoff(1,3) =	1,
+
+  npot(4) =	0,
+  ipot(1,4) =	0,
+  ucoff(1,4) =	0,
+
+  npot(5) =	0,
+  ipot(1,5) =	0,
+  ucoff(1,5) =	0,
+
+  npot(6) =	2,
+  ipot(1,6) =	6,		12,
+  ucoff(1,6) =	-1.201e8,	0.902e16,
+
+  npot(7)   = 	1,
+  ipot(1,7) = 	1,
+  ucoff(1,7) = 	1,
+
+  npot(8) =	1,
+  ipot(1,8) =	1,
+  ucoff(1,8) =	1,
+
+  npot(9) =	0,
+  ipot(1,9) =	0,
+  ucoff(1,9) =	0,
+
+  npot(10) =	0,
+  ipot(1,10) =	0,
+  ucoff(1,10) =	0,
+
+  npot(11) =	0,
+  ipot(1,11) =	0,
+  ucoff(1,11) =	0,
+
+  npot(12) =	1,
+  ipot(1,12) =	1,
+  ucoff(1,12) =	1,
+
+  npot(13) =	0,
+  ipot(1,13) =	0,
+  ucoff(1,13) =	0,
+
+  npot(14) =	0,
+  ipot(1,14) =	0,
+  ucoff(1,14) =	0,
+
+  npot(15) =	0,
+  ipot(1,15) =	0,
+  ucoff(1,15) =	0,
+
+  npot(16) =	0,
+  ipot(1,16) =	0,
+  ucoff(1,16) =	0,
+
+  npot(17) =	0,
+  ipot(1,17) =	0,
+  ucoff(1,17) =	0,
+
+  npot(18) =	0,
+  ipot(1,18) =	0,
+  ucoff(1,18) =	0,
+
+  npot(19) =	0,
+  ipot(1,19) =	0,
+  ucoff(1,19) =	0,
+
+  npot(20) =	0,
+  ipot(1,20) =	0,
+  ucoff(1,20) =	0,
+
+  npot(21) =	0,
+  ipot(1,21) =	0,
+  ucoff(1,21) =	0,
+
+  relpermitt = 78.4,
+  lscrc =.true.,       scrlen = 9.6,
+ /
+ &nmlPotentialChain bond = 2.4, 2, 4.7, angle = 0.0048 /
+ &nmlSetConfiguration
+  txsetconf(1) ='random',
+  txsetconf(2) ='random',
+ /
+ &nmlMC
+  isamp = 1,
+  pspart    = 0.95,  dtran = 2.0,  1.0,      drot  = 0,    360,
+  ppivot = 0.10,  drotpivot = 360.0,
+  pchain    = 0.05,  dtranchain = 10.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 180.0 /
+ &nmlGroup /
+ &nmlStatic
+  istatic = 1,
+  lrdf =.true.,
+  lltt  =.true.,
+  lcbpc =.true.,
+ /
+ &nmlRDF vtype(2) =.true., 0.0, 100.0, rmax=120.54, func='rcn' /
+ &nmlLoopTailTrain adscond = 'part=61',, 100.0d0 /
+ &nmlCBPC iptpart= 2, rcontact = 25 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 2.0,		2.0,	2.0,	0.4,	0.4,	1.0, rgbcolor = 1,0,0.5, 	0,0,1, 	1,0,0, 	1,1,1, 	0,1,0, 	1,1,1, blmax =0.0, bondr = 0.2 /
+
+
+

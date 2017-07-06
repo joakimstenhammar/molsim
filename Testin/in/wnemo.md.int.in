@@ -1,0 +1,71 @@
+ &nmlSystem
+  txtitle ='test of md with nemo potentials, separate geom and interaction sites',
+  txmethod='md',    txensemb='nve',     txbc ='xyz',  txstart ='setconf',
+  nstep1= 1,        nstep2= 100,
+  boxlen= 3*18.60,
+  temp  = 300.0,    prsr = 0.1013,
+  iseed = 987653,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.t.,  lstatic =.f., ldynamic = .t., limage = .f.,
+  itest = 0,   ipart = 10,  iatom = 10,  iaver = 100, ishow = 1,   iplot = 1,   ilist = 1,
+  lenscl= 1.0000000,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec= 'pol',
+  npt   = 1,
+  txpt  = 'water',
+  nppt  =  216,
+  natpt =  2,
+  txat  = 'o      ','h       ',
+  massat= 16.0,      1.0,
+  radat =  0.0,      0.0,
+  zat   = -0.84160,  0.420800,
+  naatpt        =  1,       2,
+  txaat         = 'o     ','h     ','h     ',
+
+  rain(1,1,1) =  0.0,      0.0, -0.0656,
+  rain(1,2,1) =  0.7572,   0.0,  0.5205,
+  rain(1,3,1) = -0.7572,   0.0,  0.5205,
+
+  dipain(1,1,1) =  0.0000,  0.0000, -0.1361,
+  dipain(1,2,1) =  0.1036,  0.0000,  0.0432,
+  dipain(1,3,1) = -0.1036,  0.0000,  0.0432,
+
+  polain(1,1,1) =  0.6715,  0.6133,  0.7002,  0.0000,  0.0000,  0.0000,
+  polain(1,2,1) =  0.2199,  0.0756,  0.1441,  0.0000,  0.1005,  0.0000,
+  polain(1,3,1) =  0.2199,  0.0756,  0.1441,  0.0000, -0.1005,  0.0000,
+
+  lintsite     =.true.,
+  raintin(1,1,1) =  0.0,     0.0,    -0.0536,
+  raintin(1,2,1) =  0.6918,  0.0,     0.5093,
+  raintin(1,3,1) = -0.6918,  0.0,     0.5093,
+ /
+ &nmlPotential
+  rcut = 8.5,
+  txpot(1) = 'nemo:sb',
+  lewald =.false., ualphared = 3.0, ncut = 5, ncutregion ='cube', lsurf =.true.,
+  lrf =.false., epsrf = 78.54,
+ /
+ &nmlPolarizationIter tpolit = 1.0e-2, mpolit = 30, npolit = 5 /
+ &nmlSetConfiguration
+  txsetconf   ='h2olattice',
+  nucell     =  6,  6,  6,
+ /
+ &nmlMD
+  integ ='velver',  tstep = 0.002,    nvvite= 2,       lsetvel =.true.,
+  tvscl = 0.05,     tlscl = 0.0,      compre= 5.0e-4,
+ /
+ &nmlIntList inlist = 0, drnlist = 0.1 /
+ &nmlDist idist = 10, vtype(6) =.true., 0.0, 10.0, 100, rcutdist = 10 /
+ &nmlDump idump = 1, ldpos = .true., ldori = .true. ldidm = .true., /
+ &nmlGroup /
+
+ &nmlStatic
+ lstaticuser = .f.,
+ /
+ &nmlDynamic
+  sfnplow = 1, sfnpupp = 216,
+  lidm =.true.
+ /
+ &nmlIDMTCF cfin = 1, 2000, 1, 1,    .false., .true., .true./

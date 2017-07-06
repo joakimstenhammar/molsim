@@ -31,11 +31,86 @@
 !                        LabToPri   , PriToLab       , EulerRot    ,
 !                        CheckOriOrtho, QuaNorm,     , AngVelToQuaVel, QuaVelToAngVel,
 !               random : Random     , GauRandom      , CirRandom   , SphRandom
-!                mixed : InvInt     , InvFlt         , RelDiff     , CpuAdd      , CpuLeft     , CpuTot     , Second
+!                mixed : InvInt     , InvFlt         , RelDiff     , CpuAdd      , CpuLeft     , CpuTot     , SecondsSinceStart
 !            readwrite : WriteVec   , WriteMat       , WriteStd    , WriteFront  , WriteHead   , WriteDateTime, WriteIOStat, Warn       , Stop
 !               string : Center     , SpaceOut       , LowerCase   , UpperCase   , SubStr      , Advance
 !                 plot : SignMagn   , Plot
 !               powell : BrentMod
+
+module MollibModule !Starting to migrate to Module
+
+   implicit none
+   private
+   public InvInt, Center, SpaceOut
+
+   interface InvInt
+      module procedure InvInt_single, InvInt_double
+   end interface InvInt
+
+   contains
+!************************************************************************
+!*                                                                      *
+!*     InvInt                                                           *
+!*                                                                      *
+!************************************************************************
+
+! ... return the inverse of an integer
+
+   pure elemental real(8) function InvInt_single(i)
+      implicit none
+      integer(4), intent(in) :: i
+      InvInt_single = 0.0d0
+      if (i .ne. 0) InvInt_single = 1.0d0/real(i)
+   end function InvInt_single
+
+   pure elemental real(8) function InvInt_double(i)
+      implicit none
+      integer(8), intent(in) :: i
+      InvInt_double = 0.0d0
+      if (i .ne. 0) InvInt_double = 1.0d0/real(i)
+   end function InvInt_double
+
+!************************************************************************
+!*                                                                      *
+!*     Center                                                           *
+!*                                                                      *
+!************************************************************************
+
+! ... center a string
+
+   pure function Center(nw,string)
+      implicit none
+      integer(4),   intent(in) :: nw              ! width of line
+      character(*), intent(in) :: string          ! string
+      character(len=nw) :: Center
+      integer(4) :: nchar, noff
+      Center = repeat(' ', nw)
+      nchar = len_trim(string)
+      noff = (nw-nchar)/2
+      Center(noff+1:noff+nchar) = string
+   end function Center
+
+!************************************************************************
+!*                                                                      *
+!*     SpaceOut                                                         *
+!*                                                                      *
+!************************************************************************
+
+! ... space out a string
+
+   pure function SpaceOut(string)
+      implicit none
+      character(*), intent(in) :: string   ! string to be spaced out
+      character(:), allocatable :: SpaceOut
+      integer(4) :: i
+      allocate( character(len=2*len(string)) :: SpaceOut)
+      SpaceOut=repeat(' ', len(SpaceOut))
+      do i=1,len_trim(adjustl(string))
+         SpaceOut(2*i-1:2*i)=string(i:i)//' '
+      end do
+   end function SpaceOut
+
+end module MollibModule
 
 !************************************************************************
 !*                                                                      *
@@ -48,7 +123,7 @@
 real(8) function ErfLocal(x)
    implicit none
    real(8), intent(in) :: x
-   real(8) :: Erf1, Erf2
+   real(8) :: Erf2
 
 !   ErfLocal = erf(x)       ! intrinsic ≈ 1e-10
 !   ErfLocal = Erf1(x)      ! abs(dev) < 3e-7
@@ -280,13 +355,13 @@ complex(8) function CCLM(l,m,theta,phi,norm)
    implicit none
    real(8), parameter :: zero = 0.0d0 , one = 1.0d0
    real(8), parameter :: pi = 3.1415926535897932d0 , facpi = 4.0d0*pi
-   integer(4), parameter :: lmax = 200, l2max = 2*lmax
+   integer(4), parameter :: lmax = 150, l2max = 2*lmax      !if lmax is larger there is a floating overflow
    integer(4), intent(in) :: l, m, norm
    real(8),    intent(in) :: theta, phi
    logical, save :: first=.true.
    real(8), save :: s(0:l2max), si(0:l2max), vnorm(0:lmax)
    integer(4) :: i, mabs
-   real(8) :: x, PLM, fac
+   real(8) :: x, PLM
 
    if (l > lmax) call stop('CCLM','l > lmax',6)
    if (l < 0)    call stop('CCLM','l < 0',6)
@@ -333,7 +408,6 @@ complex(8) function DDJKM(j,k,m,alfa,beta,gamma,norm)
    real(8), save :: vnorm(0:jmax), del(0:jmax,-jmax:jmax,-jmax:jmax)
    real(8)    :: temp
    integer(4) :: imod, n
-   integer(4) :: jj, kk ,mm
 
    if (j > jmax) call stop('DDJKM','j > jmax', 6)
    if (k > j   ) call stop('DDJKM','k > j'   , 6)
@@ -385,7 +459,6 @@ subroutine CalcDel(jmax,del)
    real(8),   intent(out) :: del(0:jmax,-jmax:jmax,-jmax:jmax)
    real(8)    :: dum(0:2*jmax,-2*jmax:2*jmax,-2*jmax:2*jmax)
    real(8)    :: fac(0:20), s(0:20), si(0:20), ffac, sum
-   real(8)    :: temp
    integer(4) :: i, j, jj, k, kk, m, mm
 
    if (jmax > 10) call stop('CalcDel','jmax > 10', 6)
@@ -1011,7 +1084,7 @@ subroutine Diag_old(n,a,eivr)
    integer(4) :: i, i2, j, ii, jj, irow,jcol, jcol1, iflag
    real(8)    :: atop, aii, ajj, aij, avgf, c, d, dstop, s, t, u, thrsh
 
-1  do 10 j = 1,n
+   do 10 j = 1,n
    do 20 i = 1,n
 20 eivr(i,j) = zero
 10 eivr(j,j) = one
@@ -1092,15 +1165,16 @@ end subroutine Diag_old
 
 !************************************************************************
 !*                                                                      *
-!*     diag                                                             *
+!*     Diag                                                             *
 !*                                                                      *
 !************************************************************************
 
 ! ... diagonalize a real matrix and calculate eigenvectors
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
+!     -> subroutine "jacobi"
 
-subroutine diag(n,a,d,v,nrot)
+subroutine Diag(n,a,d,v,nrot)
    implicit none
    real(8), parameter :: zero = 0.0d0, fourth = 0.25d0, one = 1.0d0, two = 2.0d0
    integer(4), parameter :: mnrot = 50     ! maximum number sweeps
@@ -1200,9 +1274,55 @@ subroutine diag(n,a,d,v,nrot)
       end do
 
    end do
-   if (nrot > mnrot) call stop('diag', 'no convergence', 6)
+   if (nrot > mnrot) call stop('Diag', 'no convergence', 6)
 
-end subroutine diag
+end subroutine Diag
+
+!************************************************************************
+!*                                                                      *
+!*     Eigensort                                                        *
+!*                                                                      *
+!************************************************************************
+
+! ... Given the eigenvalues d and eigenvectors v as output from Diag this
+! ... routine sorts the eigenvalues into descending order, and rearranges
+! ... the columns of v correspondingly. The method is straight insertion.
+
+!     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
+!     --> subroutine "eigsrt"
+
+subroutine Eigensort(d,v,n)
+
+   implicit none
+
+   integer(4)  :: n
+   real(8)     :: d(n), v(n,n)
+   integer(4)  :: i, j, k
+   real(8)     :: p
+
+   do i = 1, n-1
+      k=i
+      p=d(i)
+      do j = i+1, n
+         if (d(j).ge.p) then
+            k=j
+            p=d(j)
+         end if
+      end do
+      if (k.ne.i) then
+         d(k)=d(i)
+         d(i)=p
+         do j=1,n
+            p=v(j,i)
+            v(j,i)=v(j,k)
+            v(j,k)=p
+         end do
+      end if
+   end do
+
+   return
+
+end subroutine
 
 !************************************************************************
 !*                                                                      *
@@ -1357,7 +1477,7 @@ real(8) function CsEval(n,u,ideriv,x,a,b,c,d)
    real(8),    intent(in) :: a(n), b(n), c(n), d(n) ! spline coeff
    integer(4), save :: i = 1
    integer(4) :: j, k
-   real(8)    :: xcseval, dx
+   real(8)    :: dx
 
    if (ideriv < -1.or.ideriv > 2) call stop('CsEval','check ideriv',6)
 
@@ -1491,7 +1611,7 @@ subroutine CardinalBSpline(order, pos, kmax, values, derivs, derivs2)
     real(8), intent(out), optional :: derivs2(0:order-1) ! values of second derivative
 
     integer(4) :: v, n, i, kmin
-    real(8) :: x, fact, a
+    real(8) :: x, a
     real(8) :: lastvals(0:order-1), lastvals2(0:order-1)
 
     v = floor(pos)
@@ -1813,16 +1933,18 @@ end subroutine CalcClusterMember
 
 ! ... transform a vector from a cartensian to a spherical polar coordinate system
 
-subroutine CarToSph(txopt,x,y,z,r,theta,phi)
+subroutine CarToSph(txoptin,x,y,z,r,theta,phi)
    implicit none
    real(8), parameter :: radtodeg = 57.29577951d0
    real(8), parameter :: pihalf = 1.570796327d0
    real(8), parameter :: zero = 0.0d0, one = 1.0d0, small = 1.0d-6
-   character(*), intent(inout)  :: txopt              ! select 'rad' or 'deg'
+   character(*), intent(in)  :: txoptin              ! select 'rad' or 'deg'
    real(8),      intent(in)     :: x, y, z            ! cartesian coordinate
    real(8),      intent(out)    :: r, theta, phi      ! spherical polar coordinate
    real(8) :: norm, xn, yn, zn
+   character(LEN=len(txoptin))  :: txopt              ! select 'rad' or 'deg'
 
+   txopt = txoptin
    call LowerCase(txopt)
 
    r = sqrt(x**2+y**2+z**2)
@@ -2140,7 +2262,7 @@ subroutine AxisAngToOri(rotaxis, alpha, ori)
    real(8), intent(in)  :: rotaxis(3)                   ! direction of rotation axis
    real(8), intent(in)  :: alpha                        ! rotation angle
    real(8), intent(out) :: ori(3,3)                     ! rotation matrix
-   real(8) :: norm, rotaxis1, rotaxis2, rotaxis3, ca, sa, qua0, qua1, qua2, qua3
+   real(8) :: norm, ca, sa, qua0, qua1, qua2, qua3
 
    norm = one/sqrt(rotaxis(1)**2+rotaxis(2)**2+rotaxis(3)**2)
    ca = cos((half*alpha))
@@ -2229,16 +2351,21 @@ end subroutine PriToLab
 !         function              rotated           p(-a)p(-b)p(-c)
 !         function              fixed             p(-c)p(-b)p(-a)
 
-subroutine EulerRot(mode1,mode2,alpha,beta,gamma,x,y,z)
+subroutine EulerRot(mode1in,mode2in,alpha,beta,gamma,x,y,z)
    implicit none
    real(8), parameter :: degrad = 0.01745329252d0
-   character(*), intent(inout) :: mode1            ! select convention
-   character(*), intent(inout) :: mode2            ! select rad/deg
+   character(*), intent(in) :: mode1in            ! select convention
+   character(*), intent(in) :: mode2in            ! select rad/deg
    real(8), intent(in) :: alpha, beta, gamma       ! Euler angles
    real(8), intent(inout) :: x, y, z               ! cartesian coordinate
    real(8) :: a, b, c, ca, cb, cc, sa, sb, sc
    real(8) :: d11, d12, d13, d21, d22, d23, d31, d32, d33
    real(8) :: x1, y1, z1
+   character(len=len(mode1in)) :: mode1            ! select convention
+   character(len=len(mode2in)) :: mode2            ! select rad/deg
+
+   mode1 = mode1in
+   mode2 = mode2in
 
    call LowerCase(mode1)
    call LowerCase(mode2)
@@ -2349,7 +2476,7 @@ subroutine OrthoOri(np, iplow, ipupp, ori, tol, unit)
    integer(4), intent(in)    :: ipupp
    real(8),    intent(inout) :: ori(3,3,np)
    real(8),    intent(in)    :: tol
-   integer(4), intent(out)   :: unit
+   integer(4), intent(in)   :: unit
 
    logical    :: ltext
    integer(4) :: ip
@@ -2546,19 +2673,59 @@ end subroutine QuaVelToAngVel
 !*                                                                      *
 !************************************************************************
 
+! ... return a random number in the range of 0 < ran < 1
+!     iseed should not be equal to zero, and the first seed should be negative
+!     "Numerical recipes in Fortran 90" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1992.
+!     modified from function ran
+
+!“Minimal” random number generator of Park and Miller combined with a Marsaglia shift sequence. Returns a uniform random deviate between 0.0 and 1.0 (exclusive of the endpoint values). This fully portable, scalar generator has the “traditional” (not Fortran 90) calling sequence with a random deviate as the returned function value: call with idum a negative integer to initialize; thereafter, do not alter idum except to reinitialize. The period of this generator is about 3.1 × 10^18 .
+
+module Random_Module
+   integer, parameter :: k4b=selected_int_kind(9) ! = 4 on intel fortran and gfortran
+   real(8) :: am
+   integer(k4b) :: ix=-1,iy=-1
+end module Random_Module
+
+function Random(idum)
+   use Random_Module
+   implicit none
+   integer(k4b), intent(inout) :: idum
+   real(8) :: Random
+   integer(k4b), parameter :: ia=16807,im=2147483647,iq=127773,ir=2836
+   integer(k4b)   :: k
+   if (idum <= 0 .or. iy < 0) then           !initialize.
+      am=nearest(1.0,-1.0)/im
+      iy=ior(ieor(888889999,abs(idum)),1)
+      ix=ieor(777755555,abs(idum))
+      idum=abs(idum)+1                          !set idum positive.
+   end if
+   ix=ieor(ix,ishft(ix,13))                  !marsaglia shift sequence with period 2^32 − 1.
+   ix=ieor(ix,ishft(ix,-17))
+   ix=ieor(ix,ishft(ix,5))
+   k=iy/iq                                   !park-miller sequence by schrage’s method, period 2^31 − 2.
+   iy=ia*(iy-k*iq)-ir*k
+   if (iy < 0) iy=iy+im
+   Random=am*ior(iand(im,ieor(ix,iy)),1)     !combine the two generators with masking to ensure nonzero value.
+end function Random
+
+!************************************************************************
+!*     Random                                                           *
+!*                                                                      *
+!************************************************************************
+
 ! ... return a random number in the range of 0 to 1
 !     iseed should not be equal to zero
 !     by Learmonth and Lewis 1973 (32 bits integer)
 
-real(8) function Random(iseed)
-   implicit none
-   integer(4), parameter :: k = 16087, l = 0, nb = 31
-   real(8), parameter :: f = 2.0d0**(-nb)
-   integer(4), intent(inout) :: iseed
-   iseed = iseed*k+l
-   iseed = ibclr(iseed,nb)
-   Random = f*iseed
-end function Random
+!real(8) function Random(iseed)
+   !implicit none
+   !integer(4), parameter :: k = 16087, l = 0, nb = 31
+   !real(8), parameter :: f = 2.0d0**(-nb)
+   !integer(4), intent(inout) :: iseed
+   !iseed = iseed*k+l
+   !iseed = ibclr(iseed,nb)
+   !Random = f*iseed
+!end function Random
 
 !************************************************************************
 !*                                                                      *
@@ -2642,21 +2809,6 @@ end subroutine SphRandom
 
 !************************************************************************
 !*                                                                      *
-!*     InvInt                                                           *
-!*                                                                      *
-!************************************************************************
-
-! ... return the inverse of an integer
-
-real(8) function InvInt(i)
-   implicit none
-   integer(4), intent(in) :: i
-   InvInt = 0.0d0
-   if (i > 0) InvInt = 1.0d0/real(i)
-end function InvInt
-
-!************************************************************************
-!*                                                                      *
 !*     InvFlt                                                           *
 !*                                                                      *
 !************************************************************************
@@ -2694,11 +2846,11 @@ end function GetRelDiff
 
 ! ... add and write total cpu time elapsed since start
 
-subroutine CpuAdd(whattodo,label,level,unit)
+subroutine CpuAdd(txwhattodo,label,level,unit)
 
    implicit none
    integer(4), parameter :: mnlabel = 100
-   character(*), intent(inout) :: whattodo !'start'
+   character(*), intent(in) :: txwhattodo !'start'
                                            !'stop'
                                            !'write'
                                            !'interrupt' disable the effect of 'start', 'stop', and 'write'
@@ -2714,7 +2866,10 @@ subroutine CpuAdd(whattodo,label,level,unit)
    logical,       save :: interrupt = .false.
    character(2)  :: str
    integer(4) :: i
-   real(8) :: Second, tot
+   character(LEN=len(txwhattodo))   :: whattodo
+   real(8) :: SecondsSinceStart, tot
+
+   whattodo = txwhattodo
 
    call LowerCase(whattodo)
 
@@ -2755,9 +2910,9 @@ subroutine CpuAdd(whattodo,label,level,unit)
 ! ... do the work
 
    if (whattodo == 'start') then
-      cpustart(i) = Second()
+      cpustart(i) = SecondsSinceStart()
    else if (whattodo == 'stop') then
-      cputot(i) = cputot(i)+Second()-cpustart(i)
+      cputot(i) = cputot(i)+SecondsSinceStart()-cpustart(i)
    else if (whattodo == 'write') then
       write(str,'(i2)') 15+max(0,maxval(len_trim(xlabel(1:nlabel))))
       tot = sum(cputot(1:nlabel), 1, xlevel(1:nlabel)==0)  ! total cpu time by summing top level
@@ -2798,9 +2953,9 @@ subroutine CpuLeft(maxcpu,unit)
    integer(4), intent(in) :: unit     ! output unit
    logical, save :: first = .true.
    real(8), save :: t1
-   real(8) :: t2, Second, tcycle, tleft
+   real(8) :: t2, SecondsSinceStart, tcycle, tleft
 
-   t2 = Second()
+   t2 = SecondsSinceStart()
    if (first) then
       first = .false.
    else
@@ -2830,8 +2985,8 @@ end subroutine CpuLeft
 subroutine CpuTot(unit)
    implicit none
    integer(4), intent(in) :: unit
-   real(8) :: Second, t
-   t = Second()
+   real(8) :: SecondsSinceStart, t
+   t = SecondsSinceStart()
    write(unit,*)
    if (t < 3600.0) then
       write(unit,'(a,2f12.2)') 'total cpu time since start (s)',t
@@ -2842,24 +2997,23 @@ end subroutine CpuTot
 
 !************************************************************************
 !*                                                                      *
-!*     Second                                                           *
+!*     SecondsSinceStart                                                *
 !*                                                                      *
 !************************************************************************
 
 ! ... return cpu time used since start in seconds
 
-real(8) function Second()
+real(8) function SecondsSinceStart()
    implicit none
-   integer(4) :: mclock
-!  Second = 1.0D-3 * mscpu()        ! Univac
+!  SecondsSinceStart = 1.0D-3 * mscpu()        ! Univac
 !  integer(4), tused                ! Nord
-!  Second = 20.D-3 * tused(0)       ! Nord
-!  Second = secvax()                ! Vax
-!  istat = sys&gettime(Second,wait) ! Fps164
-!  Second = 1.0d-2 * mclock()       ! Ibm Aix / Risc 6000
-!  Second = 1.0d-3 * mclock()       ! Intel
-   call cpu_time(second)            ! fortran 95
-end function Second
+!  SecondsSinceStart = 20.D-3 * tused(0)       ! Nord
+!  SecondsSinceStart = secvax()                ! Vax
+!  istat = sys&gettime(SecondsSinceStart,wait) ! Fps164
+!  SecondsSinceStart = 1.0d-2 * mclock()       ! Ibm Aix / Risc 6000
+!  SecondsSinceStart = 1.0d-3 * mclock()       ! Intel
+   call cpu_time(SecondsSinceStart)            ! fortran 95
+end function SecondsSinceStart
 
 !************************************************************************
 !*                                                                      *
@@ -2963,6 +3117,7 @@ end subroutine WriteStd
 
 subroutine WriteFront(txProgName, txShortInfo, txVerDate, txAuthorMain, txAuthorCont, unit)
 
+   use MollibModule, only: Center
    implicit none
    integer(4), parameter :: nw = 110           ! width of frame
    integer(4), parameter :: nlen = nw - 4      ! width for text
@@ -2974,7 +3129,6 @@ subroutine WriteFront(txProgName, txShortInfo, txVerDate, txAuthorMain, txAuthor
    character(*), intent(in) :: txAuthorCont    ! contributing authors (\ signal line break)
    integer(4),   intent(in) :: unit            ! unit
    integer(4)      :: i, nsubstr, ilow(mnsubstr), iupp(mnsubstr)
-   character(nlen) :: Center
    character(3) :: fmt
 
    write(fmt,'(i3)') nw
@@ -3035,6 +3189,7 @@ end subroutine WriteFront
 ! ... write a heading
 
 subroutine WriteHead(ilevel,string,unit)
+   use MollibModule, only: Center, SpaceOut
    implicit none
    integer(4), parameter ::  nw = 110      ! width of frame
    integer(4), parameter ::  nlen = nw - 2 ! maximal width of text
@@ -3042,7 +3197,6 @@ subroutine WriteHead(ilevel,string,unit)
    character(*), intent(in) :: string      ! text
    integer(4),   intent(in) :: unit        ! unit
    integer(4) :: i
-   character(nlen) :: SpaceOut, Center
    character(3) :: fmt
 
    write(fmt,'(i3)') nw
@@ -3091,6 +3245,7 @@ end subroutine WriteDateTime
 ! ... write value of iostat and take appropriate action
 
 subroutine WriteIOStat(name,text,iostat,iopt,unit)
+   use MollibModule, only: Center, SpaceOut
    implicit none
    integer(4), parameter ::  nw = 110      ! width of frame
    integer(4), parameter ::  nlen = nw - 2 ! maximal width of text
@@ -3104,7 +3259,7 @@ subroutine WriteIOStat(name,text,iostat,iopt,unit)
    integer(4),   intent(in) :: unit        ! output unit
    integer(4) :: i
    character(3) :: fmt
-   character(nlen) :: string, SpaceOut, Center, txiostat
+   character(nlen) :: string, txiostat
 
    write(fmt,'(i3)') nw
    string = 'message from '//trim(name)
@@ -3134,6 +3289,7 @@ end subroutine WriteIOStat
 ! ... write a warning message
 
 subroutine Warn(name,text,unit)
+   use MollibModule, only: Center, SpaceOut
    implicit none
    integer(4), parameter ::  nw = 110      ! width of frame
    integer(4), parameter ::  nlen = nw - 2 ! maximal width of text
@@ -3142,7 +3298,7 @@ subroutine Warn(name,text,unit)
    integer(4),   intent(in) :: unit        ! output unit
    integer(4) :: i
    character(3) :: fmt
-   character(nlen) :: string, SpaceOut, Center
+   character(nlen) :: string
 
    write(fmt,'(i3)') nw
    string = 'warning from '//trim(name)
@@ -3187,8 +3343,9 @@ contains
 !........................................................................
 
 subroutine StopUnit(unit)
+   use MollibModule, only: Center, SpaceOut
    integer(4),   intent(in) :: unit    ! output unit
-   character(nlen) :: string, SpaceOut, Center
+   character(nlen) :: string
 
    string = 'stop in '//trim(name)
    write(unit,'('//fmt//'a)')    ('#',i = 1,nw)
@@ -3203,44 +3360,6 @@ end subroutine StopUnit
 !........................................................................
 
 end subroutine Stop
-
-!************************************************************************
-!*                                                                      *
-!*     Center                                                           *
-!*                                                                      *
-!************************************************************************
-
-! ... center a string
-
-function Center(nw,string)
-   integer(4),   intent(in) :: nw              ! width of line
-   character(*), intent(in) :: string          ! string
-   character(*) :: Center
-   integer(4) :: nchar, noff
-   Center(1:nw) = ' '
-   nchar = len_trim(string)
-   noff = (nw-nchar)/2
-   Center(noff+1:noff+nchar) = string
-end function Center
-
-!************************************************************************
-!*                                                                      *
-!*     SpaceOut                                                         *
-!*                                                                      *
-!************************************************************************
-
-! ... space out a string
-
-function SpaceOut(string)
-   implicit none
-   character(*), intent(in) :: string   ! string to be spaced out
-   character(*) :: SpaceOut
-   integer(4) :: i
-   SpaceOut=''
-   do i=1,len_trim(adjustl(string))
-      SpaceOut(2*i-1:2*i)=string(i:i)
-   end do
-end function SpaceOut
 
 !************************************************************************
 !*                                                                      *
@@ -3321,16 +3440,18 @@ end subroutine SubStr
 !*                                                                      *
 !************************************************************************
 
-! ... get sign and magnitude of a real number as well as normalize it to 1-10
+! ... get sign and magnitude of a real number
 
-subroutine SignMagn(x, isign, imagn)
+subroutine SignMagn(xin, isign, imagn)
    implicit none
    real(8), parameter :: zero = 0.0d0 , one = 1.0d0 , ten = 10.0d0
-   real(8), intent(inout)  :: x      ! real number
+   real(8), intent(in)  :: xin      ! real number
    integer(4), intent(out) :: isign  ! sign
-   integer(4), intent(out) :: imagn  ! magnitude	
+   integer(4), intent(out) :: imagn  ! magnitude
+   real(8) :: x
    isign = 1                         ! initialize
    imagn = 0                         ! initialize
+   x = xin
    if (x < zero) then                ! x < 0 (invert x)
       isign = -1
       x = -x
@@ -3376,8 +3497,8 @@ subroutine Advance(targetstring,unit,str,ok)
    do
       read(unit,'(a)',iostat = ios) str             ! fix  1 -> unit   2010-11-29
       if (ios /= 0) then
-!	 write(*,*) 'ios = ',ios
-	 return
+!        write(*,*) 'ios = ',ios
+         return
       endif
       if (index(str,targetstring) > 0) exit
    end do
@@ -3585,3 +3706,32 @@ real(8) function BrentMod(ax,bx,cx,f,tol,xthr,xmin)
 
 end function BrentMod
 
+!************************************************************************
+!*                                                                      *
+!*     KnuthShuffle                                                     *
+!*                                                                      *
+!************************************************************************
+
+! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker
+!     "The Art of Computer Programming" Second Edition Donald E. Knuth 1981
+!     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
+
+
+subroutine KnuthShuffle(a,asize, iseed)
+
+   implicit none
+
+   integer(4), intent(in) :: asize !size needed to cope with allocatable arrays
+   integer(4), intent(inout) :: a(asize)
+   integer(4), intent(inout) :: iseed   ! seed to random number generator
+   integer :: i, randpos, itmp
+   real(8) :: Random
+
+   do i = size(a), 2, -1
+      randpos = int(Random(iseed) * i) + 1
+      itmp = a(randpos)
+      a(randpos) = a(i)
+      a(i) = itmp
+   end do
+
+end subroutine KnuthShuffle

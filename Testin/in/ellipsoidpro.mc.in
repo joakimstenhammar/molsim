@@ -1,0 +1,46 @@
+&nmlSystem
+  txtitle ='hard ellipsoids',
+  txmethod= 'mc',   txensemb='nvt',     txbc  ='xyz',    txstart ='setconf',  txuser ='ellipsoid',
+  nstep1= 3,        nstep2= 100,
+  boxlen= 3*20,
+  temp  = 298.0,    prsr  = 0.1013,
+  iseed = 865,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,  lstatic=.t., limage=.t.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 0, ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'ellipsoid',
+  nppt  =  10,
+  natpt =  1,
+  txat  = 'site1'
+  massat= 10.0,
+  radat = 0.0,
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'site1',
+ /
+ &nmlPotential
+  rcut = 15.0,
+  lellipsoid =.t.
+  radellipsoid = 3.0,
+  aellipsoid = 2.0,
+ /
+ &nmlSetConfiguration
+  txsetconf(1)='random',
+ /
+ &nmlMC
+  pspart = 1.0, dtran = 6.0,   drot = 180.0,
+ /
+ &nmlIntList inlist= 0, drnlist  = 10.0 /
+ &nmlDist idist = 1, vtype(5) =.true., 0.0, 10.0, 100, rcutdist = 10.0 /
+ &nmlGroup /
+ &nmlStatic
+  istatic = 10
+  lstaticuser=.t.,
+ /
+ &nmlCylDistFunc vtype(1)%min = 0.0, 0.0, vtype(1)%max = 25.0, 25.0, vtype(1)%nbin = 25, 25 /
+ &nmlSF2d nbin = 10, 10 /
+ &nmlImage lvrml= .t. /
+ &nmlVRML atsize = 1.0 /

@@ -19,6 +19,70 @@
 !************************************************************************
 !************************************************************************
 
+module MolauxModule
+
+   implicit none
+   private
+   public CalcCOM
+
+   contains
+
+      !************************************************************************
+      !*                                                                      *
+      !*     CalcCOM                                                              *
+      !*                                                                      *
+      !************************************************************************
+
+      ! ... Calculate the Center of Mass of given coordinates.
+      !     If MASK is given, use only the coordinates for which MASK is true
+
+      function CalcCOM(r,MASK, MASS) result(com)
+         implicit none
+         real(8), intent(in), dimension (:,:)   :: r
+         logical, intent(in), optional, dimension (:)   :: MASK
+         real(8), intent(in), optional, dimension (:)   :: MASS
+         real(8)   :: com(3)
+
+         logical, dimension (size(r,DIM=2))   :: l
+         real(8), dimension (size(r,DIM=2))   :: m
+
+         integer(4)  :: i, n, first
+         real(8)  :: d(3)
+
+         if(present(MASK)) then
+            l = MASK
+         else
+            l = .true.
+         end if
+         if(present(MASS)) then
+            m = MASS
+         else
+            m = 1.0d0
+         end if
+         n = size(l)
+         com = 0.0d0
+
+         do i = 1, n   ! locate first particle which is to be used
+            if(l(i)) then
+               first = i
+               exit
+            end if
+         end do
+
+         do i = 1, n
+            if (.not. l(i)) cycle
+            d(1:3) = r(1:3,i) - r(1:3,first)
+            call PBC(d(1),d(2),d(3))
+            com(1:3) = com(1:3) + m(i)*d(1:3)
+         end do
+         com(1:3) = com(1:3)/(sum(m,MASK=l)) + r(1:3,first)
+
+         call PBC(com(1),com(2),com(3))
+
+      end function CalcCOM
+
+end module MolauxModule
+
 !************************************************************************
 !*                                                                      *
 !*     PBC                                                              *
@@ -980,7 +1044,7 @@ subroutine WarnHCOverlap(iplow, ipupp)
 
    logical    :: loverlap, ltext, SuperballOverlap, ltemp
    integer(4) :: ip, jp, ia, ialow, iaupp, iat, ja, jat, iatjat
-   real(8)    :: dxx, dyy, dzz, dx, dy, dz, dxpbc, dypbc, dzpbc, r2, dum
+   real(8)    :: dxx, dyy, dzz, dx, dy, dz, dxpbc, dypbc, dzpbc, r2
 
    if (sum(r2atat(1:natat)) > Zero) then
 
@@ -1287,6 +1351,7 @@ end subroutine UndoPBCChain
 subroutine CalcChainProperty(ic, rotemp, ChainProperty)
 
    use MolModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4),          intent(in)  :: ic            ! chain number
@@ -1295,10 +1360,11 @@ subroutine CalcChainProperty(ic, rotemp, ChainProperty)
 
    real(8) :: vsum, vsum2, vsumr, vsumz, vsumxy, dx, dy, dz, r2, xcom, ycom, zcom, norm, angle_deg, rbb
    real(8) :: dxm, dym, dzm, dxp, dyp, dzp, theta, mimat(3,3), diagonal(3), eivr(3,3)
-   real(8) :: l2_small, l2_mid, l2_large, i_small, i_mid, i_large, term, toroidparam
+   real(8) :: l2_small, l2_mid, l2_large, toroidparam
+   !real(8) :: i_small, i_mid, i_large ! used in older code snippet below - currently not needed
    integer(4) :: iseg, ip, jp, jp_m, jp_p, ict, nrot
    real(8) :: hx, hy, hz, hxsum, hysum, hzsum
-   real(8) :: InvInt, InvFlt, PerLengthRg, Asphericity
+   real(8) :: InvFlt, PerLengthRg, Asphericity
 
    ict = ictcn(ic)
 
@@ -1468,10 +1534,130 @@ real(8) function PerLengthRg(rg2, l)
    do i = 1, 500
       PerLengthRgOld = PerLengthRg
       fac = PerLengthRg/l
-      PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0*(1-2*fac*(1.0-fac*(1.0-exp(-1.0/fac)))))
+      if(fac == 0.0d0) then ! prevent division by zero
+         PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0)
+      else
+         PerLengthRg = (3.0/l)*(rg2 + PerLengthRg**2.0*(1-2*fac*(1.0-fac*(1.0-exp(-1.0/fac)))))
+      end if
       if (abs(PerLengthRg-PerLengthRgOld)/PerLengthRg < 1e-3) return
    end do
 end function PerLengthRg
+
+!************************************************************************
+!*                                                                      *
+!*    CalcNetworkProperty                                               *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate properties of network number inw
+! ... no prior undoing of the periodic boundary conditions necessary
+
+subroutine CalcNetworkProperty(inw, NetworkProperty)
+
+   use MolModule
+   use MolauxModule, only: CalcCOM
+   implicit none
+
+   integer(4),            intent(in)  :: inw             ! network number
+   type(networkprop_var), intent(out) :: NetworkProperty ! network properties
+
+! ... properties
+   real(8)     :: rcom(3)                    ! center of mass
+   real(8)     :: rg2x, rg2y, rg2z           ! radius of gyration squared projected on the x, y and z-axes
+   real(8)     :: l2_small, l2_mid, l2_large ! small, middle and large extension along principal axes
+   real(8)     :: eivr(3,3)                  ! eigenvectors of the principal frame
+   real(8)     :: Asphericity                ! asphericity
+   real(8)     :: theta(3)                   ! angles of axes of largest extension and x-, y-, and z-axes of main frame
+   real(8)     :: alpha                      ! degree of ionization
+
+! ... processing variables
+   real(8)     :: dr(3)
+   real(8)     :: r2
+   real(8)     :: vsumr
+   real(8)     :: mimat(3,3)
+   real(8)     :: diagonal(3)
+   integer(4)  :: nrot
+   integer(4)  :: npcharged
+
+! ... counter
+   integer(4)  :: inwt, ip, iploc
+   integer(4)  :: irow
+
+! ... determine network type
+
+   inwt = inwtnwn(inw)
+
+! ... center of mass
+
+   rcom(1:3) = CalcCOM(ro(1:3,1:np),MASK=lpnnwn(1:np,inw),MASS=massp(1:np))
+   NetworkProperty%ro(1:3) = rcom(1:3)
+
+! ... radius of gyration squared and projections on the prinicpal axes
+
+   ! rg**2 = l2_small**2 + l2_mid**2 + l2_large**2
+
+   vsumr          = Zero
+   mimat(1:3,1:3) = Zero
+   do iploc = 1, npnwt(inwt)
+      ip = ipnplocnwn(iploc,inw)
+      dr(1:3) = ro(1:3,ip)-rcom(1:3)
+      call PBCr2(dr(1),dr(2),dr(3),r2)
+      vsumr = vsumr + r2
+      do irow = 1, 3
+         mimat(irow,1:3) = mimat(irow,1:3) + dr(irow)*dr(1:3)
+      end do
+   end do
+   NetworkProperty%rg2 = vsumr*massinwt(inwt)
+
+! ... radius of gyration squared projected on the x-, y- and z-axes
+
+   rg2x = mimat(1,1)*massinwt(inwt)
+   rg2y = mimat(2,2)*massinwt(inwt)
+   rg2z = mimat(3,3)*massinwt(inwt)
+
+   NetworkProperty%rg2x = rg2x
+   NetworkProperty%rg2y = rg2y
+   NetworkProperty%rg2z = rg2z
+
+! ... normalized eigenvectors of the principal frame in descending order of the eigenvalues (due to Eigensort)
+
+   call Diag(3,mimat,diagonal,eivr,nrot)
+   call Eigensort(diagonal,eivr,3)
+
+   NetworkProperty%eivr(1:3,1:3) = eivr(1:3,1:3)
+
+! ... small, middle and large square extension along principal axes and eigenvectors of the principal frame
+
+   l2_large = diagonal(1)*massinwt(inwt)
+   l2_mid   = diagonal(2)*massinwt(inwt)
+   l2_small = diagonal(3)*massinwt(inwt)
+
+   NetworkProperty%rg2s = max(Zero,l2_small)
+   NetworkProperty%rg2m = max(Zero,l2_mid  )
+   NetworkProperty%rg2l = max(Zero,l2_large)
+
+! ... angle of axes of largest extension (principal frame) and x,y,z-axes of main frame
+
+   theta(1) = RadToDeg*acos(eivr(1,1)) ! eivr(1,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the x-axis
+   theta(2) = RadToDeg*acos(eivr(2,1)) ! eivr(2,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the y-axis
+   theta(3) = RadToDeg*acos(eivr(3,1)) ! eivr(3,1) is the dot product of the eigenvector of the largest extension and the normalized eigenvector of the z-axis
+   NetworkProperty%theta = theta
+
+! ... asphericity  ( = 0 for sphere, 0.526 for gaussian chain, and 1 for a rod)
+
+   NetworkProperty%asph = Asphericity(l2_small,l2_mid,l2_large)
+
+! ... degree of ionization
+
+   if (lweakcharge) then
+      npcharged = count(laz(1:np).and.lpnnwn(1:np,inw))
+      alpha     = real(npcharged)/npweakchargenwt(inwt)
+      NetworkProperty%alpha = alpha
+   else
+      NetworkProperty%alpha = Zero
+   end if
+
+end subroutine CalcNetworkProperty
 
 !************************************************************************
 !*                                                                      *
@@ -1659,7 +1845,7 @@ subroutine CalcChainComPairListGeneral(nobj, ichain, rcluster2, mnpair, npair, n
 
    do ic = 1, nc                              ! get com for all chains
       ict = ictcn(ic)
-      call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vaux)
+      call UndoPBCChain(ro(1:3,ipnsegcn(1,ic)), ic, 1, vaux)
       xcom = sum(vaux(1,ipnsegcn(1:npct(ict),ic)))/npct(ict)
       ycom = sum(vaux(2,ipnsegcn(1:npct(ict),ic)))/npct(ict)
       zcom = sum(vaux(3,ipnsegcn(1:npct(ict),ic)))/npct(ict)
@@ -1856,7 +2042,7 @@ logical function Perculation(nobjtot, iclusteriobj, npair, n1, n2,  r, boxlen, l
    integer(4)              :: idnn(mnn,mnobj) ! id of neighbour
    integer(4)              :: objloc(mnobjtot)! local id of object
 
-   integer(4) :: pathlength, pathobj(0:mpathlength), i, icluster, iobj, jobj, iobjloc, jobjloc, in, istep, ipair
+   integer(4) :: pathlength, pathobj(0:mpathlength), i, icluster, iobj, jobj, iobjloc, jobjloc, istep, ipair
    real(8) :: dr(1:3), boxlen2(3), dx, dy, dz
    logical :: loop
    integer(4) :: itemp(1:1)
@@ -2028,7 +2214,7 @@ subroutine updatenn(iobj, nn, idnn)  ! update nn and idnn
    integer(4), intent(in) :: iobj
    integer(4), intent(inout) :: nn
    integer(4), intent(inout) :: idnn(*)
-   integer(4) :: i, j
+   integer(4) :: i
    logical :: hit
    hit = .false.
    do i = 1, nn
@@ -2129,6 +2315,7 @@ end subroutine CorrAnalysis
 
 subroutine BlockAverAnalysis(ndata, unitin, unitout)
 
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4), intent(in) :: ndata                                  ! number of data points
@@ -2144,7 +2331,7 @@ subroutine BlockAverAnalysis(ndata, unitin, unitout)
    real(8)    :: av_sd(mnblocklen)
    real(8)    :: av_s2(mnblocklen)
    integer(4) :: ibl, idata
-   real(8)    :: data, InvInt, norm, norm1
+   real(8)    :: data, norm, norm1
    real(8)    :: xfit(50), yfit(50), wfit(50), afit(0:2), PolVal, dum1, dum2, av_sd_extrap, av_stateff
 
 ! ... initiation
@@ -2449,7 +2636,6 @@ real(8) function Ellipsoidfunc2(lam)
    real(8), intent(in) :: lam
 
    real(8),    parameter :: one = 1.0d0, two = 2.0d0
-   integer :: i
    real(8) :: mat(3,3), matinv(3,3)
 
    mat(1:3,1:3) = (one-lam)*a(1:3,1:3,1) + lam*a(1:3,1:3,2)
@@ -2549,10 +2735,11 @@ end function SuperballOverlap
 
 ! ... superball overlap check, return overlap function
 
-real(8) function SuperballOverlapOF(r2, r21, ori1, ori2) result(of)
+!real(8) function SuperballOverlapOF(r2, r21, ori1, ori2) result(of) !r2 is not used
+real(8) function SuperballOverlapOF(r21, ori1, ori2) result(of)
    use MolModule
    implicit none
-   real(8), intent(in) :: r2            ! distance squared between superball 1 and 2
+   !real(8), intent(in) :: r2            ! distance squared between superball 1 and 2
    real(8), intent(in) :: r21(3)        ! vector from superball 2 to superball 1
    real(8), intent(in) :: ori1(3,3)     ! orientation matrix of superball 1
    real(8), intent(in) :: ori2(3,3)     ! orientation matrix of superball 2
@@ -2577,7 +2764,7 @@ logical function SuperballOverlap_NR(r21, ori1, ori2, of) result(loverlap)
    real(8), intent(in) :: ori1(3,3)     ! orientation matrix of superball 1
    real(8), intent(in) :: ori2(3,3)     ! orientation matrix of superball 2
    real(8), intent(out) :: of           ! overlap function
-   integer(4) :: i, j, k, iter
+   integer(4) :: k, iter
    real(8) :: lambda, lambda0, ori1i(3,3), ori2i(3,3), orihelp(3,3,2), rc(3), rc0(3), rsb(3,2), dr(3), dll, dg(3), dl, vtemp(3)
    real(8) :: sf(2), sfd(3,2), sfdd(3,3,2), ofd(3), ofdd(3,3), minv(3,3)
    real(8) :: r1help, r2help, r3help, gp, gpp, fac1, fac1help, gradsftilde(3), grad2sftilde(3)
@@ -2665,7 +2852,7 @@ logical function SuperballOverlap_NR(r21, ori1, ori2, of) result(loverlap)
       if (max(abs(dl),maxval(abs(dr))) < tolsuperball) then
          loverlap = .true.
          if (of > one) loverlap = .false.         ! of is here the overlap potential
-         if (lstatsuperball) call SuperballStatNR(iSimulationStep, r21, iter)
+         if (lstatsuperball) call SuperballStatNR(iSimulationStep, iter)
          if (itest == 5) call TestSuperballOverlap_NR(5)
          goto 999
       end if
@@ -2733,11 +2920,12 @@ end function SuperballOverlap_NR
 
 ! ... superball check statistics, NR overlap method
 
-subroutine SuperballStatNR(iStage, rr, iter)
+!subroutine SuperballStatNR(iStage, rr, iter) !rr is not used
+subroutine SuperballStatNR(iStage, iter)
    use MolModule
    implicit none
    integer(4), intent(in) :: iStage
-   real(8), intent(in)     :: rr(3)
+   !real(8), intent(in)     :: rr(3)
    integer(4), intent(in)  :: iter
 
    character(40), parameter :: txroutine ='SuperballStatNR'
@@ -2811,7 +2999,7 @@ subroutine SuperballStatMesh(iStage, rr, loverlap, time)
    real(8), intent(in)     :: time
 
    call SuperballAver(iStage, rr, loverlap, time)
-   call SuperballDF(iStage, rr, loverlap, time)
+   call SuperballDF(iStage, rr, time)
 
 end subroutine SuperballStatMesh
 
@@ -2911,12 +3099,13 @@ end subroutine SuperballAver
 !     2     triangle   tri (triangle)
 !     3     time       cpu time
 
-subroutine SuperballDF(iStage, rr, loverlap, time)
+!subroutine SuperballDF(iStage, rr, loverlap, time) !loverlap is not used
+subroutine SuperballDF(iStage, rr, time)
    use MolModule
    implicit none
    integer(4), intent(in) :: iStage
    real(8), intent(in)     :: rr(3)
-   logical, intent(in)     :: loverlap
+   !logical, intent(in)     :: loverlap
    real(8), intent(in)     :: time
 
    character(40), parameter :: txroutine ='SuperballDF'
@@ -2927,7 +3116,7 @@ subroutine SuperballDF(iStage, rr, loverlap, time)
    type(df_var),  allocatable, save :: var(:)
    integer(4),    allocatable, save :: ipnt(:,:)
    real(8), save :: radmin, radmax, radbin, radbini
-   integer(4), save :: nrad, nbin
+   integer(4), save :: nrad
    integer(4) :: itype, ivar, ibin, irad
    real(8)    :: r1
    character(1) :: str
@@ -3047,4 +3236,3 @@ subroutine SuperballDF(iStage, rr, loverlap, time)
    end select
 
 end subroutine SuperballDF
-

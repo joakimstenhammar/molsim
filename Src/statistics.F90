@@ -43,7 +43,7 @@ module StatisticsModule
 
 ! ... data structure for one-dimensional distribution functions
 
-   integer(4), parameter :: mnbin_df = 1000
+   integer(4), parameter :: mnbin_df =1000
 
    type df_var
       character(27) :: label                             ! label
@@ -137,6 +137,7 @@ end subroutine ScalarSample
 subroutine ScalarSampleBlock(iStage, ilow, iupp, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8),    parameter :: Zero = 0.0d0, One = 1.0d0
@@ -144,8 +145,8 @@ subroutine ScalarSampleBlock(iStage, ilow, iupp, var)
    integer(4),       intent(in)  :: ilow      ! lower variable
    integer(4),       intent(in)  :: iupp      ! upper variable
    type(scalar_var), intent(out) :: var(*)    ! scalar variable
-   integer(4) :: i, ibl
-   real(8)    :: InvInt, norm, norm1
+   integer(4) :: i
+   real(8)    :: norm, norm1
 
    select case (iStage)
    case (3)  ! before simulation
@@ -214,6 +215,7 @@ end subroutine ScalarSampleBlock
 subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8),    parameter :: Zero = 0.0d0, One = 1.0d0
@@ -224,7 +226,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
    integer(4), save :: blocklen(mnblocklen)
    real(8),    save :: blockleni(mnblocklen)
    integer(4) :: i, ibl, nblocklen
-   real(8)    :: InvInt, InvFlt, norm, norm1
+   real(8)    :: InvFlt, norm, norm1
    real(8)    :: xfit(50), yfit_av(50), yfit_fl(50), wfit(50), afit_av(0:2), afit_fl(0:2), PolVal, dum1, dum2
 
    select case (iStage)
@@ -251,7 +253,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
          do ibl = 1, mnblocklen                                                 ! loop over block lenghts
             var(i)%av_s2(ibl) = var(i)%av_s2(ibl) + var(i)%value                ! add data to av_s2
             var(i)%fl_s2(ibl) = var(i)%fl_s2(ibl) + var(i)%value**2             ! add data to fl_s2
-            if (mod(var(i)%nsamp,blocklen(ibl)) == 0) then                      ! check for end of block lenght
+            if (mod(var(i)%nsamp,blocklen(ibl)) == 0) then                      ! check for end of block length
                var(i)%nblock(ibl) = var(i)%nblock(ibl) + 1                      ! update number of blocks
                var(i)%av_s2(ibl) = var(i)%av_s2(ibl) * blockleni(ibl)           ! get average of the block
                var(i)%av_s1(ibl) = var(i)%av_s1(ibl) + var(i)%av_s2(ibl)        ! sum up av_sd for run average
@@ -269,7 +271,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
 
       if (lblockaverwrite) call ScalarSampleWrite(1)  ! open unit and write head
       do i = ilow, iupp
-         nblocklen = max(1,min(int(1+log(float(var(i)%nsamp))/log(2.0d0)),mnblocklen)) ! number of block lenghts
+         nblocklen = max(1,min(int(1+log(float(max(var(i)%nsamp,1)))/log(2.0d0)),mnblocklen)) ! number of block lenghts
          var(i)%nblocklen = nblocklen
          if ((nblocklen > 1) .and. minval(var(i)%nblock(1:nblocklen)) > 0) then ! extrapolate by linear fit of av_sd vs log(nblock) to nblock = 1
             do ibl = 1, nblocklen                              ! make block averages for varying block length
@@ -287,7 +289,7 @@ subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
             call PolFit(1, nblocklen, xfit, yfit_av, wfit, 0, 6, afit_av, dum1, dum2)                 ! fit
             call PolFit(1, nblocklen, xfit, yfit_fl, wfit, 0, 6, afit_fl, dum1, dum2)                 ! fit
             var(i)%av_sd_extrap = max(Zero,PolVal(1,afit_av,0.0d0))                                   ! extrapolated sd of average
-            var(i)%fl_sd_extrap = max(Zero,PolVal(1,afit_fl,0.0d0))                                   ! extrapolated sd of fuctuation
+            var(i)%fl_sd_extrap = max(Zero,PolVal(1,afit_fl,0.0d0))                                   ! extrapolated sd of fluctuation
             var(i)%av_sd_stateff = (var(i)%nblock(1)*InvInt(var(i)%nblock(1)-1))*(var(i)%av_sd_extrap*InvFlt(var(i)%av_sd(1)))**2
             var(i)%fl_sd_stateff = (var(i)%nblock(1)*InvInt(var(i)%nblock(1)-1))*(var(i)%fl_sd_extrap*InvFlt(var(i)%fl_sd(1)))**2
          else
@@ -338,7 +340,7 @@ subroutine ScalarSampleWrite(iStage)
       write(unit,'(a,t35,g12.5,t90,g12.5)') 'fluctuation              = ', var(i)%av_sd(1)*sqrt(real(var(i)%nblock(1)-1))*norm, var(i)%fl_sd(1)*sqrt(real(var(i)%nblock(1)-1))*norm
       write(unit,'(a,t35,g12.5,t90,g12.5)') 'extrapolated uncertainty = ', var(i)%av_sd_extrap*norm,                            var(i)%fl_sd_extrap*norm
       write(unit,'(a,t35,g12.5,t90,g12.5)') 'statistical inefficiency = ', var(i)%av_sd_stateff,                                var(i)%fl_sd_stateff
-   case (3)                          ! before simulation
+   case (3)
       close(unit)
    end select
 
@@ -369,7 +371,7 @@ subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
                                                 ! = 1, fluctuation quantities are normalized with sqrt(norm)
                                                 ! = 2, for rms quantities
 
-   integer(4) :: i
+   integer(4) :: i, nblocklen
 
    select case (iStage)
    case (6)  ! after a macrostep
@@ -453,10 +455,13 @@ subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
           end do
        else if (iopt == 2) then
           do i = ilow, iupp
+             nblocklen = var(i)%nblocklen
              var(i)%av_s1 = sqrt(var(i)%av_s1*var(i)%norm)  ! sqrt(...)
              var(i)%av_sd = sqrt(var(i)%av_s1**2+var(i)%av_sd*var(i)%norm) - var(i)%av_s1  ! sd of sqrt of average
+             var(i)%av_sd_extrap = sqrt(var(i)%av_s1(1)**2+var(i)%av_sd_extrap*var(i)%norm) - var(i)%av_s1(1)  ! sd of sqrt of average (extrapolated value)
              var(i)%fl_s1 = sqrt(var(i)%fl_s1*var(i)%norm)  ! sqrt(...)
              var(i)%fl_sd = sqrt(var(i)%fl_s1**2+var(i)%fl_sd*var(i)%norm) - var(i)%fl_s1  ! sd of sqrt of flucutation
+             var(i)%fl_sd_extrap = sqrt(var(i)%fl_s1(nblocklen)**2+var(i)%fl_sd_extrap*var(i)%norm) - var(i)%fl_s1(nblocklen)  ! sd of sqrt of flucutation (extrapolated value)
           end do
        end if
 
@@ -532,51 +537,52 @@ subroutine ScalarWrite(iStage, ilow, iupp, var, iopt, fmt, unit)
 
 end subroutine ScalarWrite
 
-#if defined (_PAR_)
-!************************************************************************
-!*                                                                      *
-!*     ScalarAllReduce                                                  *
-!*                                                                      *
-!************************************************************************
+! #if defined (_PAR_)
+! !************************************************************************
+! !*                                                                      *
+! !*     ScalarAllReduce                                                  *
+! !*                                                                      *
+! !************************************************************************
 
-! ... make all_reduce of scalar quantities
+! ! ... make all_reduce of scalar quantities
 
-subroutine ScalarAllReduce(iStage, ilow, iupp, var, raux)
+! subroutine ScalarAllReduce(iStage, ilow, iupp, var, raux)
 
-   use StatisticsModule
-   implicit none
+!    use StatisticsModule
+!    implicit none
 
-   integer(4),       intent(in) :: iStage
-   integer(4),       intent(in) :: ilow           ! lower variable
-   integer(4),       intent(in) :: iupp           ! upper variable
-   type(scalar_var), intent(inout) :: var(*)      ! scalar variable
-   real(8),          intent(inout) :: raux(*)     ! temporary variable
+!    integer(4),       intent(in) :: iStage
+!    integer(4),       intent(in) :: ilow           ! lower variable
+!    integer(4),       intent(in) :: iupp           ! upper variable
+!    type(scalar_var), intent(inout) :: var(*)      ! scalar variable
+!    real(8),          intent(inout) :: raux(*)     ! temporary variable
 
-   integer(4) :: i
+!    integer(4) :: i
 
-   select case (iStage)
-   case (6)  ! after a macrostep
+!    select case (iStage)
+!    case (6)  ! after a macrostep
 
-      do i = ilow, iupp
-         call par_allreduce_ints(var(i)%nsamp2, raux, 1)
-         call par_allreduce_reals(var(i)%avs2, raux, 1)
-         call par_allreduce_reals(var(i)%fls2, raux, 1)
-      end do
+!       do i = ilow, iupp
+!          !TODO: par_all_reduce_ints requires an integer as the second parameter
+!          call par_allreduce_ints(var(i)%nsamp2, raux, 1)
+!          call par_allreduce_reals(var(i)%avs2, raux, 1)
+!          call par_allreduce_reals(var(i)%fls2, raux, 1)
+!       end do
 
-   case (7)  ! after simulation
+!    case (7)  ! after simulation
 
-      do i = ilow, iupp
-         write(*,*) 'i, var(i)%nsamp2', i, var(i)%nsamp2
-         call stop('ScalarAllReduce', 'atempt to allreduce variable-blocklengh data', 6)
-!         call par_allreduce_ints(var(i)%nsamp2, raux, 1)
-!         call par_allreduce_reals(var(i)%av_s1, raux, 1)
-!         call par_allreduce_reals(var(i)%av_sd, raux, 1)
-      end do
+!       do i = ilow, iupp
+!          write(*,*) 'i, var(i)%nsamp2', i, var(i)%nsamp2
+!          call stop('ScalarAllReduce', 'atempt to allreduce variable-blocklengh data', 6)
+! !         call par_allreduce_ints(var(i)%nsamp2, raux, 1)
+! !         call par_allreduce_reals(var(i)%av_s1, raux, 1)
+! !         call par_allreduce_reals(var(i)%av_sd, raux, 1)
+!       end do
 
-   end select
+!    end select
 
-end subroutine ScalarAllReduce
-#endif
+! end subroutine ScalarAllReduce
+! #endif
 
 !************************************************************************
 !*                                                                      *
@@ -589,6 +595,7 @@ end subroutine ScalarAllReduce
 subroutine DistFuncSample(iStage, nvar, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8), parameter :: Zero = 0.0d0, One = 1.0d0
@@ -596,7 +603,7 @@ subroutine DistFuncSample(iStage, nvar, var)
    integer(4),   intent(in)    :: nvar     ! number of distribution functions
    type(df_var), intent(inout) :: var(*)   ! distribution functions
    integer(4) :: i, ibin
-   real(8)    :: norm, norm1, InvInt
+   real(8)    :: norm, norm1
 
    select case (iStage)
    case (2)  ! read input
@@ -881,16 +888,16 @@ end subroutine DistFuncAverValue
 subroutine DistFuncAverDist(nvar2, ilow, iupp, var, var2, var2_spread)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    integer(4),   intent(in)  :: nvar2                 ! number of distribution functions
    integer(4),   intent(in)  :: ilow(*)               ! lower distribution functions
    integer(4),   intent(in)  :: iupp(*)               ! upper distribution functions
    type(df_var), intent(in)  :: var(*)                ! underlaying distribution functions
-   type(df_var), intent(out) :: var2(*)               ! average of var from ilow to iupp
+   type(df_var), intent(inout) :: var2(*)               ! average of var from ilow to iupp
    real(8)     , intent(out) :: var2_spread(*)        ! var%avsd averaged over 0 to nbin-1
    integer(4) :: i, ibin, ncount, il, iu
-   real(8)    :: InvInt
 
    do i = 1, nvar2
 
@@ -972,6 +979,7 @@ end subroutine DistFuncAllReduce
 subroutine DistFunc2DSample(iStage, nvar, var)
 
    use StatisticsModule
+   use MollibModule, only: InvInt
    implicit none
 
    real(8), parameter :: Zero = 0.0d0, One = 1.0d0
@@ -979,7 +987,7 @@ subroutine DistFunc2DSample(iStage, nvar, var)
    integer(4),     intent(in)    :: nvar         ! number of 2d distribution functions
    type(df2d_var), intent(inout) :: var(*)       ! 2d distribution functions
    integer(4) :: i, ibin1, ibin2
-   real(8)    :: InvInt, norm, norm1
+   real(8)    :: norm, norm1
 
    select case (iStage)
    case (2)  ! read input

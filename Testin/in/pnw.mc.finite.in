@@ -1,0 +1,75 @@
+ &nmlSystem
+  txtitle ='uncharged and finite network',
+  txmethod='mc',    txensemb='nvt',     txbc='xyz',       txstart='setconf',
+  nstep1= 1,        nstep2= 10,
+  boxlen = 3*1000.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  lgroup=.t.,  lstatic =.t.,  limage=.t.,
+  itest = 0,   ipart = 1,   iatom = 1,   iaver = 0,   ishow = 1,     iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='10-mer',
+  ncct  = 184,
+  npptct(2,1) = 9,
+  npt   = 2,
+  txpt  = 'node',  'strand',
+  nppt  =   71,    1656,
+  natpt =    1,    1,
+  txat  = 'node',   'strand',
+  massat= 10.0,      10.0,
+  radat =  2.0,       2.0,
+  zat =    0.0,       0.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'node',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'strand',
+  lclink = .true.,
+  nnwt = 1,
+  nnwnwt(1) = 1,
+  iptclnwt(1) = 1,
+  ncctnwt(1,1) = 184,
+  txnwt(1) = 'network',
+  txtoponwt(1) = 'default',
+  maxnbondcl = 4, 1,
+ /
+ &nmlPotential
+  rcut = 20,
+  relpermitt = 78.4,
+ /
+ &nmlPotentialChain
+ bond = 2.4088, 2, 5.0,
+ angle = 0.00207,
+ clink = 2.4, 2, 5.0,
+ /
+ &nmlSetConfiguration
+  txsetconf(1) = 2*'network',
+  anglemin = 120.0,
+  rnwt(1)    = 145,
+  txorigin(1)    = 'origin',
+  shiftnwt(1:3,1) = 0.0,
+ /
+ &nmlMC
+  pspart   = 1.0, 1.0,  dtran      =  5.0, 5.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 2600.0,   facnneigh = 50.0 /
+ &nmlDist idist = 1, rcutdist = 50.0, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlStatic
+  istatic = 1,
+  lsubstructuredf = .true.,
+  lspdf =.true.,
+  lsf =.true.,
+  /
+ &nmlGroup /
+ &nmlSPDF vtype(1) =.true., 0.0, 100.0 /
+ &nmlSF nbin = 100 /
+ &nmlSubStructureDF
+ vtype(1) = .true., 0.0, 100.0, 100,
+ vtype(2) = .true., 0.0, 100.0, 100,
+ lptinsub = .true., .true.,
+ /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize =  2.0, 2.0, blmax = 5.0, bondr = 0.3 /

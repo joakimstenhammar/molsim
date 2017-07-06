@@ -31,6 +31,13 @@ module MolModule
 
    use StatisticsModule
    use MeshModule
+   use Random_Module, only: k4b
+
+!define standard output unit
+   use, intrinsic :: iso_fortran_env, only : ustdout=>output_unit !, &
+                                          ! ustdin=>input_unit !, &
+                                          ! ustderr=>error_unit
+
 
 ! ... parameters
 
@@ -132,9 +139,26 @@ module MolModule
       real(8)    :: lpree                   ! persistence length based on end-to-end separation
       real(8)    :: lprg                    ! persistence length based on radius of gyration
       real(8)    :: shape                   ! square end-to-end distance / square of radius of gyration
-      real(8)    :: asph                    ! asphericity (JCP 100, 636(1994))
+      real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
       real(8)    :: torp                    ! toroidicity
    end type chainprop_var
+
+! ... data structure for network (finite) properties
+
+   type networkprop_var
+      real(8)    :: ro(3)                   ! center of mass
+      real(8)    :: rg2                     ! radius of gyration squared
+      real(8)    :: rg2x                    ! radius of gyration squared projected on the x-axis
+      real(8)    :: rg2y                    ! radius of gyration squared projected on the y-axis
+      real(8)    :: rg2z                    ! radius of gyration squared projected on the z-axis
+      real(8)    :: rg2s                    ! square extention along principal axes (smallest)
+      real(8)    :: rg2m                    ! square extention along principal axes (middle)
+      real(8)    :: rg2l                    ! square extention along principal axes (largest)
+      real(8)    :: eivr(3,3)               ! normalized eigenvectors of the principal frame
+      real(8)    :: theta(3)                ! angles of axes of largest extension and x-, y-, and z-axes of main frame
+      real(8)    :: asph                    ! asphericity (JCP 100, 636 (1994))
+      real(8)    :: alpha                   ! degree of ionization (for titrating systems)
+   end type networkprop_var
 
 ! ... data structure for simple averaging
 
@@ -151,7 +175,7 @@ module MolModule
       real(8)      :: max                   ! maximum value
       integer(4)   :: nbin                  ! number of bins
       logical      :: lnorm                 ! logical flag for normalization
-      character(10):: label                 ! title
+      character(40):: label                 ! title
       integer(4)   :: nvar                  ! expanded into nvar variables
    end type static1D_var
 
@@ -163,33 +187,61 @@ module MolModule
       real(8)      :: max(2)                ! maximum value
       integer(4)   :: nbin(2)               ! number of bins
       logical      :: lnorm                 ! logical flag for normalization
-      character(10):: label                 ! title
+      character(40):: label                 ! title
       integer(4)   :: nvar                  ! expanded into nvar variables
    end type static2D_var
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, Sep 18, 2015 v1.1.3'
+   character(29) :: txVersionDate = 'version 6.4.7, v3.0.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
 
-   character(10), parameter :: fin   = 'FIN  '
-   character(10), parameter :: fout  = 'FOUT '
-   character(10), parameter :: fcnf  = 'FCNF '
-   character(10), parameter :: flist = 'FLIST'
-   character(10), parameter :: fuser = 'FUSER'
-   character(10), parameter :: fimg  = 'FIMG '
-   character(10), parameter :: fvtf  = 'FVTF '
-   character(10), parameter :: ftcl  = 'FTCL '
+   character(240) :: project ! name of the project (15 characters shorter than the filenames to have enough space for suffixes
+   ! filenames
+   character(255) :: fin     ! input data
+   character(255) :: fout    ! output data
+   character(255) :: fcnf    ! configuration data
+
+#define STRINGIFY(x) x
+   character(255) :: flib = trim(adjustl(STRINGIFY(FLIBMACRO)))
+
+   character(255) :: flist   ! list data
+   character(255) :: fuser   ! user-provided data
+   character(255) :: fwrl    ! image data in wrl format
+   character(255) :: fvtf    ! VMD: vtf data
+   character(255) :: ftcl    ! VMD: tcl script
+   character(255) :: fgroup  ! group data
+   character(255) :: fpos    ! position data
+   character(255) :: fori    ! orientation data
+   character(255) :: fliv    ! linear velocity data
+   character(255) :: fanv    ! angular velocity data
+   character(255) :: ffor    ! force data
+   character(255) :: ftor    ! torque data
+   character(255) :: fidm    ! induced dipole moment data
+   character(255) :: flaz    ! atom charge status
+   character(255) :: futot   ! potential energy data
+
    integer(4),    parameter :: uin   = 1   ! input data
    integer(4),    parameter :: uout  = 2   ! output data
    integer(4),    parameter :: ucnf  = 3   ! configuration data
+   integer(4),    parameter :: ulib  = 4
    integer(4),    parameter :: ulist = 8   ! list data
    integer(4),    parameter :: uuser = 9   ! user-provided data
-   integer(4),    parameter :: uimg  = 10  ! image data
+   integer(4),    parameter :: uwrl  = 10  ! image data
    integer(4),    parameter :: uvtf  = 11  ! VMD: vtf data
    integer(4),    parameter :: utcl  = 12  ! VMD: tcl script
+   integer(4),    parameter :: ugroup= 15  ! group data
+   integer(4),    parameter :: upos  = 20  ! position data
+   integer(4),    parameter :: uori  = 21  ! orientation data
+   integer(4),    parameter :: uliv  = 22  ! linear velocity data
+   integer(4),    parameter :: uanv  = 23  ! angular velocity data
+   integer(4),    parameter :: ufor  = 24  ! force data
+   integer(4),    parameter :: utor  = 25  ! torque data
+   integer(4),    parameter :: uidm  = 26  ! induced dipole moment data
+   integer(4),    parameter :: ulaz  = 27  ! atom charge status
+   integer(4),    parameter :: uutot = 28  ! potential energy data
 
 ! ... terms
 
@@ -260,7 +312,7 @@ module MolModule
    real(8)       :: ellradi(3)             ! 1/ellrad
    real(8)       :: cylrad                 ! radius of cylindrical cell
    real(8)       :: cylrad2                ! cylrad**2
-   real(8)       :: cyllen                 ! length of cylindrical cell
+   real(8)       :: cyllen = 0.0d0         ! length of cylindrical cell
    real(8)       :: cyllen2                ! length of cylindrical cell/2
    real(8)       :: lenscl                 ! scaling factor of box length and particle positions
    logical       :: lPBC                   ! periodic boundary conditions
@@ -302,39 +354,53 @@ module MolModule
                                            ! =1 system contains dipoles and no charges
                                            ! =-1 else
    real(8)                 :: q2sum        ! sum(q**2), where q is either atomic charge or dipole according to lq2sum
+   integer(4)              :: nnwt         !*number of network types
    integer(4)              :: nct          !*number of chain types
    integer(4)              :: npt          !*number of particle types
    integer(4)              :: nat          ! number of atom types
+   integer(4)              :: nnw          ! number of networks
    integer(4)              :: nc           ! number of chains
    integer(4)              :: np           ! number of particles
    integer(4)              :: na           ! number of atoms
    integer(4)              :: na_alloc     ! number of atoms (for memory allocation)
    integer(4)              :: np_alloc     ! number of particles (for memory allocation)
+   integer(4), allocatable :: nnwnwt(:)    !*number of networks of network type [allocate with nnwt]
    integer(4)              :: ncct(mnct)   !*number of chains of a chain type
    integer(4)              :: nppt(mnpt)   !*number of particles of a particle type
+   integer(4), allocatable :: nctnwt(:)    ! number of chain types belonging to one network type [allocate with nnwt]
    integer(4)              :: nptct(mnct)  ! number of particle types belonging to one chain type
+   integer(4), allocatable :: ncnwt(:)     ! number of chains belonging to a network type [allocate with nnwt]
+   integer(4), allocatable :: npnwt(:)     ! number of particles belonging to a network type [allocate with nwwt]
+   integer(4), allocatable :: nclnwt(:)    ! number of cross-links belonging to a network type [allocate with nnwt]
    integer(4)              :: npct(mnct)   ! number of particles belonging to a chain type
    integer(4)              :: natpt(mnpt)  !*number of atom types belonging to a particle type
    integer(4), allocatable :: napt(:)      ! number of atoms belonging to a particle type
    integer(4), allocatable :: naat(:)      ! number of atoms of an atom type in one particle
+   integer(4), allocatable :: ncctnwt(:,:) !*number of chains of a chain type of network type [allocate with nct,nnwt]
    integer(4)    :: npptct(mnpt,mnct)      !*number of particles of a particle type of chain type
    integer(4)    :: naatpt(mnat,mnpt)      !*number of atoms of an atom type of a particle type
+   integer(4)    :: nnwtnwt                ! number of different network type pairs
    integer(4)    :: nctct                  ! number of different chain type pairs
    integer(4)    :: nptpt                  ! number of different particle type pairs
    integer(4)    :: natat                  ! number of different atom type pairs
+   character(30), allocatable :: txtoponwt(:) !*type of network [allocate with nnwt]
    character(30) :: txcopolymer(mnct)      !*type of copolymer
    logical       :: lspma                  !*control tacticity
+   character(10), allocatable :: txnwt(:)     !*name of network type [allocate with nnwt]
    character(10) :: txct(mnct)             !*name of chain type
    character(10) :: txpt(mnpt)             !*name of particle type
    character(10) :: txat(mnat)             !*name of atom type
-   character(20), allocatable :: txctct(:) ! name of chain type-chain type pair
-   character(20), allocatable :: txptpt(:) ! name of particle type-particle type pair
-   character(20), allocatable :: txatat(:) ! name of atom type-atom type pair
+   character(21), allocatable :: txnwtnwt(:) ! name of network type-network type pair
+   character(21), allocatable :: txctct(:) ! name of chain type-chain type pair
+   character(21), allocatable :: txptpt(:) ! name of particle type-particle type pair
+   character(21), allocatable :: txatat(:) ! name of atom type-atom type pair
    logical                :: lmonoatom     !
    logical                :: lpolyatom     !
    real(8)                :: massat(mnat)  !*mass of atom type
    real(8), allocatable   :: masspt(:)     ! mass of particle type
+   real(8), allocatable   :: massnwt(:)    ! mass of network type
    real(8), allocatable   :: massipt(:)    ! inverse mass of particle type
+   real(8), allocatable   :: massinwt(:)   ! inverse mass of network type
    real(8), allocatable   :: mompt(:,:)    ! moments of inertia of particle type
    real(8), allocatable   :: momipt(:,:)   ! inverse moments of inertia of particle type
    real(8), allocatable   :: massp(:)      ! mass of particle
@@ -365,14 +431,17 @@ module MolModule
    logical                :: lradatbox     ! use atom and atom radius when checking if particle inside box
 
                                            ! equivalences:
-                                           ! nc         = sum(ncct(1:nct))
-                                           ! np         = sum(nppt(1:npt))
-                                           ! na         = sum(napt(1:npt)*nppt(1:npt))
-                                           ! nat        = sum(natpt(1:npt))
-                                           ! nptct(ict) = count(npptct(1:npt,ict) > 0)
-                                           ! npct(ict)  = sum(npptct(1:npt,ict))
-                                           ! napt(ipt)  = sum(naatpt(1:natpt(ipt),ipt)))
-                                           ! naat(iat)  = naatpt(ka,iptat(iat))
+                                           ! nnw          = sum(nnwnwt(1:nnwt))
+                                           ! nc           = sum(ncct(1:nct))
+                                           ! np           = sum(nppt(1:npt))
+                                           ! na           = sum(napt(1:npt)*nppt(1:npt))
+                                           ! nat          = sum(natpt(1:npt))
+                                           ! nctnwt(inwt) = count(ncctnwt(1:nct,inwt) > 0)
+                                           ! nptct(ict)   = count(npptct(1:npt,ict) > 0)
+                                           ! ncnwt(inwt)  = sum(ncctnwt(1:nct,inwt))
+                                           ! npct(ict)    = sum(npptct(1:npt,ict))
+                                           ! napt(ipt)    = sum(naatpt(1:natpt(ipt),ipt)))
+                                           ! naat(iat)    = naatpt(ka,iptat(iat))
 
 ! ... chain bond
 
@@ -445,9 +514,21 @@ module MolModule
 !     ibranchpbeg(0)  = 1, 5,
 !     ibranchpinc(0)  = 0, 0,
 
+! ... finite network structures
+
+   logical                 :: lnetwork           ! flag for networks
+   logical   , allocatable :: lptnwt(:,:)        ! true, if particle type ipt is part of network type inwt [allocate with npt,nnwt]
+   logical   , allocatable :: lpnnwn(:,:)        ! true if particle number ip is part of network number inw
+   integer(4), allocatable :: npweakchargenwt(:) ! number of titratable beads in network type inwt [allocate with nnwt]
+   integer(4), allocatable :: iptclnwt(:)        !*particle type of nodes of different network types [allocate with nnwt]
+
 ! ... pointers
 
+   integer(4), allocatable :: inwtnwn(:)   ! network (1:nnw)               -> its network type (1:nnwt)
+   integer(4), allocatable :: inwtct(:)    ! chain type (1:nct)            -> its network type (1:nnwt)
+   integer(4), allocatable :: inwtcn(:)    ! chain (1:nc)                  -> its network type (1:nnwt)
    integer(4), allocatable :: ictcn(:)     ! chain (1:nc)                  -> its chain type (1:nct)
+   integer(4), allocatable :: inwncn(:)    ! chain (1:nc)                  -> its network (1:nnw)
    integer(4), allocatable :: ictpt(:)     ! particle type (1:npt)         -> its chain type (1:nct)
    integer(4), allocatable :: ihnpn(:)     ! particle (1:np)               -> its hierarchical structure (1:nh)
    integer(4), allocatable :: ictpn(:)     ! particle (1:np)               -> its chain type (1:nct)
@@ -457,18 +538,24 @@ module MolModule
    integer(4), allocatable :: iptan(:)     ! atom (1:na)                   -> its particle type (1:npt)
    integer(4), allocatable :: ipnan(:)     ! atom (1:na)                   -> its particle (1:np)
    integer(4), allocatable :: iatan(:)     ! atom (1:na)                   -> its atom type (1:na)
+
+   integer(4), allocatable :: inwnnwt(:)   ! network type (1:nnwt)         -> its first network (1:nnw)
    integer(4)              :: ipnhn        ! hierarchical structure        -> its first particle
    integer(4), allocatable :: icnct(:)     ! chain type (1:nct)            -> its first chain (1:nc)
    integer(4), allocatable :: ipnpt(:)     ! particle type (1:npt)         -> its first particle (1:np)
    integer(4), allocatable :: iatpt(:)     ! particle type (1:npt)         -> its first atom type (1:nat)
    integer(4), allocatable :: ianpn(:)     ! particle (1:np)               -> its first atom (1:na)
    integer(4), allocatable :: ianat(:)     ! atom type (1:nat)             -> its first atom (1:na)
+   integer(4), allocatable :: inwtnwt(:,:) ! two network types (1:nnwt)    -> network type pair (1:nnwt)
    integer(4), allocatable :: ictct(:,:)   ! two chain types (1:nct)       -> chain type pair (1:nctct)
    integer(4), allocatable :: iptpt(:,:)   ! two particle types (1:npt)    -> particle type pair (1:nptpt)
    integer(4), allocatable :: iatat(:,:)   ! two atom types (1:nat)        -> atom type pair (1:natat)
    integer(4), allocatable :: isegpn(:)    ! particle (1:np)               -> segment number
    integer(4), allocatable :: ipnsegcn(:,:)! seg (1:npct) and chain (1:nc) -> particle (1:np)
    integer(4), allocatable :: icihigen(:,:)! hier (1:nh) and gen (0:ngen)  -> its first chain
+   integer(4), allocatable :: icnclocnwn(:,:)  ! local chain (1:ncnwt) and network (1:nnw)    -> its chain (1:nc)
+   integer(4), allocatable :: ipncllocnwn(:,:) ! cross-link (1:nclnwt) and network (1:nnw)    -> its particle (1:np)
+   integer(4), allocatable :: ipnplocnwn(:,:)  ! local particle (1:npnwt) and network (1:nnw) -> its particle (1:np)
 
 ! ... md
 
@@ -513,7 +600,7 @@ module MolModule
 
 ! ... random number
 
-   integer(4)    :: iseed                  ! seed of random number generator
+   integer(k4b)  :: iseed                  ! seed of random number generator
    integer(4)    :: maxcpu                 ! maximum number of cpu time (seconds)
 
 ! ... configuration
@@ -705,7 +792,7 @@ module MolModule
 
 ! ... energy
 
-   real(8)       :: ekin                   ! kinetic energy
+   real(8)       :: ekin = 0.0d0           ! kinetic energy
    type(potenergy_var) :: u                ! potential energy
    type(potenergy_var) :: du               ! difference in potential energy between two configurations
    real(8)       :: htot                   ! total enthalpy

@@ -1,0 +1,42 @@
+ &nmlSystem
+  txtitle ='testchain: triblock',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='setconf',
+  nstep1= 1,        nstep2= 1,
+  boxlen= 3*20.0,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.f.,  lstatic =.f.,limage =.f.,
+  itest = 0,   ipart = 1,   iatom = 1,   iaver = 1,   ishow = 1,   iplot = 0,  ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  nct   = 1,
+  txct  ='triblock',
+  ncct  = 2,
+  npptct(1,1) = 2,2,2,
+  txcopolymer = 'block',
+  npt   = 3,
+  txpt  = 'a','b','c',
+  nppt  =  4,  4,  4,
+  natpt =  1,  1, 1,
+  txat  = 'a','b','c',
+  radat = 2.0,   2.0,  2.0,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'a',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'b',
+  naatpt(1,3) =  1,
+  txaat(1,3) = 'c',
+  itestpart = 10,
+ /
+ &nmlPotential
+ /
+ &nmlPotentialChain bond = 1.0, 2, 5.0, angle = 4.0 /
+ &nmlSetConfiguration
+  txsetconf(1) ='random','random','random',
+ /
+ &nmlMC
+  dtran =  2.0, 2.0,
+ /
+ &nmlIntList inlist = 0, drnlist = 5.0 /

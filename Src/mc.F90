@@ -95,7 +95,7 @@ module MCModule
                                                      ! = 'lower' rotation of the lower subchain
                                                      ! = 'upper' rotation of the upper subchain
    character(6)               :: txdualpivot         ! = 'nodual' individual pivot  move
-                                                     ! = 'linear' linear chain ict = 3 as reference (dual pivot = linear chain + branched diblock copolymer) 	
+                                                     ! = 'linear' linear chain ict = 3 as reference (dual pivot = linear chain + branched diblock copolymer)
                                                      ! = 'combed' combed chain ict = 1 as reference (dual pivot = branched diblock +  copolymerlinear chain)
                                                      ! = 'mullin' idem as 'combed' and additionally works for icnct(ict) > 1
    real(8), allocatable       :: drotpivot(:)        ! rotation parameter of pivot rotation move
@@ -150,7 +150,13 @@ module MCModule
    real(8), allocatable       :: pcharge(:)          ! probability of charge-change move
 
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
+   logical, allocatable       :: lssopt(:)           ! flag for single particle move sso of particle types  ! Pascal Hebbeker
+   logical                    :: lmcsep              ! flag for separating local from non-local moves
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
+   real(8), allocatable :: plocal(:)
+   real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
+
+
 
 ! ... mcall trial move variables
 
@@ -261,6 +267,57 @@ module MCModule
                                              ! = 3, call of TestChargeChange1 from ChargeChange
                                              ! = 3, call of TestChargeChange2 from ChargeChange
 
+   interface
+      subroutine SPartMove(iStage, loptsso)
+         integer(4), intent(in) :: iStage
+         logical, optional, intent(in) :: loptsso
+      end subroutine SPartMove
+   end interface
+
+
+   contains
+      subroutine CallMove(prandom, iptmove, iStage)
+
+         implicit none
+         real(8), intent(in) :: prandom
+         integer(4), intent(in) :: iptmove
+         integer(4), intent(in) :: iStage
+
+         !first local moves
+         if (prandom < pspart(iptmove)) then
+            call SPartMove(iStage)                             ! single-particle trial move
+         else if (prandom < pspartsso(iptmove)) then
+            call SPartMove(iStage, loptsso=.true.)
+
+         !then non-local moves
+         else if (prandom < pspartcl2(iptmove)) then
+            call SPartCl2Move(iStage)                          ! single-particle + cluster2 trial move
+         else if (prandom < ppivot(iptmove)) then
+            call PivotMove(iStage)                             ! pivot rotation trial move
+         else if (prandom < pchain(iptmove)) then
+            call ChainMove(iStage)                             ! chain trial move
+         else if (prandom < pslither(iptmove)) then
+            call SlitherMove(iStage)                           ! chain slithering trial move
+         else if (prandom < pbrush(iptmove)) then
+            call BrushMove(iStage)                             ! brush trial move
+         else if (prandom < pbrushcl2(iptmove)) then
+            call BrushCl2Move(iStage)                          ! brush + cluster2 trial move
+         else if (prandom < phierarchical(iptmove)) then
+            call HierarchicalMove(iStage)                       ! hierarchical trial move
+         else if (prandom < pnetwork(iptmove)) then
+            call NetworkMove(iStage)                           ! network trial move
+         else if (prandom < pvol(iptmove)) then
+            call VolChange(iStage)                             ! volume change trial move
+         else if (prandom < pnpart(iptmove)) then
+            call NPartChange(iStage)                           ! number of particle change trial move
+         !else if (prandom < pcharge(iptmove)) then
+         else
+            call ChargeChange(iStage)                          ! charge change trial move
+         end if
+
+      end subroutine
+
+
 end module MCModule
 
 !************************************************************************
@@ -289,6 +346,7 @@ subroutine MCDriver(iStage)
       if (lmcweight) call MCWeightIO(iStage)
       if (lautumb) call UmbrellaIO(iStage)
       if (lmcpmf) call MCPmfIO(iStage)
+      if (lpspartsso) call SSODriver(iStage)   ! Pascal Hebbeker
 
    case (iWriteInput)
 
@@ -371,172 +429,143 @@ subroutine IOMC(iStage)
                     radcl1, pselectcl1,                                                          &
                     lmcweight, lautumb, lmcpmf,                                                  &
                     itestmc,                                                                     &
-                    pspartsso                                                                       ! Pascal Hebbeker
+                    pspartsso, lmcsep                                                               ! Pascal Hebbeker
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(lptmove)) then 
+      if (.not. allocated(lptmove)) then
          allocate(lptmove(npt))
-         lptmove = .false.
       end if
-      if (.not. allocated(pspart)) then 
+      if (.not. allocated(pspart)) then
          allocate(pspart(npt))
-         pspart = 0.0E+00
       end if
-      if (.not. allocated(dtran)) then 
+      if (.not. allocated(dtran)) then
          allocate(dtran(npt))
-         dtran = 0.0E+00
       end if
-      if (.not. allocated(drot)) then 
+      if (.not. allocated(drot)) then
          allocate(drot(npt))
-         drot = 0.0E+00
       end if
-      if (.not. allocated(lcl1spart)) then 
+      if (.not. allocated(lcl1spart)) then
          allocate(lcl1spart(npt))
-         lcl1spart = .false.
       end if
-      if (.not. allocated(lfixzcoord)) then 
+      if (.not. allocated(lfixzcoord)) then
          allocate(lfixzcoord(npt))
-         lfixzcoord = .false.
       end if
-      if (.not. allocated(lfixxycoord)) then 
+      if (.not. allocated(lfixxycoord)) then
          allocate(lfixxycoord(npt))
-         lfixxycoord = .false.
       end if
-      if (.not. allocated(lshiftzcom)) then 
+      if (.not. allocated(lshiftzcom)) then
          allocate(lshiftzcom(npt))
-         lshiftzcom = .false.
       end if
-      if (.not. allocated(pspartcl2)) then 
+      if (.not. allocated(pspartcl2)) then
          allocate(pspartcl2(npt))
-         pspartcl2 = 0.0E+00
       end if
-      if (.not. allocated(txmembcl2)) then 
+      if (.not. allocated(txmembcl2)) then
          allocate(txmembcl2(npt))
-         txmembcl2 = ""
       end if
-      if (.not. allocated(radcl2)) then 
+      if (.not. allocated(radcl2)) then
          allocate(radcl2(npt))
-         radcl2 = 0.0E+00
       end if
-      if (.not. allocated(dtrancl2)) then 
+      if (.not. allocated(dtrancl2)) then
          allocate(dtrancl2(npt))
-         dtrancl2 = 0.0E+00
       end if
-      if (.not. allocated(ppivot)) then 
+      if (.not. allocated(ppivot)) then
          allocate(ppivot(npt))
-         ppivot = 0.0E+00
       end if
-      if (.not. allocated(txpivot)) then 
+      if (.not. allocated(txpivot)) then
          allocate(txpivot(npt))
-         txpivot = ""
       end if
-      if (.not. allocated(drotpivot)) then 
+      if (.not. allocated(drotpivot)) then
          allocate(drotpivot(npt))
-         drotpivot = 0.0E+00
       end if
-      if (.not. allocated(drotminpivot)) then 
+      if (.not. allocated(drotminpivot)) then
          allocate(drotminpivot(npt))
-         drotminpivot = 0.0E+00
       end if
-      if (.not. allocated(lcl1pivot)) then 
+      if (.not. allocated(lcl1pivot)) then
          allocate(lcl1pivot(npt))
-         lcl1pivot = .false.
       end if
-      if (.not. allocated(pchain)) then 
+      if (.not. allocated(pchain)) then
          allocate(pchain(npt))
-         pchain = 0.0E+00
       end if
-      if (.not. allocated(dtranchain)) then 
+      if (.not. allocated(dtranchain)) then
          allocate(dtranchain(npt))
-         dtranchain = 0.0E+00
       end if
-      if (.not. allocated(drotchain)) then 
+      if (.not. allocated(drotchain)) then
          allocate(drotchain(npt))
-         drotchain = 0.0E+00
       end if
-      if (.not. allocated(lcl1chain)) then 
+      if (.not. allocated(lcl1chain)) then
          allocate(lcl1chain(npt))
-         lcl1chain = .false.
       end if
-      if (.not. allocated(pslither)) then 
+      if (.not. allocated(pslither)) then
          allocate(pslither(npt))
-         pslither = 0.0E+00
       end if
-      if (.not. allocated(pbrush)) then 
+      if (.not. allocated(pbrush)) then
          allocate(pbrush(npt))
-         pbrush = 0.0E+00
       end if
-      if (.not. allocated(dtranbrush)) then 
+      if (.not. allocated(dtranbrush)) then
          allocate(dtranbrush(npt))
          dtranbrush = 0.0E+00
       end if
-      if (.not. allocated(drotbrush)) then 
+      if (.not. allocated(drotbrush)) then
          allocate(drotbrush(npt))
          drotbrush = 0.0E+00
       end if
-      if (.not. allocated(lcl1brush)) then 
+      if (.not. allocated(lcl1brush)) then
          allocate(lcl1brush(npt))
          lcl1brush = .false.
       end if
-      if (.not. allocated(pbrushcl2)) then 
+      if (.not. allocated(pbrushcl2)) then
          allocate(pbrushcl2(npt))
-         pbrushcl2 = 0.0E+00
       end if
-      if (.not. allocated(dtranbrushcl2)) then 
+      if (.not. allocated(dtranbrushcl2)) then
          allocate(dtranbrushcl2(npt))
          dtranbrushcl2 = 0.0E+00
       end if
-      if (.not. allocated(drotbrushcl2)) then 
+      if (.not. allocated(drotbrushcl2)) then
          allocate(drotbrushcl2(npt))
          drotbrushcl2 = 0.0E+00
       end if
-      if (.not. allocated(phierarchical)) then 
+      if (.not. allocated(phierarchical)) then
          allocate(phierarchical(npt))
-         phierarchical = 0.0E+00
       end if
-      if (.not. allocated(dtranhierarchical)) then 
+      if (.not. allocated(dtranhierarchical)) then
          allocate(dtranhierarchical(npt))
          dtranhierarchical = 0.0E+00
       end if
-      if (.not. allocated(pnetwork)) then 
+      if (.not. allocated(pnetwork)) then
          allocate(pnetwork(npt))
-         pnetwork = 0.0E+00
       end if
-      if (.not. allocated(dtrannetwork)) then 
+      if (.not. allocated(dtrannetwork)) then
          allocate(dtrannetwork(npt))
          dtrannetwork = 0.0E+00
       end if
-      if (.not. allocated(pvol)) then 
+      if (.not. allocated(pvol)) then
          allocate(pvol(npt))
-         pvol = 0.0E+00
       end if
-      if (.not. allocated(pnpart)) then 
+      if (.not. allocated(pnpart)) then
          allocate(pnpart(npt))
-         pnpart = 0.0E+00
       end if
-      if (.not. allocated(chempot)) then 
+      if (.not. allocated(chempot)) then
          allocate(chempot(npt))
          chempot = 0.0E+00
       end if
-      if (.not. allocated(radcl1)) then 
+      if (.not. allocated(radcl1)) then
          allocate(radcl1(npt))
-         radcl1 = 0.0E+00
       end if
-      if (.not. allocated(pselectcl1)) then 
+      if (.not. allocated(pselectcl1)) then
          allocate(pselectcl1(npt))
-         pselectcl1 = 0.0E+00
       end if
-      if (.not. allocated(pcharge)) then 
+      if (.not. allocated(pcharge)) then
          allocate(pcharge(npt))
-         pcharge = 0.0E+00
       end if
-      if (.not. allocated(pspartsso)) then 
+      if (.not. allocated(pspartsso)) then
          allocate(pspartsso(npt))
-         pspartsso = 0.0E+00
+      end if
+      if (.not. allocated(plocal)) then
+         allocate(plocal(npt))
       end if
 
       isamp           = 1
@@ -592,6 +621,8 @@ subroutine IOMC(iStage)
       lautumb         = .false.
       lmcpmf          = .false.
 
+      lmcsep          = .false.
+
       itestmc         = 0
 
       rewind(uin)
@@ -602,19 +633,33 @@ subroutine IOMC(iStage)
       end do
       call LowerCase(txdualpivot)
 
+
+      ! already set lpspartsso: it is neede for the SSO-Driver----------
+      if (count(pspartsso(1:npt) > Zero) > 0) then                      ! any prob > 0 ?
+         lpspartsso =.true.                                                                             ! set lprob = .true.
+      end if
+      if(lpspartsso) then
+         if(.not. allocated(lssopt)) then
+            allocate(lssopt(npt))
+         end if
+         lssopt = .false.
+         where ( pspartsso(1:npt) > Zero) lssopt = .true.
+      end if
+
+
    case (iWriteInput)
 
 ! ... allocate memory for MC-specific pointers
 
-      if (.not.allocated(ianatm)) then 
+      if (.not.allocated(ianatm)) then
          allocate(ianatm(na_alloc))
          ianatm = 0
       end if
-      if (.not.allocated(iptmpn)) then 
+      if (.not.allocated(iptmpn)) then
          allocate(iptmpn(np_alloc))
          iptmpn = 0
       end if
-      if (.not.allocated(ipnptm)) then 
+      if (.not.allocated(ipnptm)) then
          allocate(ipnptm(np_alloc))
          ipnptm = 0
       end if
@@ -625,11 +670,17 @@ subroutine IOMC(iStage)
 
 ! ... initiate lptm
 
-      if (.not.allocated(lptm)) then 
+      if (.not.allocated(lptm)) then
          allocate(lptm(np_alloc))
          lptm = .false.
       end if
       lptm =.false.
+
+! ... initiate lmcsep
+
+      if (lmcsep .and. (.not. allocated(plocal))) then
+         allocate(plocal(npt))
+      end if
 
 ! ... check conditions
 
@@ -647,7 +698,7 @@ subroutine IOMC(iStage)
             lzero = .true.
             do iatloc = 1, natpt(ipt)
                iat = iat +1
-               if (latweakcharge(iat) == .true. .and. naatpt(iatloc,ipt) > 0) lzero = .false.  ! at least one weak charge
+               if ((latweakcharge(iat) .eqv. .true.) .and. (naatpt(iatloc,ipt) > 0)) lzero = .false.  ! at least one weak charge
             end do
             if (lzero) pcharge(ipt) = Zero
          end do
@@ -666,7 +717,7 @@ subroutine IOMC(iStage)
 
 ! ... normalize probabilities of different trial moves
 
-      if (.not.allocated(psum)) then 
+      if (.not.allocated(psum)) then
          allocate(psum(npt))
          psum = 0.0E+00
       end if
@@ -749,7 +800,7 @@ subroutine IOMC(iStage)
       if (lpspartcl2) call Stop(txroutine, 'pspartcl2(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpbrush) call Stop(txroutine, 'pbrush(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpbrushcl2) call Stop(txroutine, 'pbrushcl2(ipt) > 0 .and. _PAR_ not supported', uout)
-      if (lphierarchical) call Stop(txroutine, 'phierarchical(ipt) > 0 .and. _PAR_ not supported', uout)
+      !if (lphierarchical) call Stop(txroutine, 'phierarchical(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpnetwork) call Stop(txroutine, 'pnetwork(ipt) > 0 .and. _PAR_ not supported', uout)
       if (lpcharge) call Stop(txroutine, 'pcharge(ipt) > 0 .and. _PAR_ not supported', uout)
 #endif
@@ -783,6 +834,7 @@ subroutine IOMC(iStage)
       end if
 
       call WriteHead(2, 'mc data', uout)
+      if (lmcsep) write(uout,'(a)') 'separating move types (lmcsep)'
       if (isamp == 0) write(uout,'(a)') 'uniform sampling, sequence'
       if (isamp == 1) write(uout,'(a)') 'uniform sampling, random'
       if (dtran(1) < 0) write(uout,'(a)') 'spherical displacement area'
@@ -918,7 +970,14 @@ subroutine IOMC(iStage)
 
 ! ... modify the representation of the probability for their use in MCPass
 
-      pspartcl2(1:npt)      = pspartcl2(1:npt)      + pspart(1:npt)
+! ... first the local moves
+      pspartsso(1:npt)      = pspartsso(1:npt)      + pspart(1:npt)
+      if (lmcsep) then
+         plocal(1:npt) = pspartsso(1:npt)       !the probability to perform a local move
+      end if
+
+! ... then the non-local moves
+      pspartcl2(1:npt)      = pspartcl2(1:npt)      + pspartsso(1:npt)
       ppivot(1:npt)         = ppivot(1:npt)         + pspartcl2(1:npt)
       pchain(1:npt)         = pchain(1:npt)         + ppivot(1:npt)
       pslither(1:npt)       = pslither(1:npt)       + pchain(1:npt)
@@ -929,6 +988,7 @@ subroutine IOMC(iStage)
       pvol(1:npt)           = pvol(1:npt)           + pnetwork(1:npt)
       pnpart(1:npt)         = pnpart(1:npt)         + pvol(1:npt)
       pcharge(1:npt)        = pcharge(1:npt)        + pnpart(1:npt)
+
       if (itestmc == 1) call TestIOMCProb('after modification', uout)
 
    case (iBeforeMacrostep)
@@ -996,6 +1056,7 @@ subroutine TestIOMCProb(txheading,unit)   ! test output of probabilities of MC m
    integer(4),   intent(in) :: unit
    call WriteHead(3, 'Test'//trim(txroutine)//' '//txheading, unit)
    write(unit,'(a,6f10.3)') 'pspart(1:npt)        ', pspart(1:npt)
+   write(unit,'(a,6f10.3)') 'pspartsso(1:npt)     ', pspartsso(1:npt)
    write(unit,'(a,6f10.3)') 'pspartcl2(1:npt)     ', pspartcl2(1:npt)
    write(unit,'(a,6f10.3)') 'ppivot(1:npt)        ', ppivot(1:npt)
    write(unit,'(a,6f10.3)') 'pchain(1:npt)        ', pchain(1:npt)
@@ -1022,19 +1083,55 @@ end subroutine IOMC
 subroutine MCPass(iStage)
 
    use MCModule
+   use NListModule, only : drnlist, drosum
    implicit none
 
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='MCPass'
-   integer(4) :: ip
-   real(8)    :: Random, prandom
+   integer(4) :: ipt, ict
+   real(8)    :: Random, prandom, drnold, rchain
+   logical :: lnonloc
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
    if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    drostep= Zero
+
+   if(lmcsep) then ! call only local or non-local moves, not both
+      prandom = Random(iseed)
+      lnonloc = .false.
+      if (any( prandom > plocal(1:npt) )) then !only also non-local moves are present
+         lnonloc = .true.
+      end if
+
+      if(lnonloc) then
+         drosum = Zero
+         drnold = drnlist
+         rchain = Zero
+         do ipt = 1, npt
+            ict = ictpt(ipt)
+            if ((prandom > plocal(ipt)) .and. (ict > 0)) then !non-local moves of this particle type and particle is in chain
+               rchain=max(rchain, sum(npptct(1:npt,ict))*bond(ict)%eq)
+            end if
+         end do
+
+         drnlist = max(4*rchain, nphn*maxval(dtranhierarchical(:))) + drnold !set drnlist to four times contour length + drnlist (old)
+         ! four times as 1 particle can move at max 2 times contour length using pivot move, and therefore two particles can approach each at max 4 times the contour length
+         ! added drnold to reflect any possible local moves
+
+         !get neighbor list
+         if (lvlist) then
+            call SetVList
+            call VListAver(iStage)
+         end if
+         if (lllist) then
+            call SetLList(rcut+drnlist)
+            call LListAver(iStage)
+         end if
+      end if
+   end if
 
    do ipass = 1, np
 
@@ -1057,34 +1154,8 @@ subroutine MCPass(iStage)
       if (pspart(iptmove) > One - 1d-15) then
          call SPartMove(iStage)
       else
-         prandom = Random(iseed)
-         if (prandom < pspart(iptmove)) then
-            call SPartMove(iStage)                             ! single-particle trial move
-         else if (prandom < pspartcl2(iptmove)) then
-            call SPartCl2Move(iStage)                          ! single-particle + cluster2 trial move
-         else if (prandom < ppivot(iptmove)) then
-            call PivotMove(iStage)                             ! pivot rotation trial move
-         else if (prandom < pchain(iptmove)) then
-            call ChainMove(iStage)                             ! chain trial move
-         else if (prandom < pslither(iptmove)) then
-            call SlitherMove(iStage)                           ! chain slithering trial move
-         else if (prandom < pbrush(iptmove)) then
-            call BrushMove(iStage)                             ! brush trial move
-         else if (prandom < pbrushcl2(iptmove)) then
-            call BrushCl2Move(iStage)                          ! brush + cluster2 trial move
-         else if (prandom < phierarchical(iptmove)) then
-            call HierarichalMove(iStage)                       ! hierarchical trial move
-         else if (prandom < pnetwork(iptmove)) then
-            call NetworkMove(iStage)                           ! network trial move
-         else if (prandom < pvol(iptmove)) then
-            call VolChange(iStage)                             ! volume change trial move
-         else if (prandom < pnpart(iptmove)) then
-            call NPartChange(iStage)                           ! number of particle change trial move
-         else if (prandom < pcharge(iptmove)) then
-            call ChargeChange(iStage)                          ! charge change trial move
-         else
-            call SSOMove(iStage)
-         end if
+         if(.not. lmcsep) prandom = Random(iseed)
+         call CallMove(prandom, iptmove, iStage)
       end if
 
       call Restorelptm(nptm, ipnptm, lptm)                     ! restore lptm
@@ -1093,6 +1164,23 @@ subroutine MCPass(iStage)
       if (lcont) call MCAver(iSimulationStep)
 
    end do
+
+   if(lmcsep) then
+      ! restore neighbour list
+      if(lnonloc) then
+         drnlist = drnold
+         drosum = Zero
+
+         if (lvlist) then
+            call SetVList
+            call VListAver(iStage)
+         end if
+         if (lllist) then
+            call SetLList(rcut+drnlist)
+            call LListAver(iStage)
+         end if
+      end if
+   end if
 
    if (ltime) call CpuAdd('stop', txroutine, 0, uout)
 
@@ -1106,25 +1194,50 @@ end subroutine MCPass
 
 ! ... perform one single-particle  trial move
 
-subroutine SPartMove(iStage)
+subroutine SPartMove(iStage, loptsso)
 
-   use MCModule
+   use MolModule
+   use MCModule, only: imovetype, ispart
+   use MCModule, only: ispartmove, ipmove, iptmove
+   use MCModule, only: ievent, imcaccept
+   use MCModule, only: itestmc, lautumb, lfixchainstartspart, lmcpmf
+   use MCModule, only: npclnew, npclold, radcl1
+   use MCModule, only: lcl1spart, pselectcl1, dtran, curdtranpt
+   use MCModule, only: lfixzcoord, lfixxycoord, drot, lshiftzcom
+
    implicit none
 
    integer(4), intent(in) :: iStage
+   logical, optional, intent(in) :: loptsso
 
    character(40), parameter :: txroutine ='SPartMove'
+   character(40), parameter :: txroutinesso ='SSO'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
    integer(4) :: iploc, dnpcl
    real(8)    :: weight, MCWeight, UmbrellaWeight, MCPmfWeight
 
-   integer(4), save :: jptsph = 1  ! type of particle at which the grafted chains are attached
-   integer(4) :: jpsph, ipsurf
+   integer(4) :: ipsurf
    integer(4) :: ihost
 
-   if (ltrace) call WriteTrace(3, txroutine, iStage)
+   logical  :: lsso
 
+   real(8)  :: dtr
+
+   if (ltrace) call WriteTrace(3, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+   !sneak in sso---------------------------------------------------------------
+   if( present(loptsso)) then
+      lsso = loptsso
+   else
+      lsso = .false.
+   end if
+
+   if(lsso) then
+      if (ltrace) call WriteTrace(4, txroutinesso, iStage)
+   end if
+   !---------------------------------------------------------------------------
+
 
    imovetype = ispartmove
 
@@ -1151,9 +1264,16 @@ subroutine SPartMove(iStage)
       if (lllist) call ClusterMemberLList('old', .false., .false., radcl1, pselectcl1)
    end if
 
+! .. get displacement parameter
+   dtr=dtran(iptmove)
+   if(lsso) then
+      dtr=-curdtranpt(iptmove) !sso always produces positiv values in curdtranpt; but requires sperical displacement volume. GetRandomTrialPos uses spherical displacement volume id dtr<0
+   end if
+
+
 ! .............. calculate a trial configuration ...............
 
-   call GetRandomTrialPos(dtran(iptmove), iseed, nptm, ipnptm, ro, rotm, drotm)
+   call GetRandomTrialPos(dtr, iseed, nptm, ipnptm, ro, rotm, drotm)
    if (lfixzcoord(iptmove)) call FixedZCoord
    if (lfixxycoord(iptmove)) call FixedXYCoord
    if (lfixchainstartspart) call FixedChainStart
@@ -1197,35 +1317,39 @@ subroutine SPartMove(iStage)
 
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
-   if (lboxoverlap) goto 200
+   if (.not. lboxoverlap) then
 
 ! ............. evaluate energy difference ...............
+      call DUTotal(lhsoverlap, lhepoverlap)
 
-   call DUTotal(lhsoverlap, lhepoverlap)
-   if (lhsoverlap .or. lhepoverlap) goto 200
-
+      if (.not. (lhsoverlap .or. lhepoverlap)) then
 ! ............. calculate nonenergetic weights .............
+         weight = One
+         dnpcl = Zero
+         if (lcl1spart(iptmove)) then
+            if (lvlist) call ClusterMember('new', .false., .false., radcl1, pselectcl1)       ! calculate npclnew
+            if (lllist) call ClusterMemberLList('new', .false., .false., radcl1, pselectcl1)  ! calculate npclnew
+            dnpcl = npclnew-npclold
+            if (dnpcl /= 0) weight = weight*(One-pselectcl1(iptmove))**dnpcl
+         end if
 
-   weight = One
-   dnpcl = Zero
-   if (lcl1spart(iptmove)) then
-      if (lvlist) call ClusterMember('new', .false., .false., radcl1, pselectcl1)       ! calculate npclnew
-      if (lllist) call ClusterMemberLList('new', .false., .false., radcl1, pselectcl1)  ! calculate npclnew
-      dnpcl = npclnew-npclold
-      if (dnpcl /= 0) weight = weight*(One-pselectcl1(iptmove))**dnpcl
+         if (lmcweight) weight = weight*MCWeight()
+         if (lautumb) weight = weight*UmbrellaWeight(1)
+         if (lmcpmf) weight = weight*MCPmfWeight(1)
+      end if
+
    end if
-
-   if (lmcweight) weight = weight*MCWeight()
-   if (lautumb) weight = weight*UmbrellaWeight(1)
-   if (lmcpmf) weight = weight*MCPmfWeight(1)
 
 ! ............. decide new configuration .............
 
-200 continue
    call Metropolis(lboxoverlap, lhsoverlap, lhepoverlap, weight, du%tot*beta)
 
 ! .............. update .............
-
+   if(lsso) then
+      do iploc = 1, nptm
+         call SSOUpdate((ievent == imcaccept), iptmove, drotm(1:3,iploc))
+      end do
+   end if
    if (ievent == imcaccept) call MCUpdate       ! update energies and coordinates
 
    if (lautumb) call UmbrellaUpdate              ! update weight function for umbrella potential
@@ -1310,13 +1434,12 @@ subroutine SPartCl2Move(iStage)
 
    character(40), parameter :: txroutine ='SPartCl2Move'
    integer(4) :: mnpair = 10000
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, done
-   integer(4) :: iploc, iplow, ipupp, ipt, jp, jploc, jpt, iptjpt
+   logical    :: lboxoverlap, lhsoverlap, lhepoverlap
+   integer(4) :: iploc, iplow, ipupp, jp
    integer(4) :: npair, dnpcl, npcl
    integer(4), allocatable :: n1(:), n2(:), iobjcluster(:), icllis(:)
    real(8)    :: weight, r2, dx, dy, dz
    integer(4) :: ipshift
-   integer(4) :: ip
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -1335,7 +1458,7 @@ subroutine SPartCl2Move(iStage)
 
 ! ... consider first primary cluster particles
 
-   if (.not.allocated(n1)) then 
+   if (.not.allocated(n1)) then
       allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
       n1 = 0
       n2 = 0
@@ -1529,7 +1652,7 @@ subroutine PivotMove(iStage)
       do iseg = iseg1, iseg2                                              ! loop over main chain segments
          ip = ipnsegcn(iseg,ic)                                           ! particle number of main chain segment
          do icl = 1, nbondcl(ip)                                          ! loop over number of crosslinks
-            if (genic(icnpn(bondcl(icl,ip))) < genic(ic)) cycle           ! ignore crosslinks to lower generations
+            if ((genic(icnpn(bondcl(icl,ip))) < genic(ic)) .and. (txpivot(iptmove) == 'upper')) cycle           ! ignore crosslinks to lower generations if txpivot = upper
             call UndoPBCChain(vaux(1,ip),icnpn(bondcl(icl,ip)), 1, vaux)  ! restore the chain with UndoPBCChain
             do iseg3 = 1, sum(npptct(1:npt,ictpn(bondcl(icl,ip))))        ! loop over segments of relevant chain type
                ip4 = ipnsegcn(iseg3,icnpn(bondcl(icl,ip)))                ! particle number in side chain
@@ -1541,7 +1664,8 @@ subroutine PivotMove(iStage)
          end do
       end do
       nptmlast = nptm                                                                  ! used for next generation
-      do igen = genic(ic)+1, ngen
+      do igen = merge(genic(ic),0,(txpivot(iptmove) == 'upper'))+1, ngen
+         if (igen == genic(ic)) cycle
          do iploc = nptmfirst, nptmlast
             do icl=1, nbondcl(ipnptm(iploc))
                if (genic(icnpn(bondcl(icl,ipnptm(iploc)))) < igen) cycle               ! ignore crosslinks to lower generations
@@ -1663,14 +1787,14 @@ subroutine PivotDual    ! dual pivot rotation
    real(8)    :: dx1, dy1, dz1, dx2, dy2, dz2, dtemp_min(2), r1, r2
    real(8)    :: dinf, r_dist
 
-   if (.not.allocated(dtemp)) then 
+   if (.not.allocated(dtemp)) then
       allocate(dtemp(np_alloc,2))
       dtemp = 0.0E+00
    end if
 
    dtemp(1:np,2) = 0.0
    dtemp_min(1:2) = 10000
-   iseg_min = 0.0
+   iseg_min = 0
 ! ..............   linear .............
 
    if (txdualpivot == 'linear') then      ! dual pivot: reference: linear chain (ict=3)
@@ -1697,7 +1821,7 @@ subroutine PivotDual    ! dual pivot rotation
                      if (dinf > boxlen(1)/3.0)   direction = +1
                      call UndoPBCChain(vaux(1,ipnsegcn(1,ic)), ic_loc, direction, vaux)
                   end if
-                  if (nbondcl(ip) == 1.and.ict_loc > 1 ) call UndoPBCChain(vaux(1,bondcl(1,ip)), ic_loc, direction, vaux)  !linked beads belonging to the backbone as reference		
+                  if (nbondcl(ip) == 1.and.ict_loc > 1 ) call UndoPBCChain(vaux(1,bondcl(1,ip)), ic_loc, direction, vaux)  !linked beads belonging to the backbone as reference
                end do
             end do
          end do
@@ -1717,6 +1841,9 @@ subroutine PivotDual    ! dual pivot rotation
     end do
 
     do iseg_loc = iseg_min-1, iseg_min +1, 2  !  compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
+       if( (iseg_loc < 1) .or. (iseg_loc > npct(ict_temp)) ) then !if neighbour does not exists
+          cycle
+       end if
        dx2 = vaux(1,ipnsegcn(iseg_loc,ic_temp)) - vaux(1,ip3)
        dy2 = vaux(2,ipnsegcn(iseg_loc,ic_temp)) - vaux(2,ip3)
        dz2 = vaux(3,ipnsegcn(iseg_loc,ic_temp)) - vaux(3,ip3)
@@ -1724,6 +1851,9 @@ subroutine PivotDual    ! dual pivot rotation
        if (dtemp(iseg_loc,2) < dtemp_min(2))  dtemp_min(2) = dtemp(iseg_loc,2)
     end do
     do iseg_loc = iseg_min-1, iseg_min +1, 2
+       if( (iseg_loc < 1) .or. (iseg_loc > npct(ict_temp)) ) then !if neighbour does not exists
+          cycle
+       end if
        if (dtemp_min(2) == dtemp(iseg_loc,2)) then
           jp1 =  ipnsegcn(iseg_min,ic_temp) ! store closest particle to ip1 as jp1
           jp3 = ipnsegcn(iseg_loc,ic_temp)  ! store closest particle to ip3 as jp3
@@ -1793,7 +1923,7 @@ subroutine PivotDual    ! dual pivot rotation
          do ic = 1, nc                     ! undo the linear chain
             ict = ictcn(ic)
             ip = ipnsegcn(1,ic)
-            if(ihnpn(ip) /= 0) cycle       ! exclude hierarchical structures	
+            if(ihnpn(ip) /= 0) cycle       ! exclude hierarchical structures
             call UndoPBCChain(vaux(1,ipnsegcn(1,1)), ic, -1, vaux)! it assumes ic =1 is the backbone of the hierarchy; direction should be  -1
          end do
 
@@ -1804,7 +1934,7 @@ subroutine PivotDual    ! dual pivot rotation
             dy1 = vaux(2,ipnsegcn(iseg_loc,ic_temp)) - vaux(2,ip1)
             dz1 = vaux(3,ipnsegcn(iseg_loc,ic_temp)) - vaux(3,ip1)
             dtemp(iseg_loc,1) = sqrt(dx1**2+dy1**2+dz1**2)
-            if (dtemp(iseg_loc,1) < dtemp_min(1))  dtemp_min(1) = dtemp(iseg_loc,1)   !	find the closest segment
+            if (dtemp(iseg_loc,1) < dtemp_min(1))  dtemp_min(1) = dtemp(iseg_loc,1)   !    find the closest segment
          end do
          do iseg_loc = 1, npct(ict_temp)
             if (dtemp_min(1) == dtemp(iseg_loc,1)) iseg_min = iseg_loc  ! store closest segment as iseg_min
@@ -1896,7 +2026,7 @@ subroutine PivotDual    ! dual pivot rotation
                if (dtemp_min(1) == dtemp(iseg_loc,1)) iseg_min = iseg_loc                ! store closest segment as iseg_min
             end do
 
-            jp1 =  ipnsegcn(iseg_min,ic_temp)                  ! store closest particle to ip1 as jp1	
+            jp1 =  ipnsegcn(iseg_min,ic_temp)                  ! store closest particle to ip1 as jp1
             if(iseg_min /= 1 .or. iseg_min /= npct(ict_temp))  then
                do iseg_loc = iseg_min-1, iseg_min +1, 2        ! compare distance form the two neighbours of the closest particle ipnsegcn(iseg_min,ic_temp) to particle ip3
                   dx2 = vaux(1,ipnsegcn(iseg_loc,ic_temp)) - vaux(1,ip3)
@@ -2019,8 +2149,8 @@ subroutine ChainMove(iStage)
 
    character(40), parameter :: txroutine ='ChainMove'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-   integer(4) :: iseg, ic, ict, ip, iploc, dnpcl
-   real(8)    :: Random, dx, dy, dz, weight
+   integer(4) :: iseg, ic, ict, ip, dnpcl
+   real(8)    :: weight
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -2412,13 +2542,13 @@ contains
 subroutine RotTranBrush
 
    real(8) :: dx, dy, dz, dxpbc, dypbc, dzpbc, dxtran, dytran, dztran, alpha, rotaxis(3)
-   integer(4) :: ic, iseg, ip
+   integer(4) :: ic, ip
    real(8) :: Random
 
 ! ... get rotation displacement
 
    call SphRandom(iseed, rotaxis(1), rotaxis(2), rotaxis(3))
-   alpha = drotbrush(iptmove)*(Random(iseed-0.5))
+   alpha = drotbrush(iptmove)*(Random(iseed)-0.5)
 
 ! ... get translational displacement
 
@@ -2513,7 +2643,7 @@ subroutine BrushCl2Move(iStage)
 
 ! ... consider first primary cluster particles (particles of type iptmove including particle ipmove)
 
-   if (.not.allocated(n1)) then 
+   if (.not.allocated(n1)) then
       allocate(n1(mnpair), n2(mnpair), iobjcluster(mnpair), icllis(mnpair))
       n1 = 0
       n2 = 0
@@ -2620,17 +2750,17 @@ end subroutine BrushCl2Move
 
 ! ... perform one hierarchical trial move
 
-subroutine HierarichalMove(iStage)
+subroutine HierarchicalMove(iStage)
 
    use MCModule
    implicit none
 
    integer(4), intent(in) :: iStage
 
-   character(40), parameter :: txroutine ='HierarichalMove'
+   character(40), parameter :: txroutine ='HierarchicalMove'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-   integer(4) :: igen, iseg, ic, ict, ip, iploc, iptm, ih, iclow, icupp
-   real(8)    :: Random, dx, dy, dz, weight
+   integer(4) :: igen, iseg, ic, ict, ip, ih
+   real(8)    :: weight
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -2694,7 +2824,7 @@ subroutine HierarichalMove(iStage)
 
    if (ievent == imcaccept) call MCUpdate       ! update energies and coordinates
 
-end subroutine HierarichalMove
+end subroutine HierarchicalMove
 
 !************************************************************************
 !*                                                                      *
@@ -2713,7 +2843,7 @@ subroutine NetworkMove(iStage)
 
    character(40), parameter :: txroutine ='NetworkMove'
    logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-   integer(4) :: iploc, ic, ip, dnpcl
+   integer(4) :: iploc
    real(8)    :: weight
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
@@ -2785,7 +2915,6 @@ subroutine TranNetwork
 
    real(8) :: dx, dy, dz, dxtran, dytran, dztran, fac, term
    integer(4) :: ic, ip, ip1, ip2, icl, nseg
-   real(8) :: Random
 
 ! ... get translational displacement of node
 
@@ -2953,8 +3082,8 @@ subroutine NPartChange(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='NPartChange'
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lWarnHCOverlap, lDelete
-   integer(4) :: ip, ipt, jp, jpt, iptjpt, iploc
+   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lDelete
+   integer(4) :: jp, jpt, iptjpt
    real(8) :: prandom, uuu, fforce(3), weight, Random
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
@@ -3000,7 +3129,7 @@ subroutine NPartChange(iStage)
       call SetObjectParam1
       call SetObjectParam2
       ipmove = np                                  ! place the new particle last
-10    continue
+      continue
       call SetPartPosRandomMC(ipmove)              ! set trial random particle position
 !      write(*,'(a,3f10.3)') 'trial position', ro(1:3,ipmove)
 !      if (abs(ro(3,ipmove)) > 0.8*boxlen2(3)) then
@@ -3129,9 +3258,9 @@ subroutine ChargeChange(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='ChargeChange'
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lWarnHCOverlap
+   logical    :: lboxoverlap, lhsoverlap, lhepoverlap
    real(8) ::  random,  weight, xsign
-   integer(4) :: ip, ipt, iploc, ia, ialoc, ianmove, iatmove
+   integer(4) :: ip, ipt, ia, ialoc, ianmove, iatmove
 
    if (ltrace) call WriteTrace(3, txroutine, iStage)
 
@@ -3416,11 +3545,11 @@ subroutine IOMCAll(iStage)
    select case (iStage)
    case (iReadInput)
 
-      if (.not. allocated(dtranall)) then 
+      if (.not. allocated(dtranall)) then
          allocate(dtranall(npt))
          dtranall = 0.0E+00
       end if
-      if (.not. allocated(drotall)) then 
+      if (.not. allocated(drotall)) then
          allocate(drotall(npt))
          drotall = 0.0E+00
       end if
@@ -3472,9 +3601,9 @@ subroutine MCAllPass(iStage)
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='MCallPass'
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap, lmetropolis
-   integer(4) :: ip, ipt, iptjpt
-   real(8)    :: dx, dy, dz
+   logical    :: lboxoverlap, lmetropolis
+   !logical    :: lhsoverlap, lhepoverlap
+   integer(4) :: ip, ipt
    real(8)    :: weight, UmbrellaWeight,  Random
    type(potenergy_var) :: usave
    real(8)             :: prsrsave
@@ -3490,7 +3619,7 @@ subroutine MCAllPass(iStage)
 
    if (ltime) call CpuAdd('start', trim(txroutine)//'_move', 1, uout)
 
-   if(.not.allocated(rosave)) then 
+   if(.not.allocated(rosave)) then
       allocate(rosave(3,np_alloc), orisave(3,3,np_alloc), boxlensave(1:3), &
            idmsyssave(1:3), idmosave(1:3,1:np), idmsave(1:3,1:na), forcesave(1:3,1:na))
       rosave = 0.0E+00
@@ -3531,7 +3660,7 @@ subroutine MCAllPass(iStage)
          drostep(3,ip) = (Random(iseed)-Half)*dtranall(ipt)
       end if
       ro(1:3,ip) = ro(1:3,ip)+drostep(1:3,ip)
-      call CheckPartBCTM(1, ro(1,ip), lboxoverlap)
+      call CheckPartBCTM(1, ro(1:3,ip), lboxoverlap)
       if (lboxoverlap) goto 200
       if ((umbcoord/= 'r') .and. ((ip == ipumb1) .or. (ip == ipumb2))) then
       else
@@ -3796,7 +3925,7 @@ subroutine ClusterMemberLList(str, lonlyipmove, lnoselftype, radcl, pselectcl)
    real(8), intent(in) :: pselectcl(*)     ! probability of acceptance
 
    integer(4), save :: naux
-   integer(4) :: ip, iploc, ipt, jp, jploc, icell, Getncellllist
+   integer(4) :: ip, iploc, ipt, jp, icell, Getncellllist
    real(8)    :: dx, dy, dz, r2
    real(8)    :: Random
 
@@ -3975,7 +4104,7 @@ subroutine GetRandomTrialPos(dtran, iseed, nptm, ipnptm, ro, rotm, drotm)
    implicit none
    real(8),    intent(in)  :: dtran       ! translational displacement
                                           ! > 0 square region, < 0 spherical region
-   integer(4), intent(in)  :: iseed       ! random number seed
+   integer(4), intent(inout)  :: iseed       ! random number seed
    integer(4), intent(in)  :: nptm        ! number of moving particles
    integer(4), intent(in)  :: ipnptm(*)  ! moving particles
    real(8),    intent(in)  :: ro(3,*)     ! particle position
@@ -3984,7 +4113,7 @@ subroutine GetRandomTrialPos(dtran, iseed, nptm, ipnptm, ro, rotm, drotm)
 
    real(8), parameter :: Zero = 0.0d0, Half = 0.5d0, One = 1.0d0, Two = 2.0d0
    integer(4) :: iploc, ip
-   real(8) :: dx, dy, dz, norm
+   real(8) :: dx, dy, dz
    real(8) :: Random
 
 ! ... get translational displacement
@@ -4033,11 +4162,11 @@ subroutine GetRandomTrialOri(drot, iseed, ori, oritm)
 
    real(8),    intent(in)  :: drot         ! rotational displacement
                                            ! > 0 rotation around a box axis, < 0 rotation around a particle axis
-   integer(4), intent(in)  :: iseed        ! random number seed
+   integer(4), intent(inout)  :: iseed        ! random number seed
    real(8),    intent(in)  :: ori(3,3)     ! particle orientation
    real(8),    intent(out) :: oritm(3,3)   ! particle orientation, for trial configuration
 
-   integer(4) :: iaxis, m, m1, m2, m3
+   integer(4) :: iaxis, m1, m2, m3
    real(8)    :: drottemp, cr, sr
    real(8)    :: Random
 
@@ -4078,7 +4207,7 @@ subroutine GetFixedTrialOri(nptm, ipnptm, ori, oritm)
    real(8),    intent(in)  :: ori(3,3,*)   ! particle orientation
    real(8),    intent(out) :: oritm(3,3,*) ! particle orientation, for trial configuration
 
-   integer(4) :: iploc, ip, m
+   integer(4) :: iploc, ip
 
    do iploc = 1, nptm
       ip = ipnptm(iploc)
@@ -4245,7 +4374,6 @@ subroutine ShiftZDirection
    use MCModule
    implicit none
    character(40), parameter :: txroutine ='ShiftZDirection'
-   integer(4) :: ip
    real(8) :: zcom, dist, dz
    if (.not.lbccyl) call Stop(txroutine, '.not.lbccyl''', uout)
    zcom = Half*(ro(3,1)+ro(3,2))                         ! center-of-mass in the z-direction of particle 1 and 2
@@ -4319,9 +4447,9 @@ subroutine AddNeighbours()
 use MCModule
 implicit none
 
-integer(4)		:: iploc, ip, ipn, icn, ict, isn, nptmadd
+integer(4)        :: iploc, ip, ipn, icn, ict, isn, nptmadd
 
-nptmadd=nptm			!storage location for next particle
+nptmadd=nptm            !storage location for next particle
 
 !write (*,*) 'start adding neighbours'
 do iploc=1, nptm
@@ -4332,13 +4460,13 @@ do iploc=1, nptm
    isn = isegpn(ip)
 
 
-   if (ict<1) exit		!particle not in a chain
+   if (ict<1) exit        !particle not in a chain
 
 
    if (isn > 1) then
       !check for previous particle
       ipn = ipnsegcn(isn-1,icn)
-      if (.not.lptm(ipn)) then	!particle not yet in trial move
+      if (.not.lptm(ipn)) then    !particle not yet in trial move
          nptmadd=nptmadd+1
          rotm(1:3,nptmadd)=ro(1:3,ipn)
          ipnptm(nptmadd)=ipn
@@ -4350,7 +4478,7 @@ do iploc=1, nptm
    if (isn<npct(ict)) then
       !check for next particle
       ipn = ipnsegcn(isn+1,icn)
-      if (.not.lptm(ipn)) then	!particle not yet in trial move
+      if (.not.lptm(ipn)) then    !particle not yet in trial move
          nptmadd=nptmadd+1
          rotm(1:3,nptmadd)=ro(1:3,ipn)
          ipnptm(nptmadd)=ipn
@@ -4379,8 +4507,8 @@ subroutine UpdateOri()
    implicit none
 
    integer(4)     :: iploc, ip, ipn, ict, icn, isn
-   real(8)        :: r1(3), r2(3), r3(3), r12(3), r32(3), dropbc(3)
-   character(20)  :: format = '(2I3, 4F7.2)'
+   real(8)        :: r1(3), r2(3), r3(3), r12(3), r32(3)
+   !character(20)  :: format = '(2I3, 4F7.2)'
 
    do iploc = 1, nptm
       ip = ipnptm(iploc)
@@ -4451,15 +4579,15 @@ end subroutine UpdateOri
 subroutine UpdateOriTest(iploc, ip, ipn, r1, r2, r3)
 use MCModule
 implicit none
-real(8), intent(in)		::r1(3),r2(3),r3(3)
-integer(4), intent(in)		:: iploc, ip, ipn
+real(8), intent(in)        ::r1(3),r2(3),r3(3)
+integer(4), intent(in)        :: iploc, ip, ipn
 character(20)  :: format = '(2I3, 4F7.2)'
 
 if (.not. all(oritm(1:3,1:3,iploc).eq.ori(1:3,1:3,ip))) then
   write(*,*) '------------------------------------------------------------------------'
-  write(*,*), oritm(1:3,1:3,iploc)
+  write(*,*) oritm(1:3,1:3,iploc)
   write(*,*)
-  write(*,*), ori(1:3,1:3,ip)
+  write(*,*) ori(1:3,1:3,ip)
   write(*,*) '------------------------------------------------------------------------'
 end if
 
@@ -4666,7 +4794,7 @@ subroutine MCUpdate
    use MCModule
    implicit none
 
-   integer(4) :: ip, iploc, m
+   integer(4) :: ip, iploc
 
                               u%tot            = u%tot            + du%tot
                               u%twob(0:nptpt)  = u%twob(0:nptpt)  + du%twob(0:nptpt)
@@ -4736,7 +4864,7 @@ subroutine MCAver(iStage)
    integer(8), allocatable, save :: npcl2s1(:,:), npcl2s2(:,:)      ! for cluster2 move
    integer(4), allocatable, save :: nprimpartclmax(:)               ! for cluster2 move
    integer(8), allocatable, save :: nazs1(:), nazs2(:)              ! for charge move
-   integer(4) :: ipt, ip, iploc
+   integer(4) :: ipt
 
    if (slave) return
 
@@ -4745,7 +4873,7 @@ subroutine MCAver(iStage)
    select case (iStage)
    case (iBeforeSimulation)
 
-      if (.not.allocated(nys1)) then 
+      if (.not.allocated(nys1)) then
          allocate(nys1(0:nevent,0:npt,nmovetype), nys2(0:nevent,0:npt,nmovetype), &
       npcl1s1(2,npt,nmovetype), npcl1s2(2,npt,nmovetype), npcl2s1(2,npt), npcl2s2(2,npt), nprimpartclmax(npt))
          nys1 = 0
@@ -4756,7 +4884,7 @@ subroutine MCAver(iStage)
          npcl2s2 = 0
          nprimpartclmax = 0
       end if
-      if (.not.allocated(nazs1)) then 
+      if (.not.allocated(nazs1)) then
          allocate(nazs1(1:nat), nazs2(1:nat))
          nazs1 = 0
          nazs2 = 0
@@ -4824,13 +4952,13 @@ contains
 
 subroutine MCAverWrite(ny, npcl, nprimpartcl)
 
+   use MollibModule, only: InvInt
    integer(8), intent(in) :: ny(0:nevent,0:npt,1:nmovetype)
    integer(8), intent(in) :: npcl(2,npt,1:nmovetype)
    integer(8), intent(in) :: nprimpartcl(2,npt)
 
-   integer(4) :: ipt, i
+   integer(4) :: ipt
    real(8)    :: any(0:nevent,0:npt), ancl1(2,npt), ancl2(2,npt)
-   real(8)    :: InvInt
 
    call WriteHead(2, 'mc statistics', uout)
    do imovetype = 1, nmovetype
@@ -4875,7 +5003,7 @@ end subroutine MCAverWrite
 !........................................................................
 
 subroutine MCAverData
-   real(8) :: InvInt
+   use MollibModule, only: InvInt
    open(90, file = 'mcaver.data', position = 'append')
    write(90,'(15g10.3)') dtran(1:npt), pspart(1:npt), radcl1(1:npt), &
                          nys1(imcaccept,1:npt,ispartmove)*InvInt(nys1(0,1:npt,ispartmove)), &
@@ -4944,9 +5072,9 @@ contains
 
 subroutine MCAllAversub(ny)
 
+   use MollibModule, only: InvInt
    integer(4), intent(in) :: ny(0:nevent)
    real(8)    :: any(0:nevent)
-   real(8)    :: InvInt
    integer(4) :: ievent
 
    any = ny*InvInt(ny(0))
@@ -5568,550 +5696,3 @@ subroutine TestMCMove(unit)
    end do
 
 end subroutine TestMCMove
-
-!************************************************************************
-!*                                                                      *
-!*     SSOModule                                                        *
-!*                                                                      *
-!************************************************************************
-
-! ... Module for the SSO simulation
-
- module SSOModule
-   use MCModule
-!  integer(8),    allocatable    :: naccsso(:,:)  ! has to be of kind 8 to handle
-!  integer(8),    allocatable    :: ntotsso(:,:)  ! long simulations
-   integer(8),    allocatable    :: steptot(:)
-   real(8), allocatable          :: d2tot(:)      ! long simulations
-   real(8),       allocatable    :: dssostep(:,:) ! has to be of kind 8 to handle
-   real(8),       allocatable    :: dssostep2(:,:)! has to be of kind 8 to handle
-   integer(8),    allocatable    :: nssostep(:,:) ! long simulations
-   real(8), allocatable          :: invrsso(:)
-   real(8), allocatable          :: curdtranpt(:)
-!  real(8), allocatable          :: dtranfac(:)
-end module SSOModule
-
-!************************************************************************
-!*                                                                      *
-!*     SSODriver                                                        *
-!*                                                                      *
-!************************************************************************
-
-! ... Driver for the SSO simulation
-
-subroutine SSODriver(iStage)
-
-   use SSOModule
-
-   implicit none
-
-   integer(4), intent(in) :: iStage
-
-   character(40), parameter :: txroutine ='SSODriver'
-
-   integer(4)  :: ipt
-   integer     :: mbin, dbin, tmpstep, ibin, nstepend, lbin
-   real(8)     :: InvInt, InvFlt
-   logical, save  :: ltestsso
-
-   real(8), allocatable, save :: locmob(:)
-   real(8), allocatable, save :: locmobe(:)
-   real(8), allocatable, save :: locmobs(:)
-   real(8), allocatable, save :: dtranout(:,:,:)  ! output of dtrans
-   real(8), allocatable, save :: dtransso(:) ! initial displacement parameters
-   real(8), allocatable, save :: maxdtransso(:)! maximal allowed displacement parameters
-   real(8), allocatable, save :: dtranfac(:)   !increase in displacement parameter
-   integer(4), save           :: nstepzero     ! length of first part of simulation where local mobility is measured
-   integer(4), save           :: nssobin
-   real(8), save              :: partfac       ! increment in length of parts
-
-   integer(8), save           :: istepnext
-   integer(4), save           :: issopart
-   integer(4), save           :: nssopart
-
-   namelist /nmlSPartSSO/ dtransso, nstepzero, nssobin, nstepend, ltestsso, maxdtransso, dtranfac
-
-   if (ltrace) call WriteTrace(2, txroutine, iStage)
-
-   select case (iStage)
-!  case (iReadInput)   is omited, as lpspartsso is set during iStage == iWriteInput
-
-   case (iWriteInput) ! Question: can the reading be moved to iReadInput?
-!  Reply: not yet: firt the content of SSODriver has to be moved to IOMC, but let's wait
-
-      if (.not. allocated(dtransso)) then 
-         allocate(dtransso(npt))
-         dtransso = 0.0E+00
-      end if
-      if (.not. allocated(maxdtransso)) then 
-         allocate(maxdtransso(npt))
-         maxdtransso = 0.0E+00
-      end if
-      if (.not. allocated(dtranfac)) then 
-         allocate(dtranfac(npt))
-         dtranfac = 0.0E+00
-      end if
-
-      dtransso  = One
-      nstepzero   = ceiling(sqrt(real(nstep)))
-      nstepend    = int(0.1*nstep)
-      nssobin     = 20
-      ltestsso    = .false.
-      if (lbcbox) then
-         maxdtransso = minval(boxlen(1:3))
-      else if (lbcrd) then
-         maxdtransso = cellside
-      else if (lbcto) then
-         maxdtransso = cellside
-      else if (lbcsph) then
-         maxdtransso = Two*sphrad
-      else if (lbcell) then
-         maxdtransso = Two*minval(ellrad(1:3))
-      else if (lbccyl) then
-         maxdtransso = min(Two*cylrad,cyllen)
-      end if
-      dtranfac = Two
-
-      rewind(uin)
-      read(uin,nmlSPartSSO)
-
-      if (nstepzero + nstepend > nstep) call stop(txroutine, 'nstepzero + nstepend > nstep', uout)
-      if(nstepend < nstepzero) call stop(txroutine, 'nstepend < nstepzero', uout)
-      if(nstepzero == 0 .or. nstepend == 0) then
-         partfac = 1
-         nssopart = 1
-      else if (nstepzero == nstepend) then
-         partfac = One
-         nssopart = int(nstep * InvInt(nstepend))
-      else
-         partfac = -real(nstepzero - nstep)*InvInt(nstep - nstepend)
-         nssopart = int(log(real(nstepend*InvInt(nstepzero)))/log(partfac))
-         if(nstepzero * (One - partfac**(nssopart + 1))/(One - partfac) < nstep) nssopart = nssopart + 1
-      end if
-
-      if(.not. allocated(curdtranpt)) then 
-         allocate(curdtranpt(npt))
-         curdtranpt = 0.0E+00
-      end if
-      if(.not. allocated(invrsso)) then 
-         allocate(invrsso(npt))
-         invrsso = 0.0E+00
-      end if
-
-      if(.not. allocated(d2tot)) then 
-         allocate(d2tot(npt))
-         d2tot = 0.0E+00
-      end if
-      if(.not. allocated(steptot)) then 
-         allocate(steptot(npt))
-         steptot = 0
-      end if
-
-      if(.not. allocated(locmob)) then 
-         allocate(locmob(0:nssobin))
-         locmob = 0.0E+00
-      end if
-      if(.not. allocated(locmobe)) then 
-         allocate(locmobe(0:nssobin))
-         locmobe = 0.0E+00
-      end if
-      if(.not. allocated(locmobs)) then 
-         allocate(locmobs(0:nssobin))
-         locmobs = 0.0E+00
-      end if
-
-      if(.not. allocated(nssostep)) then 
-         allocate(nssostep(npt,nssobin))
-         nssostep = 0
-      end if
-      if(.not. allocated(dssostep)) then 
-         allocate(dssostep(npt,nssobin))
-         dssostep = 0.0E+00
-      end if
-      if(.not. allocated(dssostep2)) then 
-         allocate(dssostep2(npt,nssobin))
-         dssostep2 = 0.0E+00
-      end if
-
-      if(.not.allocated(dtranout)) then 
-         allocate(dtranout(npt,nssopart,3))
-         dtranout = 0.0E+00
-      end if
-!     if(.not.allocated(dtranfac)) allocate(dtranfac(npt))
-
-   case (iBeforeSimulation)
-
-      if (txstart == 'continue') then
-         read(ucnf) curdtranpt, dssostep, dssostep2, nssostep, istepnext, issopart, d2tot, steptot, dtranout
-      else
-         curdtranpt(1:npt) = dtransso(1:npt)
-         dssostep = Zero
-         dssostep2 = Zero
-         nssostep = 0
-!        naccsso = 0
-!        ntotsso = 0
-         istepnext = nstepzero
-         issopart = 1
-         dtranout = Zero
-         d2tot = Zero
-         steptot = 0
-      end if
-
-      if(nssopart == 1) istepnext = nstep
-
-      do ipt = 1, npt
-         invrsso(ipt) = InvFlt(curdtranpt(ipt)) * real(nssobin) * Two
-      end do
-!     dtranfac(1:npt) = max((nssobin + 3)*InvInt(nssobin),1.5)
-
-
-   case (iBeforeMacrostep)                       ! ignore macrosteps
-
-      continue
-
-   case (iSimulationStep)
-
-      if(istep == istepnext) then
-
-         if(ltestsso) then
-         end if
-
-         do ipt = 1, npt
-
-            if(.not. pspartsso(ipt) > Zero) cycle
-
-            dtranout(ipt,issopart,1) = curdtranpt(ipt)
-
-            call CalcLocMob(ipt)
-
-            mbin = 0
-            dbin = 0
-            do ibin = 1, nssobin - 1
-               if(locmobs(ibin) > locmobs(ibin + 1) .and. locmobs(ibin) > locmobs(mbin) ) mbin = ibin
-            end do
-
-            if(mbin == 0) then  ! no local maximum found, maximum at border
-               mbin = nssobin
-               dbin = ceiling((dtranfac(ipt) - One)*nssobin)
-            else
-               do ibin = mbin + 1 , nssobin !find position where locmob is significantly different from maximum
-                  if (locmobs(mbin) - locmobe(mbin) .ge. locmobs(ibin) + locmobe(ibin)) then
-                     dbin = (ibin - mbin) + 1
-!                      dtranfac(ipt) = Half*(One + sqrt(Four*dtranfac(ipt) - Three)) !change dtranfac? - NO
-                     exit
-                  end if
-               end do
-               if (dbin == 0) then        ! no significantly different position found
-                  dbin = ceiling(0.2*nssobin)
-               end if
-            end if
-
-            do ibin = mbin - 1 , 0, -1           !find lower position where locmob is significantly different from maximum
-               if (locmobs(mbin) - locmobe(mbin) .ge. locmobs(ibin) + locmobe(ibin)) then
-                  lbin = mbin - ibin
-                  exit
-               end if
-            end do
-
-            dtranout(ipt,issopart,2) = Two*ssorad(mbin,ipt)
-            dtranout(ipt,issopart,3) = ssorad(max((dbin + lbin),2),ipt)
-
-            if(ltestsso) then
-               write(ulist,'(a,a,I5,I5, I5)') '#','locmob of',ipt, issopart, istepnext
-               write(ulist,'(a,I5)')  '#', nssobin
-               write(ulist,'(g15.5,3(a9,g15.5))')
-               write(ulist,'(g15.5,a,g15.5,a,g15.5,a,g15.5)') &
-               (ssorad(ibin,ipt), char(9), locmob(ibin), char(9), locmobe(ibin), char(9), locmobs(ibin), ibin = 1,nssobin)
-               write(ulist,'(a)')  ''
-               write(ulist,'(a)')  ''
-               write(ulist,'(a,a,I4)')  '#', 'dtranout of',ipt
-               write(ulist,'(a,i5)')  '#', 1
-               write(ulist,'(g15.5,a,g15.5,a,g15.5)') dtranout(ipt,issopart,1), char(9), dtranout(ipt,issopart,2), char(9), dtranout(ipt,issopart,3)
-!              write(ulist,'(a)')  ''
-!              write(ulist,'(a)')  ''
-!              write(ulist,'(a,a,I4)') '#',  'naccrej of',ipt
-!              write(ulist,'(a,i5)')  '#', nssobin
-!              write(ulist,'(g15.5,a,I15,a,I15)') (ssorad(ibin,ipt), char(9), naccsso(ipt,ibin), char(9), ntotsso(ipt,ibin), ibin = 1,nssobin)
-               write(ulist,'(a)')  ''
-               write(ulist,'(a)')  ''
-               write(ulist,'(a,a,I4)') '#',  'd2 of',ipt
-               write(ulist,'(a,i5)')  '#', nssobin
-               write(ulist,'(g15.5)') d2tot(ipt)*InvInt(steptot(ipt))
-               write(ulist,'(a)')  ''
-               write(ulist,'(a)')  ''
-            end if
-
-            curdtranpt(ipt) = min(Two*ssorad((mbin + max(dbin,1)),ipt),maxdtransso(ipt))
-
-         end do
-
-         do ipt = 1, npt
-            invrsso(ipt) = InvFlt(curdtranpt(ipt)) * real(nssobin) * Two
-         end do
-
-!        naccsso = 0
-!        ntotsso = 0
-
-         nssostep = 0
-         dssostep = Zero
-         dssostep2 = Zero
-         d2tot = Zero
-         steptot = 0
-
-         issopart = issopart + 1
-
-         istepnext = istepnext + int(nstepzero*partfac**(issopart - 1))
-
-         if(issopart == nssopart) istepnext = nstep     ! let last part end at end of simulation
-
-      end if
-
-   case (iAfterMacrostep)
-
-         write(ucnf) curdtranpt, dssostep, dssostep2, nssostep, istepnext, issopart, d2tot, steptot, dtranout
-
-   case (iAfterSimulation)
-
-      call WriteHead(2, txroutine, uout)
-
-      write(uout,'(a)') 'SSO - optimal displacement parameter'
-      write(uout,'(a)') '------------------------------------'
-      write(uout,'(a15,a15)') 'particle type' , 'optimal dtran'
-      write(uout,'(a15,a15)') '---------------' , '---------------'
-      write(uout,'(i15,g15.5)') (ipt, dtranout(ipt,nssopart,2), ipt = 1, npt)
-      write(uout,'(a)') ''
-      write(uout,'(a)') ''
-      write(uout,'(a)')'Number of SSO parts'
-      write(uout,'(i5)') nssopart
-      write(uout,'(a)') ''
-      write(uout,'(a)') ''
-
-      do ipt = 1, npt
-         write(uout,'(a,I4)')  'displacement parameters of',ipt
-         write(uout,'(a15,a,a15,a,a15,a,a20)')  'sso-part' , char(9), 'used dran' , char(9), 'optimal dtran' , char(9) , 'error on opt. dtran'
-         write(uout,'(a15,a,a15,a,a15,a,a20)')  '---------------' , char(9), '---------------' , char(9), '---------------' , char(9) , '--------------------'
-         write(uout,'(i15,a,g15.5,a,g15.5,a,g20.5)') &
-         (issopart, char(9), dtranout(ipt,issopart,1), char(9),dtranout(ipt,issopart,2), char(9), dtranout(ipt,issopart,3), issopart = 1,nssopart)
-         write(uout,'(a)') ''
-         write(uout,'(a)') ''
-      end do
-
-!       if(allocated(curdtranpt)) deallocate(curdtranpt)
-!       if(allocated(invrsso)) deallocate(invrsso)
-
-!       if(allocated(d2tot)) deallocate(d2tot)
-!       if(allocated(steptot)) deallocate(steptot)
-
-!       if(allocated(locmob)) deallocate(locmob)
-!       if(allocated(locmobe)) deallocate(locmobe)
-!       if(allocated(locmobs)) deallocate(locmobs)
-
-!       if(allocated(nssostep)) deallocate(nssostep)
-!       if(allocated(dssostep)) deallocate(dssostep)
-!       if(allocated(dssostep2)) deallocate(dssostep2)
-
-!       if(allocated(dtranout)) deallocate(dtranout)
-
-   end select
-
-!........................................................................
-
-   contains
-
-   subroutine CalcLocMob(issopt)
-
-      use SSOModule
-      implicit none
-
-      integer(4), intent(in)  :: issopt
-
-      real(16)             :: tmpsum
-      real(16)             :: tmpsume
-      real(8)              :: InvInt, InvFlt
-      real(8)              :: invntot
-      real(8)              :: btmp(0:nssobin)
-      real(8)              :: ctmp(0:nssobin)
-      real(8)              :: dtmp(0:nssobin)
-
-      integer(8)           :: ibin, ntot
-
-      tmpsum = Zero
-      tmpsume = Zero
-      ntot = 0
-      locmob(0) = Zero
-      locmobe(0) = Zero
-
-      do ibin = 1, nssobin
-         ntot = ntot + nssostep(issopt,ibin)
-         tmpsum = tmpsum + dssostep(issopt,ibin)
-         tmpsume = tmpsume + dssostep2(issopt,ibin)
-         if(ntot < 1) then
-            locmob(ibin) = Three/Five * (ibin * InvInt(nssobin) * Half * curdtranpt(ipt))**2
-            locmobe(ibin) = Zero
-         else
-            invntot = InvInt(ntot)
-            locmob(ibin) = tmpsum * invntot
-            locmobe(ibin) = sqrt((tmpsume * invntot - (locmob(ibin))**2)*invntot)
-         end if
-      end do
-      call Smooth(nssobin + 1,real( (/ (ibin, ibin = 0, nssobin) /) , KIND=8  ) , locmob , locmobe , real( (nssobin + 1) - sqrt(Two*(nssobin + 1)) , kind=8), locmobs, btmp, ctmp, dtmp)
-
-   end subroutine CalcLocMob
-
-!........................................................................
-
-real(8) function ssorad(bin,ipt)
-      use SSOModule
-      implicit none
-      integer, intent(in)  :: bin
-      integer, intent(in)  :: ipt
-      real(8)  InfInt
-      ssorad = (bin * InvInt(nssobin) * Half * curdtranpt(ipt))
-end function ssorad
-
-!........................................................................
-
-end subroutine SSODriver
-
-!************************************************************************
-!*                                                                      *
-!*     SSOMove                                                          *
-!*                                                                      *
-!************************************************************************
-
-! ... perform one single-particle SSO trial move
-
-subroutine SSOMove(iStage)
-
-   use SSOModule
-   implicit none
-
-   integer(4), intent(in) :: iStage
-
-   character(40), parameter :: txroutine ='SSOMove'
-   logical    :: lboxoverlap, lhsoverlap, lhepoverlap
-   integer(4) :: iploc, dnpcl
-   real(8)    :: weight, MCWeight, UmbrellaWeight, MCPmfWeight
-
-   integer(4), save :: jptsph = 1  ! type of particle at which the grafted chains are attached
-   integer(4) :: jpsph, ipsurf
-   integer(4) :: ihost
-   integer(4) :: ibin, ipt
-   real(8) :: dx, dy, dz, norm, d2, dtr
-   real(8) :: Random
-
-   if (ltrace) call WriteTrace(3, txroutine, iStage)
-
-   if (ltime) call CpuAdd('start', txroutine, 1, uout)
-
-   imovetype = ispartsso
-
-#if defined (_PAR_)
-! ... the following is not (yet) allowed since iseed will not be syncronized
-   ipnptm(1:np) = 0                                 ! necessary for later allreduce
-#endif
-
-! .............. define particle(s) to be moved ..............
-
-! ... consider particle ipmove
-
-   nptm          = 1
-   ipnptm(1) = ipmove
-   lptm(ipmove)  =.true.
-   ipt = iptpn(ipmove)
-
-
-! .............. calculate a trial configuration ...............
-
-! ... get translational displacement
-
-   dtr = abs(curdtranpt(ipt))
-
-   do
-      dx = Random(iseed)-Half
-      dy = Random(iseed)-Half
-      dz = Random(iseed)-Half
-      d2 = dx**2 + dy**2 + dz**2
-      if ( d2 < Fourth) exit
-   end do
-
-   dx = dx*dtr
-   dy = dy*dtr
-   dz = dz*dtr
-   d2 = d2 * dtr**2
-
-! ... get trial coordinates and store translational displacemnt
-
-   rotm(1:3,1) = (/ ro(1,ipmove)+dx , ro(2,ipmove)+dy , ro(3,ipmove)+dz /)
-   drotm(1:3,1) = (/ dx , dy, dz /)
-
-!    if (lweakcharge) call TrialCharge(nptm, ipnptm, iptpn, .false., latweakcharge, laz, laztm)
-!    if (lfixzcoord(iptmove)) call FixedZCoord
-!    if (lfixxycoord(iptmove)) call FixedXYCoord
-!    if (lfixchainstartspart) call FixedChainStart
-!
-!    if(lfixzcoord(iptmove) .or. lfixxycoord(iptmove) .or. lfixchainstartspart) d2 = sum(drotm(1:3,1)**2)
-
-!-------------------------------------------------------------------------------------
-
-   call CheckPartBCTM(nptm, rotm, lboxoverlap)
-
-!    if (lpolyatom .or. lellipsoid .or. lsuperball) &
-!       call GetRandomTrialOri(drot(iptmove), iseed, ori(1,1,ipmove), oritm(1,1,iploc))
-!
-!    if (lfixedori) then           ! lfixedori atains its value in coordinate.F90
-!        call AddNeighbours
-!        call UpdateOri
-!    end if
-
-   call SetTrialAtomProp
-!    if (lradatbox) call CheckAtomBCTM(natm, rtm, lboxoverlap)
-   if (itestmc == 2) call TestMCMove(uout)
-
-   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
-
-   if (lboxoverlap) goto 200
-
-! ............. evaluate energy difference ...............
-
-   call DUTotal(lhsoverlap, lhepoverlap)
-   if (lhsoverlap .or. lhepoverlap) goto 200
-
-! ............. calculate nonenergetic weights .............
-
-   weight = One
-   dnpcl = Zero
-   if (lcl1spart(iptmove)) then
-      if (lvlist) call ClusterMember('new', .false., .false., radcl1, pselectcl1)       ! calculate npclnew
-      if (lllist) call ClusterMemberLList('new', .false., .false., radcl1, pselectcl1)  ! calculate npclnew
-      dnpcl = npclnew-npclold
-      if (dnpcl /= 0) weight = weight*(One-pselectcl1(iptmove))**dnpcl
-   end if
-
-   if (lmcweight) weight = weight*MCWeight()
-   if (lautumb) weight = weight*UmbrellaWeight(1)
-   if (lmcpmf) weight = weight*MCPmfWeight(1)
-
-! ............. decide new configuration .............
-
-200 continue
-   call Metropolis(lboxoverlap, lhsoverlap, lhepoverlap, weight, du%tot*beta)
-
-! .............. update .............
-
-   ibin = ceiling(sqrt(d2)*invrsso(ipt))
-   steptot(ipt) = steptot(ipt) + 1
-   nssostep(ipt,ibin) = nssostep(ipt,ibin) + 1
-   if (ievent == imcaccept) then
-      dssostep(ipt,ibin) = dssostep(ipt,ibin) + d2
-      dssostep2(ipt,ibin) = dssostep2(ipt,ibin) + d2**2
-      d2tot(ipt) = d2tot(ipt) + d2
-      call MCUpdate       ! update energies and coordinates
-   end if
-
-!    if (lautumb) call UmbrellaUpdate              ! update weight function for umbrella potential
-!    if (lmcpmf) call MCPmfUpdate                  ! update weight function for mc pmf
-!    if (lshiftzcom(iptmove)) call ShiftZDirection
-
-end subroutine SSOMove
-

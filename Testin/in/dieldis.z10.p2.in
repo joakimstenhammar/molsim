@@ -1,0 +1,56 @@
+ &nmlSystem
+  txtitle ='hs 10:1 system, spherical cell, low dielectric micelle, p-algorithm',
+  txmethod= 'mc',     txensemb='nvt',     txbc  ='sph',  txstart ='setconf',
+  nstep1   = 2,    nstep2   = 10,
+
+  sphrad  = 4.64,
+
+  temp  = 6000.,   prsr  = 0.1013,
+
+  iseed = 9876543,
+  lcont =.t.,  laver =.t.,  ldist =.t.,  ldump =.f.,  lgroup=.f., lstatic=.f.,limage =.t.,
+  itest = 0,   ipart = 1,   iatom = 0,   iaver = 10000, ishow = 1,   iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 2,
+  txpt  = 'macroion','ion',
+  nppt  =  1,        10,
+  natpt =  1,        1,
+  txat  = 'macroion','ion',
+  massat= 230.0,    23.0,
+  zat   = -10.0,     1.0,
+  radat = 1.0,       0.0,
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'os',
+  naatpt(1,2)=  1,
+  txaat(1,2) = 'na',
+ /
+ &nmlPotential
+  r2uminin= 1.0d-3,
+  utoltab = 1.0d-4,
+  ftoltab = 1.0d-3,
+  umaxtab = 2.0d5,
+  fmaxtab = 2.0d6,
+
+  relpermitt = 78.4026,
+  luext = .true.
+ /
+ &nmlPotentialExternal
+  txuext(2) = 'sphdielboundary_p2',
+  boundaryrad = 1.0,
+  epsi1 = 1.0,
+  epsi2 = 78.4026,
+  lmaxdiel = 5,
+ /
+ &nmlSetConfiguration txsetconf='origin', 'random',
+ /
+ &nmlMC
+  isamp = 0,
+  pspart     = 0.0,  1.0,        dtran     = 0.0,   0.5,
+ /
+ &nmlIntList inlist= 0,        drnlist  = 2.0,/
+ &nmlDist vtype(5) =.true., 0.0, 4.64, 464, idist=10, rcutdist = 464.0, /
+ &nmlImage iimage = 1, lvrml=.true., /
+ &nmlVrml atsize(2) = 0.1,/

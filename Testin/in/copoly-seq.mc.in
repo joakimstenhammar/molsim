@@ -1,0 +1,85 @@
+!molsim 6.04
+&nmlSystem
+  txmode = 'simulation',
+  txtitle ='1 pe and their counterions confined to a sphere of radius 100',
+  txmethod='mc',    txensemb='nvt',     txbc='sph',       txstart='setconf',
+  nstep1= 1,        nstep2= 100,
+  sphrad= 500.,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  lgroup=.t.,  lstatic =.t.,  limage=.f.,
+  itest = 0,   ipart = 0,   iatom = 0,   iaver = 0,   ishow = 1,     iplot = 1,   ilist = 1,
+  ltrace = .t.,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt        = 3,
+  txpt       = 'A',     'B',     'C',
+  nppt       =   8,       10,     20,
+  nppt       =   28,       30,     40,
+  natpt      =   1,       1,       1,
+  txat       = 'aA',   'aB',    'aC',
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'site1',
+  naatpt(1,2) =  1,
+  txaat(1,2) = 'site1',
+  naatpt(1,3) =  1,
+  txaat(1,3) = 'site1',
+
+  nct       = 1,
+  nct       = 2,
+  txct(1)   ='repeating',
+  ncct(1)   = 2,
+  npptct(1:3,1) = 4,    5,   10,
+  nblockict(1) = 3,
+  txcopolymer(1)='repeating',
+
+  txct(2)   ='random',
+  ncct(2)   = 2,
+  npptct(1:3,2) = 10,    10,   10,
+  txcopolymer(2)='random',
+  itestpart = 10,
+ /
+ &nmlPotential
+  rcut = 0,
+  relpermitt = 78.4,
+ /
+ &nmlPotentialChain
+  bond(1) = 2.4088, 2, 5.0,
+  bond(2) = 2.4088, 2, 5.0,
+  angle = 0.00207
+ /
+ &nmlSetConfiguration
+  txsetconf(1) = 'random',
+  txsetconf(2) = 'random',
+  txsetconf(3) = 'random',
+  anglemin = 120.0,
+ /
+ &nmlRepeating
+ rep_iblock_ict(1:3,1)%pt = 2, 3, 1,
+ rep_iblock_ict(1:3,1)%np = 2, 3, 1,
+ /
+ &nmlMC
+  pspart   = 1.0,    dtran      = 0.0, 0.0,
+ /
+ &nmlGroup /
+ &nmlIntList inlist = 0, drnlist = 2600.0,   facnneigh = 50.0 /
+ &nmlDist idist = 10, vtype(5) =.true., 0.0, 100.0, 100 /
+ &nmlStatic
+  istatic = 1,
+  lspdf =.false.,
+  lsf =.false.,
+  lsubstructuredf = .t.,
+  /
+ &nmlSPDF vtype(1) =.true., 0.0, 100.0 /
+ &nmlSubStructureDF
+vtype(1) = .t., 0.0, 100.0, 100,
+vtype(2) = .t., 0.0, 100.0, 100,
+vtype(3) = .t., 0.0, 100.0, 100,
+vtype(4) = .f., 0.0, 100.0, 100,
+lptinsub = .true. , .false.,
+  /
+ &nmlSF nbin = 100 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 2.0, 2.0, 2.0, blmax = 5.0, bondr = 0.3 /

@@ -256,6 +256,51 @@ end subroutine par_bc_ints
 
 !************************************************************************
 !*                                                                      *
+!*     par_bc_int                                                       *
+!*                                                                      *
+!************************************************************************
+
+! ... broadcast of scalar integer
+
+subroutine par_bc_int(buff)
+
+   use ParallelModule
+   implicit none
+
+   integer(4), intent(inout)   :: buff
+
+   integer(4)               :: ierr
+
+   call mpi_bcast(buff,1,mpi_integer4,rootid,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_bc_int',ierr)
+
+end subroutine par_bc_int
+
+!************************************************************************
+!*                                                                      *
+!*     par_bc_ints8                                                     *
+!*                                                                      *
+!************************************************************************
+
+! ... broadcast integers of kind 8
+
+subroutine par_bc_ints8(buff,icount)
+
+   use ParallelModule
+   implicit none
+
+   integer(8), intent(inout)   :: buff(*)
+   integer(4), intent(in)   :: icount
+
+   integer(4)               :: ierr
+
+   call mpi_bcast(buff,icount,mpi_integer8,rootid,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_bc_ints8',ierr)
+
+end subroutine par_bc_ints8
+
+!************************************************************************
+!*                                                                      *
 !*     par_bc_reals                                                     *
 !*                                                                      *
 !************************************************************************
