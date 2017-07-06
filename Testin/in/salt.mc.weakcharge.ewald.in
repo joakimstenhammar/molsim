@@ -37,6 +37,7 @@
  pk(1)            =        12.0 ,
  pH               =         1.0 ,
  jatweakcharge    =           2 ,
+ itestpart        =          10 ,
 /
 &nmlPotential
  relpermitt =  78.3 ,
