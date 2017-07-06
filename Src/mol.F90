@@ -193,7 +193,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v3.0.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v3.1.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -853,6 +853,7 @@ module MolModule
    integer(4)                :: ngr(2)     ! number of groups of two different types
    integer(4)                :: ngrgr      ! number of group pairs (ngr(1)*ngr(2))
    integer(4)                :: maxngr     ! maximal number of groups (max of ngr(1:2))
+   integer(4)                :: ngrvar     ! number of group variables (2+ngr(1)+ngr(2))
    type(scalar_var), allocatable, save :: grvar(:) ! containing group number averages
    integer(4),   allocatable :: igrpn(:,:) ! particle (1:np)               -> its group number (1:igr)
    integer(4),   allocatable :: iptgr(:,:) ! gruop number (1:ngr)          -> particle type (1: npt)
