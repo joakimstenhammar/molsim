@@ -43,6 +43,7 @@ subroutine StaticDriver(iStage)
                           lcluster, lzerosecondmoment, lmultipoledf,                            &
                           lenergydf, lwidom1, lwidom2, lmeanforce1, lmeanforce2, lpotmeanforce, &
                           lsurfacearea, lcrystalformat, ltrajectory, lsubstructuredf,           &
+                          lnetworkdf, lnetworkradialdf,                                         &
                           lstaticuser
    type(scalar_var), allocatable, save :: var(:)
    integer(4), save :: nvar = 1
@@ -55,6 +56,7 @@ subroutine StaticDriver(iStage)
                         lcluster, lzerosecondmoment, lmultipoledf,                             &
                         lenergydf, lwidom1, lwidom2, lmeanforce1, lmeanforce2, lpotmeanforce,  &
                         lsurfacearea, lcrystalformat, ltrajectory, lsubstructuredf,            &
+                        lnetworkdf, lnetworkradialdf,                                          &
                         lstaticuser
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -98,8 +100,10 @@ subroutine StaticDriver(iStage)
       lsurfacearea     = .false.
       lcrystalformat   = .false.
       ltrajectory      = .false.
-      lstaticuser      = .false.
       lsubstructuredf  = .false.
+      lnetworkdf       = .false.
+      lnetworkradialdf = .false.
+      lstaticuser      = .false.
 
       rewind(uin)
       read(uin,nmlStatic)
@@ -118,13 +122,15 @@ subroutine StaticDriver(iStage)
 
 
       if (.not.lgroup) then
-         if (lspdf    ) call Stop(txroutine, 'spdf is selected, but no group division', uout)
-         if (lrdf     ) call Stop(txroutine, 'rdf is selected, but no group division', uout)
-         if (langdf   ) call Stop(txroutine, 'angdf is selected, but no group division', uout)
-         if (lnnhb    ) call Stop(txroutine, 'nnhb is selected, but no group division', uout)
-         if (lnndf    ) call Stop(txroutine, 'nndf is selected, but no group division', uout)
-         if (lenergydf) call Stop(txroutine, 'energydf is selected, but no group division', uout)
-         if (lsubstructuredf) call Stop(txroutine, 'substructuredf is selected, but no group division', uout)
+         if (lspdf           ) call Stop(txroutine, 'spdf is selected, but no group division', uout)
+         if (lrdf            ) call Stop(txroutine, 'rdf is selected, but no group division', uout)
+         if (langdf          ) call Stop(txroutine, 'angdf is selected, but no group division', uout)
+         if (lnnhb           ) call Stop(txroutine, 'nnhb is selected, but no group division', uout)
+         if (lnndf           ) call Stop(txroutine, 'nndf is selected, but no group division', uout)
+         if (lenergydf       ) call Stop(txroutine, 'energydf is selected, but no group division', uout)
+         if (lsubstructuredf ) call Stop(txroutine, 'substructuredf is selected, but no group division', uout)
+         if (lnetworkdf      ) call Stop(txroutine, 'networkdf is selected, but no group division', uout)
+         if (lnetworkradialdf) call Stop(txroutine, 'networkradialdf is selected, but no group division', uout)
       end if
 
       call StaticDriverSub
@@ -199,6 +205,8 @@ subroutine StaticDriver(iStage)
          if (lcrystalformat)    write(uout,'(a)') '   crystalformat '
          if (ltrajectory)       write(uout,'(a)') '   trajectory    '
          if (lstaticuser)       write(uout,'(a)') '   staticuser    '
+         if (lnetworkdf)        write(uout,'(a)') '   networkdf     '
+         if (lnetworkradialdf)  write(uout,'(a)') '   networkradialdf'
          if (lsubstructuredf)   write(uout,'(a)') '   substructuredf'
       end if
 
@@ -250,6 +258,8 @@ subroutine StaticDriverSub
    if (lcrystalformat)    call Crystalformat(iStage)
    if (ltrajectory)       call Trajectory(iStage)
    if (lsubstructuredf)   call SubStructureDF(iStage)
+   if (lnetworkdf)        call NetworkDF(iStage)
+   if (lnetworkradialdf)  call NetworkRadialDF(iStage)
    if (lstaticuser)       call StaticUser(iStage)
 end subroutine StaticDriverSub
 
@@ -8299,3 +8309,563 @@ subroutine SubStructureDF(iStage)
 
 end subroutine SubStructureDF
 
+!************************************************************************
+!*                                                                      *
+!*     NetworkDF                                                        *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate network distribution functions
+
+!     also final average over networks of same type and the spread of their df
+
+!     type  label    quantity
+!     ----  -----    --------
+!     1     rg       radius of gyration
+!     2     asph     asphericity
+!     3     alpha    degree of ionization
+
+subroutine NetworkDF(iStage)
+
+   use MolModule
+   implicit none
+
+   integer(4), intent(in)           :: iStage
+
+   character(40), parameter         :: txroutine ='NetworkDF'
+   character(80), parameter         :: txheading ='network distribution functions'
+   integer(4)   , parameter         :: ntype = 3
+   type(static1D_var),        save  :: vtype(ntype)
+   integer(4),                save  :: nvar
+   type(df_var), allocatable, save  :: var(:)
+   integer(4),   allocatable, save  :: ipnt(:,:,:)
+   integer(4),                save  :: nvar2
+   type(df_var), allocatable, save  :: var2(:)
+   integer(4),   allocatable        :: ilow(:), iupp(:)
+   real(8),      allocatable        :: vspread(:)
+   type(networkprop_var)            :: NetworkProperty
+   integer(4), save                 :: ngrloc(ntype)
+
+   integer(4)     :: itype, ivar, ivar2, ibin, inw, inwt, igrloc
+   real(8)        :: value
+   character(3)   :: txnwn
+
+   namelist /nmlNetworkDF/ vtype
+
+   if (ltrace) call WriteTrace(2, txroutine, iStage)
+
+   if (slave) return ! only master
+
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+   select case (iStage)
+   case (iReadInput)
+
+      vtype%l    = .false.
+      vtype%min  = [ Zero   , Zero   , Zero   ]
+      vtype%max  = [ 100.d0 , One    , One    ]
+      vtype%nbin = 100
+
+      rewind(uin)
+      read(uin,nmlNetworkDF)
+
+      if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine,'vtype%nbin > mnbin_df', uout)
+
+   case (iWriteInput)
+
+! ... set remaining elements of vtype
+
+      vtype%label = ['rg   ','asph ','alpha' ]
+      vtype%nvar  = [ nnw   , nnw   , nnw    ]
+      ngrloc(1:ntype) = vtype(1:ntype)%nvar / nnw
+
+! ... set nvartype and nvar as well as allocate memory
+
+      nvar = sum(vtype(1:ntype)%nvar,dim=1,mask=vtype%l)
+      allocate(var(nvar),ipnt(maxval(ngrloc(1:ntype)),nnw,ntype))
+      ipnt = 0
+
+! ... set ipnt, label, min, max, and nbin
+
+      ivar = 0
+      do itype = 1, ntype
+         if (vtype(itype)%l) then
+            do inw = 1, nnw
+               write (txnwn,"(i3)") inw
+               do igrloc = 1, ngrloc(itype)
+                  ivar = ivar+1
+                  ipnt(igrloc,inw,itype) = ivar
+                  var(ivar)%min  = vtype(itype)%min
+                  var(ivar)%max  = vtype(itype)%max
+                  var(ivar)%nbin = vtype(itype)%nbin
+                  var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txnwn))    ! for those with ngrloc = 1
+               end do
+            end do
+         end if
+      end do
+
+      call DistFuncSample(iStage, nvar, var)
+
+   case (iBeforeSimulation)
+
+      call DistFuncSample(iStage, nvar, var)
+      if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+
+   case (iBeforeMacrostep)
+
+      call DistFuncSample(iStage, nvar, var)
+
+   case (iSimulationStep)
+
+      var%nsamp2 = var%nsamp2 + 1
+
+      do inw = 1, nnw
+         call CalcNetworkProperty(inw,NetworkProperty)
+
+! ... sample type 1 to 3
+
+         do itype = 1, 3
+            if (vtype(itype)%l) then
+               igrloc = 1
+               ivar = ipnt(igrloc,inw,itype)
+               if (itype == 1) then
+                  value = sqrt(NetworkProperty%rg2)
+               else if (itype == 2) then
+                  value = NetworkProperty%asph
+               else if (itype == 3) then
+                  value = NetworkProperty%alpha
+               end if
+               ibin = max(-1,min(floor(var(ivar)%bini*(value-var(ivar)%min)),int(var(ivar)%nbin)))
+               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
+            end if
+         end do
+
+      end do
+
+   case (iAfterMacrostep)
+
+      call DistFuncNorm(1,nvar,var)
+      call DistFuncSample(iStage,nvar,var)
+      if (lsim .and. master) write(ucnf) var
+
+   case (iAfterSimulation)
+
+      call DistFuncSample(iStage,nvar,var)
+      call WriteHead(2,txheading,uout)
+      call DistFuncHead(nvar,var,uout)
+      call DistFuncWrite(txheading,nvar,var,uout,ulist,ishow,iplot,ilist)
+      call DistFuncAverValue(nvar,var,uout)
+
+! ..............    make average of distribution functions over networks of same type   .............
+
+! ... set nvartype2 and nvar2 as well as allocate memory
+
+      vtype%nvar = nnwt
+      nvar2 = sum(vtype%nvar,1,vtype%l)
+      allocate(ilow(nvar2),iupp(nvar2),var2(nvar2),vspread(nvar2))
+      ilow = 0
+      iupp = 0
+      vspread = 0.0E+00
+
+! ... set label, min, max, nbin, and bin
+
+      ivar2 = 0
+      ivar = 0
+      do itype = 1, ntype
+         if (vtype(itype)%l) then
+            do inwt = 1, nnwt
+               ivar2 = ivar2+1
+               ivar = ivar+1
+               ilow(ivar2) = ivar                    ! lower index of networks of type inwt
+               ivar = ivar+nnwnwt(inwt)-1
+               iupp(ivar2) = ivar                    ! upper index of networks of type inwt
+               var2(ivar2)%label = trim(vtype(itype)%label)//' '//txnwt(inwt)
+               var2(ivar2)%min = vtype(itype)%min
+               var2(ivar2)%max = vtype(itype)%max
+               var2(ivar2)%nbin = vtype(itype)%nbin
+               var2(ivar2)%bin = (var2(ivar2)%max-var2(ivar2)%min)/var2(ivar2)%nbin
+            end do
+         end if
+      end do
+
+      call DistFuncAverDist(nvar2,ilow,iupp,var,var2,vspread)
+
+      call DistFuncWrite(trim(txheading)//': aver',nvar2,var2,uout,ulist,ishow,iplot,ilist)
+      write(uout,'()')
+      write(uout,'(a,(t30,f10.4))') 'rms spread = ', vspread
+
+      call DistFuncAverValue(nvar2,var2,uout)
+
+      deallocate(var,ipnt,ilow,iupp,var2,vspread)
+
+   end select
+
+   if (ltime) call CpuAdd('stop',txroutine,1,uout)
+
+end subroutine NetworkDF
+
+!************************************************************************
+!*                                                                      *
+!*     NetworkRadialDF                                                  *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate radial distribution functions of properties of networks
+
+!     type  label       quantity
+!     ----  -----       --------
+!      1    rpart(r)    radial particle number distribution
+!      2    rdens(r)    radial particle density distribution
+!      3    rgchain(r)  radial chain radius of gyration
+!      4    q(r)        radial sum of all charges
+!      5    qcum(r)     cumulative radial sum of all charges
+!      6    alpha(r)    reduced degree of ionization
+!      7    rchain(r)   radial chain number distribution
+
+subroutine NetworkRadialDF(iStage)
+
+   use MolModule
+
+   implicit none
+
+   integer(4),          intent(in) :: iStage
+
+   character(40),        parameter :: txroutine ='NetworkRadialDF'
+   character(80),        parameter :: txheading ='radial distribution functions of networks'
+   integer(4)   ,        parameter :: ntype = 7
+   type(static1D_var),        save :: vtype(ntype)
+   integer(4),                save :: nvar
+   integer(4),                save :: ngrloc(ntype)
+   real(8),      allocatable, save :: nsampbin1(:,:)  ! nsampbin1 is raised by One if a property was assigned to a bin within one
+                                                      ! macrostep. After the simulation is done a property was sampled nsampbin1
+                                                      ! times. By dividing the sample by nsampbin1, the actual average of the
+                                                      ! property in that bin is obtained.
+   type(df_var), allocatable, save :: var(:)
+   integer(4),   allocatable, save :: ipnt(:,:,:)
+   type(networkprop_var)           :: NetworkProperty
+   type(chainprop_var)             :: ChainProperty
+
+   character(3)                    :: txinw
+   integer(4)                      :: itype, ivar, ibin
+   integer(4)                      :: inwt, inw, ict, ic, icloc, ipt, ip, iploc, igr, igrloc
+   real(8)                         :: InvFlt
+   real(8)                         :: rcom(1:3), r2, r1, vsum, norm, dvol
+
+   namelist /nmlNetworkRadialDF/ vtype
+
+   if (slave) return ! only master
+
+   if (ltrace) call WriteTrace(2, txroutine, iStage)
+
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+   select case (iStage)
+   case (iReadInput)
+
+! ... default parameters
+
+      vtype%l    = .false.
+      vtype%min  = Zero
+      vtype%max  = 100.0d0
+      vtype%nbin = 100
+
+      rewind(uin)
+      read(uin,nmlNetworkRadialDF)
+
+! ... condition: vtype(2) needs vtype(1) to be evaluated
+
+      if (vtype(2)%l .and. (.not. vtype(1)%l)) then
+         call Warn(txroutine,'vtype(2)%l .and. (.not. vtype(1)%l): vtype(1) = .true.',uout)
+         vtype(1) = vtype(2)
+      else if (vtype(1)%l .and. vtype(2)%l) then
+         vtype(2) = vtype(1)
+      end if
+
+! ... condition: vtype(5) needs vtype(4) to be evaluated
+
+      if (vtype(5)%l .and. (.not. vtype(4)%l)) then
+         call Warn(txroutine,'vtype(5)%l .and. (.not. vtype(4)%l): vtype(4) = .true.',uout)
+         vtype(4) = vtype(5)
+      else if (vtype(4)%l .and. vtype(5)%l) then
+         vtype(5) = vtype(4)
+      end if
+
+      if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine, 'vtype%nbin > mnbin_df', uout)
+
+   case (iWriteInput)
+
+! ... set remaining elements of vtype and ngrloc
+
+      vtype%label = ['<rpart>   ','<rdens>   ','<rgchain> ', &
+                    &'<sum(q)>  ','<q_cum>   ','<alpha>   ', &
+                    &'<rchain>  ' ]
+
+      vtype%nvar  = [ ngr(1)*nnw,   ngr(1)*nnw,     nct*nnw, &
+                    &        nnw,          nnw,         nnw, &
+                    & ngr(1)*nnw  ]
+
+      ngrloc(1:ntype) = vtype(1:ntype)%nvar / nnw   ! = ngr(1), ngr(1), nct, 1, 1, 1, ngr(1)
+
+! ... set nvar and allocate memory
+
+      nvar = sum(vtype(1:ntype)%nvar,1,vtype%l)
+      allocate(var(nvar),ipnt(maxval(ngrloc(1:ntype)),nnw,ntype),nsampbin1(nvar,-1:maxval(vtype(1:ntype)%nbin)))
+      ipnt = 0
+
+! ... set ipnt, label, min, max, and nbin
+
+      ivar = 0
+      do itype = 1, ntype
+         if (vtype(itype)%l) then
+            do inw = 1, nnw
+               write (txinw,"(i3)") inw
+               do igrloc = 1, ngrloc(itype)
+                  ivar = ivar+1
+                  ipnt(igrloc,inw,itype) = ivar
+                  var(ivar)%min  = vtype(itype)%min
+                  var(ivar)%max  = vtype(itype)%max
+                  var(ivar)%nbin = vtype(itype)%nbin
+                  if      (itype == 1) then
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
+                  else if (itype == 2) then
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
+                  else if (itype == 3) then
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txct(igrloc)
+                  else if (itype == 7) then
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))//' '//txgr(igrloc)
+                  else
+                     var(ivar)%label = trim(vtype(itype)%label)//' inw:'//trim(adjustl(txinw))    ! for those with ngrloc = 1
+                  end if
+               end do
+            end do
+         end if
+      end do
+
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate bin and bini
+
+   case (iBeforeSimulation)
+
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp1, avs1, avsd
+      nsampbin1 = Zero
+      if (lsim .and. master .and. (txstart == 'continue')) read(ucnf) var
+
+   case (iBeforeMacrostep)
+
+      call DistFuncSample(iStage,nvar,var) ! -> Initiate nsamp2, avs2, nsampbin
+
+   case (iSimulationStep)
+
+      var%nsamp2 = var%nsamp2 + 1
+
+      do inw = 1, nnw
+         inwt = inwtnwn(inw)
+
+! ... get center of mass of network inw and network type inwt
+         call CalcNetworkProperty(inw,NetworkProperty)
+
+         rcom(1:3) = NetworkProperty%ro(1:3)
+
+! ... sample type 1
+
+         itype = 1
+         if (vtype(itype)%l) then
+            do ip = 1, np
+               igr = igrpn(ip,1)
+               if (igr <= 0) cycle
+               ivar = ipnt(igr,inw,itype)
+               call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
+               r1 = sqrt(r2)
+               ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
+               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
+            end do
+         end if
+
+! ... sample type 2 in iStage == 'iAfterMacrostep'
+
+! ... sample type 3
+
+         itype = 3
+         if (vtype(itype)%l) then
+            do icloc = 1, ncnwt(inwt)
+               ic  = icnclocnwn(icloc,inw)
+               ict = ictcn(ic)
+               ivar = ipnt(ict,inw,itype)
+               call UndoPBCChain(ro(1:3,ipnsegcn(1,ic)),ic,1,vaux)
+               call CalcChainProperty(ic,vaux,ChainProperty)
+               call PBCr2(ChainProperty%ro(1)-rcom(1),ChainProperty%ro(2)-rcom(2),ChainProperty%ro(3)-rcom(3),r2)
+               r1 = sqrt(r2)
+               ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
+               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + sqrt(ChainProperty%rg2)
+               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
+            end do
+         end if
+
+! ... sample type 4
+
+         itype = 4
+         if (vtype(itype)%l) then
+            ivar = ipnt(1,inw,itype)
+            do ipt = 1, npt
+               if (zat(iatpt(ipt)) == Zero) cycle
+               do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
+                  if (lweakcharge .and. .not.laz(ip)) cycle
+                  call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
+                  r1 = sqrt(r2)
+                  ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
+                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + zat(iatpt(iptpn(ip)))
+               end do
+            end do
+         end if
+
+! ... sample type 5 in iStage == 'iAfterMacrostep'
+
+! ... sample type 6
+
+         itype = 6
+         if (vtype(itype)%l) then
+            ivar = ipnt(1,inw,itype)
+            do iploc = 1, npnwt(inwt)
+               ip = ipnplocnwn(iploc,inw)
+               ipt = iptpn(ip)
+               if (.not. latweakcharge(iatpt(ipt))) cycle
+               call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
+               r1 = sqrt(r2)
+               ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
+               if (laz(ip)) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
+               var(ivar)%nsampbin(ibin) = var(ivar)%nsampbin(ibin) + One
+            end do
+         end if
+
+! ... sample type 7
+
+         itype = 7
+         if (vtype(itype)%l) then
+            do ic = 1, nc
+               igr = igrpn(ipnsegcn(1,ic),1)
+               if (igr <= 0) cycle
+               ivar = ipnt(igr,inw,itype)
+               call UndoPBCChain(ro(1,ipnsegcn(1,ic)),ic,1,vaux)
+               call CalcChainProperty(ic,vaux,ChainProperty)
+               call PBCr2(ChainProperty%ro(1)-rcom(1),ChainProperty%ro(2)-rcom(2),ChainProperty%ro(3)-rcom(3),r2)
+               r1 = sqrt(r2)
+               ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
+               var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
+            end do
+         end if
+
+      end do
+
+   case (iAfterMacrostep)
+
+! ... sample dependent distribution functions
+
+         do inw = 1, nnw
+
+! ... sample type 2 by copying data from type 1
+            itype = 2
+            if (vtype(itype)%l) then
+               do igr = 1, ngr(1)
+                  ivar = ipnt(igr,inw,itype)
+                  var(ivar)%avs2 = var(ipnt(igr,inw,1))%avs2  ! reference to itype 1 in ipnt
+               end do
+            end if
+
+! ... sample type 5 by copying and summing up data from type 4
+
+            itype = 5
+            if (vtype(itype)%l) then
+               ivar = ipnt(1,inw,itype)
+               var(ivar)%avs2(-1) = var(ipnt(1,inw,4))%avs2(-1)
+               do ibin = 0, var(ivar)%nbin
+                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin-1)+var(ipnt(1,inw,4))%avs2(ibin) ! reference to itype 4 in ipnt
+               end do
+            end if
+
+         end do
+
+! ... normalisation
+
+      do inw = 1, nnw
+
+         itype = 2
+         if (vtype(itype)%l) then
+            do igr = 1, ngr(1)
+               ivar = ipnt(igr,inw,itype)
+               vsum = sum(var(ivar)%avs2(-1:var(ivar)%nbin))
+               norm = var(ivar)%nsamp2 * (var(ivar)%max**3-var(ivar)%min**3) * InvFlt(vsum)
+               do ibin = -1, var(ivar)%nbin
+                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) * norm / dvol(ibin,var(ivar)%min,var(ivar)%bin)
+               end do
+            end do
+         end if
+
+         itype = 3
+         if (vtype(itype)%l) then
+            do ict = 1, nct
+               ivar = ipnt(ict,inw,itype)
+               norm = var(ivar)%nsamp2             ! factor to counteract the normalization in DistFuncSample
+               do ibin = -1, var(ivar)%nbin
+                  if (var(ivar)%nsampbin(ibin) > Zero) then
+                     var(ivar)%avs2(ibin) = norm*var(ivar)%avs2(ibin)/var(ivar)%nsampbin(ibin)
+                     nsampbin1(ivar,ibin) = nsampbin1(ivar,ibin)+One
+                  end if
+               end do
+            end do
+         end if
+
+         itype = 6
+         if (vtype(itype)%l) then
+            ivar = ipnt(1,inw,itype)
+            vsum = sum(var(ivar)%avs2(-1:var(ivar)%nbin))
+            norm = var(ivar)%nsamp2 * sum(var(ivar)%nsampbin(-1:var(ivar)%nbin)) * InvFlt(vsum) ! *nsamp2 in order to counteract wrong normalization in distfuncsample
+            do ibin = -1, var(ivar)%nbin
+               if (var(ivar)%nsampbin(ibin) > Zero) then
+                  var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin)*norm/var(ivar)%nsampbin(ibin)
+                  nsampbin1(ivar,ibin) = nsampbin1(ivar,ibin)+One
+               end if
+            end do
+         end if
+
+      end do
+
+      call DistFuncSample(iStage, nvar, var) ! -> update nsamp1, divide avs2 by nsamp2, sum up avs1 and avsd
+
+      if (lsim .and. master) write(ucnf) var
+
+   case (iAfterSimulation)
+
+      do inw = 1, nnw
+
+         itype = 3
+         if (vtype(itype)%l) then
+            do ict = 1, nct
+               ivar = ipnt(ict,inw,itype)
+               norm = var(ivar)%nsamp1             ! factor to counteract the normalization in DistFuncSample
+               do ibin = -1, var(ivar)%nbin
+                  if (nsampbin1(ivar,ibin) > Zero) var(ivar)%avs1(ibin) = norm*var(ivar)%avs1(ibin)/nsampbin1(ivar,ibin)
+               end do
+            end do
+         end if
+
+         itype = 6
+         if (vtype(itype)%l) then
+            ivar = ipnt(1,inw,itype)
+            norm = var(ivar)%nsamp1 ! *nsamp1 in order to counteract wrong normalization in distfuncsample
+            do ibin = -1, var(ivar)%nbin
+               if (nsampbin1(ivar,ibin) > Zero) var(ivar)%avs1(ibin) = norm*var(ivar)%avs1(ibin)/nsampbin1(ivar,ibin)
+            end do
+         end if
+
+      end do
+
+      call DistFuncSample(iStage, nvar, var)
+      call DistFuncHead(nvar, var, uout)
+      call DistFuncWrite(txheading, nvar, var, uout, ulist, ishow, iplot, ilist)
+
+      deallocate(var, ipnt)
+
+   end select
+
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+end subroutine NetworkRadialDF

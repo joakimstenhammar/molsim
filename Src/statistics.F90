@@ -55,7 +55,7 @@ module StatisticsModule
       integer(4)    :: nbin                              ! number of grid points
       real(8)       :: bin                               ! grid length of df
       real(8)       :: bini                              ! inverse of bin
-      real(8)       :: nsampbin(-1:mnbin_df)             ! number of values sampled in each bin
+      real(8)       :: nsampbin(-1:mnbin_df)             ! number of values sampled in each bin during macrostep
       real(8)       :: avs1(-1:mnbin_df)                 ! average of the run
       real(8)       :: avsd(-1:mnbin_df)                 ! precision of average of the run
       real(8)       :: avs2(-1:mnbin_df)                 ! average of a macrostep
