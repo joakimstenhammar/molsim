@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - 2017-07-05
+### Changed
+- Extended features for the usage of finite networks
+- Change in network topology
+- Network Statistics
+- Network related grouping scheme
+
 ## [3.0.0] - 2017-07-05 - Myrapla
 ### Fixes
 - fixed some minor bugs
