@@ -2449,7 +2449,7 @@ subroutine WriteVecAppend(ndata, data, funit)
    implicit none
 
    integer(4),   intent(in) :: ndata
-   real(8),      intent(in) :: data(12)
+   real(8),      intent(in) :: data(ndata)
    character(*), intent(in) :: funit
 
    character(40), parameter :: txroutine ='WriteVecApped'
