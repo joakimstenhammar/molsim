@@ -84,9 +84,9 @@ git pull
 ```
 Then tag the current commit:
 ```sh
-git tag -a vX.Y.Z -m "<NAME-OF-NEW-VERSION>"
+git tag vX.Y.Z
 ```
-where `X`, `Y` and `Z` correspond to the major (X), minor (Y) and patch level (Z) number of the software version ([Semantic Versioning](http://semver.org/)). The `<NAME-OF-NEW-VERSION>` corresponds to the old name, if changes have been made only on the patch level. If changes on the major or minor level have been made, a new name may be chosen from this and **only** this [specific list](http://www.pokewiki.de/Pokémon-Liste). Try to choose a name, such that it roughly fits to what you modified.
+where `X`, `Y` and `Z` correspond to the major (X), minor (Y) and patch level (Z) number of the software version ([Semantic Versioning](http://semver.org/)). 
 
 After tagging
 ```sh
