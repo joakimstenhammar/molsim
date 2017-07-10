@@ -367,7 +367,7 @@ subroutine LoadBalanceRealSpace(myid, master, nproc, iobjlow, iobjupp, iobjmyid,
 
    nobjmyid = iobjmyid(2) - iobjmyid(1) + 1
 #if defined (_PAR_)
-   call par_allreduce_ints(nobjmyid, vaux, 1)
+   call par_allreduce_int(nobjmyid, iaux)
 #endif
    if (nobjmyid /= nobj) call Stop(txroutine, 'error in values of iobjmyid', unit)
 
