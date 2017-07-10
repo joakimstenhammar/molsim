@@ -1131,33 +1131,10 @@ subroutine WriteVTFCoordinates(tximage, unit)
    integer(4),              intent(in) :: unit             ! output unit
 
    character(40),            parameter :: txroutine = 'WriteVTFCoordinates'
+
    real(8),          allocatable, save :: ro_vtf(:,:)
-   real(8),                       save :: massnw, invmass
-   real(8)                             :: rcom(3), InvFlt
-   logical,                       save :: first = .true., lnomassnw = .false.
-   integer(4),                    save :: ipref
-   integer(4)                          :: ip, ipt
-
-! ! ... find reference particle within network in order to determine center of mass of network
-
-!    if (first) then
-!       first = .false.
-!       if (tximage(4) == 'centernw') then
-!          massnw = Zero
-!          massnw = sum(masspt(1:npt)*nppt(1:npt), MASK=lptinnw(1:npt))
-!          if (massnw == Zero) then
-!             lnomassnw = .true.
-!             massnw = sum(nppt(1:npt), MASK=lptinnw(1:npt))
-!          end if
-!          invmass = InvFlt(massnw)
-!          do ipt = 1, npt
-!             if (lptinnw(ipt)) then
-!                ipref = ipnpt(ipt)
-!                exit
-!             end if
-!          end do
-!       end if
-!    end if
+   real(8)                             :: rcom(3)
+   integer(4)                          :: ip
 
    if (.not. allocated(ro_vtf)) then
       allocate(ro_vtf(1:3,1:na))
