@@ -871,6 +871,7 @@ module MolModule
    integer(4)                :: iaux
    real(8)                   :: raux
    real(8), allocatable      :: vaux(:,:)
+   integer(4), allocatable   :: ivaux(:,:)
 
 ! ... parallel parameters (also used in the serial code)
 

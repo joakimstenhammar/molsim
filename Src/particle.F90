@@ -320,6 +320,10 @@ subroutine Particle(iStage)
          allocate(vaux(3,max(1000,2*na_alloc)))
          vaux = 0.0E+00
       end if
+      if (.not.allocated(ivaux)) then
+         allocate(ivaux(3,max(1000,2*na_alloc)))
+         vaux = 0
+      end if
 
       if (.not.allocated(angvelo)) then
          allocate(angvelo(3,np_alloc))
