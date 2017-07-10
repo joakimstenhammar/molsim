@@ -200,8 +200,8 @@ end if
 #if defined (_PAR_)
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_start_Pack', iSimulationStep)
    call PackReduceU(nptpt+1, npt+1, du%tot, du%twob, du%oneb, du%rec, du%stat, du%pol, du%bond, du%angle, du%crosslink, du%external, uaux)
-   call par_allreduce_logical(lhsoverlap, uaux)
-   call par_allreduce_logical(lhepoverlap, uaux)
+   call par_allreduce_logical(lhsoverlap, laux)
+   call par_allreduce_logical(lhepoverlap, laux)
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_after_Pack', iSimulationStep)
 #endif
 
@@ -263,7 +263,7 @@ subroutine DUTwoBody(lhsoverlap, utwobodynew, twobodyold)
    call utwobodynew(lhsoverlap,jp)                ! calculate new two-body potential energy
 
 #if defined (_PAR_)
-   call par_allreduce_logical(lhsoverlap)
+   call par_allreduce_logical(lhsoverlap, laux)
 #endif
 
    if (lhsoverlap) goto 400                     ! check hard-core overlap
