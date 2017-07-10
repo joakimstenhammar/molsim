@@ -149,8 +149,8 @@ contains
 
 subroutine SuperballStat(iStage)
    integer(4), intent(in) :: iStage
-   if (txmethodsuperball == 'nr') call SuperballStatNR(iStage)
-   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage)
+   if (txmethodsuperball == 'nr') call SuperballStatNR(iStage, iaux)
+   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage, vaux(1:3), laux, raux)
 end subroutine SuperballStat
 
 !........................................................................
