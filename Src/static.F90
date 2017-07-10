@@ -8554,7 +8554,7 @@ subroutine NetworkRadialDF(iStage)
    integer(4)                      :: itype, ivar, ibin
    integer(4)                      :: inwt, inw, ict, ic, icloc, ipt, ip, iploc, igr, igrloc
    real(8)                         :: InvFlt
-   real(8)                         :: rcom(1:3), r2, r1, vsum, norm, dvol
+   real(8)                         :: rcom(1:3), r2, r1, vsum, norm, dvol, dr(3)
 
    namelist /nmlNetworkRadialDF/ vtype
 
@@ -8678,7 +8678,8 @@ subroutine NetworkRadialDF(iStage)
                igr = igrpn(ip,1)
                if (igr <= 0) cycle
                ivar = ipnt(igr,inw,itype)
-               call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
+               dr(1:3) = ro(1:3,ip) - rcom(1:3)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
@@ -8697,7 +8698,8 @@ subroutine NetworkRadialDF(iStage)
                ivar = ipnt(ict,inw,itype)
                call UndoPBCChain(ro(1:3,ipnsegcn(1,ic)),ic,1,vaux)
                call CalcChainProperty(ic,vaux,ChainProperty)
-               call PBCr2(ChainProperty%ro(1)-rcom(1),ChainProperty%ro(2)-rcom(2),ChainProperty%ro(3)-rcom(3),r2)
+               dr(1:3) = ChainProperty%ro(1:3) - rcom(1:3)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + sqrt(ChainProperty%rg2)
@@ -8714,7 +8716,8 @@ subroutine NetworkRadialDF(iStage)
                if (zat(iatpt(ipt)) == Zero) cycle
                do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
                   if (lweakcharge .and. .not.laz(ip)) cycle
-                  call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
+                  dr(1:3) = ro(1:3,ip) - rcom(1:3)
+                  call PBCr2(dr(1), dr(2), dr(3), r2)
                   r1 = sqrt(r2)
                   ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                   var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + zat(iatpt(iptpn(ip)))
@@ -8733,7 +8736,8 @@ subroutine NetworkRadialDF(iStage)
                ip = ipnplocnwn(iploc,inw)
                ipt = iptpn(ip)
                if (.not. latweakcharge(iatpt(ipt))) cycle
-               call PBCr2(ro(1,ip)-rcom(1),ro(2,ip)-rcom(2),ro(3,ip)-rcom(3),r2)
+               dr(1:3) = ro(1:3,ip) - rcom(1:3)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                if (laz(ip)) var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
@@ -8751,7 +8755,8 @@ subroutine NetworkRadialDF(iStage)
                ivar = ipnt(igr,inw,itype)
                call UndoPBCChain(ro(1,ipnsegcn(1,ic)),ic,1,vaux)
                call CalcChainProperty(ic,vaux,ChainProperty)
-               call PBCr2(ChainProperty%ro(1)-rcom(1),ChainProperty%ro(2)-rcom(2),ChainProperty%ro(3)-rcom(3),r2)
+               dr(1:3) = ChainProperty%ro(1:3) - rcom(1:3)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
                r1 = sqrt(r2)
                ibin = max(-1,min(floor(var(ivar)%bini*(r1-var(ivar)%min)),int(var(ivar)%nbin)))
                var(ivar)%avs2(ibin) = var(ivar)%avs2(ibin) + One
