@@ -471,6 +471,30 @@ end subroutine par_allreduce_reals
 
 !************************************************************************
 !*                                                                      *
+!*     par_allreduce_real                                               *
+!*                                                                      *
+!************************************************************************
+
+! ... perform global sum and redistribution of double precision variable
+
+subroutine par_allreduce_real(buff,temp)
+
+   use ParallelModule
+   implicit none
+   real(8)   , intent(inout)  :: buff
+   real(8)   , intent(in)     :: temp  ! temporary variable, should be able to hold buff
+   integer(4), parameter      :: icount = 1
+
+   integer(4)               :: ierr
+
+   call mpi_allreduce(buff,temp,icount,mpi_real8,mpi_sum,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_allreduce_reals',ierr)
+   buff = temp
+
+end subroutine par_allreduce_real
+
+!************************************************************************
+!*                                                                      *
 !*     par_allreduce_comps                                              *
 !*                                                                      *
 !************************************************************************

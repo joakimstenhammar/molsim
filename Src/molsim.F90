@@ -2969,7 +2969,7 @@ subroutine DistFunc(iStage)
       if (ltime) call CpuAdd('start', 'comm', 0, uout)
       call par_allreduce_reals(ubind, vaux, np  )
       call par_allreduce_reals(force, vaux, 3*na)
-      call par_allreduce_reals(virial, vaux, 1   )
+      call par_allreduce_real(virial, raux)
       if (ltime) call CpuAdd('stop', 'comm', 0, uout)
 #endif
 
