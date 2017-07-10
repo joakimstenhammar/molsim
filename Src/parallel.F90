@@ -233,6 +233,28 @@ end subroutine par_bc_logicals
 
 !************************************************************************
 !*                                                                      *
+!*     par_bc_logical                                                   *
+!*                                                                      *
+!************************************************************************
+
+! ... broadcast logical
+
+subroutine par_bc_logical(buff)
+
+   use ParallelModule
+   implicit none
+
+   logical   , intent(inout)   :: buff
+
+   integer(4)               :: ierr
+
+   call mpi_bcast(buff,1,mpi_logical,rootid,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_bc_logicals',ierr)
+
+end subroutine par_bc_logicals
+
+!************************************************************************
+!*                                                                      *
 !*     par_bc_ints                                                      *
 !*                                                                      *
 !************************************************************************
