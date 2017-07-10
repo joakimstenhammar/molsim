@@ -251,7 +251,7 @@ subroutine par_bc_logical(buff)
    call mpi_bcast(buff,1,mpi_logical,rootid,mpi_comm_world,ierr)
    if (ierr/=mpi_success) call par_error('par_bc_logicals',ierr)
 
-end subroutine par_bc_logicals
+end subroutine par_bc_logical
 
 !************************************************************************
 !*                                                                      *
@@ -343,6 +343,28 @@ subroutine par_bc_reals(buff,icount)
    if (ierr/=mpi_success) call par_error('par_bc_reals',ierr)
 
 end subroutine par_bc_reals
+
+!************************************************************************
+!*                                                                      *
+!*     par_bc_real                                                      *
+!*                                                                      *
+!************************************************************************
+
+! ... broadcast double precision real
+
+subroutine par_bc_real(buff)
+
+   use ParallelModule
+   implicit none
+
+   real(8)   , intent(inout)   :: buff
+
+   integer(4)               :: ierr
+
+   call mpi_bcast(buff,1,mpi_real8,rootid,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_bc_reals',ierr)
+
+end subroutine par_bc_real
 
 !************************************************************************
 !*                                                                      *
