@@ -150,7 +150,7 @@ contains
 subroutine SuperballStat(iStage)
    integer(4), intent(in) :: iStage
    if (txmethodsuperball == 'nr') call SuperballStatNR(iStage, iaux)
-   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage, vaux(1:3), laux, raux)
+   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage, vaux(1:3,1), laux, raux)
 end subroutine SuperballStat
 
 !........................................................................
