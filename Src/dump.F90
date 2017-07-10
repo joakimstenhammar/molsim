@@ -216,7 +216,6 @@ subroutine DoDump(str)
 
    integer(4)   :: ip, ia, m, idum = 0
    real(8)      :: dum
-   real(8)      :: rdutot
    logical      :: ldum
 
    if (str(1:4) == 'open' .and. master) then
@@ -281,9 +280,7 @@ subroutine DoDump(str)
       if (ldidm) call par_bc_reals(idmo   , 3*(ipupp-iplow+1))
       if (ldlaz) call par_bc_reals(az     ,   (ipupp-iplow+1))
       if (ldlaz) call par_bc_logicals(laz ,   (ipupp-iplow+1))
-      rdutot = u%tot*sclene/(np*GasConstant*temp*scltem)
-      if (ldutot) call par_bc_real(rdutot)
-      u%tot = u%tot/(sclene/(np*GasConstant*temp*scltem))
+      if (ldutot) call par_bc_real(u%tot)
 #endif
 
       call QuaToOri(np, iplow, ipupp, qua, ori)
