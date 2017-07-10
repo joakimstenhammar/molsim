@@ -873,30 +873,34 @@ end subroutine VRMLSub
 !*                                                                      *
 !************************************************************************
 
-! ... generate input files and tcl-script for VMD
-!     by Cornelius Hofzumahaus 03/2015
+! ... generate vtf file(s) and tcl-script for VMD
+!
+! ... VMD (Visual Molecular Dynamics) is (after registration) free to use, please see:
+! ... http://www.ks.uiuc.edu/Research/vmd/
 
-subroutine ImageVTF(iStage) !iimage is not used
+subroutine ImageVTF(iStage)
 
    use MolModule
    implicit none
 
    integer(4), intent(in) :: iStage
-   !integer(4), intent(in) :: iimage
 
    character(40), parameter :: txroutine ='ImageVTF'
    character(80), parameter :: txheading ='preparation of vtf file'
-   character(12), save :: txwhen
-   real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
-   real(8),       save :: rgbweakcharge(3), blmax, bondr, bondres, sphres
-   character(20), save :: tximage(4)
-   character(19), save :: txwrap(3) =['# Start of image   ','timestep ordered   ','# End Image        ' ]
-   integer(4),    save :: iframe
-   logical,       save :: lgr, lrendwc
-   logical, allocatable, save :: lptinnw(:)
-   integer(4)    :: iat, m
 
-   character(1),  parameter :: vmdname(36) = (/ '0','1','2','3','4','5','6','7','8'&    ! vmdname is being used for VMD to identify different particle types as such
+   character(12),        save :: txwhen
+   real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
+   real(8),              save :: rgbweakcharge(3), blmax, bondr, bondres, sphres
+   character(20),        save :: tximage(4)
+   character(19),   parameter :: txwrap(3) = ['# Start of image   ','timestep ordered   ','# End Image        ' ]
+   integer(4),           save :: iframe
+   logical,              save :: lgr, lrendwc
+   logical, allocatable, save :: lptinnw(:)
+
+   integer(4) :: iat, m
+
+! ... vmdname is being used for VMD to identify different particle types as such
+   character(1),  parameter :: vmdname(36) = (/ '0','1','2','3','4','5','6','7','8'&
                                                ,'9','A','B','C','D','E','F','G','H'&
                                                ,'I','J','K','L','M','N','O','P','Q'&
                                                ,'R','S','T','U','V','W','X','Y','Z' /)
@@ -912,14 +916,11 @@ subroutine ImageVTF(iStage) !iimage is not used
 
       if (.not.allocated(atsize)) then
          allocate(atsize(nat), rgbcolor(3,nat), lptinnw(mnpt))
-         atsize = 0.0E+00
-         rgbcolor = 0.0E+00
-         lptinnw = .false.
       end if
 
 ! ... set default values
 
-      txwhen        = 'after_run'                        ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
+      txwhen        = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
       atsize(1:nat) = radat(1:nat)
       tximage       = ['frame','     ','     ','     '] ! define here which kind of options shall be applied
       do iat = 1, 3
@@ -1072,7 +1073,6 @@ end subroutine ImageVTF
 !************************************************************************
 
 ! ... write header of the vtf file
-!     by Cornelius Hofzumahaus 03/2015
 
 subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
 
@@ -1097,7 +1097,8 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
 
 ! ... declare atoms
 
-   write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
+   write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
+      ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
    write(unit,'(/)')
 
 ! ... determine connectivity of atoms
@@ -1125,8 +1126,7 @@ end subroutine WriteVTFHeader
 !*                                                                      *
 !************************************************************************
 
-! ... writes blocks of coordinates in the vtf-file
-!     by Cornelius Hofzumahaus 03/2015
+! ... writes current atom coordinates to vtf-file
 
 subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
 
@@ -1230,7 +1230,6 @@ end subroutine WriteVTFCoordinates
 ! ... TCL: "tool command language"
 ! ... write VTF-accompanying TCL-script to be executed in VMD to adjust colors, bond radius, bond and atom resolution, and insert objects such as frames, planes
 ! ... visualize charge state of weak charges (currently possible with only one weakly charged atom type)
-!     by Cornelius Hofzumahaus 03/2015
 
 subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,unit)
 
@@ -1369,6 +1368,7 @@ contains
 subroutine DrawWeakChargesTCL(iCall,vmdname,rgbweakcharge,lrendwc,icolor,unit)
 
    use MolModule
+   implicit none
 
    integer(4),   intent(in) :: iCall
    character(1), intent(in) :: vmdname(*)
@@ -1467,21 +1467,21 @@ subroutine DrawRhombicDodecahedronTCL
 
    d = sqrt(Two/Three)*cellside
    s = d/SqTwo
-                                              ! Numbers in comment: corner number in ImageVRML
-   corner(1:3,1)  = [    d,  Zero,       -s ] ! 14
-   corner(1:3,2)  = [ Zero,  Zero, -SqTwo*d ] ! 2
-   corner(1:3,3)  = [   -d,  Zero,       -s ] ! 12
-   corner(1:3,4)  = [   -d,     d,     Zero ] ! 10
-   corner(1:3,5)  = [ Zero,     d,        s ] ! 7
-   corner(1:3,6)  = [    d,     d,     Zero ] ! 8
-   corner(1:3,7)  = [    d,    -d,     Zero ] ! 4
-   corner(1:3,8)  = [ Zero,    -d,       -s ] ! 5
-   corner(1:3,9)  = [   -d,    -d,     Zero ] ! 6
-   corner(1:3,10) = [   -d,  Zero,        s ] ! 11
-   corner(1:3,11) = [ Zero,  Zero,  SqTwo*d ] ! 1
-   corner(1:3,12) = [    d,  Zero,        s ] ! 13
-   corner(1:3,13) = [ Zero,    -d,        s ] ! 3
-   corner(1:3,14) = [ Zero,     d,       -s ] ! 9
+
+   corner(1:3,1)  = [    d,  Zero,       -s ]
+   corner(1:3,2)  = [ Zero,  Zero, -SqTwo*d ]
+   corner(1:3,3)  = [   -d,  Zero,       -s ]
+   corner(1:3,4)  = [   -d,     d,     Zero ]
+   corner(1:3,5)  = [ Zero,     d,        s ]
+   corner(1:3,6)  = [    d,     d,     Zero ]
+   corner(1:3,7)  = [    d,    -d,     Zero ]
+   corner(1:3,8)  = [ Zero,    -d,       -s ]
+   corner(1:3,9)  = [   -d,    -d,     Zero ]
+   corner(1:3,10) = [   -d,  Zero,        s ]
+   corner(1:3,11) = [ Zero,  Zero,  SqTwo*d ]
+   corner(1:3,12) = [    d,  Zero,        s ]
+   corner(1:3,13) = [ Zero,    -d,        s ]
+   corner(1:3,14) = [ Zero,     d,       -s ]
 
    do ird = 0, 5
       write(unit,'(a28,3f8.1,a6,3f8.1,a12)') '   graphics $frameID line { ', corner(1:3,mod(ird,6)+1), ' } { ', corner(1:3,mod(ird+1,6)+1),  '} width 2'
@@ -1500,7 +1500,7 @@ end subroutine DrawRhombicDodecahedronTCL
 
 end subroutine WriteTCLScript
 
-module  UndoPBCModule   !Pascal Hebbeker 
+module UndoPBCModule
 
    use MolModule, only: np, ro, iptpn
    use MolModule, only: lhierarchical, lclink, bondnn, nbondcl, bondcl
@@ -1524,7 +1524,7 @@ module  UndoPBCModule   !Pascal Hebbeker
       integer  :: ipcenter
       real  :: r2
 
-      if (.not. allocated(loclundoip)) then 
+      if (.not. allocated(loclundoip)) then
          allocate(loclundoip(np))
       end if
       loclundoip = .false.
@@ -1552,7 +1552,7 @@ module  UndoPBCModule   !Pascal Hebbeker
          loclundoip(ip) = .true.
          ipcenter = ip
          r2min = (ro(1,ip)**2 + ro(2,ip)**2 + ro(3,ip)**2)
-          
+
          do ib = 1, 2      ! check bonded partners
             jp = bondnn(ib,ip)
             if(jp /= 0 ) then
@@ -1610,7 +1610,7 @@ module  UndoPBCModule   !Pascal Hebbeker
             end if
          end do
 
-         if(lhierarchical .or. lclink) then 
+         if(lhierarchical .or. lclink) then
             do icl = 1, nbondcl(ip) ! check crosslinked partners
                jp = bondcl(icl,ip)
                call UndoClPBC(rip(1:3), jp)
