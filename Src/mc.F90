@@ -3890,7 +3890,7 @@ subroutine ClusterMember(str, lonlyipmove, lnoselftype, radcl, pselectcl)
          end do
       end do
 #if defined (_PAR_)
-      call par_allreduce_ints(npclnew, vaux, 1)  ! allreduce npclnew
+      call par_allreduce_int(npclnew, iaux)  ! allreduce npclnew
 #endif
       npclnew = npclnew+nptm                     ! add the original partciles
    end if
