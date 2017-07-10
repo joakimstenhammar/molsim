@@ -877,6 +877,10 @@ end subroutine VRMLSub
 !
 ! ... VMD (Visual Molecular Dynamics) is (after registration) free to use, please see:
 ! ... http://www.ks.uiuc.edu/Research/vmd/
+!
+! ... Any published work which utilizes VMD shall include the following reference:
+! ... "Humphrey, W., Dalke, A. and Schulten, K., `VMD -Visual Molecular
+! ...  Dynamics', J. Molecular Graphics, 1996, vol. 14, pp. 33-38."
 
 subroutine ImageVTF(iStage)
 
@@ -895,7 +899,6 @@ subroutine ImageVTF(iStage)
    character(19),   parameter :: txwrap(3) = ['# Start of image   ','timestep ordered   ','# End Image        ' ]
    integer(4),           save :: iframe
    logical,              save :: lgr, lrendwc
-   logical, allocatable, save :: lptinnw(:)
 
    integer(4) :: iat, m
 
@@ -905,7 +908,7 @@ subroutine ImageVTF(iStage)
                                                ,'I','J','K','L','M','N','O','P','Q'&
                                                ,'R','S','T','U','V','W','X','Y','Z' /)
 
-   namelist /nmlVTF/ txwhen, atsize, rgbcolor, rgbweakcharge, blmax, bondr, bondres, sphres, lgr, tximage, lrendwc, lptinnw
+   namelist /nmlVTF/ txwhen, atsize, rgbcolor, rgbweakcharge, blmax, bondr, bondres, sphres, lgr, tximage, lrendwc
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -915,7 +918,7 @@ subroutine ImageVTF(iStage)
    case (iReadInput)
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,nat), lptinnw(mnpt))
+         allocate(atsize(nat), rgbcolor(3,nat))
       end if
 
 ! ... set default values
@@ -944,7 +947,6 @@ subroutine ImageVTF(iStage)
       sphres             = 12.0    ! number of triangles of which drawn spheres are set up of
       lgr                = .false.
       lrendwc            = .false.
-      lptinnw(1:npt)     = .false.
 
 ! ... read input data
 
@@ -1018,7 +1020,7 @@ subroutine ImageVTF(iStage)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
 
-      if (allocated(atsize)) deallocate(atsize, rgbcolor, lptinnw)
+      if (allocated(atsize)) deallocate(atsize,rgbcolor)
 
       close(uvtf)
       close(utcl)
@@ -1045,16 +1047,16 @@ subroutine ImageVTFSub
 
    if (txwhen == 'after_run') then
       write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage,lptinnw,uvtf)
+      call WriteVTFCoordinates(tximage, uvtf)
    else if (txwhen == 'after_macro') then
       write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
       write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage,lptinnw,uvtf)
+      call WriteVTFCoordinates(tximage, uvtf)
       write (uvtf,'(a)') txwrap(3)
    else if (txwhen == 'after_iimage') then
       write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
       write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage,lptinnw,uvtf)
+      call WriteVTFCoordinates(tximage, uvtf)
       write (uvtf,'(a)') txwrap(3)
    else
       call stop(txroutine, 'unsupported value of txwhen', uout)
@@ -1128,7 +1130,7 @@ end subroutine WriteVTFHeader
 
 ! ... writes current atom coordinates to vtf-file
 
-subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
+subroutine WriteVTFCoordinates(tximage, unit)
 
    use MolModule
    use CoordinateModule  ! needed ?
@@ -1136,7 +1138,6 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
    implicit none
 
    character(20),           intent(in) :: tximage(4)       !
-   logical,                 intent(in) :: lptinnw(*)       !
    integer(4),              intent(in) :: unit             ! output unit
 
    character(40),            parameter :: txroutine = 'WriteVTFCoordinates'
@@ -1147,26 +1148,26 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
    integer(4),                    save :: ipref
    integer(4)                          :: ip, ipt
 
-! ... find reference particle within network in order to determine center of mass of network
+! ! ... find reference particle within network in order to determine center of mass of network
 
-   if (first) then
-      first = .false.
-      if (tximage(4) == 'centernw') then
-         massnw = Zero
-         massnw = sum(masspt(1:npt)*nppt(1:npt), MASK=lptinnw(1:npt))
-         if (massnw == Zero) then
-            lnomassnw = .true.
-            massnw = sum(nppt(1:npt), MASK=lptinnw(1:npt))
-         end if
-         invmass = InvFlt(massnw)
-         do ipt = 1, npt
-            if (lptinnw(ipt)) then
-               ipref = ipnpt(ipt)
-               exit
-            end if
-         end do
-      end if
-   end if
+!    if (first) then
+!       first = .false.
+!       if (tximage(4) == 'centernw') then
+!          massnw = Zero
+!          massnw = sum(masspt(1:npt)*nppt(1:npt), MASK=lptinnw(1:npt))
+!          if (massnw == Zero) then
+!             lnomassnw = .true.
+!             massnw = sum(nppt(1:npt), MASK=lptinnw(1:npt))
+!          end if
+!          invmass = InvFlt(massnw)
+!          do ipt = 1, npt
+!             if (lptinnw(ipt)) then
+!                ipref = ipnpt(ipt)
+!                exit
+!             end if
+!          end do
+!       end if
+!    end if
 
    if (.not. allocated(ro_vtf)) then
       allocate(ro_vtf(1:3,1:na))
@@ -1197,22 +1198,22 @@ subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
       rcom(2)   = sum(ro_vtf(2,1:na))/real(na)
       ro_vtf(1,1:na) = ro_vtf(1,1:na)-rcom(1)
       ro_vtf(2,1:na) = ro_vtf(2,1:na)-rcom(2)
-   else if (tximage(4) == 'centernw' ) then               ! center network
-      if (tximage(3) /= 'undopbc') call UndoPBC(ro_vtf)
-      if (lnomassnw) then
-         rcom(1) = sum(ro_vtf(1,1:np) - ro_vtf(1,ipref), MASK=lptinnw(iptpn(1:np)))
-         rcom(2) = sum(ro_vtf(2,1:np) - ro_vtf(2,ipref), MASK=lptinnw(iptpn(1:np)))
-         rcom(3) = sum(ro_vtf(3,1:np) - ro_vtf(3,ipref), MASK=lptinnw(iptpn(1:np)))
-      else
-         rcom(1) = sum((ro_vtf(1,1:np) - ro_vtf(1,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-         rcom(2) = sum((ro_vtf(2,1:np) - ro_vtf(2,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-         rcom(3) = sum((ro_vtf(3,1:np) - ro_vtf(3,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-      end if
-      rcom(1:3) = rcom(1:3)*invmass + ro_vtf(1:3,ipref)
-      do ip = 1, np
-         ro_vtf(1:3,ip) = ro_vtf(1:3,ip) - rcom(1:3)
-         call PBC(ro_vtf(1,ip),ro_vtf(2,ip),ro_vtf(3,ip))
-      end do
+   ! else if (tximage(4) == 'centernw' ) then               ! center network
+   !    if (tximage(3) /= 'undopbc') call UndoPBC(ro_vtf)
+   !    if (lnomassnw) then
+   !       rcom(1) = sum(ro_vtf(1,1:np) - ro_vtf(1,ipref), MASK=lptinnw(iptpn(1:np)))
+   !       rcom(2) = sum(ro_vtf(2,1:np) - ro_vtf(2,ipref), MASK=lptinnw(iptpn(1:np)))
+   !       rcom(3) = sum(ro_vtf(3,1:np) - ro_vtf(3,ipref), MASK=lptinnw(iptpn(1:np)))
+   !    else
+   !       rcom(1) = sum((ro_vtf(1,1:np) - ro_vtf(1,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
+   !       rcom(2) = sum((ro_vtf(2,1:np) - ro_vtf(2,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
+   !       rcom(3) = sum((ro_vtf(3,1:np) - ro_vtf(3,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
+   !    end if
+   !    rcom(1:3) = rcom(1:3)*invmass + ro_vtf(1:3,ipref)
+   !    do ip = 1, np
+   !       ro_vtf(1:3,ip) = ro_vtf(1:3,ip) - rcom(1:3)
+   !       call PBC(ro_vtf(1,ip),ro_vtf(2,ip),ro_vtf(3,ip))
+   !    end do
    end if
 
 ! ... write coordinate block into vtf-file
