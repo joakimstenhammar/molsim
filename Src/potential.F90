@@ -1991,7 +1991,7 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
 #if defined (_PAR_)
      call par_bc_characters(ptype, 1)
-     call par_bc_logicals(foundpot, 1)
+     call par_bc_logical(foundpot)
 #endif
 
       if (.not.foundpot) call Stop(txroutine, 'nemo potential not found in library', uout)
