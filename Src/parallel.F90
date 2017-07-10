@@ -438,7 +438,7 @@ subroutine par_allreduce_logical(buff,temp)
    if (ierr/=mpi_success) call par_error('par_allreduce_logicals',ierr)
    buff = temp
 
-end subroutine par_allreduce_logicals
+end subroutine par_allreduce_logical
 
 !************************************************************************
 !*                                                                      *
