@@ -3908,7 +3908,7 @@ subroutine all_reduce_nptm_ipnptm_lptm                ! get global nptm, ipnptm,
    nptmaux(0:nproc-1) = 0                            ! exchange nptm-1 using nptmaux
    nptmaux(myid) = nptm-1
 
-   call par_allreduce_ints(nptmaux(0),vaux,nproc)
+   call par_allreduce_ints(nptmaux(0),ivaux,nproc)
 
    nptmoff = 1+sum(nptmaux(0:myid-1))                ! shift nptm-1 data of ipmtlis
    do iploc = nptm-1, 1, -1                           ! starting from location 2
@@ -3920,7 +3920,7 @@ subroutine all_reduce_nptm_ipnptm_lptm                ! get global nptm, ipnptm,
 
    nptm = 1+sum(nptmaux(0:nproc-1))                 ! get global nptm
 
-   call par_allreduce_ints(ipnptm(2),vaux,nptm-1)    ! get global ipnptm
+   call par_allreduce_ints(ipnptm(2),ivaux,nptm-1)    ! get global ipnptm
 
    do iploc = 1, nptm                                ! get global lptm
       lptm(ipnptm(iploc)) =.true.
@@ -4076,7 +4076,7 @@ subroutine ClusterMemberLList(str, lonlyipmove, lnoselftype, radcl, pselectcl)
 
       end do
 #if defined (_PAR_)
-      call par_allreduce_ints(npclnew,vaux, 1)    ! allreduce npclnew
+      call par_allreduce_ints(npclnew,ivaux, 1)    ! allreduce npclnew
 #endif
       npclnew = npclnew+nptm                      ! add the original partciles
    end if
@@ -4094,7 +4094,7 @@ subroutine all_reduce_nptm_ipnptm_lptm                ! get global nptm, ipnptm,
    nptmaux(0:nproc-1) = 0                             ! exchange nptm-1 using nptmaux
    nptmaux(myid) = nptm-1
 
-   call par_allreduce_ints(nptmaux(0),vaux,nproc)
+   call par_allreduce_ints(nptmaux(0),ivaux,nproc)
 
    nptmoff = 1+sum(nptmaux(0:myid-1))                 ! shift nptm-1 data of ipmtlis
    do iploc = nptm-1, 1, -1                           ! starting from location 2
@@ -4106,7 +4106,7 @@ subroutine all_reduce_nptm_ipnptm_lptm                ! get global nptm, ipnptm,
 
    nptm = 1+sum(nptmaux(0:nproc-1))                   ! get global nptm
 
-   call par_allreduce_ints(ipnptm(2),vaux,nptm-1)     ! get global ipnptm
+   call par_allreduce_ints(ipnptm(2),ivaux,nptm-1)     ! get global ipnptm
 
    do iploc = 1, nptm                                 ! get global lptm
       lptm(ipnptm(iploc)) =.true.
