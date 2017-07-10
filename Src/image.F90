@@ -894,11 +894,11 @@ subroutine ImageVTF(iStage)
 
    character(12),        save :: txwhen
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
-   real(8),              save :: rgbweakcharge(3), blmax, bondr, bondres, sphres
+   real(8),              save :: blmax, bondr, bondres, sphres
    character(20),        save :: tximage(4)
    character(19),   parameter :: txwrap(3) = ['# Start of image   ','timestep ordered   ','# End Image        ' ]
    integer(4),           save :: iframe
-   logical,              save :: lgr, lrendwc
+   logical,              save :: lgr
 
    integer(4) :: iat, m
 
@@ -908,7 +908,7 @@ subroutine ImageVTF(iStage)
                                                ,'I','J','K','L','M','N','O','P','Q'&
                                                ,'R','S','T','U','V','W','X','Y','Z' /)
 
-   namelist /nmlVTF/ txwhen, atsize, rgbcolor, rgbweakcharge, blmax, bondr, bondres, sphres, lgr, tximage, lrendwc
+   namelist /nmlVTF/ txwhen, atsize, rgbcolor, blmax, bondr, bondres, sphres, lgr, tximage
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -940,22 +940,16 @@ subroutine ImageVTF(iStage)
          if (iat > nat) exit
          rgbcolor(1:3,iat) = [ (One/(iat+m), m = 1,3) ]
       end do
-      rgbweakcharge(1:3) = [ 1.0, 0.85, 1.0 ]
       blmax              = Zero
       bondr              = 0.3d0
       bondres            = 12.0    ! number of prisms of which drawn bonds are set up of
       sphres             = 12.0    ! number of triangles of which drawn spheres are set up of
       lgr                = .false.
-      lrendwc            = .false.
 
 ! ... read input data
 
       rewind(uin)
       read(uin,nmlVTF)
-
-! ... check conditions
-
-      if(count(latweakcharge(1:nat)) > 1) call Warn(txroutine,'Charge state can be displayed for only one particle type!',uout)
 
    case (iWriteInput)
 
@@ -966,10 +960,9 @@ subroutine ImageVTF(iStage)
             call FileOpen(uvtf, fvtf, 'form/noread')
             call FileOpen(utcl, ftcl, 'form/noread')
             call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
-            call WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,utcl)
+            call WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,utcl)
          else if (txstart == 'continue') then
             call FileOpen(uvtf, fvtf, 'form/read')
-            if(lweakcharge) call FileOpen(utcl, ftcl, 'form/read')
          end if
       end if
 
@@ -989,7 +982,6 @@ subroutine ImageVTF(iStage)
 
       if (txwhen == 'after_iimage') then
          call ImageVTFSub
-         if (lweakcharge) call WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,utcl)
       end if
 
    case (iAfterMacrostep)
@@ -1005,8 +997,6 @@ subroutine ImageVTF(iStage)
       if (txwhen == 'after_run') then
          call ImageVTFSub
       end if
-
-      if (lweakcharge) call WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,utcl)
 
       call WriteHead(2, txheading, uout)
       write(uout,'(a,a   )') 'generating vtf file                 ', txwhen
@@ -1229,24 +1219,23 @@ end subroutine WriteVTFCoordinates
 !************************************************************************
 
 ! ... TCL: "tool command language"
-! ... write VTF-accompanying TCL-script to be executed in VMD to adjust colors, bond radius, bond and atom resolution, and insert objects such as frames, planes
-! ... visualize charge state of weak charges (currently possible with only one weakly charged atom type)
+!
+! ... write VTF-accompanying TCL-script to be executed in VMD to adjust colors, bond radius,
+! ... bond and atom resolution, and insert objects such as frames, planes
 
-subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,unit)
+subroutine WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,unit)
 
    use MolModule
    implicit none
 
    integer(4),    intent(in) :: iStage
    real(8),       intent(inout) :: rgbcolor(3,*)
-   real(8),       intent(inout) :: rgbweakcharge(3)
    real(8),       intent(in) :: bondr
    real(8),       intent(in) :: bondres
    real(8),       intent(in) :: sphres
    character(10), intent(in) :: tximage(4)
    character(1) , intent(in) :: vmdname(*)
    logical,       intent(in) :: lgr
-   logical,       intent(in) :: lrendwc
    integer(4),    intent(in) :: unit
 
    character(40),  parameter :: txroutine = 'WriteTCLScript'
@@ -1261,24 +1250,19 @@ subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,txi
 
       write(unit,'(a)') 'set mode load'
 
-! ... if system contains weak charges the user is prompted to decide which part of the tcl-script is to be excecuted
-
-      if(lweakcharge) call DrawWeakChargesTCL(1,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-
       write(unit,'(a)') 'if { $mode == "load" } {'
 
 ! ... define names used to apply coloring scheme
 
       write(unit,'(a)') '   set init [mol new atoms 1]'
       write(unit,'(a)') '   set sel  [atomselect $init all]'
-      write(unit,'(a17,a1)') ('   $sel set name ', vmdname(iat), iat = 1, nat+1)   ! nat+1 in order to account for the additional color for weakly charged atomtype
+      write(unit,'(a17,a1)') ('   $sel set name ', vmdname(iat), iat = 1, nat)
       write(unit,'(a)') '   $sel delete'
       write(unit,'(a)') '   mol delete $init'
 
 ! ... rgbcolors should be set between 0 and 1
 
       if(any(rgbcolor(1:3,1:nat) > One)) rgbcolor(1:3,1:nat) = rgbcolor(1:3,1:nat)/255.0
-      if(any(rgbweakcharge(1:3)  > One)) rgbweakcharge(1:3)  = rgbweakcharge(1:3) /255.0
 
  ! ... write script header
 
@@ -1315,9 +1299,8 @@ subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,txi
          write(unit,'(a14,a2,i5)')    '   color Name ', vmdname(iat), 1025-icolor
       end do
 
-      if(lweakcharge) call DrawWeakChargesTCL(2,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-
 ! ... insert graphical objects as provided by tximage
+
 ! ... draw frame according to the geometry of the simulation cell
 
       if (tximage(1) == 'frame') then
@@ -1343,108 +1326,21 @@ subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,txi
 ! ... show result
 
       write(unit,'(a)') '   display update on    ' ! show modifications
+      write(unit,'(a)') '}'
 
-      if (lweakcharge) then
-         call DrawWeakChargesTCL(3,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-      else
-         write(unit,'(a)') '}'
-      end if
+   case (iSimulationStep)
 
-   case (iSimulationStep)  ! This is called only for lweakcharge = .t.
+      continue
 
-      call DrawWeakChargesTCL(4,vmdname,rgbweakcharge,lrendwc,icolor,unit)
+   case (iAfterSimulation)
 
-   case (iAfterSimulation) ! This is called only for lweakcharge = .t.
-
-      call DrawWeakChargesTCL(5,vmdname,rgbweakcharge,lrendwc,icolor,unit)
+      continue
 
    end select
 
 contains
 
 ! .......................................................................
-
-! ... Support visualization of charge state of switchable charges (under development)
-
-subroutine DrawWeakChargesTCL(iCall,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-
-   use MolModule
-   implicit none
-
-   integer(4),   intent(in) :: iCall
-   character(1), intent(in) :: vmdname(*)
-   real(8),      intent(in) :: rgbweakcharge(3)
-   logical,      intent(in) :: lrendwc
-   integer(4),   intent(in) :: icolor
-   integer(4),   intent(in) :: unit
-
-   integer(4),         save :: jframe
-   integer(4)               :: ia, iat, ipt
-   character(10)            :: str
-
-   select case (iCall)
-   case (1)
-
-! ... if system contains weak charges the user is prompted to decide which part of the tcl-script is to be excecuted
-
-      jframe = One
-
-      write(unit,'(a)') 'puts "Please choose the script running mode: (Type and enter)"'
-      write(unit,'(a)') 'puts "-> load: load simulation image data"'
-      write(unit,'(a)') 'puts "-> showcharge: show frames with corresponding visualization of charge state of atoms"'
-      write(unit,'(a)') 'gets stdin mode'
-
-   case (2)
-
-      write(unit,'(a20,i4,3f6.3)') '   color change rgb ',1025-(nat+1), rgbweakcharge(1:3)
-      write(unit,'(a14,a2,i5)')    '   color Name ', vmdname(nat+1), 1025-(icolor+1)
-
-   case (3)
-
-      write(unit,'(a)') '} elseif {$mode == "showcharge"} {'
-      do iat = 1, nat
-         if(.not. latweakcharge(iat)) cycle
-         write(unit,'(a19,a1)') '   set txuncharged ', vmdname(iat)
-         write(unit,'(a19,a1)') '   set txcharged   ', vmdname(nat+1)
-         write(unit,'(a)')      '   set selection [atomselect $molID "name $txuncharged"]'
-         exit ! -> will be written only once, as currently only one particle type is supported
-      end do
-
-   case (4)
-
-      write(unit,'(a)')     '   display update off'
-      write(unit,'(a16,i0)') '   animate goto ', jframe
-      write(unit,'(a)')     '   $selection set name $txuncharged'
-      write(unit,'(a)')     '   set selection [atomselect $molID "index\'
-      do ia = 1, na
-         ipt = iptpn(ipnan(ia))
-         if((.not. latweakcharge(iatan(ia))) .or. (.not. ipt == 1)) cycle
-         if(laz(ia)) write(unit,'(a3,i0,a2)') '   ', ia, ' \'
-      end do
-      write(unit,'(a)')     '   "]'
-      write(unit,'(a)')     '   $selection set name $txcharged'
-      write(unit,'(a)')     '   display update on'
-
-      str = '      '
-      write(str,'(i10)') jframe                              ! get frame number
-
-      if (lrendwc) then
-         write(unit,'(a)') '   render Tachyon scene'//trim(adjustl(str))//'.dat "tachyon -aasamples 12 %s -format BMP -res 1080 720 -o %s.bmp"'
-      else
-         write(unit,'(a)') '   gets stdin dum'
-      end if
-
-      jframe = jframe + 1
-
-   case (5)
-
-      write(unit,'(a)') '}'
-
-   end select
-
-end subroutine DrawWeakChargesTCL
-
-! .....................................................................
 
 subroutine DrawBoxTCL
 
