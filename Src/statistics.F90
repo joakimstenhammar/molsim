@@ -537,52 +537,51 @@ subroutine ScalarWrite(iStage, ilow, iupp, var, iopt, fmt, unit)
 
 end subroutine ScalarWrite
 
-! #if defined (_PAR_)
-! !************************************************************************
-! !*                                                                      *
-! !*     ScalarAllReduce                                                  *
-! !*                                                                      *
-! !************************************************************************
+#if defined (_PAR_)
+!************************************************************************
+!*                                                                      *
+!*     ScalarAllReduce                                                  *
+!*                                                                      *
+!************************************************************************
 
-! ! ... make all_reduce of scalar quantities
+! ... make all_reduce of scalar quantities
 
-! subroutine ScalarAllReduce(iStage, ilow, iupp, var, raux)
+subroutine ScalarAllReduce(iStage, ilow, iupp, var, raux)
 
-!    use StatisticsModule
-!    implicit none
+   use StatisticsModule
+   implicit none
 
-!    integer(4),       intent(in) :: iStage
-!    integer(4),       intent(in) :: ilow           ! lower variable
-!    integer(4),       intent(in) :: iupp           ! upper variable
-!    type(scalar_var), intent(inout) :: var(*)      ! scalar variable
-!    real(8),          intent(inout) :: raux(*)     ! temporary variable
+   integer(4),       intent(in) :: iStage
+   integer(4),       intent(in) :: ilow           ! lower variable
+   integer(4),       intent(in) :: iupp           ! upper variable
+   type(scalar_var), intent(inout) :: var(*)      ! scalar variable
+   real(8),          intent(inout) :: raux(*)     ! temporary variable
 
-!    integer(4) :: i
+   integer(4) :: i
 
-!    select case (iStage)
-!    case (6)  ! after a macrostep
+   select case (iStage)
+   case (6)  ! after a macrostep
 
-!       do i = ilow, iupp
-!          !TODO: par_all_reduce_ints requires an integer as the second parameter
-!          call par_allreduce_ints(var(i)%nsamp2, raux, 1)
-!          call par_allreduce_reals(var(i)%avs2, raux, 1)
-!          call par_allreduce_reals(var(i)%fls2, raux, 1)
-!       end do
+      do i = ilow, iupp
+         call par_allreduce_int(var(i)%nsamp2, iaux)
+         call par_allreduce_real(var(i)%avs2, raux)
+         call par_allreduce_real(var(i)%fls2, raux)
+      end do
 
-!    case (7)  ! after simulation
+   case (7)  ! after simulation
 
-!       do i = ilow, iupp
-!          write(*,*) 'i, var(i)%nsamp2', i, var(i)%nsamp2
-!          call stop('ScalarAllReduce', 'atempt to allreduce variable-blocklengh data', 6)
-! !         call par_allreduce_ints(var(i)%nsamp2, raux, 1)
-! !         call par_allreduce_reals(var(i)%av_s1, raux, 1)
-! !         call par_allreduce_reals(var(i)%av_sd, raux, 1)
-!       end do
+      do i = ilow, iupp
+         write(*,*) 'i, var(i)%nsamp2', i, var(i)%nsamp2
+         call stop('ScalarAllReduce', 'atempt to allreduce variable-blocklengh data', 6)
+!         call par_allreduce_int(var(i)%nsamp2, iaux)
+!         call par_allreduce_real(var(i)%av_s1, raux)
+!         call par_allreduce_real(var(i)%av_sd, raux)
+      end do
 
-!    end select
+   end select
 
-! end subroutine ScalarAllReduce
-! #endif
+end subroutine ScalarAllReduce
+#endif
 
 !************************************************************************
 !*                                                                      *
