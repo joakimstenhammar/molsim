@@ -195,6 +195,10 @@ subroutine IOMolsim(iStage)
    case (iReadInput)
 
       !parse command line arguments
+      if (command_argument_count() == 0) then
+         call Stop(txroutine, 'No arguments provided', ustdout)
+      end if
+
       do i = 1, command_argument_count()
          call get_command_argument(i, arg)
 
