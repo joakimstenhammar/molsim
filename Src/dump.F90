@@ -281,6 +281,9 @@ subroutine DoDump(str)
       if (ldlaz) call par_bc_reals(az     ,   (ipupp-iplow+1))
       if (ldlaz) call par_bc_logicals(laz ,   (ipupp-iplow+1))
       if (ldutot) call par_bc_real(u%tot)
+      ! previously it was
+      ! if (ldutot) call par_bc_reals(u%tot*sclene/(np*GasConstant*temp*scltem), 1)
+      ! which does not work, as the output of the routine is written into a constant (u%tot*sclene/(...) )
 #endif
 
       call QuaToOri(np, iplow, ipupp, qua, ori)
