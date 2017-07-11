@@ -57,8 +57,10 @@ subroutine ImageDriver(iStage)
       rewind(uin)
       read(uin,nmlImage)
 
-      ! ... ImageVTF requires grouping
-      if (lvtf .and. .not.lgroup) call Stop(txroutine,'lvtf .and. .not.lgroup: ImageVTF requires grouping',uout)
+! ... check conditions
+! ... ImageVTF requires grouping
+
+      if (lvtf .and. .not.lgroup) call Stop(txroutine, 'lvtf is selected, but no group division', uout)
 
       call ImageDriverSub(iimage)
 
