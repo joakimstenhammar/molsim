@@ -907,13 +907,13 @@ subroutine ImageVTF(iStage)
    integer(4),           save :: iframe
    character(16),   parameter :: txwrap(3) = ['# Start of image','timestep ordered','# End Image     ' ]
 
-   integer(4)                 :: iat, m
+   integer(4),      parameter :: itypegr = 1 ! use reference group division (= 1 for ref, = 2 for field)
 
-! ... vmdname is being used for VMD to identify different particle types as such
    character(1),    parameter :: vmdname(36) = [ '0','1','2','3','4','5','6','7','8'&
                                                 ,'9','A','B','C','D','E','F','G','H'&
                                                 ,'I','J','K','L','M','N','O','P','Q'&
                                                 ,'R','S','T','U','V','W','X','Y','Z' ]
+   integer(4)                 :: iat, m
 
    namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lgr
 
@@ -924,15 +924,23 @@ subroutine ImageVTF(iStage)
    select case (iStage)
    case (iReadInput)
 
+! ... allocations
+
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,nat))
+         allocate(atsize(ngr(itypegr)), rgbcolor(3,ngr(itypegr)))
       end if
+
+! ... usually the default values of the namelist would be set and afterwards read from the input file
+! ... in order to operate with group related properties this has been shifted to iStage = iWriteInput
+
+   case (iWriteInput)
 
 ! ... set default values
 
+      txfile        = 'merge'     ! alternatively choose "txfile = 'split'"
       txwhen        = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
-      atsize(1:nat) = radat(1:nat)
       tximage       = ['frame','     ','     ','     '] ! define here which kind of options shall be applied
+      atsize(1:nat) = radat(1:nat)
       do iat = 1, 3
          if (iat > nat) exit
          rgbcolor(1:3,iat) = [ Zero, Zero, Zero ]
@@ -957,8 +965,6 @@ subroutine ImageVTF(iStage)
 
       rewind(uin)
       read(uin,nmlVTF)
-
-   case (iWriteInput)
 
 ! ... open vtf- and tcl-file, write VTF-header and tcl-script
 
