@@ -322,7 +322,7 @@ subroutine Particle(iStage)
       end if
       if (.not.allocated(ivaux)) then
          allocate(ivaux(3,max(1000,2*na_alloc)))
-         vaux = 0
+         ivaux = 0
       end if
 
       if (.not.allocated(angvelo)) then
