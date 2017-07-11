@@ -967,18 +967,23 @@ subroutine ImageVTF(iStage)
       rewind(uin)
       read(uin,nmlVTF)
 
-! ... open vtf- and tcl-file, write VTF-header and tcl-script
+! ... open vtf- and tcl-file, write vtf-header and tcl-script
 
       if (master) then
-         if (txstart == 'setconf' .or. txstart == 'zero') then
-            call FileOpen(uvtf, fvtf, 'form/noread')
-            call FileOpen(utcl, ftcl, 'form/noread')
-            call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
-            call WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,utcl)
-         else if (txstart == 'continue') then
-            call FileOpen(uvtf, fvtf, 'form/read')
-         end if
+         call FileOpen(uvtf, fvtf, 'form/noread')
+         call FileOpen(utcl, ftcl, 'form/noread')
       end if
+
+      ! if (master) then
+      !    if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
+      !       call FileOpen(uvtf, fvtf, 'form/noread')
+      !       call FileOpen(utcl, ftcl, 'form/noread')
+      !       call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
+      !       call WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,utcl)
+      !    else if (txstart == 'continue') then
+      !       call FileOpen(uvtf, fvtf, 'form/read')
+      !    end if
+      ! end if
 
    case (iBeforeSimulation)
 
@@ -1026,10 +1031,12 @@ subroutine ImageVTF(iStage)
 
       if (allocated(atsize)) deallocate(atsize,rgbcolor)
 
-      close(uvtf)
-      close(utcl)
+      if (master) then
+         close(uvtf)
+         close(utcl)
+      end if
 
-      call system ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl')  ! change from trajectory.vtf to $Job.vtf in *.tcl files
+      ! call system ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl')  ! change from trajectory.vtf to $Job.vtf in *.tcl files
 !     call execute_command_line ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl', wait=.false.)
 
    end select
