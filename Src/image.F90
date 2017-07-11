@@ -899,7 +899,7 @@ subroutine ImageVTF(iStage)
 
    character(5),         save :: txfile
    character(12),        save :: txwhen
-   character(20),        save :: tximage(4)
+   character(10),        save :: tximage(3)
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
    real(8),              save :: blmax, bondr, bondres, sphres
    logical,              save :: lgr
