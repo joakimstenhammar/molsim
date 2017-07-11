@@ -887,26 +887,27 @@ subroutine ImageVTF(iStage)
    use MolModule
    implicit none
 
-   integer(4), intent(in) :: iStage
+   integer(4),     intent(in) :: iStage
 
-   character(40), parameter :: txroutine ='ImageVTF'
-   character(80), parameter :: txheading ='preparation of vtf file'
+   character(40),   parameter :: txroutine ='ImageVTF'
+   character(80),   parameter :: txheading ='preparation of vtf file'
 
+   character(5),         save :: txfile
    character(12),        save :: txwhen
+   character(16),   parameter :: txwrap(3) = ['# Start of image','timestep ordered','# End Image     ' ]
+   character(20),        save :: tximage(4)
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
    real(8),              save :: blmax, bondr, bondres, sphres
-   character(20),        save :: tximage(4)
-   character(19),   parameter :: txwrap(3) = ['# Start of image   ','timestep ordered   ','# End Image        ' ]
-   integer(4),           save :: iframe
    logical,              save :: lgr
+   integer(4),           save :: iframe
 
-   integer(4) :: iat, m
+   integer(4)                 :: iat, m
 
 ! ... vmdname is being used for VMD to identify different particle types as such
-   character(1),  parameter :: vmdname(36) = (/ '0','1','2','3','4','5','6','7','8'&
-                                               ,'9','A','B','C','D','E','F','G','H'&
-                                               ,'I','J','K','L','M','N','O','P','Q'&
-                                               ,'R','S','T','U','V','W','X','Y','Z' /)
+   character(1),    parameter :: vmdname(36) = [ '0','1','2','3','4','5','6','7','8'&
+                                                ,'9','A','B','C','D','E','F','G','H'&
+                                                ,'I','J','K','L','M','N','O','P','Q'&
+                                                ,'R','S','T','U','V','W','X','Y','Z' ]
 
    namelist /nmlVTF/ txwhen, atsize, rgbcolor, blmax, bondr, bondres, sphres, lgr, tximage
 
