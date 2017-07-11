@@ -15,6 +15,11 @@ bin=
 ARCH=LOCAL_INTEL
 #ARCH=ALARIK_INTEL
 
+if [ $# -eq 0 ]; then
+    echo "No arguments provided"
+    exit 1
+fi
+
 echo
 echo '--------------------------------------'
 echo "  Start of molsim_ser, Arguments: $@"
