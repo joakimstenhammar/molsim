@@ -3321,7 +3321,7 @@ end subroutine Warn
 ! ... write a stop message and stop process
 
 subroutine Stop(name,text,unit)
-   use MolModule, only: ustdout
+   use, intrinsic :: iso_fortran_env, only : ustdout=>output_unit
    implicit none
    integer(4), parameter ::  nw = 110      ! width of frame of box
    integer(4), parameter ::  nlen = nw - 2 ! maximal width of text
