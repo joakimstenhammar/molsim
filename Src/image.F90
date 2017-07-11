@@ -899,12 +899,13 @@ subroutine ImageVTF(iStage)
 
    character(5),         save :: txfile
    character(12),        save :: txwhen
-   character(16),   parameter :: txwrap(3) = ['# Start of image','timestep ordered','# End Image     ' ]
    character(20),        save :: tximage(4)
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
    real(8),              save :: blmax, bondr, bondres, sphres
    logical,              save :: lgr
+
    integer(4),           save :: iframe
+   character(16),   parameter :: txwrap(3) = ['# Start of image','timestep ordered','# End Image     ' ]
 
    integer(4)                 :: iat, m
 
@@ -914,7 +915,7 @@ subroutine ImageVTF(iStage)
                                                 ,'I','J','K','L','M','N','O','P','Q'&
                                                 ,'R','S','T','U','V','W','X','Y','Z' ]
 
-   namelist /nmlVTF/ txwhen, atsize, rgbcolor, blmax, bondr, bondres, sphres, lgr, tximage
+   namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lgr
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
