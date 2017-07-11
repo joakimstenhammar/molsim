@@ -3321,6 +3321,7 @@ end subroutine Warn
 ! ... write a stop message and stop process
 
 subroutine Stop(name,text,unit)
+   use MolModule, only: ustdout
    implicit none
    integer(4), parameter ::  nw = 110      ! width of frame of box
    integer(4), parameter ::  nlen = nw - 2 ! maximal width of text
@@ -3331,8 +3332,8 @@ subroutine Stop(name,text,unit)
    character(3) :: fmt
 
    write(fmt,'(i3)') nw
-   call StopUnit(6)
-   if (unit /= 6) call StopUnit(unit)
+   call StopUnit(ustdout)
+   if (unit /= ustdout) call StopUnit(unit)
 #if defined (_PAR_)
    call par_finalize
 #endif
