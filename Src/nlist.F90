@@ -347,7 +347,7 @@ subroutine LoadBalanceRealSpace(myid, master, nproc, iobjlow, iobjupp, iobjmyid,
    character(40), parameter :: txroutine='LoadBalanceRealSpace'
    integer(4) :: nobj, nobjmyid
 #if defined (_PAR_)
-   integer(4) :: vaux(1000), iaux
+   integer(4) :: ivaux(1000), iaux
 #endif
 
    nobj = iobjupp - iobjlow + 1
@@ -385,7 +385,7 @@ subroutine TestLoadBalanceRealSpace(unit)
 #endif
    iobjmyidx(1:2,myid) = iobjmyid(1:2)
 #if defined (_PAR_)
-   call par_allreduce_ints(iobjmyidx, vaux, 2*nproc)
+   call par_allreduce_ints(iobjmyidx, ivaux, 2*nproc)
 #endif
    if (master) then
       call WriteHead(3, 'Test'//trim(txroutine), unit)
