@@ -908,12 +908,14 @@ subroutine ImageVTF(iStage)
    character(16),   parameter :: txwrap(3) = ['# Start of image','timestep ordered','# End Image     ' ]
 
    integer(4),      parameter :: itypegr = 1 ! use reference group division (= 1 for ref, = 2 for field)
+                                             ! ... the idea is to make itypegr an input parameter
 
    character(1),    parameter :: vmdname(36) = [ '0','1','2','3','4','5','6','7','8'&
                                                 ,'9','A','B','C','D','E','F','G','H'&
                                                 ,'I','J','K','L','M','N','O','P','Q'&
                                                 ,'R','S','T','U','V','W','X','Y','Z' ]
-   integer(4)                 :: iat, m
+   integer(4)                 :: igr, m
+   integer(4)                 :: iat
 
    namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lgr
 
@@ -937,29 +939,28 @@ subroutine ImageVTF(iStage)
 
 ! ... set default values
 
-      txfile        = 'merge'     ! alternatively choose "txfile = 'split'"
-      txwhen        = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
-      tximage       = ['frame','     ','     ','     '] ! define here which kind of options shall be applied
-      atsize(1:nat) = radat(1:nat)
-      do iat = 1, 3
-         if (iat > nat) exit
-         rgbcolor(1:3,iat) = [ Zero, Zero, Zero ]
-         rgbcolor(iat,iat) = One
+      txfile                 = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
+      txwhen                 = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
+      tximage                = ['frame     ','          ','          '] ! define here which kind of options shall be applied
+      atsize(1:ngr(itypegr)) = radat(iatgr(1:nat,itypegr))
+      do igr = 1, 3
+         if (igr > ngr(itypegr)) exit
+         rgbcolor(1:3,igr)   = [ (Zero, m = 1,3) ]
+         rgbcolor(igr,igr)   = One
       end do
-      do iat = 4, 6
-         if (iat > nat) exit
-         rgbcolor(1:3,iat) = [ One, One, One ]
-         rgbcolor(iat-3,iat) = Zero
+      do igr = 4, 6
+         if (igr > ngr(itypegr)) exit
+         rgbcolor(1:3,igr)   = [ (One, m = 1,3) ]
+         rgbcolor(igr-3,igr) = Zero
       end do
-      do iat = 7, nat
-         if (iat > nat) exit
-         rgbcolor(1:3,iat) = [ (One/(iat+m), m = 1,3) ]
+      do igr = 7, ngr(itypegr)
+         rgbcolor(1:3,igr)   = [ (One/(igr+m), m = 1,3) ]
       end do
-      blmax              = Zero
-      bondr              = 0.3d0
-      bondres            = 12.0    ! number of prisms of which drawn bonds are set up of
-      sphres             = 12.0    ! number of triangles of which drawn spheres are set up of
-      lgr                = .false.
+      blmax                  = Zero    ! maximum bond length
+      bondr                  = 0.3d0   ! bond
+      bondres                = 12.0    ! number of prisms of which drawn bonds are set up of
+      sphres                 = 12.0    ! number of triangles of which drawn spheres are set up of
+      lgr                    = .true.  ! by default .true. - set to .false. to force coloring according to atom types
 
 ! ... read input data
 
