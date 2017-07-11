@@ -193,7 +193,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v3.2.1'
+   character(29) :: txVersionDate = 'version 6.4.7, v3.2.2'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -871,6 +871,7 @@ module MolModule
    integer(4)                :: iaux
    real(8)                   :: raux
    real(8), allocatable      :: vaux(:,:)
+   integer(4), allocatable   :: ivaux(:,:)
 
 ! ... parallel parameters (also used in the serial code)
 

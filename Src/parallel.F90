@@ -233,6 +233,28 @@ end subroutine par_bc_logicals
 
 !************************************************************************
 !*                                                                      *
+!*     par_bc_logical                                                   *
+!*                                                                      *
+!************************************************************************
+
+! ... broadcast logical
+
+subroutine par_bc_logical(buff)
+
+   use ParallelModule
+   implicit none
+
+   logical   , intent(inout)   :: buff
+
+   integer(4)               :: ierr
+
+   call mpi_bcast(buff,1,mpi_logical,rootid,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_bc_logicals',ierr)
+
+end subroutine par_bc_logical
+
+!************************************************************************
+!*                                                                      *
 !*     par_bc_ints                                                      *
 !*                                                                      *
 !************************************************************************
@@ -324,6 +346,28 @@ end subroutine par_bc_reals
 
 !************************************************************************
 !*                                                                      *
+!*     par_bc_real                                                      *
+!*                                                                      *
+!************************************************************************
+
+! ... broadcast double precision real
+
+subroutine par_bc_real(buff)
+
+   use ParallelModule
+   implicit none
+
+   real(8)   , intent(inout)   :: buff
+
+   integer(4)               :: ierr
+
+   call mpi_bcast(buff,1,mpi_real8,rootid,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_bc_reals',ierr)
+
+end subroutine par_bc_real
+
+!************************************************************************
+!*                                                                      *
 !*     par_bc_comps                                                     *
 !*                                                                      *
 !************************************************************************
@@ -374,6 +418,30 @@ end subroutine par_allreduce_logicals
 
 !************************************************************************
 !*                                                                      *
+!*     par_allreduce_logical                                            *
+!*                                                                      *
+!************************************************************************
+
+! ... perform global logical or and redistribution of logical variables.
+
+subroutine par_allreduce_logical(buff,temp)
+
+   use ParallelModule
+   implicit none
+   logical, intent(inout)   :: buff
+   logical, intent(in)      :: temp  ! temporary variable, should be able to hold buff
+   integer(4), parameter    :: icount = 1
+
+   integer(4)               :: ierr
+
+   call mpi_allreduce(buff,temp,icount,mpi_logical,mpi_lor,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_allreduce_logicals',ierr)
+   buff = temp
+
+end subroutine par_allreduce_logical
+
+!************************************************************************
+!*                                                                      *
 !*     par_allreduce_ints                                               *
 !*                                                                      *
 !************************************************************************
@@ -401,6 +469,31 @@ end subroutine par_allreduce_ints
 
 !************************************************************************
 !*                                                                      *
+!*     par_allreduce_int                                                *
+!*                                                                      *
+!************************************************************************
+
+! ... perform global sum and redistribution of integer variable
+
+
+subroutine par_allreduce_int(buff,temp)
+
+   use ParallelModule
+   implicit none
+   integer(4), intent(inout)  :: buff
+   integer(4), intent(in)     :: temp  ! temporary variable, should be able to hold buff
+   integer(4), parameter      :: icount = 1
+
+   integer(4)               :: ierr
+
+   call mpi_allreduce(buff,temp,icount,mpi_integer4,mpi_sum,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_allreduce_ints',ierr)
+   buff = temp
+
+end subroutine par_allreduce_int
+
+!************************************************************************
+!*                                                                      *
 !*     par_allreduce_reals                                              *
 !*                                                                      *
 !************************************************************************
@@ -424,6 +517,30 @@ subroutine par_allreduce_reals(buff,temp,icount)
    end do
 
 end subroutine par_allreduce_reals
+
+!************************************************************************
+!*                                                                      *
+!*     par_allreduce_real                                               *
+!*                                                                      *
+!************************************************************************
+
+! ... perform global sum and redistribution of double precision variable
+
+subroutine par_allreduce_real(buff,temp)
+
+   use ParallelModule
+   implicit none
+   real(8)   , intent(inout)  :: buff
+   real(8)   , intent(in)     :: temp  ! temporary variable, should be able to hold buff
+   integer(4), parameter      :: icount = 1
+
+   integer(4)               :: ierr
+
+   call mpi_allreduce(buff,temp,icount,mpi_real8,mpi_sum,mpi_comm_world,ierr)
+   if (ierr/=mpi_success) call par_error('par_allreduce_reals',ierr)
+   buff = temp
+
+end subroutine par_allreduce_real
 
 !************************************************************************
 !*                                                                      *
