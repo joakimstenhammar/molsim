@@ -954,7 +954,8 @@ subroutine ImageVTF(iStage,iimage,lgr)
 ! ... allocations
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(ngrloc), rgbcolor(3,ngrloc), iatgrloc(ngrloc))
+         allocate(atsize(nat), rgbcolor(3,ngrloc), iatgrloc(ngrloc))
+         ! allocate(atsize(ngrloc), rgbcolor(3,ngrloc), iatgrloc(ngrloc))
       end if
 
 ! ... usually the default values of the namelist would be set here and afterwards read from the input file
@@ -970,10 +971,11 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
 ! ... set default values
 
-      txfile           = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
-      txwhen           = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
-      tximage          = ['frame     ','          ','          '] ! define here which kind of options shall be applied
-      atsize(1:ngrloc) = radat(iatgrloc(1:ngrloc))
+      txfile        = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
+      txwhen        = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
+      tximage       = ['frame     ','          ','          '] ! define here which kind of options shall be applied
+      ! atsize(1:ngrloc) = radat(iatgrloc(1:ngrloc))
+      atsize(1:nat) = radat(1:nat)
       do igrloc = 1, 3
          if (igrloc > ngrloc) exit
          rgbcolor(1:3,igrloc)    = [ (Zero, m = 1,3) ]
@@ -987,11 +989,11 @@ subroutine ImageVTF(iStage,iimage,lgr)
       do igrloc = 7, ngrloc
          rgbcolor(1:3,igrloc) = [ (One/(igrloc+m), m = 1,3) ]
       end do
-      blmax            = Zero    ! maximum bond length
-      bondr            = 0.3d0   ! bond
-      bondres          = 12.0    ! number of prisms of which drawn bonds are set up of
-      sphres           = 12.0    ! number of triangles of which drawn spheres are set up of
-      lframezero       = .true.  ! set to .false. to exclude the frame containing the initial configuration
+      blmax         = Zero    ! maximum bond length
+      bondr         = 0.3d0   ! bond
+      bondres       = 12.0    ! number of prisms of which drawn bonds are set up of
+      sphres        = 12.0    ! number of triangles of which drawn spheres are set up of
+      lframezero    = .true.  ! set to .false. to exclude the frame containing the initial configuration
 
 ! ... read input data
 
@@ -1078,7 +1080,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
       end if
       write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '---------', '-------------', '--------'
       write(uout,'(i3,t15,a,t30,f8.3,t45,3f6.2)') &
-         (igrloc,txat(iatgrloc(igrloc)),atsize(igrloc),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
+         (igrloc,txat(iatgrloc(igrloc)),atsize(iatgrloc(igrloc)),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
 
@@ -1180,34 +1182,39 @@ end subroutine UpdateVTFFileName
 
 ! ... write header of the vtf file
 
-subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
+subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, unit)
 
    use MolModule
    implicit none
 
-   real(8),      intent(in)      :: atsize(*)   ! size of atom type
-   real(8),      intent(in)      :: blmax       ! maximal bond length
-   character(1), intent(in)      :: vmdname(*)  ! label to identify different particle types
-   integer(4)                    :: unit        ! output unit
+   real(8),           intent(in) :: atsize(*)     ! size of atom type
+   real(8),           intent(in) :: blmax         ! maximal bond length
+   character(1),      intent(in) :: vmdname(*)    ! label to identify different particle types
+   logical,           intent(in) :: lgr
+   integer(4)                    :: unit          ! output unit
 
    character(40),      parameter :: txroutine = 'WriteVTFHeader'
+
    integer(4)                    :: ibond, ia
-   integer(4),              save :: nbond, mnbond   ! actual and maximal number of bonds
-   integer(4), allocatable, save :: bondlist(:,:)   ! pair of atoms joined by a bond
+   integer(4),              save :: nbond, mnbond ! actual and maximal number of bonds
+   integer(4), allocatable, save :: bondlist(:,:) ! pair of atoms joined by a bond
    character(10)                 :: str = '          '
-
-! ... undo periodic boundary conditions for chains and hierarchical structures
-
-   vaux(1:3,1:na) = r(1:3,1:na)
-   call UndoPBC(vaux)
 
 ! ... declare atoms
 
-   write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
-      ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
+   if (lgr) then
+      write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
+         ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(igrpn(ipnan(ia))), ia = 1, na)
+   else
+      write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
+         ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
+   endif
    write(unit,'(/)')
 
 ! ... determine connectivity of atoms
+
+   ! vaux(1:3,1:na) = r(1:3,1:na) ! should not be needed: the argument vaux is intent(out) only ! TODO: Test whether needed
+   call UndoPBC(vaux)
 
    mnbond = 2*na
    if (.not. allocated(bondlist)) then
