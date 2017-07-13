@@ -36,6 +36,7 @@ subroutine ImageDriver(iStage)
    integer(4), intent(in) :: iStage
    logical,    save :: lvrml, lvtf, limageuser
    integer(4), save :: iimage
+   logical,    save :: lgr
    integer(4), save :: nsamp1, nsamp2
 
    namelist /nmlImage/ iimage, lvrml, lvtf, limageuser
@@ -53,6 +54,7 @@ subroutine ImageDriver(iStage)
       lvrml      = .false.
       lvtf       = .false.
       limageuser = .false.
+      lgr        = .false.
 
       rewind(uin)
       read(uin,nmlImage)
@@ -61,42 +63,42 @@ subroutine ImageDriver(iStage)
 
 ! ... iimage may not be chosen to be 0
 
-      if (iimage <= 0) call Stop(txroutine, 'iimage may not be chosen to be smaller or equal 0', uout)
+      if (iimage <= 0) call Stop(txroutine, 'iimage may not be chosen smaller or equal 0', uout)
 
-! ... ImageVTF requires grouping
+! ... coloring according to group division only if groups are divided
 
-      if (lvtf .and. .not.lgroup) call Stop(txroutine, 'lvtf is selected, but no group division', uout)
+      if (lgr .and. .not.lgroup) call Stop(txroutine, 'lgr is selected, but no group division', uout)
 
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iWriteInput)
 
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iBeforeSimulation)
 
       nsamp1  = 0
       if (lsim .and. master .and. txstart == 'continue') read(ucnf) nsamp1
 
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iBeforeMacrostep)
 
       nsamp2  = 0
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iSimulationStep)
 
       if (mod(istep2,iimage) == 0) then
          nsamp2 = nsamp2+1
-         call ImageDriverSub(iimage)
+         call ImageDriverSub(iimage,lgr)
       end if
 
    case (iAfterMacrostep)
 
       nsamp1  = nsamp1+1
       if (lsim .and. master) write(ucnf) nsamp1
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iAfterSimulation)
 
@@ -105,13 +107,19 @@ subroutine ImageDriver(iStage)
          write(uout,'(a,t35,i10)') 'image interval                 = ', iimage
          write(uout,'(a,t35,i10)') 'no of time steps/passes used   = ', nsamp2*nsamp1
          write(uout,'()')
+         if (lgr) then
+            write(uout,'(a,t35,a10)') 'coloring according to          = ', 'groups    '
+         else
+            write(uout,'(a,t35,a10)') 'coloring according to          = ', 'atom types'
+         end if
+         write(uout,'()')
          write(uout,'(a)') 'image preparation routines used'
          write(uout,'(a)') '-------------------------------'
          if (lvrml     ) write(uout,'(a)') '   ImageVRML  '
          if (lvtf      ) write(uout,'(a)') '   ImageVTF   '
          if (limageuser) write(uout,'(a)') '   ImageUser  '
       end if
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    end select
 
@@ -121,10 +129,11 @@ contains
 
 !........................................................................
 
-subroutine ImageDriverSub(iimage)
+subroutine ImageDriverSub(iimage,lgr)
    integer(4), intent(in) :: iimage
-   if (lvrml      .and. master) call ImageVRML(iStage, iimage)
-   if (lvtf       .and. master) call ImageVTF(iStage,iimage)
+   logical,    intent(in) :: lgr
+   if (lvrml      .and. master) call ImageVRML(iStage,iimage,lgr)
+   if (lvtf       .and. master) call ImageVTF(iStage,iimage,lgr)
    if (limageuser .and. master) call ImageUser(iStage)
 end subroutine ImageDriverSub
 
@@ -140,13 +149,14 @@ end subroutine ImageDriver
 
 ! ... generate input files for vrml 97 viewers
 
-subroutine ImageVRML(iStage, iimage)
+subroutine ImageVRML(iStage, iimage, lgr)
 
    use MolModule
    implicit none
 
    integer(4), intent(in) :: iStage
    integer(4), intent(in) :: iimage
+   logical,    intent(in) :: lgr
 
    character(40), parameter :: txroutine ='ImageVRML'
    character(80), parameter :: txheading ='preparation of vrml file'
@@ -157,11 +167,10 @@ subroutine ImageVRML(iStage, iimage)
    character(20), save :: tximage(3)
    character(8),  save :: txwrap(2) =['C&_FILE=', 'C&_END  ' ]
    integer(4),    save :: iframe
-   logical,       save :: lgr
    character(20) :: string
    integer(4)    :: iat, m, m2, nfac
 
-   namelist /nmlVRML/ txfile, txwhen, atsize, rgbcolor, blmax, bondr, lgr, tximage
+   namelist /nmlVRML/ txfile, txwhen, atsize, rgbcolor, blmax, bondr, tximage
 
    select case (iStage)
    case (iReadInput)
@@ -192,7 +201,6 @@ subroutine ImageVRML(iStage, iimage)
 
       blmax = 1.5d0
       bondr = 0.3d0
-      lgr   =.false.
 
 ! ... read input data
 
@@ -892,13 +900,14 @@ end subroutine VRMLSub
 ! ... "Humphrey, W., Dalke, A. and Schulten, K., `VMD -Visual Molecular
 ! ...  Dynamics', J. Molecular Graphics, 1996, vol. 14, pp. 33-38."
 
-subroutine ImageVTF(iStage,iimage)
+subroutine ImageVTF(iStage,iimage,lgr)
 
    use MolModule
    implicit none
 
    integer(4),     intent(in) :: iStage
    integer(4),     intent(in) :: iimage
+   logical,        intent(in) :: lgr
 
    character(40),   parameter :: txroutine ='ImageVTF'
    character(80),   parameter :: txheading ='preparation of vtf file'
@@ -909,7 +918,6 @@ subroutine ImageVTF(iStage,iimage)
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
    real(8),              save :: blmax, bondr, bondres, sphres
    logical,              save :: lframezero
-   logical,              save :: lgr
 
    integer(4),           save :: iframe
    integer(4),           save :: nframe              ! number of frames in the whole simulation
@@ -928,7 +936,7 @@ subroutine ImageVTF(iStage,iimage)
    integer(4)                 :: igr, m
    integer(4)                 :: iat
 
-   namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero, lgr
+   namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -972,7 +980,6 @@ subroutine ImageVTF(iStage,iimage)
       bondres                = 12.0    ! number of prisms of which drawn bonds are set up of
       sphres                 = 12.0    ! number of triangles of which drawn spheres are set up of
       lframezero             = .true.  ! set to .false. to exclude the frame containing the initial configuration
-      lgr                    = .true.  ! set to .false. to force coloring according to atom types
 
 ! ... read input data
 
