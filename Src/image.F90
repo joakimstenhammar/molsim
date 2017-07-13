@@ -1102,7 +1102,14 @@ subroutine ImageVTFSub
    character(40), parameter :: txroutine = 'ImageVTFSub'
    character(10) :: str
 
+! ... increment frame number and write to string
+
    iframe = iframe+1
+
+   str = '      '
+   write(str, '(i10)') iframe
+
+! ... if split mode: update file name fvtf, open file and write header
 
    if (lsplitvtf) then
       call UpdateVTFFileName(iframe,nframe)
@@ -1110,13 +1117,14 @@ subroutine ImageVTFSub
       call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
    end if
 
-   str = '      '
-   write(str, '(i10)') iframe
+! ... write coordinates
 
    write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
    write (uvtf,'(a)') txwrap(2)
    call WriteVTFCoordinates(tximage, uvtf)
    write (uvtf,'(a)') txwrap(3)
+
+! ... is split mode: close file fvtf
 
    if (lsplitvtf) close (uvtf)
 
