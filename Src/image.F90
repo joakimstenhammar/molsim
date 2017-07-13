@@ -39,7 +39,7 @@ subroutine ImageDriver(iStage)
    logical,    save :: lgr
    integer(4), save :: nsamp1, nsamp2
 
-   namelist /nmlImage/ iimage, lvrml, lvtf, limageuser
+   namelist /nmlImage/ iimage, lvrml, lvtf, limageuser, lgr
 
    if (slave) return
 
