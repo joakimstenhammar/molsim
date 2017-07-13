@@ -1113,22 +1113,10 @@ subroutine ImageVTFSub
    str = '      '
    write(str, '(i10)') iframe
 
-   if (txwhen == 'after_run') then
-      write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage, uvtf)
-   else if (txwhen == 'after_macro') then
-      write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
-      write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage, uvtf)
-      write (uvtf,'(a)') txwrap(3)
-   else if (txwhen == 'after_iimage') then
-      write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
-      write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage, uvtf)
-      write (uvtf,'(a)') txwrap(3)
-   else
-      call stop(txroutine, 'unsupported value of txwhen', uout)
-   end if
+   write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
+   write (uvtf,'(a)') txwrap(2)
+   call WriteVTFCoordinates(tximage, uvtf)
+   write (uvtf,'(a)') txwrap(3)
 
    if (lsplitvtf) close (uvtf)
 
