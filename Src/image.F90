@@ -1009,16 +1009,13 @@ subroutine ImageVTF(iStage,iimage)
          call Stop(txroutine,'unsupported value of txfile',uout)
       end if
 
-      ! if (master) then
-      !    if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
-      !       call FileOpen(uvtf, fvtf, 'form/noread')
-      !       call FileOpen(utcl, ftcl, 'form/noread')
-      !       call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
-      !       call WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,utcl)
-      !    else if (txstart == 'continue') then
-      !       call FileOpen(uvtf, fvtf, 'form/read')
-      !    end if
-      ! end if
+! ... open, write and close tcl-script
+
+      if (master .and. (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin')) then
+         call FileOpen(utcl,ftcl,'form/noread')
+         call WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,utcl) ! TODO
+         close(utcl)
+      end if
 
    case (iBeforeSimulation)
 
