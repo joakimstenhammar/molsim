@@ -1060,7 +1060,7 @@ subroutine ImageVTF(iStage,iimage)
 
       if (allocated(atsize)) deallocate(atsize,rgbcolor)
 
-      if (master) close(uvtf)
+      if (master .and. .not.lsplitvtf) close(uvtf)
 
       ! call system ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl')  ! change from trajectory.vtf to $Job.vtf in *.tcl files
 !     call execute_command_line ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl', wait=.false.)
