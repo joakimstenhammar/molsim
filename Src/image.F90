@@ -1118,6 +1118,40 @@ end subroutine ImageVTF
 
 !************************************************************************
 !*                                                                      *
+!*     UpdateVTFFileName                                                *
+!*                                                                      *
+!************************************************************************
+
+! ... update vtf file name with respect to a given frame iframe
+
+subroutine UpdateVTFFileName(iframe,nframe)
+
+   use MolModule
+   implicit none
+
+   integer(4), intent(in) :: iframe
+   integer(4), intent(in) :: nframe
+
+   character(6),     save :: framefmt
+
+   character(1)           :: ndigit
+   character(10)          :: ifrfmt
+
+   logical,          save :: first = .true.
+
+   if (first) then
+      write(ndigit,'(i1)') int(floor(log10(real(nframe))))+1
+      framefmt = '(i'//ndigit//'.'//ndigit//')'
+      first = .false.
+   else
+      write(ifrfmt,framefmt) iframe
+      fvtf = adjustl(trim(project))//'.'//adjustl(trim(ifrfmt))//'.vtf'
+   end if
+
+end subroutine UpdateVTFFileName
+
+!************************************************************************
+!*                                                                      *
 !*     WriteVTFHeader                                                   *
 !*                                                                      *
 !************************************************************************
