@@ -61,7 +61,7 @@ subroutine ImageDriver(iStage)
 
 ! ... iimage may not be chosen to be 0
 
-      if (iimage <= 0) call Stop(txroutine, 'iimage may not be chose to be smaller or equal 0', uout)
+      if (iimage <= 0) call Stop(txroutine, 'iimage may not be chosen to be smaller or equal 0', uout)
 
 ! ... ImageVTF requires grouping
 
