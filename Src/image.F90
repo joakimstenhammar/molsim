@@ -58,6 +58,11 @@ subroutine ImageDriver(iStage)
       read(uin,nmlImage)
 
 ! ... check conditions
+
+! ... iimage may not be chosen to be 0
+
+      if (iimage <= 0) call Stop(txtroutine, 'iimage may not be chose to be smaller or equal 0', uout)
+
 ! ... ImageVTF requires grouping
 
       if (lvtf .and. .not.lgroup) call Stop(txroutine, 'lvtf is selected, but no group division', uout)
