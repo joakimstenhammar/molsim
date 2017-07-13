@@ -945,10 +945,14 @@ subroutine ImageVTF(iStage,iimage,lgr)
    select case (iStage)
    case (iReadInput)
 
+! ... determine how many groups need to considered
+
+      ngrloc = merge(ngr(itypegr), nat, lgr)
+
 ! ... allocations
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(ngr(itypegr)), rgbcolor(3,ngr(itypegr)))
+         allocate(atsize(ngrloc), rgbcolor(3,ngrloc))
       end if
 
 ! ... usually the default values of the namelist would be set here and afterwards read from the input file
@@ -956,30 +960,36 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
    case (iWriteInput)
 
+! ... determine the atom type of the local group igrloc
+
+      do igrloc = 1, ngrloc
+         iatgrloc(igrloc) = merge(iatgr(igrloc,itypegr), igrloc, lgr)
+      end do
+
 ! ... set default values
 
-      txfile                 = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
-      txwhen                 = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
-      tximage                = ['frame     ','          ','          '] ! define here which kind of options shall be applied
-      atsize(1:ngr(itypegr)) = radat(iatgr(1:nat,itypegr))
-      do igr = 1, 3
-         if (igr > ngr(itypegr)) exit
-         rgbcolor(1:3,igr)   = [ (Zero, m = 1,3) ]
-         rgbcolor(igr,igr)   = One
+      txfile           = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
+      txwhen           = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
+      tximage          = ['frame     ','          ','          '] ! define here which kind of options shall be applied
+      atsize(1:ngrloc) = radat(iatgrloc(1:ngrloc))
+      do igrloc = 1, 3
+         if (igrloc > ngrloc) exit
+         rgbcolor(1:3,igrloc)    = [ (Zero, m = 1,3) ]
+         rgbcolor(igrloc,igrloc) = One
       end do
-      do igr = 4, 6
-         if (igr > ngr(itypegr)) exit
-         rgbcolor(1:3,igr)   = [ (One, m = 1,3) ]
-         rgbcolor(igr-3,igr) = Zero
+      do igrloc = 4, 6
+         if (igrloc > ngrloc) exit
+         rgbcolor(1:3,igrloc)      = [ (One, m = 1,3) ]
+         rgbcolor(igrloc-3,igrloc) = Zero
       end do
-      do igr = 7, ngr(itypegr)
-         rgbcolor(1:3,igr)   = [ (One/(igr+m), m = 1,3) ]
+      do igrloc = 7, ngrloc
+         rgbcolor(1:3,igrloc) = [ (One/(igrloc+m), m = 1,3) ]
       end do
-      blmax                  = Zero    ! maximum bond length
-      bondr                  = 0.3d0   ! bond
-      bondres                = 12.0    ! number of prisms of which drawn bonds are set up of
-      sphres                 = 12.0    ! number of triangles of which drawn spheres are set up of
-      lframezero             = .true.  ! set to .false. to exclude the frame containing the initial configuration
+      blmax            = Zero    ! maximum bond length
+      bondr            = 0.3d0   ! bond
+      bondres          = 12.0    ! number of prisms of which drawn bonds are set up of
+      sphres           = 12.0    ! number of triangles of which drawn spheres are set up of
+      lframezero       = .true.  ! set to .false. to exclude the frame containing the initial configuration
 
 ! ... read input data
 
@@ -1059,9 +1069,14 @@ subroutine ImageVTF(iStage,iimage,lgr)
       write(uout,'(a,f8.2)') 'maximum bond length               = ', blmax
       write(uout,'(a,f8.2)') 'bond radius                       = ', bondr
       write(uout,'()')
-      write(uout,'(a,t15,a,t30,a,t50,a)') 'atom type no', 'atom type', 'size (radius)', 'rgbcolor'
+      if (lgr) then
+         write(uout,'(a,t15,a,t30,a,t50,a)') 'group no    ', 'atom type', 'size (radius)', 'rgbcolor'
+      else
+         write(uout,'(a,t15,a,t30,a,t50,a)') 'atom type no', 'atom type', 'size (radius)', 'rgbcolor'
+      end if
       write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '---------', '-------------', '--------'
-      write(uout,'(i3,t15,a,t30,f8.3,t45,3f6.2)') (iat,txat(iat),atsize(iat),rgbcolor(1:3,iat),iat = 1,nat)
+      write(uout,'(i3,t15,a,t30,f8.3,t45,3f6.2)') &
+         (igrloc,txat(iatgrloc(igrloc)),atsize(igrloc),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
 
