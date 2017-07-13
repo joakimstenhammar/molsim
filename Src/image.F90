@@ -1036,23 +1036,17 @@ subroutine ImageVTF(iStage,iimage)
 
    case (iSimulationStep)
 
-      if (txwhen == 'after_iimage') then
-         call ImageVTFSub
-      end if
+      if (txwhen == 'after_iimage') call ImageVTFSub
 
    case (iAfterMacrostep)
 
-      if (txwhen == 'after_macro') then
-         call ImageVTFSub
-      end if
+      if (txwhen == 'after_macro') call ImageVTFSub
 
       if (lsim .and. master) write(ucnf) iframe
 
    case (iAfterSimulation)
 
-      if (txwhen == 'after_run') then
-         call ImageVTFSub
-      end if
+      if (txwhen == 'after_run') call ImageVTFSub
 
       call WriteHead(2, txheading, uout)
       write(uout,'(a,a   )') 'generating vtf file                 ', txwhen
