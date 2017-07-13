@@ -973,7 +973,8 @@ subroutine ImageVTF(iStage,iimage)
       bondr                  = 0.3d0   ! bond
       bondres                = 12.0    ! number of prisms of which drawn bonds are set up of
       sphres                 = 12.0    ! number of triangles of which drawn spheres are set up of
-      lgr                    = .true.  ! by default .true. - set to .false. to force coloring according to atom types
+      lframezero             = .true.  ! set to .false. to exclude the frame containing the initial configuration
+      lgr                    = .true.  ! set to .false. to force coloring according to atom types
 
 ! ... read input data
 
