@@ -989,7 +989,7 @@ subroutine ImageVTF(iStage,iimage)
 
 ! ... initialization of first frame
 
-      iframe = merge(-1, 0, lframezero)
+      iframe = -1 ! first frame iframe = 0: iframe is incremented before the first frame is stored
 
 ! ... if vtf file shall be split, prepare some variables
 
