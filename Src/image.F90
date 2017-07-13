@@ -1081,6 +1081,13 @@ subroutine ImageVTFSub
    character(10) :: str
 
    iframe = iframe+1
+
+   if (lsplitvtf) then
+      call UpdateVTFFileName(iframe,nframe)
+      call FileOpen(uvtf, fvtf, 'form/noread')
+      call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
+   end if
+
    str = '      '
    write(str, '(i10)') iframe
 
@@ -1100,6 +1107,8 @@ subroutine ImageVTFSub
    else
       call stop(txroutine, 'unsupported value of txwhen', uout)
    end if
+
+   if (lsplitvtf) close (uvtf)
 
 end subroutine ImageVTFSub
 
