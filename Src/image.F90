@@ -981,11 +981,32 @@ subroutine ImageVTF(iStage,iimage)
       rewind(uin)
       read(uin,nmlVTF)
 
-! ... open vtf- and tcl-file, write vtf-header and tcl-script
+! ... number of frames to be made
 
-      if (master) then
-         call FileOpen(uvtf, fvtf, 'form/noread')
-         call FileOpen(utcl, ftcl, 'form/noread')
+      select case (txwhen)
+      case ('after_run')
+         nframe = 1
+      case ('after_macro')
+         nframe = nstep1
+      case ('after_iimage')
+         nframe = nstep/iimage
+      case default
+         call Stop(txroutine,'unsupported value of txwhen',uout)
+      end select
+
+! ... initialization of first frame
+
+      iframe = merge(-1, 0, lframezero)
+
+! ... if vtf file shall be split, prepare some variables
+
+      if (txfile == 'merge') then
+         continue ! fvtf = project.vtf (see inititalization in molsim.F90)
+      else if (txfile == 'split') then
+         call UpdateVTFFileName(iframe,nframe) ! Prepare format string [with (!) optional argument nframe]
+         lsplitvtf = .true.
+      else
+         call Stop(txroutine,'unsupported value of txfile',uout)
       end if
 
       ! if (master) then
