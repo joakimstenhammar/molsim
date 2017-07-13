@@ -945,7 +945,7 @@ subroutine ImageVTF(iStage,iimage)
          allocate(atsize(ngr(itypegr)), rgbcolor(3,ngr(itypegr)))
       end if
 
-! ... usually the default values of the namelist would be set and afterwards read from the input file
+! ... usually the default values of the namelist would be set here and afterwards read from the input file
 ! ... in order to operate with group related properties this has been shifted to iStage = iWriteInput
 
    case (iWriteInput)
