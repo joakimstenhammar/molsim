@@ -1019,13 +1019,18 @@ subroutine ImageVTF(iStage,iimage)
 
    case (iBeforeSimulation)
 
-      iframe = 0
-      if (lsim .and. master) then
-         if (txwhen == 'after_run') then
-            continue
-         else if ((txwhen == 'after_macro') .or. (txwhen == 'after_iimage')) then
-            call ImageVTFSub
-            if (txstart == 'continue') read(ucnf) iframe
+      if (master) then
+         if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
+            if (lsplitvtf) then
+               if (lframezero) call ImageVTFSub
+            else
+               call FileOpen(uvtf, fvtf, 'form/noread')
+               call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
+               if (lframezero) call ImageVTFSub
+            end if
+         else if (txstart == 'continue') then
+            read(ucnf) iframe
+            call FileOpen(uvtf, fvtf, 'form/read')
          end if
       end if
 
