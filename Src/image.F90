@@ -1116,7 +1116,7 @@ subroutine ImageVTFSub
    if (lsplitvtf) then
       call UpdateVTFFileName(iframe,nframe)
       call FileOpen(uvtf, fvtf, 'form/noread')
-      call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
+      call WriteVTFHeader(atsize,blmax,vmdname,lgr,itypegr,uvtf)
    end if
 
 ! ... write coordinates
@@ -1182,7 +1182,7 @@ end subroutine UpdateVTFFileName
 
 ! ... write header of the vtf file
 
-subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, unit)
+subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
    use MolModule
    implicit none
@@ -1191,7 +1191,8 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, unit)
    real(8),           intent(in) :: blmax         ! maximal bond length
    character(1),      intent(in) :: vmdname(*)    ! label to identify different particle types
    logical,           intent(in) :: lgr
-   integer(4)                    :: unit          ! output unit
+   integer(4),        intent(in) :: itypegr       ! ref (1) or field (2)
+   integer(4),        intent(in) :: unit          ! output unit
 
    character(40),      parameter :: txroutine = 'WriteVTFHeader'
 
@@ -1204,7 +1205,7 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, unit)
 
    if (lgr) then
       write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
-         ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(igrpn(ipnan(ia))), ia = 1, na)
+         ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(igrpn(ipnan(ia),itypegr)), ia = 1, na)
    else
       write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
          ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
@@ -1248,7 +1249,7 @@ subroutine WriteVTFCoordinates(tximage, unit)
 
    implicit none
 
-   character(20),           intent(in) :: tximage(4)       !
+   character(10),           intent(in) :: tximage(3)       !
    integer(4),              intent(in) :: unit             ! output unit
 
    character(40),            parameter :: txroutine = 'WriteVTFCoordinates'
@@ -1331,7 +1332,7 @@ subroutine WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,l
    real(8),       intent(in) :: bondr
    real(8),       intent(in) :: bondres
    real(8),       intent(in) :: sphres
-   character(10), intent(in) :: tximage(4)
+   character(10), intent(in) :: tximage(3)
    character(1) , intent(in) :: vmdname(*)
    logical,       intent(in) :: lgr
    integer(4),    intent(in) :: unit
@@ -1582,7 +1583,7 @@ module UndoPBCModule
       integer, intent(in)     :: ip     ! particle to be undone for the undo
 
       real(8)  ::  dr(3)
-      integer  :: ia, ipt, ib, jp, icl
+      integer  :: ia, ib, jp, icl
       real(8)  :: rip(3)     ! reference point for the undo
 
       if(lundo(ip)) then
@@ -1631,7 +1632,8 @@ subroutine UndoPBC(vhelp)
    use UndoPBCModule
    implicit none
    real(8),    intent(out)  :: vhelp(1:3,*)       ! undone atom position
-   integer :: ip, ipmin, jp
+   integer :: ip, ipmin
+   ! integer :: jp
 
 
    if(.not. allocated(lundo)) then
