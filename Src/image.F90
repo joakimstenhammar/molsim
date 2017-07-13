@@ -923,13 +923,6 @@ subroutine ImageVTF(iStage,iimage)
    integer(4)                 :: igr, m
    integer(4)                 :: iat
 
-   ! interface
-   !    subroutine UpdateVTFFileName(iframe,nframe)
-   !       integer(4),           intent(in) :: iframe
-   !       integer(4), optional, intent(in) :: nframe
-   !    end subroutine UpdateVTFFileName
-   ! end interface
-
    namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero, lgr
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
