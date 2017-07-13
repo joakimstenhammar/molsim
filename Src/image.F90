@@ -983,11 +983,11 @@ subroutine ImageVTF(iStage,iimage)
 
       select case (txwhen)
       case ('after_run')
-         nframe = 1
+         nframe = merge(2,1,lframezero)
       case ('after_macro')
-         nframe = nstep1
+         nframe = merge(nstep1+1,nstep1,lframezero)
       case ('after_iimage')
-         nframe = nstep/iimage
+         nframe = merge(nstep/iimage+1,nstep/iimage,lframezero)
       case default
          call Stop(txroutine,'unsupported value of txwhen',uout)
       end select
