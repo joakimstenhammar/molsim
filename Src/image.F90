@@ -1138,7 +1138,11 @@ subroutine UpdateVTFFileName(iframe,nframe)
    logical,          save :: first = .true.
 
    if (first) then
-      write(ndigit,'(i1)') int(floor(log10(real(nframe))))+1
+      if (nframe-1 == 0) then
+         ndigit = '1'
+      else
+         write(ndigit,'(i1)') int(floor(log10(real(nframe-1))))+1
+      end if
       framefmt = '(i'//ndigit//'.'//ndigit//')'
       first = .false.
    else
