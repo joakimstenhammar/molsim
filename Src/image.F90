@@ -119,7 +119,7 @@ contains
 subroutine ImageDriverSub(iimage)
    integer(4), intent(in) :: iimage
    if (lvrml      .and. master) call ImageVRML(iStage, iimage)
-   if (lvtf       .and. master) call ImageVTF(iStage)
+   if (lvtf       .and. master) call ImageVTF(iStage,iimage)
    if (limageuser .and. master) call ImageUser(iStage)
 end subroutine ImageDriverSub
 
@@ -887,12 +887,13 @@ end subroutine VRMLSub
 ! ... "Humphrey, W., Dalke, A. and Schulten, K., `VMD -Visual Molecular
 ! ...  Dynamics', J. Molecular Graphics, 1996, vol. 14, pp. 33-38."
 
-subroutine ImageVTF(iStage)
+subroutine ImageVTF(iStage,iimage)
 
    use MolModule
    implicit none
 
    integer(4),     intent(in) :: iStage
+   integer(4),     intent(in) :: iimage
 
    character(40),   parameter :: txroutine ='ImageVTF'
    character(80),   parameter :: txheading ='preparation of vtf file'
@@ -902,9 +903,14 @@ subroutine ImageVTF(iStage)
    character(10),        save :: tximage(3)
    real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
    real(8),              save :: blmax, bondr, bondres, sphres
+   logical,              save :: lframezero
    logical,              save :: lgr
 
    integer(4),           save :: iframe
+   integer(4),           save :: nframe              ! number of frames in the whole simulation
+
+   logical,              save :: lsplitvtf = .false. ! flag for splitting the vtf file in multiple files
+
    character(16),   parameter :: txwrap(3) = ['# Start of image','timestep ordered','# End Image     ' ]
 
    integer(4),      parameter :: itypegr = 1 ! use reference group division (= 1 for ref, = 2 for field)
@@ -917,7 +923,14 @@ subroutine ImageVTF(iStage)
    integer(4)                 :: igr, m
    integer(4)                 :: iat
 
-   namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lgr
+   ! interface
+   !    subroutine UpdateVTFFileName(iframe,nframe)
+   !       integer(4),           intent(in) :: iframe
+   !       integer(4), optional, intent(in) :: nframe
+   !    end subroutine UpdateVTFFileName
+   ! end interface
+
+   namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero, lgr
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
