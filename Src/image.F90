@@ -1203,6 +1203,7 @@ end subroutine UpdateVTFFileName
 subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
    use MolModule
+   use MollibModule
    implicit none
 
    real(8),           intent(in) :: atsize(*)     ! size of atom type
@@ -1223,10 +1224,18 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
    if (lgr) then
       write(unit,'(a5,i5,a8,E12.5,a6,a11,a6,a)') &
-         ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(igrpn(ipnan(ia),itypegr)), ia = 1, na)
+         ('atom ',ia-1, &
+          ' radius ',atsize(iatan(ia)), &
+          ' type ',ReplaceText(trim(txat(iatan(ia))), " ", "_"), &
+          ' name ',vmdname(igrpn(ipnan(ia),itypegr)),
+          ia = 1, na)
    else
       write(unit,'(a5,i5,a8,E12.5,a6,a11,a6,a)') &
-         ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
+         ('atom ',ia-1, &
+          ' radius ',atsize(iatan(ia)), &
+          ' type ',ReplaceText(trim(txat(iatan(ia))), " ", "_"), &
+          ' name ',vmdname(iatan(ia)), &
+          ia = 1, na)
    endif
    write(unit,'(/)')
 
