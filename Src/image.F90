@@ -938,7 +938,6 @@ subroutine ImageVTF(iStage,iimage,lgr)
                                                         ,'9','A','B','C','D','E','F','G','H'&
                                                         ,'I','J','K','L','M','N','O','P','Q'&
                                                         ,'R','S','T','U','V','W','X','Y','Z' ]
-   ! character(40)                 :: ReplaceText
    integer(4)                    :: igrloc, m
 
    namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero
@@ -1225,7 +1224,7 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
          ('atom ',ia-1, &
           ' radius ',atsize(iatan(ia)), &
           ' type ',ReplaceText(trim(txat(iatan(ia))), " ", "_"), &
-          ' name ',vmdname(igrpn(ipnan(ia),itypegr)),
+          ' name ',vmdname(igrpn(ipnan(ia),itypegr)), &
           ia = 1, na)
    else
       write(unit,'(a5,i5,a8,E12.5,a6,a11,a6,a)') &
