@@ -927,18 +927,18 @@ subroutine ImageVTF(iStage,iimage,lgr)
    character(40), allocatable, save :: txgrloc(:)          ! name of local group
    character(40), allocatable, save :: txatloc(:)          ! name of atom type, declared with length 40
 
-   logical,                 save :: lsplitvtf = .false. ! flag for splitting the vtf file in multiple files
+   logical,                    save :: lsplitvtf = .false. ! flag for splitting the vtf file in multiple files
 
-   character(16),      parameter :: txwrap(3) = ['# Start of image','timestep ordered','# End Image     ' ]
+   character(17),         parameter :: txwrap(3) = ['# Start of image ','timestep ordered ','# End Image      ' ]
 
-   integer(4),         parameter :: itypegr = 1 ! use reference group division (= 1 for ref, = 2 for field)
-                                                ! ... the idea is to make itypegr an input parameter
+   integer(4),            parameter :: itypegr = 1 ! use reference group division (= 1 for ref, = 2 for field)
+                                                   ! ... the idea is to make itypegr an input parameter
 
-   character(1),       parameter :: vmdname(0:35) = [ '0','1','2','3','4','5','6','7','8'&
-                                                   ,'9','A','B','C','D','E','F','G','H'&
-                                                   ,'I','J','K','L','M','N','O','P','Q'&
-                                                   ,'R','S','T','U','V','W','X','Y','Z' ]
-   character(40)                 :: ReplaceText
+   character(1),          parameter :: vmdname(0:35) = [ '0','1','2','3','4','5','6','7','8'&
+                                                        ,'9','A','B','C','D','E','F','G','H'&
+                                                        ,'I','J','K','L','M','N','O','P','Q'&
+                                                        ,'R','S','T','U','V','W','X','Y','Z' ]
+   ! character(40)                 :: ReplaceText
    integer(4)                    :: igrloc, m
 
    namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero
@@ -1125,7 +1125,7 @@ subroutine ImageVTFSub
 
    if (first .and. .not.lsplitvtf) then
       if (txstart == 'continue') then
-         call FileOpen(uvtf, fvtf, 'form/read')  ! TODO: Test whether advancing of vtf file works
+         call FileOpen(uvtf, fvtf, 'form/read')
       else if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
          call FileOpen(uvtf, fvtf, 'form/noread')
          call WriteVTFHeader(atsize,blmax,vmdname,lgr,itypegr,uvtf)
