@@ -41,7 +41,7 @@ module MollibModule !Starting to migrate to Module
 
    implicit none
    private
-   public InvInt, Center, SpaceOut
+   public InvInt, Center, SpaceOut, ReplaceText
 
    interface InvInt
       module procedure InvInt_single, InvInt_double
