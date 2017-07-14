@@ -950,6 +950,17 @@ subroutine ImageVTF(iStage,iimage,lgr)
    select case (iStage)
    case (iReadInput)
 
+! ... check condition
+
+! ... ImageVTF is not thought to be used with polyatomic particles
+
+      if (lpolyatom) call Stop(txroutine,'polyatomic particles cannot be handled',uout)
+
+! ... usually the default values of the namelist would be set here and afterwards read from the input file
+! ... in order to operate with group related properties this has been shifted to iStage = iWriteInput
+
+   case (iWriteInput)
+
 ! ... determine how many groups need to considered
 
       ngrloc = merge(ngr(itypegr), nat, lgr)
@@ -957,19 +968,15 @@ subroutine ImageVTF(iStage,iimage,lgr)
 ! ... allocations
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,ngrloc), iatgrloc(ngrloc))
-         ! allocate(atsize(ngrloc), rgbcolor(3,ngrloc), iatgrloc(ngrloc))
+         allocate(atsize(nat), rgbcolor(3,ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(nat))
       end if
 
-! ... usually the default values of the namelist would be set here and afterwards read from the input file
-! ... in order to operate with group related properties this has been shifted to iStage = iWriteInput
+! ... determine the atom type and name of the local group igrloc
 
-   case (iWriteInput)
-
-! ... determine the atom type of the local group igrloc
-
+      txatloc(1:nat) = txat(1:nat) ! transfer character(10) to character(40) for function merge
       do igrloc = 1, ngrloc
          iatgrloc(igrloc) = merge(iatgr(igrloc,itypegr), igrloc, lgr)
+         txgrloc(igrloc) = merge(grvar(igrpnt(itypegr,igrloc))%label, txatloc(igrloc), lgr)
       end do
 
 ! ... set default values
@@ -977,7 +984,6 @@ subroutine ImageVTF(iStage,iimage,lgr)
       txfile        = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
       txwhen        = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
       tximage       = ['frame     ','          ','          '] ! define here which kind of options shall be applied
-      ! atsize(1:ngrloc) = radat(iatgrloc(1:ngrloc))
       atsize(1:nat) = radat(1:nat)
       do igrloc = 1, 3
          if (igrloc > ngrloc) exit
@@ -1002,6 +1008,12 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       rewind(uin)
       read(uin,nmlVTF)
+
+! ... check condition
+
+! ... if coloring according to groups is intended, the first frame cannot be taken
+
+      if (lgr .and. lframezero) call Stop(txroutine,'lgr .and. lframezero: grouping unknown for initital configuration',uout)
 
 ! ... number of frames to be made
 
