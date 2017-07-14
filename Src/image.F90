@@ -905,25 +905,27 @@ subroutine ImageVTF(iStage,iimage,lgr)
    use MolModule
    implicit none
 
-   integer(4),        intent(in) :: iStage
-   integer(4),        intent(in) :: iimage
-   logical,           intent(in) :: lgr
+   integer(4),           intent(in) :: iStage
+   integer(4),           intent(in) :: iimage
+   logical,              intent(in) :: lgr
 
-   character(40),      parameter :: txroutine ='ImageVTF'
-   character(80),      parameter :: txheading ='preparation of vtf file'
+   character(40),         parameter :: txroutine ='ImageVTF'
+   character(80),         parameter :: txheading ='preparation of vtf file'
 
-   character(5),            save :: txfile
-   character(12),           save :: txwhen
-   character(10),           save :: tximage(3)
-   real(8),    allocatable, save :: atsize(:), rgbcolor(:,:)
-   real(8),                 save :: blmax, bondr, bondres, sphres
-   logical,                 save :: lframezero
+   character(5),               save :: txfile
+   character(12),              save :: txwhen
+   character(10),              save :: tximage(3)
+   real(8),       allocatable, save :: atsize(:), rgbcolor(:,:)
+   real(8),                    save :: blmax, bondr, bondres, sphres
+   logical,                    save :: lframezero
 
-   integer(4),              save :: iframe
-   integer(4),              save :: nframe              ! number of frames in the whole simulation
+   integer(4),                 save :: iframe
+   integer(4),                 save :: nframe              ! number of frames in the whole simulation
 
-   integer(4),              save :: ngrloc              ! number of local groups
-   integer(4), allocatable, save :: iatgrloc(:)         ! atom type of local group igrloc
+   integer(4),                 save :: ngrloc              ! number of local groups
+   integer(4),    allocatable, save :: iatgrloc(:)         ! atom type of local group igrloc
+   character(40), allocatable, save :: txgrloc(:)          ! name of local group
+   character(40), allocatable, save :: txatloc(:)          ! name of atom type, declared with length 40
 
    logical,                 save :: lsplitvtf = .false. ! flag for splitting the vtf file in multiple files
 
@@ -932,10 +934,11 @@ subroutine ImageVTF(iStage,iimage,lgr)
    integer(4),         parameter :: itypegr = 1 ! use reference group division (= 1 for ref, = 2 for field)
                                                 ! ... the idea is to make itypegr an input parameter
 
-   character(1),       parameter :: vmdname(36) = [ '0','1','2','3','4','5','6','7','8'&
+   character(1),       parameter :: vmdname(0:35) = [ '0','1','2','3','4','5','6','7','8'&
                                                    ,'9','A','B','C','D','E','F','G','H'&
                                                    ,'I','J','K','L','M','N','O','P','Q'&
                                                    ,'R','S','T','U','V','W','X','Y','Z' ]
+   character(40)                 :: ReplaceText
    integer(4)                    :: igrloc, m
 
    namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero
