@@ -195,6 +195,10 @@ subroutine IOMolsim(iStage)
    case (iReadInput)
 
       !parse command line arguments
+      if (command_argument_count() == 0) then
+         call Stop(txroutine, 'No arguments provided', ustdout)
+      end if
+
       do i = 1, command_argument_count()
          call get_command_argument(i, arg)
 
@@ -783,11 +787,11 @@ subroutine IOCnf(str)
       end if
 
 #if defined (_PAR_)
-      call par_bc_ints (nstep1done, 1   )
-      call par_bc_ints (iseed     , 1   )
-      call par_bc_reals (am     , 1   )
-      call par_bc_ints (ix     , 1   )
-      call par_bc_ints (iy     , 1   )
+      call par_bc_int (nstep1done)
+      call par_bc_int (iseed)
+      call par_bc_real (am)
+      call par_bc_int (ix)
+      call par_bc_int (iy)
       call par_bc_reals(boxlen    , 3   )
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
@@ -2971,7 +2975,7 @@ subroutine DistFunc(iStage)
       if (ltime) call CpuAdd('start', 'comm', 0, uout)
       call par_allreduce_reals(ubind, vaux, np  )
       call par_allreduce_reals(force, vaux, 3*na)
-      call par_allreduce_reals(virial, vaux, 1   )
+      call par_allreduce_real(virial, raux)
       if (ltime) call CpuAdd('stop', 'comm', 0, uout)
 #endif
 

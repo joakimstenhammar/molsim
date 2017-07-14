@@ -390,7 +390,7 @@ end if
    call PackReduceU(nptpt+1, npt+1, u%tot, u%twob, u%oneb, u%rec, u%stat, u%pol, u%bond, u%angle, u%crosslink, u%external, uaux)
    call par_allreduce_reals(force , vaux, 3*na)
    if (ldipole .or. lpolarization .or. ldipolesph) call par_allreduce_reals(torque, vaux, 3*na)
-   call par_allreduce_reals(virial, vaux, 1)
+   call par_allreduce_real(virial, raux)
    if (ltime) call CpuAdd('stop', 'comm', 4, uout)
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_after Pack', iStage)
 #endif

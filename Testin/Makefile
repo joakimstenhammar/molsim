@@ -44,7 +44,6 @@ outfiles = $(addprefix $(OutDir)/,$(todiff))
 outinfiles = $(subst $(InDir), $(OutDir) ,$(infiles))
 
 stablefiles = $(addprefix $(StableDir)/,$(todiff))
-stableinfiles = $(subst $(InDir), $(StableDir) ,$(infiles))
 
 #store the difference between the stable and out file in %.diff
 difffiles = $(addsuffix .diff,$(outfiles))
@@ -171,17 +170,17 @@ cleanall: clean cleanstable
 %/daniel.cnf:
 	cp $(InDir)/daniel.cnf.save $@
 
-$(OutDir)/p.bd.ads2.user.diff: $(OutDir)/p.bd.ads2.user $(OutDir)/p.bd.ads.user
-	$(diffscript) $^ > $@
+$(StableDir)/p.bd.ads2.user: $(StableDir)/p.bd.ads.user
+	cp $< $@
+
+$(OutDir)/p.bd.ads2.user: $(OutDir)/p.bd.ads2.in $(OutDir)/p.bd.ads1.in
+	$(molsim) $(OutDir)/p.bd.ads1.user
+	mv $(OutDir)/p.bd.ads1.cnf $(OutDir)/p.bd.ads2.cnf
+	mv $(OutDir)/p.bd.ads1.user $(OutDir)/p.bd.ads2.user
+	$(molsim) $(OutDir)/p.bd.ads2.user
 
 %/ads_20-mer: %/p.bd.ads.out
 	touch $@
-
-%/p.bd.ads2.user: %/p.bd.ads2.in %/p.bd.ads1.in
-	$(molsim) $*/p.bd.ads1.user
-	mv $*/p.bd.ads1.cnf $*/p.bd.ads2.cnf
-	mv $*/p.bd.ads1.user $*/p.bd.ads2.user
-	$(molsim) $*/p.bd.ads2.user
 
 ################
 # MOLSIM files #

@@ -149,8 +149,8 @@ contains
 
 subroutine SuperballStat(iStage)
    integer(4), intent(in) :: iStage
-   if (txmethodsuperball == 'nr') call SuperballStatNR(iStage)
-   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage)
+   if (txmethodsuperball == 'nr') call SuperballStatNR(iStage, iaux)
+   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage, vaux(1:3,1), laux, raux)
 end subroutine SuperballStat
 
 !........................................................................
@@ -1991,7 +1991,7 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
 #if defined (_PAR_)
      call par_bc_characters(ptype, 1)
-     call par_bc_logicals(foundpot, 1)
+     call par_bc_logical(foundpot)
 #endif
 
       if (.not.foundpot) call Stop(txroutine, 'nemo potential not found in library', uout)
