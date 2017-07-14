@@ -1207,7 +1207,7 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
    real(8),           intent(in) :: atsize(*)     ! size of atom type
    real(8),           intent(in) :: blmax         ! maximal bond length
-   character(1),      intent(in) :: vmdname(*)    ! label to identify different particle types
+   character(1),      intent(in) :: vmdname(0:35) ! label to identify different particle types
    logical,           intent(in) :: lgr
    integer(4),        intent(in) :: itypegr       ! ref (1) or field (2)
    integer(4),        intent(in) :: unit          ! output unit
@@ -1232,7 +1232,6 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
 ! ... determine connectivity of atoms
 
-   ! vaux(1:3,1:na) = r(1:3,1:na) ! should not be needed: the argument vaux is intent(out) only ! TODO: Test whether needed
    call UndoPBC(vaux)
 
    mnbond = 2*na
@@ -1263,69 +1262,52 @@ end subroutine WriteVTFHeader
 subroutine WriteVTFCoordinates(tximage, unit)
 
    use MolModule
-   use CoordinateModule  ! needed ?
 
    implicit none
 
-   character(10),           intent(in) :: tximage(3)       !
-   integer(4),              intent(in) :: unit             ! output unit
+   character(10),           intent(in) :: tximage(3)
+   integer(4),              intent(in) :: unit
 
    character(40),            parameter :: txroutine = 'WriteVTFCoordinates'
 
    real(8),          allocatable, save :: ro_vtf(:,:)
+
    real(8)                             :: rcom(3)
-   integer(4)                          :: ip
+   integer(4)                          :: ia
 
    if (.not. allocated(ro_vtf)) then
-      allocate(ro_vtf(1:3,1:na))
-      ro_vtf = 0.0E+00
+      allocate(ro_vtf(3,na))
    end if
 
-! ... write coordinates in ro_vtf
+! ... store particle coordinates
 
-   ro_vtf(1:3,1:na) = r(1:3,1:na)
+   ro_vtf = ro
 
 ! ... if intended undo periodic boundary conditions
 
-   if (tximage(3) == 'undopbc') call UndoPBC(ro_vtf)
+   if (tximage(2) == 'undopbc') call UndoPBC(ro_vtf)
 
 ! ... if centering of the atoms is required
 
    rcom(1:3) = Zero
 
-   if (tximage(4) == 'center') then
+   if (tximage(3) == 'center') then
       rcom(1)   = sum(ro_vtf(1,1:na))/real(na)
       rcom(2)   = sum(ro_vtf(2,1:na))/real(na)
       rcom(3)   = sum(ro_vtf(3,1:na))/real(na)
       ro_vtf(1,1:na) = ro_vtf(1,1:na)-rcom(1)
       ro_vtf(2,1:na) = ro_vtf(2,1:na)-rcom(2)
       ro_vtf(3,1:na) = ro_vtf(3,1:na)-rcom(3)
-   else if (tximage(4) == 'xycenter') then
+   else if (tximage(3) == 'xycenter') then
       rcom(1)   = sum(ro_vtf(1,1:na))/real(na)
       rcom(2)   = sum(ro_vtf(2,1:na))/real(na)
       ro_vtf(1,1:na) = ro_vtf(1,1:na)-rcom(1)
       ro_vtf(2,1:na) = ro_vtf(2,1:na)-rcom(2)
-   ! else if (tximage(4) == 'centernw' ) then               ! center network
-   !    if (tximage(3) /= 'undopbc') call UndoPBC(ro_vtf)
-   !    if (lnomassnw) then
-   !       rcom(1) = sum(ro_vtf(1,1:np) - ro_vtf(1,ipref), MASK=lptinnw(iptpn(1:np)))
-   !       rcom(2) = sum(ro_vtf(2,1:np) - ro_vtf(2,ipref), MASK=lptinnw(iptpn(1:np)))
-   !       rcom(3) = sum(ro_vtf(3,1:np) - ro_vtf(3,ipref), MASK=lptinnw(iptpn(1:np)))
-   !    else
-   !       rcom(1) = sum((ro_vtf(1,1:np) - ro_vtf(1,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-   !       rcom(2) = sum((ro_vtf(2,1:np) - ro_vtf(2,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-   !       rcom(3) = sum((ro_vtf(3,1:np) - ro_vtf(3,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-   !    end if
-   !    rcom(1:3) = rcom(1:3)*invmass + ro_vtf(1:3,ipref)
-   !    do ip = 1, np
-   !       ro_vtf(1:3,ip) = ro_vtf(1:3,ip) - rcom(1:3)
-   !       call PBC(ro_vtf(1,ip),ro_vtf(2,ip),ro_vtf(3,ip))
-   !    end do
    end if
 
 ! ... write coordinate block into vtf-file
 
-   write(unit,'(3f20.5)') (ro_vtf(1:3,ip), ip = 1, np)
+   write(unit,'(3f20.5)') (ro_vtf(1:3,ia), ia = 1, na)
 
 end subroutine WriteVTFCoordinates
 
