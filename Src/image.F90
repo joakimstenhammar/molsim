@@ -1140,9 +1140,9 @@ subroutine ImageVTFSub
 ! ... write coordinates
 
    write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
-   write (uvtf,'(a)') txwrap(2)
+   write (uvtf,'(a)') trim(adjustl(txwrap(2)))
    call WriteVTFCoordinates(tximage, uvtf)
-   write (uvtf,'(a)') txwrap(3)
+   write (uvtf,'(a)') trim(adjustl(txwrap(3)))
 
 ! ... is split mode: close file fvtf
 
