@@ -410,7 +410,7 @@ static.o        : static.F90      mol.o      statistics.o mollib.o potential.o
 	$(COMP_SER) $(FLAG_SER) -c static.F90
 dynamic.o        : dynamic.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c dynamic.F90
-image.o         : image.F90      mol.o
+image.o         : image.F90      mol.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c image.F90
 statistics.o    : statistics.F90 mollib.o
 	$(COMP_SER) $(FLAG_SER) -c statistics.F90
