@@ -968,7 +968,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
 ! ... allocations
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(nat))
+         allocate(atsize(nat), rgbcolor(3,0:ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(nat))
       end if
 
 ! ... determine the atom type and name of the local group igrloc
@@ -981,10 +981,11 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
 ! ... set default values
 
-      txfile        = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
-      txwhen        = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
-      tximage       = ['frame     ','          ','          '] ! define here which kind of options shall be applied
-      atsize(1:nat) = radat(1:nat)
+      txfile          = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
+      txwhen          = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
+      tximage         = ['frame     ','          ','          '] ! define here which kind of options shall be applied
+      atsize(1:nat)   = radat(1:nat)
+      rgbcolor(1:3,0) = [ (0.5, m = 1,3) ]
       do igrloc = 1, 3
          if (igrloc > ngrloc) exit
          rgbcolor(1:3,igrloc)    = [ (Zero, m = 1,3) ]
@@ -1047,7 +1048,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       if (master .and. (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin')) then
          call FileOpen(utcl,ftcl,'form/noread')
-         call WriteTCLScript(iStage,rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,utcl) ! TODO
+         call WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,ngrloc,lsplitvtf,utcl)
          close(utcl)
       end if
 
@@ -1095,9 +1096,6 @@ subroutine ImageVTF(iStage,iimage,lgr)
       if (allocated(atsize)) deallocate(atsize,rgbcolor,iatgrloc,txgrloc,txatloc)
 
       if (master .and. .not.lsplitvtf) close(uvtf)
-
-      ! call system ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl')  ! change from trajectory.vtf to $Job.vtf in *.tcl files
-!     call execute_command_line ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl', wait=.false.)
 
    end select
 
@@ -1337,26 +1335,34 @@ end subroutine WriteVTFCoordinates
 ! ... write VTF-accompanying TCL-script to be executed in VMD to adjust colors, bond radius,
 ! ... bond and atom resolution, and insert objects such as frames, planes
 
-subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,unit)
+subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,ngrloc,lsplitvtf,unit)
 
    use MolModule
    implicit none
 
-   real(8),       intent(inout) :: rgbcolor(3,*)
+   real(8),       intent(inout) :: rgbcolor(3,0:ngrloc)
    real(8),          intent(in) :: bondr
    real(8),          intent(in) :: bondres
    real(8),          intent(in) :: sphres
    character(10),    intent(in) :: tximage(3)
    character(1) ,    intent(in) :: vmdname(0:35)
    logical,          intent(in) :: lgr
+   integer(4),       intent(in) :: ngrloc
+   logical,          intent(in) :: lsplitvtf
    integer(4),       intent(in) :: unit
 
    character(40),  parameter :: txroutine = 'WriteTCLScript'
-   integer(4)                :: iat, icolor, icube, ird
+   integer(4)                :: icube, ird, igrloc, igrloc0
    real(8)      ,  parameter :: cornerref(3,8) = reshape( &
            [ One, One, One,   -One, One, One,  -One, One,-One,  One, One,-One, &
              One,-One, One,   -One,-One, One,  -One,-One,-One,  One,-One,-One ] , [3,8] )
    real(8) :: corner(1:3,1:14)
+
+! ...  index to start with
+
+   igrloc0 = merge(0, 1, lgr)
+
+! ... Start to write tcl-script
 
    write(unit,'(a)') 'set mode load'
 
@@ -1366,64 +1372,61 @@ subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,unit
 
    write(unit,'(a)') '   set init [mol new atoms 1]'
    write(unit,'(a)') '   set sel  [atomselect $init all]'
-   write(unit,'(a17,a1)') ('   $sel set name ', vmdname(iat), iat = 1, nat)
+   write(unit,'(a17,a1)') ('   $sel set name ', vmdname(igrloc), igrloc = igrloc0, ngrloc)
    write(unit,'(a)') '   $sel delete'
    write(unit,'(a)') '   mol delete $init'
 
 ! ... rgbcolors should be set between 0 and 1
 
-   if(any(rgbcolor(1:3,1:nat) > One)) rgbcolor(1:3,1:nat) = rgbcolor(1:3,1:nat)/255.0
+   if(any(rgbcolor(1:3,0:ngrloc) > One)) rgbcolor(1:3,0:ngrloc) = rgbcolor(1:3,0:ngrloc)/255.0
 
 ! ... write script header
 
-   write(unit,'(a)') '   mol delete all                  '   ! begin a fresh session
-   write(unit,'(a)') '   display update off              '   ! update of display after modifications
+   write(unit,'(a)') '   mol delete all'   ! begin a fresh session
+   write(unit,'(a)') '   display update off'   ! update of display after modifications
 
 ! ... determine structure file name
 
-   write(unit,'(a)') '   set filelist [glob *vtf]                                         '
-   write(unit,'(a)') '   set filecount 0                                                  '
-   write(unit,'(a)') '   foreach file [split $filelist] {incr filecount}                  '
-   write(unit,'(a)') '   if { $filecount > 1 } {                                          '
-   write(unit,'(a)') '      puts "Which vtf-file would you like to load? Enter number ..."'
-   write(unit,'(a)') '      for {set i 0} {$i < $filecount} {incr i} {                    '
-   write(unit,'(a)') '         set txfile($i) [lindex [split $filelist] $i]               '
-   write(unit,'(a)') '         puts $i)$txfile($i)                                        '
-   write(unit,'(a)') '      }                                                             '
-   write(unit,'(a)') '      gets stdin choice                                             '
-   write(unit,'(a)') '      set txproject_vtf $txfile($choice)                            '
-   write(unit,'(a)') '   } else {                                                         '
-   write(unit,'(a)') '      set txproject_vtf $filelist                                   '
-   write(unit,'(a)') '   }                                                                '
+   if (lsplitvtf) then
+      write(unit,'(a)') '   set filelist [glob '//trim(adjustl(project))//'.*.vtf]'
+      write(unit,'(a)') '   set filecount 0'
+      write(unit,'(a)') '   foreach file [split $filelist] {incr filecount}'
+      write(unit,'(a)') '   if { $filecount > 1 } {'
+      write(unit,'(a)') '      puts "Which vtf-file would you like to load? Enter number ..."'
+      write(unit,'(a)') '      for {set i 0} {$i < $filecount} {incr i} {'
+      write(unit,'(a)') '         set txfile($i) [lindex [split $filelist] $i]'
+      write(unit,'(a)') '         puts $i)$txfile($i)'
+      write(unit,'(a)') '      }'
+      write(unit,'(a)') '      gets stdin choice'
+      write(unit,'(a)') '      set project $txfile($choice)'
+      write(unit,'(a)') '   } else {'
+      write(unit,'(a)') '      set project $filelist'
+      write(unit,'(a)') '   }'
+   else
+      write(unit,'(a)') '   set project '//trim(adjustl(project))//'.vtf'
+   end if
 
 ! ... load scene
 
-   write(unit,'(a)') '   mol load vtf $txproject.vtf     '   ! load frames
-   write(unit,'(a)') '   color Display Background white  '   ! background default color is black -> turn to white
-   write(unit,'(a)') '   color Axes Labels black         '   ! axes labels default color is white -> turn to black
-   write(unit,'(a)') '   display depthcue off            '   ! disable depth cueing
-   write(unit,'(a)') '   set molID [molinfo top]         '   ! get ID of molecule
+   write(unit,'(a)') '   mol load vtf $project'   ! load frames
+   write(unit,'(a)') '   color Display Background white'   ! background default color is black -> turn to white
+   write(unit,'(a)') '   color Axes Labels black'   ! axes labels default color is white -> turn to black
+   write(unit,'(a)') '   display depthcue off'   ! disable depth cueing
+   write(unit,'(a)') '   set molID [molinfo top]'   ! get ID of molecule
 
 ! ... adjust drawing style, bond radius, bond resolution, sphere resolution
 
-   write(unit,'(a)')             '   mol delrep 0 $molID        '
-   write(unit,'(a30,f6.1)')      '   mol representation VDW 1.0 ', sphres          ! 1.0 is a radius scaling factor - the atom radius is declared in WriteVTFHeader
-   write(unit,'(a)')             '   mol addrep $molID          '
-   write(unit,'(a28,f5.2,f6.1)') '   mol representation Bonds   ', bondr, bondres
-   write(unit,'(a)')             '   mol addrep $molID          '
+   write(unit,'(a)')             '   mol delrep 0 $molID'
+   write(unit,'(a30,f6.1)')      '   mol representation VDW 1.0', sphres          ! 1.0 is a radius scaling factor - the atom radius is declared in WriteVTFHeader
+   write(unit,'(a)')             '   mol addrep $molID'
+   write(unit,'(a28,f5.2,f6.1)') '   mol representation Bonds', bondr, bondres
+   write(unit,'(a)')             '   mol addrep $molID'
 
 ! ... adjust colors
 
-   do iat = 1, nat
-      if(lgr) then
-         if(igrpn(ipnpt(iptat(iat)),1) > Zero) then
-            icolor = igrpn(ipnpt(iptat(iat)),1)       ! colouring follows group assignment
-         end if
-      else
-         icolor = iat                                 ! colouring according to atom types
-      end if
-      write(unit,'(a20,i4,3f6.3)') '   color change rgb ',1025-iat, rgbcolor(1:3,icolor) ! overwrite colors (count-down from color no. 1024 in order to prevent the modification of already used colo
-      write(unit,'(a14,a2,i5)')    '   color Name ', vmdname(iat), 1025-icolor
+   do igrloc = igrloc0, ngrloc
+      write(unit,'(a20,i4,3f6.3)') '   color change rgb ',32-igrloc, rgbcolor(1:3,igrloc)
+      write(unit,'(a14,a2,i5)')    '   color Name ', vmdname(igrloc), 32-igrloc
    end do
 
 ! ... insert graphical objects as provided by tximage
@@ -1431,9 +1434,9 @@ subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,unit
 ! ... draw frame according to the geometry of the simulation cell
 
    if (tximage(1) == 'frame') then
-      write(unit,'(a)') '   mol load graphics frame      '
+      write(unit,'(a)') '   mol load graphics frame'
       write(unit,'(a)') '   set frameID [molinfo top]'      ! store the ID of the frame graphics
-      write(unit,'(a)') '   mol top $molID               '  ! molecules can be active or inactive - the actual molecule should be the active one
+      write(unit,'(a)') '   mol top $molID'  ! molecules can be active or inactive - the actual molecule should be the active one
       write(unit,'(a)') '   graphics $frameID color black'
       if (lbcbox) then
          call DrawBoxTCL
@@ -1446,7 +1449,7 @@ subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,unit
 
 ! ... show result
 
-   write(unit,'(a)') '   display update on    ' ! show modifications
+   write(unit,'(a)') '   display update on' ! show modifications
    write(unit,'(a)') '}'
 
 contains
