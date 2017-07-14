@@ -1249,6 +1249,12 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
    end do
    write(unit,'(/)')
 
+   ! ... declare unit cell if it is box-like
+   if(lbcbox) then
+      write(unit,'(a8,3E12.5)') 'unitcell ', boxlen(1:3)
+      write(unit,'(/)')
+   end if
+
 end subroutine WriteVTFHeader
 
 !************************************************************************
