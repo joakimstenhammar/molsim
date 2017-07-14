@@ -33,7 +33,7 @@
 !               random : Random     , GauRandom      , CirRandom   , SphRandom
 !                mixed : InvInt     , InvFlt         , RelDiff     , CpuAdd      , CpuLeft     , CpuTot     , SecondsSinceStart
 !            readwrite : WriteVec   , WriteMat       , WriteStd    , WriteFront  , WriteHead   , WriteDateTime, WriteIOStat, Warn       , Stop
-!               string : Center     , SpaceOut       , LowerCase   , UpperCase   , SubStr      , Advance, ReplaceText
+!               string : Center     , SpaceOut       , LowerCase   , UpperCase   , SubStr      , Advance    , ReplaceText
 !                 plot : SignMagn   , Plot
 !               powell : BrentMod
 
@@ -109,6 +109,57 @@ module MollibModule !Starting to migrate to Module
          SpaceOut(2*i-1:2*i)=string(i:i)//' '
       end do
    end function SpaceOut
+
+!************************************************************************
+!*                                                                      *
+!*     ReplaceText                                                      *
+!*                                                                      *
+!************************************************************************
+
+! ... Replace text in a string
+   pure function ReplaceText (string,toReplace,replaceWith)  result(outString)
+      character(len=*), intent(in) :: string
+      character(len=*), intent(in) :: toReplace
+      character(len=*), intent(in) :: replaceWith
+      character(len=:), allocatable :: outString
+
+      integer(4) :: lenToReplace, lenReplaceWith, lenOutString
+      integer(4) :: posString, posOutString
+      integer(4) :: pos, nrep
+
+      lenToReplace = len(toReplace)
+      lenReplaceWith = len(replaceWith)
+
+      posString = 1
+      posOutString = 1
+
+      nrep = 0
+      do
+         pos = index(string(posString:),toReplace) - 1
+         if (pos == -1) then
+            exit
+         endif
+         nrep = nrep + 1
+         posString = posString + pos + lenToReplace
+      end do
+
+      lenOutString = len(string) + nrep * (lenReplaceWith - lenToReplace)
+      allocate(character(len=lenOutString) :: outString)
+      outString = repeat(" ", lenOutString)
+
+      posString = 1
+      posOutString = 1
+      do
+         pos = index(string(posString:),toReplace) - 1
+         if (pos == -1) then
+            exit
+         endif
+         outString(posOutString:(posOutString + pos + lenReplaceWith - 1)) = string(posString:(posString + pos - 1))//replaceWith
+         posString = posString + pos + lenToReplace
+         posOutString = posOutString + pos + lenReplaceWith
+      end do
+      outString(posOutString:) = string(posString:)
+   end function ReplaceText
 
 end module MollibModule
 
@@ -3504,31 +3555,6 @@ subroutine Advance(targetstring,unit,str,ok)
    end do
    ok = .true.
 end subroutine Advance
-
-!************************************************************************
-!*                                                                      *
-!*     ReplaceText                                                      *
-!*                                                                      *
-!************************************************************************
-
-! ... Replace text in a string
-! ... adapted from
-! ... http://fortranwiki.org/fortran/show/String_Functions
-! ... accessed 14/07/17
-
-function ReplaceText (s,text,rep)  result(outs)
-
-   character(*)          :: s,text,rep
-   character(len(s)+100) :: outs     ! provide outs with extra 100 char len
-   integer               :: i, nt, nr
-
-   outs = s ; nt = len(text) ; nr = len(rep)
-   do
-      i = index(outs,text(:nt)) ; if (i == 0) exit
-      outs = outs(:i-1) // rep(:nr) // outs(i+nt:)
-   end do
-
-end function ReplaceText
 
 !************************************************************************
 !*                                                                      *
