@@ -1089,7 +1089,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
       end if
       write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '----------', '-------------', '--------'
       write(uout,'(i3,t15,a,t30,f8.3,t45,3f6.2)') &
-         ((igrloc,txgrloc(igrloc)),atsize(iatgrloc(igrloc)),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
+         (igrloc,txgrloc(igrloc),atsize(iatgrloc(igrloc)),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
 
@@ -1555,7 +1555,7 @@ module UndoPBCModule
       integer  :: jp, icl, ib
       real  :: r2
 
-      if (loclundoip(ip) == .true.) then
+      if (loclundoip(ip) .eqv. .true.) then
          ipcenter = 0
          r2min = huge(r2min)
       else
