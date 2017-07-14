@@ -968,7 +968,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
 ! ... allocations
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(nat))
+         allocate(atsize(nat), rgbcolor(3,0:ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(nat))
       end if
 
 ! ... determine the atom type and name of the local group igrloc
@@ -981,10 +981,11 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
 ! ... set default values
 
-      txfile        = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
-      txwhen        = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
-      tximage       = ['frame     ','          ','          '] ! define here which kind of options shall be applied
-      atsize(1:nat) = radat(1:nat)
+      txfile          = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
+      txwhen          = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
+      tximage         = ['frame     ','          ','          '] ! define here which kind of options shall be applied
+      atsize(1:nat)   = radat(1:nat)
+      rgbcolor(1:3,0) = [ (0.5, m = 1,3) ]
       do igrloc = 1, 3
          if (igrloc > ngrloc) exit
          rgbcolor(1:3,igrloc)    = [ (Zero, m = 1,3) ]
