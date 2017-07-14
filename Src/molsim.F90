@@ -210,6 +210,8 @@ subroutine IOMolsim(iStage)
                write(*,'(a)') "mode = warn"
 # elif _DEBUG_
                write(*,'(a)') "mode = debug"
+# elif _QUICK_
+               write(*,'(a)') "mode = quick"
 # endif
             end if
             stop 0

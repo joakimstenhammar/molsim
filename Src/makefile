@@ -241,6 +241,9 @@ ifeq ($(CBIND), TRUE)                      #F03 c-bindings
     ifeq ($(mode),warn)
       DEFINES_BASE += -D_WARN_
     endif
+    ifeq ($(mode),quick)
+      DEFINES_BASE += -D_QUICK_
+    endif
 endif
 
 
