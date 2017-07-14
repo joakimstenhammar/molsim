@@ -1220,14 +1220,14 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 ! ... declare atoms
 
    if (lgr) then
-      write(unit,'(a5,i5,a8,E12.5,a6,a11,a6,a)') &
+      write(unit,'(a5,i5,a8,E13.5,a6,a11,a6,a)') &
          ('atom ',ia-1, &
           ' radius ',atsize(iatan(ia)), &
           ' type ',ReplaceText(trim(txat(iatan(ia))), " ", "_"), &
           ' name ',vmdname(igrpn(ipnan(ia),itypegr)), &
           ia = 1, na)
    else
-      write(unit,'(a5,i5,a8,E12.5,a6,a11,a6,a)') &
+      write(unit,'(a5,i5,a8,E13.5,a6,a11,a6,a)') &
          ('atom ',ia-1, &
           ' radius ',atsize(iatan(ia)), &
           ' type ',ReplaceText(trim(txat(iatan(ia))), " ", "_"), &
@@ -1257,7 +1257,7 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
    ! ... declare unit cell if it is box-like
    if(lbcbox) then
-      write(unit,'(a8,3E12.5)') 'unitcell ', boxlen(1:3)
+      write(unit,'(a8,3E13.5)') 'unitcell ', boxlen(1:3)
       write(unit,'(/)')
    end if
 
@@ -1319,7 +1319,7 @@ subroutine WriteVTFCoordinates(tximage, unit)
 
 ! ... write coordinate block into vtf-file
 
-   write(unit,'(3E12.5)') (ro_vtf(1:3,ia), ia = 1, na)
+   write(unit,'(3E13.5)') (ro_vtf(1:3,ia), ia = 1, na)
 
 end subroutine WriteVTFCoordinates
 
