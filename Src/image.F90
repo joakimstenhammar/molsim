@@ -1055,16 +1055,9 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       if (master) then
          if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
-            if (lsplitvtf) then
-               if (lframezero) call ImageVTFSub
-            else
-               call FileOpen(uvtf, fvtf, 'form/noread')
-               call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
-               if (lframezero) call ImageVTFSub
-            end if
+            if (lframezero .and. .not.lgr) call ImageVTFSub
          else if (txstart == 'continue') then
             read(ucnf) iframe
-            call FileOpen(uvtf, fvtf, 'form/read')
          end if
       end if
 
@@ -1119,6 +1112,8 @@ subroutine ImageVTFSub
    character(40), parameter :: txroutine = 'ImageVTFSub'
    character(10) :: str
 
+   logical, save :: first = .true.
+
 ! ... increment frame number and write to string
 
    iframe = iframe+1
@@ -1128,7 +1123,15 @@ subroutine ImageVTFSub
 
 ! ... if split mode: update file name fvtf, open file and write header
 
-   if (lsplitvtf) then
+   if (first .and. .not.lsplitvtf) then
+      if (txstart == 'continue') then
+         call FileOpen(uvtf, fvtf, 'form/read')  ! TODO: Test whether advancing of vtf file works
+      else if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
+         call FileOpen(uvtf, fvtf, 'form/noread')
+         call WriteVTFHeader(atsize,blmax,vmdname,lgr,itypegr,uvtf)
+      end if
+      first = .false.
+   else if (lsplitvtf) then
       call UpdateVTFFileName(iframe,nframe)
       call FileOpen(uvtf, fvtf, 'form/noread')
       call WriteVTFHeader(atsize,blmax,vmdname,lgr,itypegr,uvtf)
