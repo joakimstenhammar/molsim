@@ -1343,7 +1343,7 @@ subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,ngrl
    integer(4),       intent(in) :: unit
 
    character(40),  parameter :: txroutine = 'WriteTCLScript'
-   integer(4)                :: iat, icolor, icube, ird, igrloc, igrloc0
+   integer(4)                :: icube, ird, igrloc, igrloc0
    real(8)      ,  parameter :: cornerref(3,8) = reshape( &
            [ One, One, One,   -One, One, One,  -One, One,-One,  One, One,-One, &
              One,-One, One,   -One,-One, One,  -One,-One,-One,  One,-One,-One ] , [3,8] )
