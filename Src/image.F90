@@ -967,7 +967,8 @@ subroutine ImageVTF(iStage,iimage,lgr)
 ! ... allocations
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,0:ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(nat))
+         allocate(atsize(nat), rgbcolor(3,0:ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(ngrloc))
+         txatloc = ''
       end if
 
 ! ... determine the atom type and name of the local group igrloc
