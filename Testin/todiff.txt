@@ -207,3 +207,6 @@ fnw.nwt2.mc.out
 chain.sequence.fnw.mc.out
 fnw.nwgen.df.mc.out
 salt.mc.weakcharge.ewald.out
+vtfimage.fnw.mc.out
+vtfimage.fnw.mc.tcl
+vtfimage.fnw.mc.vtf
