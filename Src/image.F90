@@ -1082,17 +1082,17 @@ subroutine ImageVTF(iStage,iimage,lgr)
       write(uout,'(a,f8.2)') 'bond radius                       = ', bondr
       write(uout,'()')
       if (lgr) then
-         write(uout,'(a,t15,a,t30,a,t50,a)') 'group no    ', 'atom type', 'size (radius)', 'rgbcolor'
+         write(uout,'(a,t15,a,t30,a,t50,a)') 'group no    ', 'group type', 'size (radius)', 'rgbcolor'
       else
-         write(uout,'(a,t15,a,t30,a,t50,a)') 'atom type no', 'atom type', 'size (radius)', 'rgbcolor'
+         write(uout,'(a,t15,a,t30,a,t50,a)') 'atom type no', 'atom type ', 'size (radius)', 'rgbcolor'
       end if
-      write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '---------', '-------------', '--------'
+      write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '----------', '-------------', '--------'
       write(uout,'(i3,t15,a,t30,f8.3,t45,3f6.2)') &
-         (igrloc,txat(iatgrloc(igrloc)),atsize(iatgrloc(igrloc)),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
+         ((igrloc,txgrloc(igrloc)),atsize(iatgrloc(igrloc)),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
 
-      if (allocated(atsize)) deallocate(atsize,rgbcolor)
+      if (allocated(atsize)) deallocate(atsize,rgbcolor,iatgrloc,txgrloc,txatloc)
 
       if (master .and. .not.lsplitvtf) close(uvtf)
 
