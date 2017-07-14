@@ -1222,10 +1222,10 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 ! ... declare atoms
 
    if (lgr) then
-      write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
+      write(unit,'(a5,i5,a8,E12.5,a6,a11,a6,a)') &
          ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(igrpn(ipnan(ia),itypegr)), ia = 1, na)
    else
-      write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') &
+      write(unit,'(a5,i5,a8,E12.5,a6,a11,a6,a)') &
          ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
    endif
    write(unit,'(/)')
@@ -1313,7 +1313,7 @@ subroutine WriteVTFCoordinates(tximage, unit)
 
 ! ... write coordinate block into vtf-file
 
-   write(unit,'(3f20.5)') (ro_vtf(1:3,ia), ia = 1, na)
+   write(unit,'(3E12.5)') (ro_vtf(1:3,ia), ia = 1, na)
 
 end subroutine WriteVTFCoordinates
 
