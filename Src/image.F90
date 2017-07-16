@@ -1060,7 +1060,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       if (master) then
          if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
-            if (lframezero .and. .not.lgr) call ImageVTFSub
+            if (lframezero) call ImageVTFSub
          else if (txstart == 'continue') then
             read(ucnf) iframe
          end if
