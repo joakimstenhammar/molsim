@@ -1030,7 +1030,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
       end select
 
       if (lframezero) then
-         nframe = frame + 1
+         nframe = nframe + 1
       end if
 
 ! ... initialization of first frame
