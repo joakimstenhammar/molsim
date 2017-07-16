@@ -1020,14 +1020,18 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       select case (txwhen)
       case ('after_run')
-         nframe = merge(2,1,lframezero)
+         nframe = 1
       case ('after_macro')
-         nframe = merge(nstep1+1,nstep1,lframezero)
+         nframe = nstep1,
       case ('after_iimage')
-         nframe = merge(nstep/iimage+1,nstep/iimage,lframezero)
+         nframe = nstep/iimage
       case default
          call Stop(txroutine,'unsupported value of txwhen',uout)
       end select
+
+      if (lframezero) then
+         nframe = frame + 1
+      end if
 
 ! ... initialization of first frame
 
