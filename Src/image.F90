@@ -985,15 +985,15 @@ subroutine ImageVTF(iStage,iimage,lgr)
       txwhen          = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
       tximage         = ['frame     ','          ','          '] ! define here which kind of options shall be applied
       atsize(1:nat)   = radat(1:nat)
-      rgbcolor(1:3,0) = [ (0.5, m = 1,3) ]
+      rgbcolor(1:3,0) = 0.5
       do igrloc = 1, 3
          if (igrloc > ngrloc) exit
-         rgbcolor(1:3,igrloc)    = [ (Zero, m = 1,3) ]
+         rgbcolor(1:3,igrloc)    = Zero
          rgbcolor(igrloc,igrloc) = One
       end do
       do igrloc = 4, 6
          if (igrloc > ngrloc) exit
-         rgbcolor(1:3,igrloc)      = [ (One, m = 1,3) ]
+         rgbcolor(1:3,igrloc)      = One
          rgbcolor(igrloc-3,igrloc) = Zero
       end do
       do igrloc = 7, ngrloc
