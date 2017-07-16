@@ -1022,7 +1022,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
       case ('after_run')
          nframe = 1
       case ('after_macro')
-         nframe = nstep1,
+         nframe = nstep1
       case ('after_iimage')
          nframe = nstep/iimage
       case default
