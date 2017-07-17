@@ -36,9 +36,10 @@ subroutine ImageDriver(iStage)
    integer(4), intent(in) :: iStage
    logical,    save :: lvrml, lvtf, limageuser
    integer(4), save :: iimage
+   logical,    save :: lgr
    integer(4), save :: nsamp1, nsamp2
 
-   namelist /nmlImage/ iimage, lvrml, lvtf, limageuser
+   namelist /nmlImage/ iimage, lvrml, lvtf, limageuser, lgr
 
    if (slave) return
 
@@ -53,40 +54,51 @@ subroutine ImageDriver(iStage)
       lvrml      = .false.
       lvtf       = .false.
       limageuser = .false.
+      lgr        = .false.
 
       rewind(uin)
       read(uin,nmlImage)
 
-      call ImageDriverSub(iimage)
+! ... check conditions
+
+! ... iimage may not be chosen to be 0
+
+      if (iimage <= 0) call Stop(txroutine, 'iimage may not be chosen smaller or equal 0', uout)
+
+! ... coloring according to group division only if groups are divided
+
+      if (lgr .and. .not.lgroup) call Stop(txroutine, 'lgr is selected, but no group division', uout)
+
+      call ImageDriverSub(iimage,lgr)
 
    case (iWriteInput)
 
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iBeforeSimulation)
 
       nsamp1  = 0
       if (lsim .and. master .and. txstart == 'continue') read(ucnf) nsamp1
 
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iBeforeMacrostep)
 
       nsamp2  = 0
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iSimulationStep)
 
       if (mod(istep2,iimage) == 0) then
          nsamp2 = nsamp2+1
-         call ImageDriverSub(iimage)
+         call ImageDriverSub(iimage,lgr)
       end if
 
    case (iAfterMacrostep)
 
       nsamp1  = nsamp1+1
       if (lsim .and. master) write(ucnf) nsamp1
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    case (iAfterSimulation)
 
@@ -95,13 +107,19 @@ subroutine ImageDriver(iStage)
          write(uout,'(a,t35,i10)') 'image interval                 = ', iimage
          write(uout,'(a,t35,i10)') 'no of time steps/passes used   = ', nsamp2*nsamp1
          write(uout,'()')
+         if (lgr) then
+            write(uout,'(a,t35,a10)') 'coloring according to          = ', 'groups    '
+         else
+            write(uout,'(a,t35,a10)') 'coloring according to          = ', 'atom types'
+         end if
+         write(uout,'()')
          write(uout,'(a)') 'image preparation routines used'
          write(uout,'(a)') '-------------------------------'
          if (lvrml     ) write(uout,'(a)') '   ImageVRML  '
          if (lvtf      ) write(uout,'(a)') '   ImageVTF   '
          if (limageuser) write(uout,'(a)') '   ImageUser  '
       end if
-      call ImageDriverSub(iimage)
+      call ImageDriverSub(iimage,lgr)
 
    end select
 
@@ -111,10 +129,11 @@ contains
 
 !........................................................................
 
-subroutine ImageDriverSub(iimage)
+subroutine ImageDriverSub(iimage,lgr)
    integer(4), intent(in) :: iimage
-   if (lvrml      .and. master) call ImageVRML(iStage, iimage)
-   if (lvtf       .and. master) call ImageVTF(iStage)
+   logical,    intent(in) :: lgr
+   if (lvrml      .and. master) call ImageVRML(iStage,iimage,lgr)
+   if (lvtf       .and. master) call ImageVTF(iStage,iimage,lgr)
    if (limageuser .and. master) call ImageUser(iStage)
 end subroutine ImageDriverSub
 
@@ -130,13 +149,14 @@ end subroutine ImageDriver
 
 ! ... generate input files for vrml 97 viewers
 
-subroutine ImageVRML(iStage, iimage)
+subroutine ImageVRML(iStage, iimage, lgr)
 
    use MolModule
    implicit none
 
    integer(4), intent(in) :: iStage
    integer(4), intent(in) :: iimage
+   logical,    intent(in) :: lgr
 
    character(40), parameter :: txroutine ='ImageVRML'
    character(80), parameter :: txheading ='preparation of vrml file'
@@ -147,19 +167,16 @@ subroutine ImageVRML(iStage, iimage)
    character(20), save :: tximage(3)
    character(8),  save :: txwrap(2) =['C&_FILE=', 'C&_END  ' ]
    integer(4),    save :: iframe
-   logical,       save :: lgr
    character(20) :: string
    integer(4)    :: iat, m, m2, nfac
 
-   namelist /nmlVRML/ txfile, txwhen, atsize, rgbcolor, blmax, bondr, lgr, tximage
+   namelist /nmlVRML/ txfile, txwhen, atsize, rgbcolor, blmax, bondr, tximage
 
    select case (iStage)
    case (iReadInput)
 
       if (.not.allocated(atsize)) then
          allocate(atsize(nat), rgbcolor(3,nat))
-         atsize = 0.0E+00
-         rgbcolor = 0.0E+00
       end if
 
 ! ... set default values
@@ -184,7 +201,6 @@ subroutine ImageVRML(iStage, iimage)
 
       blmax = 1.5d0
       bondr = 0.3d0
-      lgr   =.false.
 
 ! ... read input data
 
@@ -363,17 +379,11 @@ subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
    integer(4), allocatable :: icount(:)
    integer(4) :: ia, iat, ja, ib, icolor, iangle, nangle, i, ip, ipt, icorner, t(3)
    real(8) :: xdir, ydir, zdir, xnorm, ynorm, znorm, xc, yc, zc, height, arg, dangle, rrr(3), mat(4,4), dir
-   real(8), allocatable, save :: ro_temp(:,:)
    real(8)     ,  parameter :: cornerref(3,8) = reshape( &
            [-One, One, One,   One, One, One,   One, One,-One,  -One, One,-One, &
             -One,-One, One,   One,-One, One,   One,-One,-One,  -One,-One,-One ] , [3,8] )
    real(8) :: corner(1:3,1:8)
    real(8), save :: rgbcolor_dipole(1:3,1:2) = reshape([One, One, Zero,  Zero, One, One],[3,2])
-
-   if (.not.allocated(ro_temp)) then
-      allocate(ro_temp(1:3,1:na))
-      ro_temp = 0.0E+00
-   end if
 
 ! ... initializing label
 
@@ -812,7 +822,6 @@ end subroutine DrawAtom_jasper
 subroutine DrawAtom
       if(.not.allocated(icount)) then
          allocate(icount(nat))
-         icount = 0
       end if
       icount = 0
       write(unit,'(a)') '# ... object: atom'
@@ -882,35 +891,57 @@ end subroutine VRMLSub
 !*                                                                      *
 !************************************************************************
 
-! ... generate input files and tcl-script for VMD
-!     by Cornelius Hofzumahaus 03/2015
+! ... generate vtf file(s) and tcl-script for VMD
+!
+! ... VMD (Visual Molecular Dynamics) is (after registration) free to use, please see:
+! ... http://www.ks.uiuc.edu/Research/vmd/
+!
+! ... Any published work which utilizes VMD shall include the following reference:
+! ... "Humphrey, W., Dalke, A. and Schulten, K., `VMD -Visual Molecular
+! ...  Dynamics', J. Molecular Graphics, 1996, vol. 14, pp. 33-38."
 
-subroutine ImageVTF(iStage) !iimage is not used
+subroutine ImageVTF(iStage,iimage,lgr)
 
    use MolModule
    implicit none
 
-   integer(4), intent(in) :: iStage
-   !integer(4), intent(in) :: iimage
+   integer(4),           intent(in) :: iStage
+   integer(4),           intent(in) :: iimage
+   logical,              intent(in) :: lgr
 
-   character(40), parameter :: txroutine ='ImageVTF'
-   character(80), parameter :: txheading ='preparation of vtf file'
-   character(12), save :: txwhen
-   real(8), allocatable, save :: atsize(:), rgbcolor(:,:)
-   real(8),       save :: rgbweakcharge(3), blmax, bondr, bondres, sphres
-   character(20), save :: tximage(4)
-   character(19), save :: txwrap(3) =['# Start of image   ','timestep ordered   ','# End Image        ' ]
-   integer(4),    save :: iframe
-   logical,       save :: lgr, lrendwc
-   logical, allocatable, save :: lptinnw(:)
-   integer(4)    :: iat, m
+   character(40),         parameter :: txroutine ='ImageVTF'
+   character(80),         parameter :: txheading ='preparation of vtf file'
 
-   character(1),  parameter :: vmdname(36) = (/ '0','1','2','3','4','5','6','7','8'&    ! vmdname is being used for VMD to identify different particle types as such
-                                               ,'9','A','B','C','D','E','F','G','H'&
-                                               ,'I','J','K','L','M','N','O','P','Q'&
-                                               ,'R','S','T','U','V','W','X','Y','Z' /)
+   character(5),               save :: txfile
+   character(12),              save :: txwhen
+   character(10),              save :: tximage(3)
+   real(8),       allocatable, save :: atsize(:), rgbcolor(:,:)
+   real(8),                    save :: blmax, bondr, bondres, sphres
+   logical,                    save :: lframezero
 
-   namelist /nmlVTF/ txwhen, atsize, rgbcolor, rgbweakcharge, blmax, bondr, bondres, sphres, lgr, tximage, lrendwc, lptinnw
+   integer(4),                 save :: iframe
+   integer(4),                 save :: nframe              ! number of frames in the whole simulation
+
+   integer(4),                 save :: ngrloc              ! number of local groups
+   integer(4),    allocatable, save :: iatgrloc(:)         ! atom type of local group igrloc
+   character(40), allocatable, save :: txgrloc(:)          ! name of local group
+   character(40), allocatable, save :: txatloc(:)          ! name of atom type, declared with length 40
+
+   logical,                    save :: lsplitvtf = .false. ! flag for splitting the vtf file in multiple files
+
+   character(17),         parameter :: txwrap(3) = ['# Start of image ','timestep ordered ','# End Image      ' ]
+
+   integer(4),            parameter :: itypegr = 1 ! use reference group division (= 1 for ref, = 2 for field)
+                                                   ! ... the idea is to make itypegr an input parameter
+
+   character(1),          parameter :: vmdname(0:35) = [ '0','1','2','3','4','5','6','7','8'&
+                                                        ,'9','A','B','C','D','E','F','G','H'&
+                                                        ,'I','J','K','L','M','N','O','P','Q'&
+                                                        ,'R','S','T','U','V','W','X','Y','Z' ]
+   character(29)                 :: outfmt
+   integer(4)                    :: igrloc, m
+
+   namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -919,100 +950,138 @@ subroutine ImageVTF(iStage) !iimage is not used
    select case (iStage)
    case (iReadInput)
 
+! ... check condition
+
+! ... ImageVTF is not thought to be used with polyatomic particles
+
+      if (lpolyatom) call Stop(txroutine,'polyatomic particles cannot be handled',uout)
+
+! ... usually the default values of the namelist would be set here and afterwards read from the input file
+! ... in order to operate with group related properties this has been shifted to iStage = iWriteInput
+
+   case (iWriteInput)
+
+! ... determine how many groups need to considered
+
+      ngrloc = merge(ngr(itypegr), nat, lgr)
+
+! ... allocations
+
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,nat), lptinnw(mnpt))
-         atsize = 0.0E+00
-         rgbcolor = 0.0E+00
-         lptinnw = .false.
+         allocate(atsize(nat), rgbcolor(3,0:ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(ngrloc))
+         txatloc = ''
       end if
+
+! ... determine the atom type and name of the local group igrloc
+
+      txatloc(1:nat) = txat(1:nat) ! transfer character(10) to character(40) for function merge
+      do igrloc = 1, ngrloc
+         iatgrloc(igrloc) = merge(iatgr(igrloc,itypegr), igrloc, lgr)
+         txgrloc(igrloc) = merge(grvar(igrpnt(itypegr,igrloc))%label, txatloc(igrloc), lgr)
+      end do
 
 ! ... set default values
 
-      txwhen        = 'after_run'                        ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
-      atsize(1:nat) = radat(1:nat)
-      tximage       = ['frame','     ','     ','     '] ! define here which kind of options shall be applied
-      do iat = 1, 3
-         if (iat > nat) exit
-         rgbcolor(1:3,iat) = [ Zero, Zero, Zero ]
-         rgbcolor(iat,iat) = One
+      txfile          = 'merge'     ! alternatively choose "txfile = 'split'", for example for dynamic grouping
+      txwhen          = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
+      tximage         = ['frame     ','          ','          '] ! define here which kind of options shall be applied
+      atsize(1:nat)   = radat(1:nat)
+      rgbcolor(1:3,0) = 0.5
+      do igrloc = 1, 3
+         if (igrloc > ngrloc) exit
+         rgbcolor(1:3,igrloc)    = Zero
+         rgbcolor(igrloc,igrloc) = One
       end do
-      do iat = 4, 6
-         if (iat > nat) exit
-         rgbcolor(1:3,iat) = [ One, One, One ]
-         rgbcolor(iat-3,iat) = Zero
+      do igrloc = 4, 6
+         if (igrloc > ngrloc) exit
+         rgbcolor(1:3,igrloc)      = One
+         rgbcolor(igrloc-3,igrloc) = Zero
       end do
-      do iat = 7, nat
-         if (iat > nat) exit
-         rgbcolor(1:3,iat) = [ (One/(iat+m), m = 1,3) ]
+      do igrloc = 7, ngrloc
+         rgbcolor(1:3,igrloc) = [ (One/(igrloc+m), m = 1,3) ]
       end do
-      rgbweakcharge(1:3) = [ 1.0, 0.85, 1.0 ]
-      blmax              = Zero
-      bondr              = 0.3d0
-      bondres            = 12.0    ! number of prisms of which drawn bonds are set up of
-      sphres             = 12.0    ! number of triangles of which drawn spheres are set up of
-      lgr                = .false.
-      lrendwc            = .false.
-      lptinnw(1:npt)     = .false.
+      blmax         = Zero    ! maximum bond length
+      bondr         = 0.3d0   ! bond
+      bondres       = 12.0    ! number of prisms of which drawn bonds are set up of
+      sphres        = 12.0    ! number of triangles of which drawn spheres are set up of
+      lframezero    = .true.  ! set to .false. to exclude the frame containing the initial configuration
 
 ! ... read input data
 
       rewind(uin)
       read(uin,nmlVTF)
 
-! ... check conditions
+! ... check condition
 
-      if(count(latweakcharge(1:nat)) > 1) call Warn(txroutine,'Charge state can be displayed for only one particle type!',uout)
+! ... if coloring according to groups is intended, the first frame cannot be taken
 
-   case (iWriteInput)
+      if (lgr .and. lframezero) call Stop(txroutine,'lgr .and. lframezero: grouping unknown for initital configuration',uout)
 
-! ... open vtf- and tcl-file, write VTF-header and tcl-script
+! ... number of frames to be made
 
-      if (master) then
-         if (txstart == 'setconf' .or. txstart == 'zero') then
-            call FileOpen(uvtf, fvtf, 'form/noread')
-            call FileOpen(utcl, ftcl, 'form/noread')
-            call WriteVTFHeader(atsize,blmax,vmdname,uvtf)
-            call WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,utcl)
-         else if (txstart == 'continue') then
-            call FileOpen(uvtf, fvtf, 'form/read')
-            if(lweakcharge) call FileOpen(utcl, ftcl, 'form/read')
-         end if
+      select case (txwhen)
+      case ('after_run')
+         nframe = 1
+      case ('after_macro')
+         nframe = nstep1
+      case ('after_iimage')
+         nframe = nstep/iimage
+      case default
+         call Stop(txroutine,'unsupported value of txwhen',uout)
+      end select
+
+      if (lframezero) then
+         nframe = nframe + 1
+      end if
+
+! ... initialization of first frame
+
+      iframe = -1 ! first frame iframe = 0: iframe is incremented before the first frame is stored
+
+! ... if vtf file shall be split, prepare some variables
+
+      if (txfile == 'merge') then
+         continue ! fvtf = project.vtf (see inititalization in molsim.F90)
+      else if (txfile == 'split') then
+         call UpdateVTFFileName(iframe,nframe) ! Prepare format string
+         lsplitvtf = .true.
+      else
+         call Stop(txroutine,'unsupported value of txfile',uout)
+      end if
+
+! ... open, write and close tcl-script
+
+      if (master .and. (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin')) then
+         call FileOpen(utcl,ftcl,'form/noread')
+         call WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,ngrloc,lsplitvtf,utcl)
+         close(utcl)
       end if
 
    case (iBeforeSimulation)
 
-      iframe = 0
-      if (lsim .and. master) then
-         if (txwhen == 'after_run') then
-            continue
-         else if ((txwhen == 'after_macro') .or. (txwhen == 'after_iimage')) then
-            call ImageVTFSub
-            if (txstart == 'continue') read(ucnf) iframe
+      if (master) then
+         if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
+            if (lframezero) call ImageVTFSub
+         else if (txstart == 'continue') then
+            read(ucnf) iframe
          end if
       end if
 
    case (iSimulationStep)
 
-      if (txwhen == 'after_iimage') then
-         call ImageVTFSub
-         if (lweakcharge) call WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,utcl)
-      end if
+      if (txwhen == 'after_iimage') call ImageVTFSub
 
    case (iAfterMacrostep)
 
-      if (txwhen == 'after_macro') then
-         call ImageVTFSub
-      end if
+      if (txwhen == 'after_macro') call ImageVTFSub
 
       if (lsim .and. master) write(ucnf) iframe
 
    case (iAfterSimulation)
 
-      if (txwhen == 'after_run') then
-         call ImageVTFSub
-      end if
+      if (txwhen == 'after_run') call ImageVTFSub
 
-      if (lweakcharge) call WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,utcl)
+      outfmt = merge('(i3,t15,a,t45,f8.3,t60,3f6.2)','(i3,t15,a,t30,f8.3,t45,3f6.2)',lgr)
 
       call WriteHead(2, txheading, uout)
       write(uout,'(a,a   )') 'generating vtf file                 ', txwhen
@@ -1020,19 +1089,21 @@ subroutine ImageVTF(iStage) !iimage is not used
       write(uout,'(a,f8.2)') 'maximum bond length               = ', blmax
       write(uout,'(a,f8.2)') 'bond radius                       = ', bondr
       write(uout,'()')
-      write(uout,'(a,t15,a,t30,a,t50,a)') 'atom type no', 'atom type', 'size (radius)', 'rgbcolor'
-      write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '---------', '-------------', '--------'
-      write(uout,'(i3,t15,a,t30,f8.3,t45,3f6.2)') (iat,txat(iat),atsize(iat),rgbcolor(1:3,iat),iat = 1,nat)
+      if (lgr) then
+         write(uout,'(a,t15,a,t45,a,t65,a)') 'group no    ', 'group type', 'size (radius)', 'rgbcolor'
+         write(uout,'(a,t15,a,t45,a,t65,a)') '------------', '----------', '-------------', '--------'
+      else
+         write(uout,'(a,t15,a,t30,a,t50,a)') 'atom type no', 'atom type ', 'size (radius)', 'rgbcolor'
+         write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '----------', '-------------', '--------'
+      end if
+      write(uout,outfmt) &
+         (igrloc,txgrloc(igrloc),atsize(iatgrloc(igrloc)),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
 
-      if (allocated(atsize)) deallocate(atsize, rgbcolor, lptinnw)
+      if (allocated(atsize)) deallocate(atsize,rgbcolor,iatgrloc,txgrloc,txatloc)
 
-      close(uvtf)
-      close(utcl)
-
-      call system ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl')  ! change from trajectory.vtf to $Job.vtf in *.tcl files
-!     call execute_command_line ('sed -i "s?trajectory.vtf?$(ls -1|grep vtf)?g" *.tcl', wait=.false.)
+      if (master .and. .not.lsplitvtf) close(uvtf)
 
    end select
 
@@ -1047,26 +1118,41 @@ subroutine ImageVTFSub
    character(40), parameter :: txroutine = 'ImageVTFSub'
    character(10) :: str
 
+   logical, save :: first = .true.
+
+! ... increment frame number and write to string
+
    iframe = iframe+1
+
    str = '      '
    write(str, '(i10)') iframe
 
-   if (txwhen == 'after_run') then
-      write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage,lptinnw,uvtf)
-   else if (txwhen == 'after_macro') then
-      write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
-      write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage,lptinnw,uvtf)
-      write (uvtf,'(a)') txwrap(3)
-   else if (txwhen == 'after_iimage') then
-      write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
-      write (uvtf,'(a)') txwrap(2)
-      call WriteVTFCoordinates(tximage,lptinnw,uvtf)
-      write (uvtf,'(a)') txwrap(3)
-   else
-      call stop(txroutine, 'unsupported value of txwhen', uout)
+! ... if split mode: update file name fvtf, open file and write header
+
+   if (first .and. .not.lsplitvtf) then
+      if (txstart == 'continue') then
+         call FileOpen(uvtf, fvtf, 'form/read')
+      else if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
+         call FileOpen(uvtf, fvtf, 'form/noread')
+         call WriteVTFHeader(atsize,blmax,vmdname,lgr,itypegr,uvtf)
+      end if
+      first = .false.
+   else if (lsplitvtf) then
+      call UpdateVTFFileName(iframe,nframe)
+      call FileOpen(uvtf, fvtf, 'form/noread')
+      call WriteVTFHeader(atsize,blmax,vmdname,lgr,itypegr,uvtf)
    end if
+
+! ... write coordinates
+
+   write (uvtf,'(a)') txwrap(1)//trim(adjustl(str))
+   write (uvtf,'(a)') trim(adjustl(txwrap(2)))
+   call WriteVTFCoordinates(tximage, uvtf)
+   write (uvtf,'(a)') trim(adjustl(txwrap(3)))
+
+! ... is split mode: close file fvtf
+
+   if (lsplitvtf) close (uvtf)
 
 end subroutine ImageVTFSub
 
@@ -1076,40 +1162,92 @@ end subroutine ImageVTF
 
 !************************************************************************
 !*                                                                      *
+!*     UpdateVTFFileName                                                *
+!*                                                                      *
+!************************************************************************
+
+! ... update vtf file name with respect to a given frame iframe
+
+subroutine UpdateVTFFileName(iframe,nframe)
+
+   use MolModule
+   implicit none
+
+   integer(4), intent(in) :: iframe
+   integer(4), intent(in) :: nframe
+
+   character(6),     save :: framefmt
+
+   character(1)           :: ndigit
+   character(10)          :: ifrfmt
+
+   logical,          save :: first = .true.
+
+   if (first) then
+      if (nframe-1 == 0) then
+         ndigit = '1'
+      else
+         write(ndigit,'(i1)') int(floor(log10(real(nframe-1))))+1
+      end if
+      framefmt = '(i'//ndigit//'.'//ndigit//')'
+      first = .false.
+   else
+      write(ifrfmt,framefmt) iframe
+      fvtf = adjustl(trim(project))//'.'//adjustl(trim(ifrfmt))//'.vtf'
+   end if
+
+end subroutine UpdateVTFFileName
+
+!************************************************************************
+!*                                                                      *
 !*     WriteVTFHeader                                                   *
 !*                                                                      *
 !************************************************************************
 
 ! ... write header of the vtf file
-!     by Cornelius Hofzumahaus 03/2015
 
-subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
+subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
    use MolModule
+   use MollibModule
    implicit none
 
-   real(8),      intent(in)      :: atsize(*)   ! size of atom type
-   real(8),      intent(in)      :: blmax       ! maximal bond length
-   character(1), intent(in)      :: vmdname(*)  ! label to identify different particle types
-   integer(4)                    :: unit        ! output unit
+   real(8),           intent(in) :: atsize(*)     ! size of atom type
+   real(8),           intent(in) :: blmax         ! maximal bond length
+   character(1),      intent(in) :: vmdname(0:35) ! label to identify different particle types
+   logical,           intent(in) :: lgr
+   integer(4),        intent(in) :: itypegr       ! ref (1) or field (2)
+   integer(4),        intent(in) :: unit          ! output unit
 
    character(40),      parameter :: txroutine = 'WriteVTFHeader'
+
    integer(4)                    :: ibond, ia
-   integer(4),              save :: nbond, mnbond   ! actual and maximal number of bonds
-   integer(4), allocatable, save :: bondlist(:,:)   ! pair of atoms joined by a bond
+   integer(4),              save :: nbond, mnbond ! actual and maximal number of bonds
+   integer(4), allocatable, save :: bondlist(:,:) ! pair of atoms joined by a bond
    character(10)                 :: str = '          '
-
-! ... undo periodic boundary conditions for chains and hierarchical structures
-
-   vaux(1:3,1:na) = r(1:3,1:na)
-   call UndoPBC(vaux)
 
 ! ... declare atoms
 
-   write(unit,'(a5,i5,a8,f6.3,a6,a11,a6,a)') ('atom ',ia-1,' radius ',atsize(iatan(ia)),' type ',txat(iatan(ia)),' name ',vmdname(iatan(ia)), ia = 1, na)
+   if (lgr) then
+      write(unit,'(a5,i5,a8,E13.5,a6,a11,a6,a)') &
+         ('atom ',ia-1, &
+          ' radius ',atsize(iatan(ia)), &
+          ' type ',ReplaceText(trim(txat(iatan(ia))), " ", "_"), &
+          ' name ',vmdname(igrpn(ipnan(ia),itypegr)), &
+          ia = 1, na)
+   else
+      write(unit,'(a5,i5,a8,E13.5,a6,a11,a6,a)') &
+         ('atom ',ia-1, &
+          ' radius ',atsize(iatan(ia)), &
+          ' type ',ReplaceText(trim(txat(iatan(ia))), " ", "_"), &
+          ' name ',vmdname(iatan(ia)), &
+          ia = 1, na)
+   endif
    write(unit,'(/)')
 
 ! ... determine connectivity of atoms
+
+   call UndoPBC(vaux)
 
    mnbond = 2*na
    if (.not. allocated(bondlist)) then
@@ -1126,6 +1264,12 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, unit)
    end do
    write(unit,'(/)')
 
+   ! ... declare unit cell if it is box-like
+   if(lbcbox) then
+      write(unit,'(a8,3E13.5)') 'unitcell ', boxlen(1:3)
+      write(unit,'(/)')
+   end if
+
 end subroutine WriteVTFHeader
 
 !************************************************************************
@@ -1134,99 +1278,57 @@ end subroutine WriteVTFHeader
 !*                                                                      *
 !************************************************************************
 
-! ... writes blocks of coordinates in the vtf-file
-!     by Cornelius Hofzumahaus 03/2015
+! ... writes current atom coordinates to vtf-file
 
-subroutine WriteVTFCoordinates(tximage, lptinnw, unit)
+subroutine WriteVTFCoordinates(tximage, unit)
 
    use MolModule
-   use CoordinateModule  ! needed ?
 
    implicit none
 
-   character(20),           intent(in) :: tximage(4)       !
-   logical,                 intent(in) :: lptinnw(*)       !
-   integer(4),              intent(in) :: unit             ! output unit
+   character(10),           intent(in) :: tximage(3)
+   integer(4),              intent(in) :: unit
 
    character(40),            parameter :: txroutine = 'WriteVTFCoordinates'
+
    real(8),          allocatable, save :: ro_vtf(:,:)
-   real(8),                       save :: massnw, invmass
-   real(8)                             :: rcom(3), InvFlt
-   logical,                       save :: first = .true., lnomassnw = .false.
-   integer(4),                    save :: ipref
-   integer(4)                          :: ip, ipt
 
-! ... find reference particle within network in order to determine center of mass of network
-
-   if (first) then
-      first = .false.
-      if (tximage(4) == 'centernw') then
-         massnw = Zero
-         massnw = sum(masspt(1:npt)*nppt(1:npt), MASK=lptinnw(1:npt))
-         if (massnw == Zero) then
-            lnomassnw = .true.
-            massnw = sum(nppt(1:npt), MASK=lptinnw(1:npt))
-         end if
-         invmass = InvFlt(massnw)
-         do ipt = 1, npt
-            if (lptinnw(ipt)) then
-               ipref = ipnpt(ipt)
-               exit
-            end if
-         end do
-      end if
-   end if
+   real(8)                             :: rcom(3)
+   integer(4)                          :: ia
 
    if (.not. allocated(ro_vtf)) then
-      allocate(ro_vtf(1:3,1:na))
-      ro_vtf = 0.0E+00
+      allocate(ro_vtf(3,na))
    end if
 
-! ... write coordinates in ro_vtf
+! ... store particle coordinates
 
-   ro_vtf(1:3,1:na) = r(1:3,1:na)
+   ro_vtf = ro
 
 ! ... if intended undo periodic boundary conditions
 
-   if (tximage(3) == 'undopbc') call UndoPBC(ro_vtf)
+   if (tximage(2) == 'undopbc') call UndoPBC(ro_vtf)
 
 ! ... if centering of the atoms is required
 
    rcom(1:3) = Zero
 
-   if (tximage(4) == 'center') then
+   if (tximage(3) == 'center') then
       rcom(1)   = sum(ro_vtf(1,1:na))/real(na)
       rcom(2)   = sum(ro_vtf(2,1:na))/real(na)
       rcom(3)   = sum(ro_vtf(3,1:na))/real(na)
       ro_vtf(1,1:na) = ro_vtf(1,1:na)-rcom(1)
       ro_vtf(2,1:na) = ro_vtf(2,1:na)-rcom(2)
       ro_vtf(3,1:na) = ro_vtf(3,1:na)-rcom(3)
-   else if (tximage(4) == 'xycenter') then
+   else if (tximage(3) == 'xycenter') then
       rcom(1)   = sum(ro_vtf(1,1:na))/real(na)
       rcom(2)   = sum(ro_vtf(2,1:na))/real(na)
       ro_vtf(1,1:na) = ro_vtf(1,1:na)-rcom(1)
       ro_vtf(2,1:na) = ro_vtf(2,1:na)-rcom(2)
-   else if (tximage(4) == 'centernw' ) then               ! center network
-      if (tximage(3) /= 'undopbc') call UndoPBC(ro_vtf)
-      if (lnomassnw) then
-         rcom(1) = sum(ro_vtf(1,1:np) - ro_vtf(1,ipref), MASK=lptinnw(iptpn(1:np)))
-         rcom(2) = sum(ro_vtf(2,1:np) - ro_vtf(2,ipref), MASK=lptinnw(iptpn(1:np)))
-         rcom(3) = sum(ro_vtf(3,1:np) - ro_vtf(3,ipref), MASK=lptinnw(iptpn(1:np)))
-      else
-         rcom(1) = sum((ro_vtf(1,1:np) - ro_vtf(1,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-         rcom(2) = sum((ro_vtf(2,1:np) - ro_vtf(2,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-         rcom(3) = sum((ro_vtf(3,1:np) - ro_vtf(3,ipref)) * masspt(iptpn(1:np)), MASK=lptinnw(iptpn(1:np)))
-      end if
-      rcom(1:3) = rcom(1:3)*invmass + ro_vtf(1:3,ipref)
-      do ip = 1, np
-         ro_vtf(1:3,ip) = ro_vtf(1:3,ip) - rcom(1:3)
-         call PBC(ro_vtf(1,ip),ro_vtf(2,ip),ro_vtf(3,ip))
-      end do
    end if
 
 ! ... write coordinate block into vtf-file
 
-   write(unit,'(3f20.5)') (ro_vtf(1:3,ip), ip = 1, np)
+   write(unit,'(3E13.5)') (ro_vtf(1:3,ia), ia = 1, na)
 
 end subroutine WriteVTFCoordinates
 
@@ -1237,222 +1339,139 @@ end subroutine WriteVTFCoordinates
 !************************************************************************
 
 ! ... TCL: "tool command language"
-! ... write VTF-accompanying TCL-script to be executed in VMD to adjust colors, bond radius, bond and atom resolution, and insert objects such as frames, planes
-! ... visualize charge state of weak charges (currently possible with only one weakly charged atom type)
-!     by Cornelius Hofzumahaus 03/2015
+!
+! ... write VTF-accompanying TCL-script to be executed in VMD to adjust colors, bond radius,
+! ... bond and atom resolution, and insert objects such as frames, planes
 
-subroutine WriteTCLScript(iStage,rgbcolor,rgbweakcharge,bondr,bondres,sphres,tximage,vmdname,lgr,lrendwc,unit)
+subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,ngrloc,lsplitvtf,unit)
 
    use MolModule
    implicit none
 
-   integer(4),    intent(in) :: iStage
-   real(8),       intent(inout) :: rgbcolor(3,*)
-   real(8),       intent(inout) :: rgbweakcharge(3)
-   real(8),       intent(in) :: bondr
-   real(8),       intent(in) :: bondres
-   real(8),       intent(in) :: sphres
-   character(10), intent(in) :: tximage(4)
-   character(1) , intent(in) :: vmdname(*)
-   logical,       intent(in) :: lgr
-   logical,       intent(in) :: lrendwc
-   integer(4),    intent(in) :: unit
+   real(8),       intent(inout) :: rgbcolor(3,0:ngrloc)
+   real(8),          intent(in) :: bondr
+   real(8),          intent(in) :: bondres
+   real(8),          intent(in) :: sphres
+   character(10),    intent(in) :: tximage(3)
+   character(1) ,    intent(in) :: vmdname(0:35)
+   logical,          intent(in) :: lgr
+   integer(4),       intent(in) :: ngrloc
+   logical,          intent(in) :: lsplitvtf
+   integer(4),       intent(in) :: unit
 
    character(40),  parameter :: txroutine = 'WriteTCLScript'
-   integer(4)                :: iat, icolor, icube, ird
+   integer(4)                :: icube, ird, igrloc, igrloc0
    real(8)      ,  parameter :: cornerref(3,8) = reshape( &
            [ One, One, One,   -One, One, One,  -One, One,-One,  One, One,-One, &
              One,-One, One,   -One,-One, One,  -One,-One,-One,  One,-One,-One ] , [3,8] )
    real(8) :: corner(1:3,1:14)
 
-   select case (iStage)
-   case (iWriteInput)
+! ...  index to start with
 
-      write(unit,'(a)') 'set mode load'
+   igrloc0 = merge(0, 1, lgr)
 
-! ... if system contains weak charges the user is prompted to decide which part of the tcl-script is to be excecuted
+! ... Start to write tcl-script
 
-      if(lweakcharge) call DrawWeakChargesTCL(1,vmdname,rgbweakcharge,lrendwc,icolor,unit)
+   write(unit,'(a)') 'set mode load'
 
-      write(unit,'(a)') 'if { $mode == "load" } {'
+   write(unit,'(a)') 'if { $mode == "load" } {'
 
 ! ... define names used to apply coloring scheme
 
-      write(unit,'(a)') '   set init [mol new atoms 1]'
-      write(unit,'(a)') '   set sel  [atomselect $init all]'
-      write(unit,'(a17,a1)') ('   $sel set name ', vmdname(iat), iat = 1, nat+1)   ! nat+1 in order to account for the additional color for weakly charged atomtype
-      write(unit,'(a)') '   $sel delete'
-      write(unit,'(a)') '   mol delete $init'
+   write(unit,'(a)') '   set init [mol new atoms 1]'
+   write(unit,'(a)') '   set sel  [atomselect $init all]'
+   write(unit,'(a17,a1)') ('   $sel set name ', vmdname(igrloc), igrloc = igrloc0, ngrloc)
+   write(unit,'(a)') '   $sel delete'
+   write(unit,'(a)') '   mol delete $init'
 
 ! ... rgbcolors should be set between 0 and 1
 
-      if(any(rgbcolor(1:3,1:nat) > One)) rgbcolor(1:3,1:nat) = rgbcolor(1:3,1:nat)/255.0
-      if(any(rgbweakcharge(1:3)  > One)) rgbweakcharge(1:3)  = rgbweakcharge(1:3) /255.0
+   if(any(rgbcolor(1:3,0:ngrloc) > One)) rgbcolor(1:3,0:ngrloc) = rgbcolor(1:3,0:ngrloc)/255.0
 
- ! ... write script header
+! ... write script header
 
-      write(unit,'(a)') '   mol delete all                  '   ! begin a fresh session
-      write(unit,'(a)') '   display update off              '   ! update of display after modifications
+   write(unit,'(a)') '   mol delete all'   ! begin a fresh session
+   write(unit,'(a)') '   display update off'   ! update of display after modifications
+
+! ... determine structure file name
+
+   if (lsplitvtf) then
+      write(unit,'(a)') '   set filelist [glob '//trim(adjustl(project))//'.*.vtf]'
+      write(unit,'(a)') '   set filecount 0'
+      write(unit,'(a)') '   foreach file [split $filelist] {incr filecount}'
+      write(unit,'(a)') '   if { $filecount > 1 } {'
+      write(unit,'(a)') '      puts "Which vtf-file would you like to load? Enter number ..."'
+      write(unit,'(a)') '      for {set i 0} {$i < $filecount} {incr i} {'
+      write(unit,'(a)') '         set txfile($i) [lindex [split $filelist] $i]'
+      write(unit,'(a)') '         puts "$i) $txfile($i)"'
+      write(unit,'(a)') '      }'
+      write(unit,'(a)') '      puts "$i) load all"'
+      write(unit,'(a)') '      gets stdin choice'
+      write(unit,'(a)') '      if { $choice == $i } {'
+      write(unit,'(a)') '         for {set i 0} {$i < $filecount} {incr i} {'
+      write(unit,'(a)') '            mol addfile $txfile($i) type vtf first 0 last 0 autobonds off' ! load further frames
+      write(unit,'(a)') '         }'
+      write(unit,'(a)') '      } else {'
+      write(unit,'(a)') '         set project $txfile($choice)'
+      write(unit,'(a)') '         mol load vtf $project'   ! load frames
+      write(unit,'(a)') '      }'
+      write(unit,'(a)') '   } else {'
+      write(unit,'(a)') '      set project $filelist'
+      write(unit,'(a)') '      mol load vtf $project'   ! load frames
+      write(unit,'(a)') '   }'
+   else
+      write(unit,'(a)') '   set project '//trim(adjustl(project))//'.vtf'
+      write(unit,'(a)') '   mol load vtf $project'   ! load frames
+   end if
 
 ! ... load scene
 
-      write(unit,'(a)') '   mol load vtf trajectory.vtf     '   ! load frames
-      write(unit,'(a)') '   color Display Background white  '   ! background default color is black -> turn to white
-      write(unit,'(a)') '   color Axes Labels black         '   ! axes labels default color is white -> turn to black
-      write(unit,'(a)') '   display depthcue off            '   ! disable depth cueing
-      write(unit,'(a)') '   set molID [molinfo top]         '   ! get ID of molecule
+   write(unit,'(a)') '   color Display Background white'   ! background default color is black -> turn to white
+   write(unit,'(a)') '   color Axes Labels black'   ! axes labels default color is white -> turn to black
+   write(unit,'(a)') '   display depthcue off'   ! disable depth cueing
+   write(unit,'(a)') '   set molID [molinfo top]'   ! get ID of molecule
 
 ! ... adjust drawing style, bond radius, bond resolution, sphere resolution
 
-      write(unit,'(a)')             '   mol delrep 0 $molID        '
-      write(unit,'(a30,f6.1)')      '   mol representation VDW 1.0 ', sphres          ! 1.0 is a radius scaling factor - the atom radius is declared in WriteVTFHeader
-      write(unit,'(a)')             '   mol addrep $molID          '
-      write(unit,'(a28,f5.2,f6.1)') '   mol representation Bonds   ', bondr, bondres
-      write(unit,'(a)')             '   mol addrep $molID          '
+   write(unit,'(a)')             '   mol delrep 0 $molID'
+   write(unit,'(a30,f6.1)')      '   mol representation VDW 1.0', sphres          ! 1.0 is a radius scaling factor - the atom radius is declared in WriteVTFHeader
+   write(unit,'(a)')             '   mol addrep $molID'
+   write(unit,'(a28,f5.2,f6.1)') '   mol representation Bonds', bondr, bondres
+   write(unit,'(a)')             '   mol addrep $molID'
 
 ! ... adjust colors
 
-      do iat = 1, nat
-         if(lgr) then
-            if(igrpn(ipnpt(iptat(iat)),1) > Zero) then
-               icolor = igrpn(ipnpt(iptat(iat)),1)       ! colouring follows group assignment
-            end if
-         else
-            icolor = iat                                 ! colouring according to atom types
-         end if
-         write(unit,'(a20,i4,3f6.3)') '   color change rgb ',1025-iat, rgbcolor(1:3,icolor) ! overwrite colors (count-down from color no. 1024 in order to prevent the modification of already used colo
-         write(unit,'(a14,a2,i5)')    '   color Name ', vmdname(iat), 1025-icolor
-      end do
-
-      if(lweakcharge) call DrawWeakChargesTCL(2,vmdname,rgbweakcharge,lrendwc,icolor,unit)
+   do igrloc = igrloc0, ngrloc
+      write(unit,'(a20,i4,3f6.3)') '   color change rgb ',32-igrloc, rgbcolor(1:3,igrloc)
+      write(unit,'(a14,a2,i5)')    '   color Name ', vmdname(igrloc), 32-igrloc
+   end do
 
 ! ... insert graphical objects as provided by tximage
+
 ! ... draw frame according to the geometry of the simulation cell
 
-      if (tximage(1) == 'frame') then
-         write(unit,'(a)') '   mol load graphics frame      '
-         write(unit,'(a)') '   set frameID [molinfo top]'      ! store the ID of the frame graphics
-         write(unit,'(a)') '   mol top $molID               '  ! molecules can be active or inactive - the actual molecule should be the active one
-         write(unit,'(a)') '   graphics $frameID color black'
-         if (lbcbox) then
-            call DrawBoxTCL
-         else if (lbcrd) then
-            call DrawRhombicDodecahedronTCL
-  !      else if (lbcto) then
-  !         call DrawTruncatedOctahedronTCL
-  !      else if (lbcsph) then
-  !         call DrawSphereTCL
-  !      else if (lbccyl) then
-  !         call DrawCylinderTCL
-         else
-            call Warn(txroutine,'Drawing of simulation cell currently only for lbcbox or lbcrd',uout)
-         end if
+   if (tximage(1) == 'frame') then
+      write(unit,'(a)') '   mol load graphics frame'
+      write(unit,'(a)') '   set frameID [molinfo top]'      ! store the ID of the frame graphics
+      write(unit,'(a)') '   mol top $molID'  ! molecules can be active or inactive - the actual molecule should be the active one
+      write(unit,'(a)') '   graphics $frameID color black'
+      if (lbcbox) then
+         call DrawBoxTCL
+      else if (lbcrd) then
+         call DrawRhombicDodecahedronTCL
+      else
+         call Warn(txroutine,'Drawing of simulation cell currently only for lbcbox or lbcrd',uout)
       end if
+   end if
 
 ! ... show result
 
-      write(unit,'(a)') '   display update on    ' ! show modifications
-
-      if (lweakcharge) then
-         call DrawWeakChargesTCL(3,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-      else
-         write(unit,'(a)') '}'
-      end if
-
-   case (iSimulationStep)  ! This is called only for lweakcharge = .t.
-
-      call DrawWeakChargesTCL(4,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-
-   case (iAfterSimulation) ! This is called only for lweakcharge = .t.
-
-      call DrawWeakChargesTCL(5,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-
-   end select
+   write(unit,'(a)') '   display update on' ! show modifications
+   write(unit,'(a)') '}'
 
 contains
 
 ! .......................................................................
-
-! ... Support visualization of charge state of switchable charges (under development)
-
-subroutine DrawWeakChargesTCL(iCall,vmdname,rgbweakcharge,lrendwc,icolor,unit)
-
-   use MolModule
-
-   integer(4),   intent(in) :: iCall
-   character(1), intent(in) :: vmdname(*)
-   real(8),      intent(in) :: rgbweakcharge(3)
-   logical,      intent(in) :: lrendwc
-   integer(4),   intent(in) :: icolor
-   integer(4),   intent(in) :: unit
-
-   integer(4),         save :: jframe
-   integer(4)               :: ia, iat, ipt
-   character(10)            :: str
-
-   select case (iCall)
-   case (1)
-
-! ... if system contains weak charges the user is prompted to decide which part of the tcl-script is to be excecuted
-
-      jframe = One
-
-      write(unit,'(a)') 'puts "Please choose the script running mode: (Type and enter)"'
-      write(unit,'(a)') 'puts "-> load: load simulation image data"'
-      write(unit,'(a)') 'puts "-> showcharge: show frames with corresponding visualization of charge state of atoms"'
-      write(unit,'(a)') 'gets stdin mode'
-
-   case (2)
-
-      write(unit,'(a20,i4,3f6.3)') '   color change rgb ',1025-(nat+1), rgbweakcharge(1:3)
-      write(unit,'(a14,a2,i5)')    '   color Name ', vmdname(nat+1), 1025-(icolor+1)
-
-   case (3)
-
-      write(unit,'(a)') '} elseif {$mode == "showcharge"} {'
-      do iat = 1, nat
-         if(.not. latweakcharge(iat)) cycle
-         write(unit,'(a19,a1)') '   set txuncharged ', vmdname(iat)
-         write(unit,'(a19,a1)') '   set txcharged   ', vmdname(nat+1)
-         write(unit,'(a)')      '   set selection [atomselect $molID "name $txuncharged"]'
-         exit ! -> will be written only once, as currently only one particle type is supported
-      end do
-
-   case (4)
-
-      write(unit,'(a)')     '   display update off'
-      write(unit,'(a16,i0)') '   animate goto ', jframe
-      write(unit,'(a)')     '   $selection set name $txuncharged'
-      write(unit,'(a)')     '   set selection [atomselect $molID "index\'
-      do ia = 1, na
-         ipt = iptpn(ipnan(ia))
-         if((.not. latweakcharge(iatan(ia))) .or. (.not. ipt == 1)) cycle
-         if(laz(ia)) write(unit,'(a3,i0,a2)') '   ', ia, ' \'
-      end do
-      write(unit,'(a)')     '   "]'
-      write(unit,'(a)')     '   $selection set name $txcharged'
-      write(unit,'(a)')     '   display update on'
-
-      str = '      '
-      write(str,'(i10)') jframe                              ! get frame number
-
-      if (lrendwc) then
-         write(unit,'(a)') '   render Tachyon scene'//trim(adjustl(str))//'.dat "tachyon -aasamples 12 %s -format BMP -res 1080 720 -o %s.bmp"'
-      else
-         write(unit,'(a)') '   gets stdin dum'
-      end if
-
-      jframe = jframe + 1
-
-   case (5)
-
-      write(unit,'(a)') '}'
-
-   end select
-
-end subroutine DrawWeakChargesTCL
-
-! .....................................................................
 
 subroutine DrawBoxTCL
 
@@ -1476,21 +1495,21 @@ subroutine DrawRhombicDodecahedronTCL
 
    d = sqrt(Two/Three)*cellside
    s = d/SqTwo
-                                              ! Numbers in comment: corner number in ImageVRML
-   corner(1:3,1)  = [    d,  Zero,       -s ] ! 14
-   corner(1:3,2)  = [ Zero,  Zero, -SqTwo*d ] ! 2
-   corner(1:3,3)  = [   -d,  Zero,       -s ] ! 12
-   corner(1:3,4)  = [   -d,     d,     Zero ] ! 10
-   corner(1:3,5)  = [ Zero,     d,        s ] ! 7
-   corner(1:3,6)  = [    d,     d,     Zero ] ! 8
-   corner(1:3,7)  = [    d,    -d,     Zero ] ! 4
-   corner(1:3,8)  = [ Zero,    -d,       -s ] ! 5
-   corner(1:3,9)  = [   -d,    -d,     Zero ] ! 6
-   corner(1:3,10) = [   -d,  Zero,        s ] ! 11
-   corner(1:3,11) = [ Zero,  Zero,  SqTwo*d ] ! 1
-   corner(1:3,12) = [    d,  Zero,        s ] ! 13
-   corner(1:3,13) = [ Zero,    -d,        s ] ! 3
-   corner(1:3,14) = [ Zero,     d,       -s ] ! 9
+
+   corner(1:3,1)  = [    d,  Zero,       -s ]
+   corner(1:3,2)  = [ Zero,  Zero, -SqTwo*d ]
+   corner(1:3,3)  = [   -d,  Zero,       -s ]
+   corner(1:3,4)  = [   -d,     d,     Zero ]
+   corner(1:3,5)  = [ Zero,     d,        s ]
+   corner(1:3,6)  = [    d,     d,     Zero ]
+   corner(1:3,7)  = [    d,    -d,     Zero ]
+   corner(1:3,8)  = [ Zero,    -d,       -s ]
+   corner(1:3,9)  = [   -d,    -d,     Zero ]
+   corner(1:3,10) = [   -d,  Zero,        s ]
+   corner(1:3,11) = [ Zero,  Zero,  SqTwo*d ]
+   corner(1:3,12) = [    d,  Zero,        s ]
+   corner(1:3,13) = [ Zero,    -d,        s ]
+   corner(1:3,14) = [ Zero,     d,       -s ]
 
    do ird = 0, 5
       write(unit,'(a28,3f8.1,a6,3f8.1,a12)') '   graphics $frameID line { ', corner(1:3,mod(ird,6)+1), ' } { ', corner(1:3,mod(ird+1,6)+1),  '} width 2'
@@ -1509,6 +1528,129 @@ end subroutine DrawRhombicDodecahedronTCL
 
 end subroutine WriteTCLScript
 
+module UndoPBCModule
+
+   use MolModule, only: np, ro, iptpn
+   use MolModule, only: lhierarchical, lclink, bondnn, nbondcl, bondcl
+   use MolModule, only: na, ianpn, napt, r
+   implicit none
+   public   :: ipatcenter
+   public   :: UndoclPBC
+   private  :: ipclose
+
+   real(8)  , allocatable, public  :: rotmp(:,:)
+   logical  , allocatable, public  :: lundo(:)
+
+   logical, private, allocatable :: loclundoip(:)
+
+
+   contains
+
+   function ipatcenter(ip) result(ipcenter)
+      implicit none
+      integer, intent(in)  :: ip
+      integer  :: ipcenter
+      real  :: r2
+
+      if (.not. allocated(loclundoip)) then
+         allocate(loclundoip(np))
+      end if
+      loclundoip = .false.
+
+      call ipclose(ip, ipcenter,r2)
+
+      deallocate(loclundoip)
+
+   end function ipatcenter
+
+   recursive subroutine ipclose(ip, ipcenter, r2min)
+      implicit none
+      integer, intent(in)  :: ip
+      integer, intent(out)  :: ipcenter
+      real,    intent(out)  :: r2min
+      integer  :: jpcenter
+      integer  :: jp, icl, ib
+      real  :: r2
+
+      if (loclundoip(ip) .eqv. .true.) then
+         ipcenter = 0
+         r2min = huge(r2min)
+      else
+
+         loclundoip(ip) = .true.
+         ipcenter = ip
+         r2min = (ro(1,ip)**2 + ro(2,ip)**2 + ro(3,ip)**2)
+
+         do ib = 1, 2      ! check bonded partners
+            jp = bondnn(ib,ip)
+            if(jp /= 0 ) then
+               call ipclose(jp, jpcenter, r2)
+               if( (jpcenter > 0) .and. (r2 < r2min))  then
+                  ipcenter = jpcenter
+                  r2min = r2
+               end if
+            end if
+         end do
+
+         if(lhierarchical .or. lclink) then
+            do icl = 1, nbondcl(ip) ! check crosslinked partners
+               jp = bondcl(icl,ip)
+               call ipclose(jp, jpcenter, r2)
+               if( (jpcenter > 0) .and. (r2 < r2min))  then
+                  ipcenter = jpcenter
+                  r2min = r2
+               end if
+            end do
+         end if
+
+      end if
+
+   end subroutine ipclose
+!
+!  UndoClPBC undoes all periodic boundary conditions along the bonds and crosslinked particles
+!
+   recursive subroutine UndoClPBC(rref, ip)
+      implicit none
+      real(8), intent(in)     :: rref(3)     ! reference point for the undo
+      integer, intent(in)     :: ip     ! particle to be undone for the undo
+
+      real(8)  ::  dr(3)
+      integer  :: ia, ib, jp, icl
+      real(8)  :: rip(3)     ! reference point for the undo
+
+      if(lundo(ip)) then
+         return
+      else
+         dr(1:3) = ro(1:3,ip) - rref(1:3)
+         call PBC(dr(1), dr(2), dr(3))
+         rip(1:3) = rref(1:3) + dr(1:3)
+
+         do ia = ianpn(ip), ianpn(ip) + napt(iptpn(ip)) - 1
+            rotmp(1:3, ia) = r(1:3,ia) - ro(1:3,ip) + rip(1:3)
+         end do
+
+         lundo(ip) = .true.
+
+         do ib = 1, 2      ! check bonded partners
+            jp = bondnn(ib,ip)
+            if(jp /= 0 ) then
+               call UndoClPBC(rip(1:3), jp)
+            end if
+         end do
+
+         if(lhierarchical .or. lclink) then
+            do icl = 1, nbondcl(ip) ! check crosslinked partners
+               jp = bondcl(icl,ip)
+               call UndoClPBC(rip(1:3), jp)
+            end do
+         end if
+
+      end if
+
+   end subroutine UndoClPBC
+
+end module UndoPBCModule
+
 !************************************************************************
 !*                                                                      *
 !*     UndoPBC                                                          *
@@ -1519,31 +1661,32 @@ end subroutine WriteTCLScript
 
 subroutine UndoPBC(vhelp)
 
-   use MolModule
+   use UndoPBCModule
    implicit none
    real(8),    intent(out)  :: vhelp(1:3,*)       ! undone atom position
-   integer(4) :: ip, ict, ic, ih, igen, jp
+   integer :: ip, ipmin
+   ! integer :: jp
 
-   if (lhierarchical) then                                                ! hierarchical structures
-      do ih = 1, nh                                                       ! loop over number of hierarchic structures
-         do igen = 0, ngen                                                ! loop over generations
-            ict = ictgen(igen)                                            ! chain type
-            do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1   ! loop over chains of the structure
-                if ((igen == 0) .and. (ic == 1)) then                     ! UNDO first chain of generation zero
-                   call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
-                else
-                   ip = ipnsegcn(1,ic)                                    ! chain ic has particle ip as its first particle
-                   jp = bondcl(1,ip)                                      ! particle ip is crosslinked to particle jp
-                   call UndoPBCChain(vhelp(1,jp), ic, 1, vhelp)           ! UNDO chain ic, using UNDO position of particle jp
-                end if
-            end do
-         end do
-      end do
-   else                                                                   ! systems with no hierarchical structures
-      do ic = 1, nc
-         call UndoPBCChain(ro(1,ipnsegcn(1,ic)), ic, 1, vhelp)
-      end do
+
+   if(.not. allocated(lundo)) then
+      allocate(lundo(np), rotmp(3,na))
    end if
+
+   lundo = .false.
+   rotmp = 0.0
+
+   do ip = 1, np
+      if(.not. lundo(ip)) then
+!          jp = ip
+         ipmin = ipatcenter(ip)
+         call UndoClPBC(ro(1:3,ipmin),ipmin)
+      end if
+   end do
+
+   vhelp(1:3,1:na) = rotmp(1:3, 1:na)
+
+   deallocate(lundo, rotmp)
+
 end subroutine UndoPBC
 
 !************************************************************************

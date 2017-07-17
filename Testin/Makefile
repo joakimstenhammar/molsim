@@ -187,7 +187,7 @@ $(OutDir)/p.bd.ads2.user: $(OutDir)/p.bd.ads2.in $(OutDir)/p.bd.ads1.in
 ################
 
 # default rule on how to run MOLSIM
-%.out %.wrl %.pos %.cnf %.user: %.in $(current)
+%.out %.wrl %.vtf %.tcl %.pos %.cnf %.user: %.in $(current)
 	$(molsim) $@
 
 $(OutDir)/%.in: $(InDir)/%.in
