@@ -938,6 +938,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
                                                         ,'9','A','B','C','D','E','F','G','H'&
                                                         ,'I','J','K','L','M','N','O','P','Q'&
                                                         ,'R','S','T','U','V','W','X','Y','Z' ]
+   character(29)                 :: outfmt
    integer(4)                    :: igrloc, m
 
    namelist /nmlVTF/ txfile, txwhen, tximage, atsize, rgbcolor, blmax, bondr, bondres, sphres, lframezero
@@ -1076,6 +1077,8 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       if (txwhen == 'after_run') call ImageVTFSub
 
+      outfmt = merge('(i3,t15,a,t45,f8.3,t60,3f6.2)','(i3,t15,a,t30,f8.3,t45,3f6.2)',lgr)
+
       call WriteHead(2, txheading, uout)
       write(uout,'(a,a   )') 'generating vtf file                 ', txwhen
       write(uout,'(a,4a  )') 'options (tximage)                   ', tximage
@@ -1083,12 +1086,13 @@ subroutine ImageVTF(iStage,iimage,lgr)
       write(uout,'(a,f8.2)') 'bond radius                       = ', bondr
       write(uout,'()')
       if (lgr) then
-         write(uout,'(a,t15,a,t30,a,t50,a)') 'group no    ', 'group type', 'size (radius)', 'rgbcolor'
+         write(uout,'(a,t15,a,t45,a,t65,a)') 'group no    ', 'group type', 'size (radius)', 'rgbcolor'
+         write(uout,'(a,t15,a,t45,a,t65,a)') '------------', '----------', '-------------', '--------'
       else
          write(uout,'(a,t15,a,t30,a,t50,a)') 'atom type no', 'atom type ', 'size (radius)', 'rgbcolor'
+         write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '----------', '-------------', '--------'
       end if
-      write(uout,'(a,t15,a,t30,a,t50,a)') '------------', '----------', '-------------', '--------'
-      write(uout,'(i3,t15,a,t30,f8.3,t45,3f6.2)') &
+      write(uout,outfmt) &
          (igrloc,txgrloc(igrloc),atsize(iatgrloc(igrloc)),rgbcolor(1:3,igrloc),igrloc = 1,ngrloc)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
