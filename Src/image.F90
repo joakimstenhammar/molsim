@@ -986,15 +986,15 @@ subroutine ImageVTF(iStage,iimage,lgr)
       txwhen          = 'after_run' ! alternatively choose "txwhen = 'after_macro'|'after_iimage'"
       tximage         = ['frame     ','          ','          '] ! define here which kind of options shall be applied
       atsize(1:nat)   = radat(1:nat)
-      rgbcolor(1:3,0) = [ (0.5, m = 1,3) ]
+      rgbcolor(1:3,0) = 0.5
       do igrloc = 1, 3
          if (igrloc > ngrloc) exit
-         rgbcolor(1:3,igrloc)    = [ (Zero, m = 1,3) ]
+         rgbcolor(1:3,igrloc)    = Zero
          rgbcolor(igrloc,igrloc) = One
       end do
       do igrloc = 4, 6
          if (igrloc > ngrloc) exit
-         rgbcolor(1:3,igrloc)      = [ (One, m = 1,3) ]
+         rgbcolor(1:3,igrloc)      = One
          rgbcolor(igrloc-3,igrloc) = Zero
       end do
       do igrloc = 7, ngrloc
@@ -1021,14 +1021,18 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       select case (txwhen)
       case ('after_run')
-         nframe = merge(2,1,lframezero)
+         nframe = 1
       case ('after_macro')
-         nframe = merge(nstep1+1,nstep1,lframezero)
+         nframe = nstep1
       case ('after_iimage')
-         nframe = merge(nstep/iimage+1,nstep/iimage,lframezero)
+         nframe = nstep/iimage
       case default
          call Stop(txroutine,'unsupported value of txwhen',uout)
       end select
+
+      if (lframezero) then
+         nframe = nframe + 1
+      end if
 
 ! ... initialization of first frame
 
@@ -1057,7 +1061,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
 
       if (master) then
          if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
-            if (lframezero .and. .not.lgr) call ImageVTFSub
+            if (lframezero) call ImageVTFSub
          else if (txstart == 'continue') then
             read(ucnf) iframe
          end if
