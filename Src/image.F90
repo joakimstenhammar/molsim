@@ -1039,7 +1039,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
       if (txfile == 'merge') then
          continue ! fvtf = project.vtf (see inititalization in molsim.F90)
       else if (txfile == 'split') then
-         call UpdateVTFFileName(iframe,nframe) ! Prepare format string [with (!) optional argument nframe]
+         call UpdateVTFFileName(iframe,nframe) ! Prepare format string
          lsplitvtf = .true.
       else
          call Stop(txroutine,'unsupported value of txfile',uout)
