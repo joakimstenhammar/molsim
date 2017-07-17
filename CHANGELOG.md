@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.0.0] - 2017-07-17
+### Changed
+- The image generation via ImageVTF has been revised
+- Coloring according to group assignment is now possible
+- Splitting of VTF file is now possible
+
 ## [3.2.2] - 2017-07-11
 ### Fixed
 - Fixed bugs in the parallel routines
