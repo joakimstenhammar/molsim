@@ -1399,20 +1399,29 @@ subroutine WriteTCLScript(rgbcolor,bondr,bondres,sphres,tximage,vmdname,lgr,ngrl
       write(unit,'(a)') '      puts "Which vtf-file would you like to load? Enter number ..."'
       write(unit,'(a)') '      for {set i 0} {$i < $filecount} {incr i} {'
       write(unit,'(a)') '         set txfile($i) [lindex [split $filelist] $i]'
-      write(unit,'(a)') '         puts $i)$txfile($i)'
+      write(unit,'(a)') '         puts "$i) $txfile($i)"'
       write(unit,'(a)') '      }'
+      write(unit,'(a)') '      puts "$i) load all"'
       write(unit,'(a)') '      gets stdin choice'
-      write(unit,'(a)') '      set project $txfile($choice)'
+      write(unit,'(a)') '      if { $choice == $i } {'
+      write(unit,'(a)') '         for {set i 0} {$i < $filecount} {incr i} {'
+      write(unit,'(a)') '            mol addfile $txfile($i) type vtf first 0 last 0 autobonds off' ! load further frames
+      write(unit,'(a)') '         }'
+      write(unit,'(a)') '      } else {'
+      write(unit,'(a)') '         set project $txfile($choice)'
+      write(unit,'(a)') '         mol load vtf $project'   ! load frames
+      write(unit,'(a)') '      }'
       write(unit,'(a)') '   } else {'
       write(unit,'(a)') '      set project $filelist'
+      write(unit,'(a)') '      mol load vtf $project'   ! load frames
       write(unit,'(a)') '   }'
    else
       write(unit,'(a)') '   set project '//trim(adjustl(project))//'.vtf'
+      write(unit,'(a)') '   mol load vtf $project'   ! load frames
    end if
 
 ! ... load scene
 
-   write(unit,'(a)') '   mol load vtf $project'   ! load frames
    write(unit,'(a)') '   color Display Background white'   ! background default color is black -> turn to white
    write(unit,'(a)') '   color Axes Labels black'   ! axes labels default color is white -> turn to black
    write(unit,'(a)') '   display depthcue off'   ! disable depth cueing
