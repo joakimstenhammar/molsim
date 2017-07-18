@@ -2719,8 +2719,41 @@ subroutine GroupWeakCharge(iStage,m)
          end if
       end do
 
+   case (iWriteInput)
+
+      ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
+      igr = 0
+      do ipt = 1, npt
+         if (latweakcharge(ipt)) then
+            do ichargestate = 1, 2
+               igr = igr + 1
+               iptgr(igr,m) = ipt
+               grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
+                                           &trim(adjustl(txpt(ipt)))
+            end do
+            if (jatweakcharge(ipt) /= 0) then
+               do ichargestate = 1, 2
+                  igr = igr + 1
+                  iptgr(igr,m) = jatweakcharge(ipt)
+                  grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
+                                              &trim(adjustl(txpt(jatweakcharge(ipt))))
+               end do
+            end if
+         end if
+      end do
+
+   case (iSimulationStep)
+
+      igrpn(1:np,m) = 0
+      do igr = 1, ngr(m), 2
+         ipt = iptgr(igr,m)
+         do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
+            igrpn(ip,m) = merge(igr, igr+1, laz(ip))
+            grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+         end do
+      end do
+
    end select
-end subroutine GroupWeakCharge
 
 end subroutine GroupWeakCharge
 
