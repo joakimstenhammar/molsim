@@ -1969,6 +1969,8 @@ subroutine GroupUser(iStage, m, txtype, lsetconf)
       call GroupAds_layer1_ramp(iStage, m)
    else if (txtype(m) == 'networkgenerations') then
       call GroupNetworkGenerations(iStage, m)
+   else if (txtype(m) == 'weakcharge') then
+      call GroupWeakCharge(iStage, m)
    else
       lsetconf =.false.
    end if
