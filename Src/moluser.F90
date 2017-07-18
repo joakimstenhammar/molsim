@@ -2697,6 +2697,8 @@ subroutine GroupWeakCharge(iStage,m)
 
    character(len=9), parameter   :: txchargestate(2) = [ 'charged  ', 'uncharged' ]
 
+   integer(4), allocatable, save :: igrref(:) ! group reference for fast assignment of particles to groups
+
    integer(4)                    :: ichargestate, ip, ipt, igr
 
    select case (iStage)
@@ -2710,42 +2712,52 @@ subroutine GroupWeakCharge(iStage,m)
       end if
 
       ngr(m) = 0
-      do ipt = 1, npt
+      do ipt = 1, npt   !                   weak charge?             counterion?
          ngr(m) = merge(ngr(m)+2, ngr(m)+1, latweakcharge(ipt) .or. (ipt == jatweakcharge))
       end do
+
+      if (.not.allocated(igrref)) then
+         allocate(igrref(npt))
+         igrref = 0
+      end if
 
    case (iWriteInput)
 
       ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
       igr = 0
       do ipt = 1, npt
-         if (latweakcharge(ipt)) then
+         if (latweakcharge(ipt) .or. (ipt == jatweakcharge)) then ! weak charge or counterion
             do ichargestate = 1, 2
                igr = igr + 1
                iptgr(igr,m) = ipt
                grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
                                            &trim(adjustl(txpt(ipt)))
             end do
-            if (jatweakcharge /= 0) then
-               do ichargestate = 1, 2
-                  igr = igr + 1
-                  iptgr(igr,m) = jatweakcharge
-                  grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
-                                              &trim(adjustl(txpt(jatweakcharge)))
-               end do
-            end if
+         else ! no charge or fixed charge
+            igr = igr + 1
+            iptgr(igr,m) = ipt
+            grvar(igrpnt(m,igr))%label = trim(adjustl(txpt(ipt)))
          end if
+         igrref(ipt) = igr
       end do
 
    case (iSimulationStep)
 
       igrpn(1:np,m) = 0
-      do igr = 1, ngr(m), 2
-         ipt = iptgr(igr,m)
-         do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
-            igrpn(ip,m) = merge(igr, igr+1, laz(ip))
-            grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
-         end do
+
+      igr = 0
+      do ipt = 1, npt
+         if (latweakcharge(ipt) .or. (ipt == jatweakcharge)) then ! weak charge or counterion
+            do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
+               igrpn(ip,m) = merge(igrref(ipt)-1, igrref(ipt), laz(ip))
+               grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+            end do
+         else ! no charge or fixed charge
+            do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
+               igrpn(ip,m) = igrref(ipt)
+               grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+            end do
+         end if
       end do
 
    end select
