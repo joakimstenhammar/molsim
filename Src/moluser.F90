@@ -2690,6 +2690,14 @@ subroutine GroupWeakCharge(iStage,m)
    use MolModule
    implicit none
 
+   integer(4),    intent(in)     :: iStage
+   integer(4),    intent(in)     :: m
+
+   character(len=*), parameter   :: txroutine = 'GroupWeakCharge'
+
+   character(len=9), parameter   :: txchargestate(2) = [ 'charged', 'uncharged' ]
+
+   integer(4)                    :: ichargestate, ip, ipt, igr
 
 end subroutine GroupWeakCharge
 
