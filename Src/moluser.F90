@@ -2699,6 +2699,9 @@ subroutine GroupWeakCharge(iStage,m)
 
    integer(4)                    :: ichargestate, ip, ipt, igr
 
+   select case (iStage)
+
+   end select
 end subroutine GroupWeakCharge
 
 end subroutine GroupWeakCharge
