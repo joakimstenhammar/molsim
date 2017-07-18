@@ -2674,6 +2674,27 @@ end subroutine SetNetworkGenerationPointer
 
 end subroutine GroupNetworkGenerations
 
+!************************************************************************
+!*                                                                      *
+!*     GroupWeakCharge                                                  *
+!*                                                                      *
+!************************************************************************
+
+! ... group division according to titratable species - respective division in
+! ... charged and uncharged state
+! ...
+! ... currently works for monoatomic systems only
+
+subroutine GroupWeakCharge(iStage,m)
+
+   use MolModule
+   implicit none
+
+
+end subroutine GroupWeakCharge
+
+end subroutine GroupWeakCharge
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
