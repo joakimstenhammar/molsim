@@ -2701,6 +2701,24 @@ subroutine GroupWeakCharge(iStage,m)
 
    select case (iStage)
 
+   case (iReadInput)
+
+      if (.not.lweakcharge) then
+         call Stop(txroutine,'ref/field == ''weakcharge'' .and. .not.lweakcharge',uout)
+      else if (.not.lmonoatom) then
+         call Stop(txroutine,'ref/field == ''weakcharge'' .and. .not.lmonoatom',uout)
+      end if
+
+      ngr(m) = 0
+      do ipt = 1, npt
+         if (latweakcharge(ipt)) then
+            ngr(m) = ngr(m) + 2
+            if (jatweakcharge(ipt) /= 0) then
+               ngr(m) = ngr(m) + 2
+            end if
+         end if
+      end do
+
    end select
 end subroutine GroupWeakCharge
 
