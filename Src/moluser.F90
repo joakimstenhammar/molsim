@@ -2695,7 +2695,7 @@ subroutine GroupWeakCharge(iStage,m)
 
    character(len=*), parameter   :: txroutine = 'GroupWeakCharge'
 
-   character(len=9), parameter   :: txchargestate(2) = [ 'charged', 'uncharged' ]
+   character(len=9), parameter   :: txchargestate(2) = [ 'charged  ', 'uncharged' ]
 
    integer(4)                    :: ichargestate, ip, ipt, igr
 
@@ -2711,12 +2711,7 @@ subroutine GroupWeakCharge(iStage,m)
 
       ngr(m) = 0
       do ipt = 1, npt
-         if (latweakcharge(ipt)) then
-            ngr(m) = ngr(m) + 2
-            if (jatweakcharge(ipt) /= 0) then
-               ngr(m) = ngr(m) + 2
-            end if
-         end if
+         ngr(m) = merge(ngr(m)+2, ngr(m)+1, latweakcharge(ipt) .or. (ipt == jatweakcharge))
       end do
 
    case (iWriteInput)
@@ -2731,12 +2726,12 @@ subroutine GroupWeakCharge(iStage,m)
                grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
                                            &trim(adjustl(txpt(ipt)))
             end do
-            if (jatweakcharge(ipt) /= 0) then
+            if (jatweakcharge /= 0) then
                do ichargestate = 1, 2
                   igr = igr + 1
-                  iptgr(igr,m) = jatweakcharge(ipt)
+                  iptgr(igr,m) = jatweakcharge
                   grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
-                                              &trim(adjustl(txpt(jatweakcharge(ipt))))
+                                              &trim(adjustl(txpt(jatweakcharge)))
                end do
             end if
          end if
