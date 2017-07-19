@@ -1977,19 +1977,19 @@ subroutine SetObjectParam2
 
    if (.not.allocated(txnwtnwt)) then
       allocate(txnwtnwt(nnwtnwt))
-      txnwtnwt = ""
+      txnwtnwt = ''
    end if
    if (.not.allocated(txctct)) then
       allocate(txctct(nctct))
-      txctct = ""
+      txctct = ''
    end if
    if (.not.allocated(txptpt)) then
       allocate(txptpt(nptpt))
-      txptpt = ""
+      txptpt = ''
    end if
    if (.not.allocated(txatat)) then
       allocate(txatat(natat))
-      txatat = ""
+      txatat = ''
    end if
 
    do inwt = 1, nnwt
