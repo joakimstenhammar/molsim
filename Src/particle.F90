@@ -518,10 +518,15 @@ subroutine Particle(iStage)
             end do
          end do
 
-         if (count(latweakcharge(1:nat)) > 0) then
+         if (lweakcharge) then
             write(uout,'()')
             write(uout,'(a,t6,f8.3)') 'pH = ', pH
-            if (jatweakcharge /= 0) write(uout,'(a,i8)') 'type of monoatomic particle carring counter charge to titratable charge = ', jatweakcharge
+            write(uout,'(a,t25,a,t34,a)') 'titratable atom type', 'pK' ,'atom type of counterion'
+            write(uout,'(a,t25,a,t34,a)') '--------------------', '-----', '-----------------------'
+            do iat = 1, nat
+               if (.not. latweakcharge(iat)) cycle
+               write(uout,'(t10,i0,t22,f8.3,t40,i0)') iat, pK(iat) , jatweakcharge(iat)
+            end do
          end if
 
          if (lradatbox) then
