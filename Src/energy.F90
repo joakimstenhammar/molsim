@@ -6595,10 +6595,15 @@ subroutine EwaldSetup
       end if
       rcut2 = rcut**2
 
+
 ! ... allocate memory
 
       naewald = na
-      nkvec = (ncut+1)**3      ! for cube
+      if (ncut >= 1289) then ! (huge(nkvec))**(1/3)-1 = 1289.159
+         call Stop(txroutine,'integer overflow expected for nkvec',uout)
+      else
+         nkvec = (ncut+1)**3   ! for cube
+      end if
       nkvec_word = 4*nkvec     ! word length for communication with MPI
 
       if(allocated(kfac)) deallocate(kfac)
