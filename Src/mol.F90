@@ -193,7 +193,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v4.0.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v5.0.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -424,7 +424,7 @@ module MolModule
    real(8)                    :: pH            ! pH
    real(8), allocatable       :: pHmpK(:)      ! pH - pKa
    integer(4)                 :: iatweakcharge ! type of atom carrying weak charge
-   integer(4), allocatable    :: jatweakcharge(:) !*type of atom carrying counter charge to weak charge (0 means no counter charge)
+   integer(4), allocatable    :: jatweakcharge(:) !*type of atom carrying counter charge to weak charge iat (0 means no counter charge)
    integer(4), allocatable    :: iananweakcharge(:) ! atom carrying weak charge -> its atom carrying its couterion charge
    logical, allocatable       :: laz(:)        ! .true. if atom is charged
    logical, allocatable       :: laztm(:)      ! .true. if atom is charged (trial move)
