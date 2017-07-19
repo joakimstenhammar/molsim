@@ -2027,43 +2027,66 @@ subroutine SetObjectParam2
 ! ... weak charge: allocate memory, set iatweakcharge, and set pointer iananweakcharge
 
    if (lweakcharge) then
-      ! ... set difference of pH and pK
-      pHmpK = pH - pK
-      if (.not.allocated(laz)) then
-         allocate(laz(na_alloc)) ! allocate memory for laz
+
+! ... allocate and initialize weak charge related parameters
+
+      if(.not.allocated(laz)) then
+         allocate(laz(na_alloc))
          laz = .false.
       end if
-      if (jatweakcharge == 0) then       ! no explicit counterions
-      else if (jatweakcharge > 0) then   ! explicit counterions
-         if (count(latweakcharge(1:nat)) /= 1) call Stop(txroutine,'count(latweakcharge(1:nat)) /= 1', uout)
-         iatweakcharge = 0
-         do iat = 1, nat
-            if (latweakcharge(iat)) iatweakcharge = iat  ! type of the titratable atom
-         end do
-         if (iatweakcharge == 0) call Stop(txroutine,'iatweakcharge == 0', uout)
-         if (naat(jatweakcharge) /= 1) call Stop(txroutine,'naat(jatweakcharge) /= 1', uout) ! particle carrying counter charge has to be an ion
+      if (.not. allocated(iananweakcharge)) then
+         allocate(iananweakcharge(na_alloc))
+         iananweakcharge = 0
+      end if
+      if(.not.allocated(pHmpK)) then
+         allocate(pHmpK(nat))
+      end if
+      pHmpK(1:nat) = pH - pK(1:nat)
 
-         if (.not.allocated(iananweakcharge)) then
-            allocate(iananweakcharge(na_alloc))
-            iananweakcharge = 0
-         end if
-         iananweakcharge = 0                          ! set iananweakcharge
-         ja = ianat(jatweakcharge)-1
-!!         write(*,*) ianat(jatweakcharge)-1; stop 99
-         do ia = 1, na
-            if (latweakcharge(iatan(ia))) then        ! ia is weak charge
-              ja = ja + 1                             ! get global number of its ion counterions
-              iananweakcharge(ia) = ja
+! ... test whether specified number of counterions matches the corresponding number of ionizable units
+
+      if (any(jatweakcharge(1:nat) /= 0)) then ! any counterions specified?
+         do jat = 1, nat
+            if (any(jatweakcharge(1:nat) == jat)) then ! jat is a counterion
+
+! ... check some conditions
+
+               if (abs(zat(jat)) /= One) call Stop(txroutine,'abs(zat(jat)) /= 1', uout) ! only charge = +-1 supported
+               if (naat(jat) /= 1) call Stop(txroutine,'naat(jat) /= 1', uout) ! particle with counter charge has to be an ion
+
+! ... sum up number of ionizable units for which jat shall be used as counterion type
+
+               ntemp = 0
+               do iat = 1, nat
+                  if (iat == jat) cycle
+                  if (latweakcharge(iat) .and. (jatweakcharge(iat) == jat)) then ! iat is the corresponding ionizable atom type
+                     if ((zat(iat)+zat(jat)) /= Zero) call Stop(txroutine,'zat(iat) /= -zat(jat)',uout)
+                     ntemp = ntemp + (naat(iat)*nppt(iptat(iat)))
+                  end if
+               end do
+
+! ... test whether numbers match
+
+               if (ntemp /= (naat(jat)*nppt(iptat(jat)))) then
+                  call Stop(txroutine,'inconsistency among number of titrating units and counterions', uout)
+               end if
             end if
          end do
-!          write(*,*) txroutine
-!          write(*,'(a,i5)') 'atom type carrying weak charge: iatweakcharge', iatweakcharge
-!          write(*,'(a,i5)') 'atom type carrying counterion charge: jatweakcharge', jatweakcharge
-!          write(*,'(a,i5)') 'particle type carrying counterion charge', iptat(jatweakcharge)
-!          write(*,'(a,2i5)') ("iananweakcharge", ia, iananweakcharge(ia), ia = 1, na)
-!         stop 1
-      end if
 
+! ... assign every ionizable unit a counterion (store in iananweakcharge)
+
+         do jat = 1, nat
+            if (any(jatweakcharge(1:nat) == jat)) then
+               ja = ianat(jat) - 1
+               do ia = 1, na
+                  if (latweakcharge(iatan(ia)) .and. jatweakcharge(iatan(ia)) == jat) then
+                     ja = ja + 1
+                     iananweakcharge(ia) = ja
+                  end if
+               end do
+            end if
+         end do
+      end if
    end if
 
 ! ... calculate particle masses, masspt, and massipt
