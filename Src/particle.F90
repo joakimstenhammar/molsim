@@ -191,16 +191,13 @@ subroutine Particle(iStage)
 ! ... read input data (nmlWeakCharge)
 
       if (.not.allocated(latweakcharge)) then
-         allocate(latweakcharge(sum(natpt(1:npt))))
+         allocate(latweakcharge(sum(natpt(1:npt))),pK(sum(natpt(1:npt))),jatweakcharge(sum(natpt(1:npt))))
       end if
       latweakcharge = .false.
+      pK            = Zero
+      pH            = Zero
+      jatweakcharge = 0
       if (txelec == 'weakcharge') then
-         if (.not.allocated(pK)) then
-            allocate(pK(sum(natpt(1:npt))),jatweakcharge(sum(natpt(1:npt))))
-         end if
-         pK            = Zero
-         pH            = Zero
-         jatweakcharge = 0
          rewind(uin)
          read(uin,nmlWeakCharge)
       end if
