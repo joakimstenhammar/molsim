@@ -6595,7 +6595,6 @@ subroutine EwaldSetup
       end if
       rcut2 = rcut**2
 
-
 ! ... allocate memory
 
       naewald = na
