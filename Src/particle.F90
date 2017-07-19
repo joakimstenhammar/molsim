@@ -71,15 +71,15 @@ subroutine Particle(iStage)
    logical                   :: luniformsequence
    character(10)             :: txhelp  ! auxiliary
 
-   namelist /nmlParticle/ txelec,                                                       &
-                          lclink, lmultigraft, maxnbondcl,                              &
-                          nnwt,                                                         &
-                          ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,              &
-                          nct, txct, ncct, npptct, txcopolymer, lspma,                  &
-                          nblockict,                                                    &
-                          npt, txpt, nppt, natpt,                                       &
-                          txat, massat, radat, zat, zatalpha, sigat, epsat, latweakcharge, pK, pH, jatweakcharge, &
-                          naatpt, txaat, rain, dipain, polain, lintsite, raintin,       &
+   namelist /nmlParticle/ txelec,                                                 &
+                          lclink, lmultigraft, maxnbondcl,                        &
+                          nnwt,                                                   &
+                          ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,        &
+                          nct, txct, ncct, npptct, txcopolymer, lspma,            &
+                          nblockict,                                              &
+                          npt, txpt, nppt, natpt,                                 &
+                          txat, massat, radat, zat, zatalpha, sigat, epsat,       &
+                          naatpt, txaat, rain, dipain, polain, lintsite, raintin, &
                           lradatbox, itestpart
 
    namelist /nmlRepeating/  rep_iblock_ict
@@ -87,6 +87,8 @@ subroutine Particle(iStage)
    namelist /nmlCopolymerSequence/ iptsegct
 
    namelist /nmlNetworkConfiguration/ nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt
+
+   namelist /nmlWeakCharge/  latweakcharge, pK, pH, jatweakcharge
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -115,10 +117,6 @@ subroutine Particle(iStage)
       zatalpha        = Zero
       sigat           = Zero
       epsat           = Zero
-      latweakcharge   =.false.
-      pK              = Zero
-      pH              = Zero
-      jatweakcharge   = 0
       rain            = Zero
       dipain          = Zero
       polain          = Zero
@@ -188,6 +186,20 @@ subroutine Particle(iStage)
          ! ... read input
          rewind(uin)
          read(uin,nmlNetworkConfiguration)
+      end if
+
+! ... read input data (nmlWeakCharge)
+
+      if (txelec == 'weakcharge') then
+         if (.not.allocated(latweakcharge)) then
+            allocate(latweakcharge(sum(natpt(1:npt))),pK(sum(natpt(1:npt))),jatweakcharge(sum(natpt(1:npt))))
+         end if
+         latweakcharge = .false.
+         pK            = Zero
+         pH            = Zero
+         jatweakcharge = 0
+         rewind(uin)
+         read(uin,nmlWeakCharge)
       end if
 
 ! ... determine types of atoms
