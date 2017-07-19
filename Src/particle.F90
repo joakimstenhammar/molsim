@@ -256,6 +256,11 @@ subroutine Particle(iStage)
       if (lweakcharge .and. lewald .and. lpolyatom) then
          call Stop(txroutine,'(lweakcharge .and. lnetwork) not adapted for polyatomic systems',uout)
       end if
+      if (lweakcharge) then
+         if (.not. any(latweakcharge(1:nat))) then
+            call Stop(txroutine, 'no titratable atom type',uout)
+         end if
+      end if
 
 ! ... allocate memory
 
