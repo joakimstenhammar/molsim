@@ -2697,7 +2697,7 @@ subroutine GroupWeakCharge(iStage,m)
 
    character(len=9), parameter   :: txchargestate(2) = [ 'charged  ', 'uncharged' ]
 
-   integer(4), allocatable, save :: igrref(:) ! group reference for fast assignment of particles to groups
+   integer(4), allocatable, save :: igrref(:,:) ! group reference for fast assignment of particles to groups
 
    integer(4)                    :: ichargestate, ip, ipt, igr
 
@@ -2717,7 +2717,7 @@ subroutine GroupWeakCharge(iStage,m)
       end do
 
       if (.not.allocated(igrref)) then
-         allocate(igrref(npt))
+         allocate(igrref(2,npt))
          igrref = 0
       end if
 
@@ -2732,32 +2732,24 @@ subroutine GroupWeakCharge(iStage,m)
                iptgr(igr,m) = ipt
                grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
                                            &trim(adjustl(txpt(ipt)))
+               igrref(ichargestate,ipt) = igr
             end do
          else ! no charge or fixed charge
             igr = igr + 1
             iptgr(igr,m) = ipt
             grvar(igrpnt(m,igr))%label = trim(adjustl(txpt(ipt)))
+            igrref(1:2,ipt) = igr
          end if
-         igrref(ipt) = igr
       end do
 
    case (iSimulationStep)
 
       igrpn(1:np,m) = 0
-
-      igr = 0
       do ipt = 1, npt
-         if (latweakcharge(ipt) .or. (ipt == jatweakcharge)) then ! weak charge or counterion
-            do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
-               igrpn(ip,m) = merge(igrref(ipt)-1, igrref(ipt), laz(ip))
-               grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
-            end do
-         else ! no charge or fixed charge
-            do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
-               igrpn(ip,m) = igrref(ipt)
-               grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
-            end do
-         end if
+         do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
+            igrpn(ip,m) = merge(igrref(1,ipt), igrref(2,ipt), laz(ip))
+            grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+         end do
       end do
 
    end select
