@@ -419,12 +419,11 @@ module MolModule
    real(8)                    :: epsat(mnat)   !*LJ epsilon parameter for atomes of a given type
    real(8), allocatable       :: az(:)         ! atom charge
    real(8), allocatable       :: aztm(:)       ! atom charge (trial move)
-   logical, allocatable       :: latweakcharge(:) !*.true. if weak charge among atoms of a given type
-   real(8), allocatable       :: pK(:)         !*pKa
+   logical                    :: latweakcharge(mnat) !*.true. if weak charge among atoms of a given type
+   integer(4)                 :: jatweakcharge(mnat) !*type of atom carrying counter charge to weak charge iat (0 means no counter charge)
    real(8)                    :: pH            ! pH
-   real(8), allocatable       :: pHmpK(:)      ! pH - pKa
-   integer(4)                 :: iatweakcharge ! type of atom carrying weak charge
-   integer(4), allocatable    :: jatweakcharge(:) !*type of atom carrying counter charge to weak charge iat (0 means no counter charge)
+   real(8)                    :: pK(mnat)      !*pKa
+   real(8)                    :: pHmpK(mnat)   ! pH - pKa
    integer(4), allocatable    :: iananweakcharge(:) ! atom carrying weak charge -> its atom carrying its couterion charge
    logical, allocatable       :: laz(:)        ! .true. if atom is charged
    logical, allocatable       :: laztm(:)      ! .true. if atom is charged (trial move)

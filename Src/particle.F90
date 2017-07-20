@@ -80,6 +80,7 @@ subroutine Particle(iStage)
                           npt, txpt, nppt, natpt,                                 &
                           txat, massat, radat, zat, zatalpha, sigat, epsat,       &
                           naatpt, txaat, rain, dipain, polain, lintsite, raintin, &
+                          latweakcharge, pK, pH, jatweakcharge,                   &
                           lradatbox, itestpart
 
    namelist /nmlRepeating/  rep_iblock_ict
@@ -87,8 +88,6 @@ subroutine Particle(iStage)
    namelist /nmlCopolymerSequence/ iptsegct
 
    namelist /nmlNetworkConfiguration/ nnwnwt, ncctnwt, txnwt, txtoponwt, iptclnwt
-
-   namelist /nmlWeakCharge/  latweakcharge, pK, pH, jatweakcharge
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -124,6 +123,10 @@ subroutine Particle(iStage)
       raintin         = Zero
       lradatbox       =.false.
       itestpart       = 0
+      latweakcharge   = .false.
+      pK              = Zero
+      pH              = Zero
+      jatweakcharge   = 0
 
 ! ... read input data (nmlParticle)
 
@@ -186,20 +189,6 @@ subroutine Particle(iStage)
          ! ... read input
          rewind(uin)
          read(uin,nmlNetworkConfiguration)
-      end if
-
-! ... read input data (nmlWeakCharge)
-
-      if (.not.allocated(latweakcharge)) then
-         allocate(latweakcharge(sum(natpt(1:npt))),pK(sum(natpt(1:npt))),jatweakcharge(sum(natpt(1:npt))))
-      end if
-      latweakcharge = .false.
-      pK            = Zero
-      pH            = Zero
-      jatweakcharge = 0
-      if (txelec == 'weakcharge') then
-         rewind(uin)
-         read(uin,nmlWeakCharge)
       end if
 
 ! ... determine types of atoms
@@ -2029,7 +2018,7 @@ subroutine SetObjectParam2
        az(ia)  = zat(iat)
     end do
 
-! ... weak charge: allocate memory, set iatweakcharge, and set pointer iananweakcharge
+! ... weak charge: allocate memory and set pointer iananweakcharge
 
    if (lweakcharge) then
 
@@ -2042,9 +2031,6 @@ subroutine SetObjectParam2
       if (.not. allocated(iananweakcharge)) then
          allocate(iananweakcharge(na_alloc))
          iananweakcharge = 0
-      end if
-      if(.not.allocated(pHmpK)) then
-         allocate(pHmpK(nat))
       end if
       pHmpK(1:nat) = pH - pK(1:nat)
 
