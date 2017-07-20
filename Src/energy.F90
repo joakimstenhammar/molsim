@@ -6598,7 +6598,7 @@ subroutine EwaldSetup
 ! ... allocate memory
 
       naewald = na
-      if (ncut > int((huge(nkvec_word)/4.0d0)**(1.0d0/3.0d0)-1.0d0) then
+      if (ncut > int((huge(nkvec_word)/4.0d0)**(1.0d0/3.0d0)-1.0d0)) then
          call Stop(txroutine,'integer overflow expected for nkvec_word',uout)
       else
          nkvec = (ncut+1)**3   ! for cube
