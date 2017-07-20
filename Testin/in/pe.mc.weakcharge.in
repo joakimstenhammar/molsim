@@ -28,8 +28,6 @@
   txaat(1,1) = 'pe-',
   naatpt(1,2) = 1,
   txaat(1,2) = 'cion+',
- /
- &nmlWeakCharge
   latweakcharge(1) = .t.,
   pK(1) = 0.0,
   pH = 1.0,

@@ -53,13 +53,12 @@
   naatpt(1,3)=  1,
   txaat(1,3) = 'Na',
   rain(1,1,3)  =  0.0, 0.0, 0.0,
-/
 
- &nmlWeakCharge
   latweakcharge = ,,, .t.,,
   pK    = ,,, 5.0,,
   pH    = 5,
   jatweakcharge(4) = 5,
+
 /
 
  &nmlPotential

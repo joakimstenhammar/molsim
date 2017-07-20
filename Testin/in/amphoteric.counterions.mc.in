@@ -31,8 +31,6 @@
  zat(1)           =        -1.0 , zat(2)           =   +1.0 , zat(3)           =  +1.0 , zat(4)           =   -1.0 ,
  naatpt(1,1)      =           1 , naatpt(1,2)      =      1 , naatpt(1,3)      =     1 , naatpt(1,4)      =      1 ,
  txaat(1,1)       =       'acid', txaat(1,2)       = 'cAcid', txaat(1,3)       = 'acid', txaat(1,4)       = 'cBase',
-/
-&nmlWeakCharge
  pH               =         7.0 ,
  latweakcharge(1) =          .t., latweakcharge(3) =    .t.,
  pk(1)            =         7.0 , pk(3)            =   7.0 ,
