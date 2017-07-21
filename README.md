@@ -9,7 +9,7 @@ Obtaining the Code
 ------------------
 There are two possibilites of how to obtain the code. You can either simply download the tarball of the code, or clone the whole repository.
 ### Downloading the tarball
-Download the tarball from [here](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/repository/archive.tar.gz?ref=master) and save it in the direcctory of your choice. Afterwards, navigate to that directory and exctract the source code with
+Download the tarball from [here](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/repository/archive.tar.gz?ref=master) and save it in the directory of your choice. Afterwards, navigate to that directory and exctract the source code with
 ```
 tar -zxf <name of the tar file>
 ```
