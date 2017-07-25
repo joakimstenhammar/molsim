@@ -40,7 +40,7 @@
  pH               =          1.0 ,
  latweakcharge(2) =          .t. ,
  pK(2)            =         14.0 ,
- jatweakcharge    =            3 ,
+ jatweakcharge(2) =            3 ,
 /
 &nmlNetworkConfiguration
  nnwnwt(1)     =           1 ,
