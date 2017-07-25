@@ -61,11 +61,6 @@ module PotentialModule
                                            ! =4, call of TestEwaldStd or TestEwaldSPM
    integer(4)    :: itestpotchain          ! =1, call of TestBondLenghtTab and TestBondAngleTab
 
-! ... external unit
-
-   character(10) :: flib  = 'FLIB '
-   integer(4)    :: ulib  = 4
-
 end module PotentialModule
 
 ! relation among potential routines
@@ -154,8 +149,8 @@ contains
 
 subroutine SuperballStat(iStage)
    integer(4), intent(in) :: iStage
-   if (txmethodsuperball == 'nr') call SuperballStatNR(iStage)
-   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage)
+   if (txmethodsuperball == 'nr') call SuperballStatNR(iStage, iaux)
+   if (txmethodsuperball == 'mesh') call SuperballStatMesh(iStage, vaux(1:3,1), laux, raux)
 end subroutine SuperballStat
 
 !........................................................................
@@ -1206,6 +1201,10 @@ subroutine PotDefault(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
             call CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
             if ((zatalpha(iat) > zero) .or. (zatalpha(jat) > zero)) &                                   ! GCD
                call CalcGCDUfac(r1, zatalpha(iat), zatalpha(jat), c0fac, c1fac, c2fac)
+         else if (lweakcharge .and. lewald) then
+            call CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
+            if ((zatalpha(iat) > zero) .or. (zatalpha(jat) > zero)) &                                   ! GCD
+               call CalcGCDUfac(r1, zatalpha(iat), zatalpha(jat), c0fac, c1fac, c2fac)
          else if (lcharge .and. lrf) then
             call CalcRFUfac(r1, rffac, c0fac, c1fac, c2fac)
          else
@@ -1288,6 +1287,8 @@ subroutine Pot_1_6_12(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
       if (lscrc) then
          call CalcScrCUfac(r1, scrlen, c0fac, c1fac, c2fac)
       else if (lcharge .and. lewald) then
+         call CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
+      else if (lweakcharge .and. lewald) then
          call CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
       else if (lcharge .and. lrf) then
          call CalcRFUfac(r1, rffac, c0fac, c1fac, c2fac)
@@ -2003,7 +2004,7 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
 #if defined (_PAR_)
      call par_bc_characters(ptype, 1)
-     call par_bc_logicals(foundpot, 1)
+     call par_bc_logical(foundpot)
 #endif
 
       if (.not.foundpot) call Stop(txroutine, 'nemo potential not found in library', uout)
@@ -3027,7 +3028,7 @@ subroutine TestEwaldStd(iStage)
    call UTotal(iStage)
    call GetPotEnergy(uexact)         ! save for later use
 
-   call WriteExactSub(6)
+   call WriteExactSub(ustdout)
    call WriteExactSub(uout)
 
 ! ... loop over one variable and calculate the error
@@ -3039,7 +3040,7 @@ subroutine TestEwaldStd(iStage)
    rcut = rcutsave
    ncut = ncutsave
 
-   call WriteHeadSub(6)
+   call WriteHeadSub(ustdout)
    call WriteHeadSub(uout)
 
    if (iewaldopt == 0) then
@@ -3069,7 +3070,7 @@ subroutine TestEwaldStd(iStage)
       call EwaldSetup
       if (rcut > boxlenshort) cycle
       call UTotal(iStage)
-      call WriteBodySub(6)
+      call WriteBodySub(ustdout)
       call WriteBodySub(uout)
       call WriteBodySub(ulist)
    end do

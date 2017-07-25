@@ -32,6 +32,18 @@
 !       !             !              !------DUTwoBody(A/ALList/P)Old
 !       !             !  lewald
 !       !             !--------- DUTwoBodyEwald
+!       !
+!       !   lweakcharge
+!       !--------------
+!       !             !
+!       !             !--------- DUTwoBody
+!       !             !              !
+!       !             !              !----- DUWeakCharge(A/P)New
+!       !             !              !
+!       !             !              !------DUWeakCharge(A/P)Old
+!       !             !  lewald
+!       !             !--------- DUWeakChargeEwald
+!       !
 !       !   ldipole
 !       !--------------
 !       !             !
@@ -147,6 +159,10 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
          call DUTwoBody(lhsoverlap, UWeakChargePNew, UWeakChargePOld)
       end if
 
+      if (lhsoverlap) goto 400
+
+      if (lewald) call DUWeakChargeEwald
+
 if (itest == 90) then
       call writehead(3,txroutine, uout)                             !cc
       write(uout,'(a,100l4)') 'laz', laz(1:na)                       !cc
@@ -190,8 +206,8 @@ end if
 #if defined (_PAR_)
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_start_Pack', iSimulationStep)
    call PackReduceU(nptpt+1, npt+1, du%tot, du%twob, du%oneb, du%rec, du%stat, du%pol, du%bond, du%angle, du%crosslink, du%external, uaux)
-   call par_allreduce_logicals(lhsoverlap, uaux, 1)
-   call par_allreduce_logicals(lhepoverlap, uaux, 1)
+   call par_allreduce_logical(lhsoverlap, laux)
+   call par_allreduce_logical(lhepoverlap, laux)
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_after_Pack', iSimulationStep)
 #endif
 
@@ -253,7 +269,7 @@ subroutine DUTwoBody(lhsoverlap, utwobodynew, twobodyold)
    call utwobodynew(lhsoverlap,jp)                ! calculate new two-body potential energy
 
 #if defined (_PAR_)
-   call par_allreduce_logicals(lhsoverlap, laux, 1)
+   call par_allreduce_logical(lhsoverlap, laux)
 #endif
 
    if (lhsoverlap) goto 400                     ! check hard-core overlap
@@ -1330,6 +1346,163 @@ end subroutine DUTwoBodyEwald
 
 !************************************************************************
 !*                                                                      *
+!*     DUWeakChargeEwald                                                *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate two-body potential energy difference for titrating systems; k-space
+
+subroutine DUWeakChargeEwald
+
+   use EnergyModule
+   implicit none
+
+   character(40), parameter :: txroutine ='DUWeakChargeEwald'
+
+   if(ltime) call CpuAdd('start', txroutine, 2, uout)
+
+! ... initiate
+   du%rec = Zero
+
+! ... calculate
+   if (txewaldrec == 'std') then
+       call DUWeakChargeEwaldRecStd
+       if (lewald2dlc) call Stop(txroutine,'invalid choice of lewald2dlc .and. lweakcharge',uout)
+   else
+      call Stop(txroutine,'invalid choice of txewaldrec .and. lweakcharge',uout)
+   end if
+
+   call DUWeakChargeEwaldSelf
+
+   if (lsurf .and. master) call DUWeakChargeEwaldSurf
+
+! ... update
+   du%rec = EpsiFourPi*du%rec
+   du%tot = du%tot + du%rec
+
+   if(ltime) call CpuAdd('stop', txroutine, 2, uout)
+
+contains
+
+!........................................................................
+
+subroutine DUWeakChargeEwaldRecStd
+
+   character(40), parameter :: txroutine ='DUWeakChargeEwaldRecStd'
+   integer(4) :: kn, nx, ny, nz, ia, ialoc, ikvec2
+   real(8)    :: term, termnew, termold
+   !real(8)    :: kx, ky, kp, sinhkpztm, coshkpztm, sinhkpz, coshkpz, termi
+
+   if(ltime) call CpuAdd('start', txroutine, 3, uout)
+
+! ... calculate eikxtm, eikytm, and eikztm for moving particles
+
+   call EwaldSetArrayTM
+
+   kn = kvecoffmyid
+   ikvec2 = 0
+   do nz = 0, ncut
+      do ny = 0, ncut
+         if (ny**2+nz**2 > ncut2) cycle
+         ikvec2 = ikvec2+1
+         if (ikvec2 < kvecmyid(1) .or. ikvec2 > kvecmyid(2)) cycle  ! parallelize over k-vectors
+         do ialoc = 1, natm
+            ia = ianatm(ialoc)
+            eikyzm(ia)      = conjg(eiky(ia,ny))     *eikz(ia,nz)
+            eikyzp(ia)      =       eiky(ia,ny)      *eikz(ia,nz)
+            eikyzmtm(ialoc) = conjg(eikytm(ialoc,ny))*eikztm(ialoc,nz)
+            eikyzptm(ialoc) =       eikytm(ialoc,ny) *eikztm(ialoc,nz)
+         end do
+
+         do nx = 0, ncut
+            if ((lbcrd .or. lbcto) .and. (mod((nx+ny+nz),2) /= 0)) cycle      ! only even nx+ny+nz for RD and TO bc
+            if (nx**2+ny**2+nz**2 > ncut2) cycle
+            if (nx == 0 .and. ny == 0 .and. nz == 0) cycle
+            kn = kn + 1
+            sumeikrtm(kn,1) = sumeikr(kn,1)
+            sumeikrtm(kn,2) = sumeikr(kn,2)
+            sumeikrtm(kn,3) = sumeikr(kn,3)
+            sumeikrtm(kn,4) = sumeikr(kn,4)
+            do ialoc = 1, natm
+               ia = ianatm(ialoc)
+               sumeikrtm(kn,1) = sumeikrtm(kn,1) &
+                                 + aztm(ialoc)*conjg(eikxtm(ialoc,nx))*eikyzmtm(ialoc) &
+                                 - az(ia)     *conjg(eikx(ia,nx))*eikyzm(ia)
+               sumeikrtm(kn,2) = sumeikrtm(kn,2) &
+                                 + aztm(ialoc)*conjg(eikxtm(ialoc,nx))*eikyzptm(ialoc) &
+                                 - az(ia)     *conjg(eikx(ia,nx))*eikyzp(ia)
+               sumeikrtm(kn,3) = sumeikrtm(kn,3) &
+                                 + aztm(ialoc)*      eikxtm(ialoc,nx) *eikyzmtm(ialoc) &
+                                 - az(ia)     *      eikx(ia,nx) *eikyzm(ia)
+               sumeikrtm(kn,4) = sumeikrtm(kn,4) &
+                                 + aztm(ialoc)*      eikxtm(ialoc,nx) *eikyzptm(ialoc) &
+                                 - az(ia)     *      eikx(ia,nx) *eikyzp(ia)
+            end do
+            termnew = real(sumeikrtm(kn,1))**2 + aimag(sumeikrtm(kn,1))**2 + real(sumeikrtm(kn,2))**2 + aimag(sumeikrtm(kn,2))**2 &
+                    + real(sumeikrtm(kn,3))**2 + aimag(sumeikrtm(kn,3))**2 + real(sumeikrtm(kn,4))**2 + aimag(sumeikrtm(kn,4))**2
+            termold = real(sumeikr(kn,1))**2   + aimag(sumeikr(kn,1))**2   + real(sumeikr(kn,2))**2   + aimag(sumeikr(kn,2))**2 &
+                    + real(sumeikr(kn,3))**2   + aimag(sumeikr(kn,3))**2   + real(sumeikr(kn,4))**2   + aimag(sumeikr(kn,4))**2
+            term    = kfac(kn)*(termnew - termold)
+            du%rec  = du%rec + term
+         end do
+      end do
+   end do
+
+   if(ltime) call CpuAdd('stop', txroutine, 3, uout)
+
+end subroutine DUWeakChargeEwaldRecStd
+
+!........................................................................
+
+subroutine DUWeakChargeEwaldSelf
+
+   real(8)    :: fac
+   integer(4) :: ialoc, ia
+
+! ... atomic contribution
+
+   fac = ualpha/sqrt(Pi)
+   do ialoc = myid+1, natm, nproc   ! adapted for _PAR_
+      ia = ianatm(ialoc)
+      du%rec = du%rec + fac * (az(ia)**2 - aztm(ialoc)**2)
+   end do
+
+end subroutine DUWeakChargeEwaldSelf
+
+!........................................................................
+
+subroutine DUWeakChargeEwaldSurf
+
+   integer(4) :: ia, ialoc
+   real(8)    :: fac, term, sumqrx, sumqry, sumqrz, sumqrxtm, sumqrytm, sumqrztm
+
+   ! ... if lewald2dlc shall be allowed for titrating systems (weak charges)
+   ! ... this needs to be differentiated here. Please see DUTwoBodyEwaldSurf
+
+   fac = TwoPi/(Three*vol)
+   sumqrx = sum(az(1:na)*r(1,1:na))
+   sumqry = sum(az(1:na)*r(2,1:na))
+   sumqrz = sum(az(1:na)*r(3,1:na))
+   sumqrxtm = sumqrx
+   sumqrytm = sumqry
+   sumqrztm = sumqrz
+   do ialoc = 1, natm
+      ia = ianatm(ialoc)
+      sumqrxtm = sumqrxtm + aztm(ialoc)*rtm(1,ialoc) - az(ia)*r(1,ia)
+      sumqrytm = sumqrytm + aztm(ialoc)*rtm(2,ialoc) - az(ia)*r(2,ia)
+      sumqrztm = sumqrztm + aztm(ialoc)*rtm(3,ialoc) - az(ia)*r(3,ia)
+   end do
+   term = fac*((sumqrxtm**2+sumqrytm**2+sumqrztm**2) - (sumqrx**2+sumqry**2+sumqrz**2))
+   du%rec = du%rec + term
+
+end subroutine DUWeakChargeEwaldSurf
+
+!........................................................................
+
+end subroutine DUWeakChargeEwald
+
+!************************************************************************
+!*                                                                      *
 !*     EwaldSetArrayTM                                                  *
 !*                                                                      *
 !************************************************************************
@@ -1971,7 +2144,7 @@ subroutine DUDipoleSph(lhsoverlap)
    call DUDipoleSphNew(lhsoverlap,jp)              ! calculate new potential energy
 
 #if defined (_PAR_)
-   call par_allreduce_logicals(lhsoverlap, laux, 1)
+   call par_allreduce_logical(lhsoverlap, laux)
 #endif
 
    if (lhsoverlap) goto 400                      ! check hard-core overlap
@@ -3616,8 +3789,8 @@ end if
 
 ! ... contribution from pairs where both particles are displaced
 
-   if (lptmdutwob) then      ! not adapted for _PAR_ !!
-      do iploc = 1, nptm
+   if (lptmdutwob) then
+      do iploc = myid+1, nptm, nproc ! adapted for _PAR_
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
          do jploc = iploc+1, nptm
@@ -3738,8 +3911,8 @@ end if
 
 ! ... contribution from pairs where both particles are displaced
 
-   if (lptmdutwob) then      ! not adapted for _PAR_ !!
-      do iploc = 1, nptm
+   if (lptmdutwob) then
+      do iploc = myid+1, nptm, nproc ! adapted for _PAR_
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
          do jploc = iploc+1, nptm

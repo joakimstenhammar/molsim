@@ -136,6 +136,7 @@ chain.bd.nohs.out
 p.mc.ads.out
 p.bd.ads.out
 p.bd.ads.user
+p.bd.ads2.user
 ads_20-mer
 pe.mc.sph1.out
 pe.mc.sph2.out
@@ -204,3 +205,8 @@ copoly-seq.mc.out
 complexation.mc.out
 fnw.nwt2.mc.out
 chain.sequence.fnw.mc.out
+fnw.nwgen.df.mc.out
+salt.mc.weakcharge.ewald.out
+vtfimage.fnw.mc.out
+vtfimage.fnw.mc.tcl
+vtfimage.fnw.mc.vtf

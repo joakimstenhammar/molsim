@@ -21,10 +21,10 @@ The just created branch exists only locally, to set it up on the remote reposito
 ```sh
 git push --set-upstream origin <NAME-OF-NEW-BRANCH>
 ```
-You're now in your new branch. You may now begin to implement new features/changes.
+You're now in your new branch. You may now begin to implement new features/changes. To be able to measure the changes you introduced to the ouput files, go into the `Testin` directory and run `make save` This will allow you to compare the results of a collection of input files to the results which were generated with the master branch.
 
 ## 2. How to commit features/changes
-The changes you apply to the code should be as efficient and non-invasive as possible. Try to divide your modifications in logically-associated chunks of code. These chunks can then individually be commited and described in a commit message. After you changed something you first have to stage the files in which changes were made and which you'd like to commit.
+The changes you apply to the code should be as efficient and non-invasive as possible. Try to divide your modifications in logically-associated chunks of code. These chunks can then individually be committed and described in a commit message. After you changed something you first have to stage the files in which changes were made and which you'd like to commit.
 ```sh
 git add <LIST-OF-MODIFIED-FILES>
 ```
@@ -32,7 +32,7 @@ After staging one or several files you may now commit using
 ```sh
 git commit -m "<YOUR-MESSAGE>"
 ```
-The advantage of chopping all changes into smaller chunks of code is the option to revert individual commits. In addition it enhances the transparency of what you do and others can better follow your changes. Whenever you stop working on your branch, you should always push your commits in order to upload them.
+The advantage of chopping all changes into smaller chunks of code is the option to revert individual commits. In addition, it enhances the transparency of what you do and others can better follow your changes. Whenever you stop working on your branch, you should always push your commits in order to upload them.
 ```sh
 git push
 ```
@@ -40,9 +40,9 @@ Whenever you start to work on your branch again you should pull the branch in or
 ```sh
 git pull
 ```
-When you're done with your modifications, you may request a merge of your branch into the `master`. Before doing so, please confer [this checklist](#appendix-checklist) and make sure, that all requirements have been satisfied.
+When you're done with your modifications, you may request to merge your branch into the `master`. Before doing so, please confer [this checklist](#appendix-checklist) and make sure, that all requirements have been satisfied.
 
-## 3. How to request a merge into Master
+## 3. How to request to merge into Master
 In order to request a merge of your branch into the `master` browse the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests) to create a new merge request. Note to request the merge with a WIP-prefix. The merge is then designated as "work in progress".
 
 ## 4. How to review a merge request
@@ -59,13 +59,22 @@ When the assignee of your merge request has fully reviewed your modifications, i
 * General comments with a :negative_squared_cross_mark: in it. Resolve the described issue and change the :negative_squared_cross_mark: to a :white_check_mark: (`:white_check_mark:`).
 * Line-oriented comments: Resolve the described issue and mark the discussion as resolved.
 
-Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still it is better to resolve it  or discuss with the assignee, why for example it should not be changed.
+Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still, it is better to resolve it  or discuss with the assignee, why for example it should not be changed.
 
 ## 6. How to merge it
-When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests).
+When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. But first you need to perform some housekeeping:
+
+### 6.1 Update the Changelog
+Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
+
+### 6.2 Declare Stable
+Declare your version as the current stable version. Do this by running `make declarestable` in the `Testin` directory and commit/push the new `stable.md5sum` file.
+
+### 6.3 Merge Branch
+Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests).
 
 ## 7. How to finalize your merge
-After the merge has been done, there are still a few thing in order to finalize your merge request:
+After the merge has been done, there are still a few things in order to finalize your merge request:
 
 ### 7.1 Generate a tag
 Generating a tag means to mark this specific point of the version history. First checkout the `master` branch, and pull it:
@@ -75,9 +84,9 @@ git pull
 ```
 Then tag the current commit:
 ```sh
-git tag -a vX.Y.Z -m "<NAME-OF-NEW-VERSION>"
+git tag vX.Y.Z
 ```
-where `X`, `Y` and `Z` correspond to the major (X), minor (Y) and patch level (Z) number of the software version ([Semantic Versioning](http://semver.org/)). The `<NAME-OF-NEW-VERSION>` corresponds to the old name, if changes have been made only on the patch level. If changes on the major or minor level have been made, a new name my be chosen from this and **only** this [specific list](http://www.pokewiki.de/Pokémon-Liste). Try to chose a name, such that it roughly fits to what you modified.
+where `X`, `Y` and `Z` correspond to the major (X), minor (Y) and patch level (Z) number of the software version ([Semantic Versioning](http://semver.org/)). 
 
 After tagging
 ```sh
@@ -85,15 +94,13 @@ git push --tags
 ```
 in order to synchronize your new tag.
 
-### 7.2 Update the changelog
-Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
-
-### 7.3 Inform everyone about the new version
+### 7.2 Inform everyone about the new version
 Inform everyone about the new available version by adding a comment to [this issue](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/issues/20).
 
 ## Appendix: Checklist
-* [ ] Make sure, that the [Testin](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin) runs clean! For further informations confer the corresponding [Wiki entry](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin).
+* [ ] Make sure, that the [Testin](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin) runs clean! For further information confer the corresponding [Wiki entry](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin).
 * [ ] Ascertain, that the compilation with `mode=warn` does not trigger any warnings
-* [ ] Ascertain, that running a test input file covering your modifications runs clean after compiling with `mode=debug`
+* [ ] ascertain, that running a test input file covering your modifications runs clean after compiling with `mode=debug`
+* [ ] Make sure that your code runs in parallel mode, and if not add an error message which prevents from running your code in parallel.
 * [ ] Describe all changes in the [Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home)!
 * [ ] Change the version number corresponding to [Semantic Versioning](http://semver.org/)!

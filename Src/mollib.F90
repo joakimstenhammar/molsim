@@ -33,7 +33,7 @@
 !               random : Random     , GauRandom      , CirRandom   , SphRandom
 !                mixed : InvInt     , InvFlt         , RelDiff     , CpuAdd      , CpuLeft     , CpuTot     , SecondsSinceStart
 !            readwrite : WriteVec   , WriteMat       , WriteStd    , WriteFront  , WriteHead   , WriteDateTime, WriteIOStat, Warn       , Stop
-!               string : Center     , SpaceOut       , LowerCase   , UpperCase   , SubStr      , Advance
+!               string : Center     , SpaceOut       , LowerCase   , UpperCase   , SubStr      , Advance    , ReplaceText
 !                 plot : SignMagn   , Plot
 !               powell : BrentMod
 
@@ -41,7 +41,7 @@ module MollibModule !Starting to migrate to Module
 
    implicit none
    private
-   public InvInt, Center, SpaceOut
+   public InvInt, Center, SpaceOut, ReplaceText
 
    interface InvInt
       module procedure InvInt_single, InvInt_double
@@ -109,6 +109,57 @@ module MollibModule !Starting to migrate to Module
          SpaceOut(2*i-1:2*i)=string(i:i)//' '
       end do
    end function SpaceOut
+
+!************************************************************************
+!*                                                                      *
+!*     ReplaceText                                                      *
+!*                                                                      *
+!************************************************************************
+
+! ... Replace text in a string
+   pure function ReplaceText (string,toReplace,replaceWith)  result(outString)
+      character(len=*), intent(in) :: string
+      character(len=*), intent(in) :: toReplace
+      character(len=*), intent(in) :: replaceWith
+      character(len=:), allocatable :: outString
+
+      integer(4) :: lenToReplace, lenReplaceWith, lenOutString
+      integer(4) :: posString, posOutString
+      integer(4) :: pos, nrep
+
+      lenToReplace = len(toReplace)
+      lenReplaceWith = len(replaceWith)
+
+      posString = 1
+      posOutString = 1
+
+      nrep = 0
+      do
+         pos = index(string(posString:),toReplace) - 1
+         if (pos == -1) then
+            exit
+         endif
+         nrep = nrep + 1
+         posString = posString + pos + lenToReplace
+      end do
+
+      lenOutString = len(string) + nrep * (lenReplaceWith - lenToReplace)
+      allocate(character(len=lenOutString) :: outString)
+      outString = repeat(" ", lenOutString)
+
+      posString = 1
+      posOutString = 1
+      do
+         pos = index(string(posString:),toReplace) - 1
+         if (pos == -1) then
+            exit
+         endif
+         outString(posOutString:(posOutString + pos + lenReplaceWith - 1)) = string(posString:(posString + pos - 1))//replaceWith
+         posString = posString + pos + lenToReplace
+         posOutString = posOutString + pos + lenReplaceWith
+      end do
+      outString(posOutString:) = string(posString:)
+   end function ReplaceText
 
 end module MollibModule
 
@@ -3321,6 +3372,7 @@ end subroutine Warn
 ! ... write a stop message and stop process
 
 subroutine Stop(name,text,unit)
+   use, intrinsic :: iso_fortran_env, only : ustdout=>output_unit
    implicit none
    integer(4), parameter ::  nw = 110      ! width of frame of box
    integer(4), parameter ::  nlen = nw - 2 ! maximal width of text
@@ -3331,8 +3383,8 @@ subroutine Stop(name,text,unit)
    character(3) :: fmt
 
    write(fmt,'(i3)') nw
-   call StopUnit(6)
-   if (unit /= 6) call StopUnit(unit)
+   call StopUnit(ustdout)
+   if (unit /= ustdout) call StopUnit(unit)
 #if defined (_PAR_)
    call par_finalize
 #endif

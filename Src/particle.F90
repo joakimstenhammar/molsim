@@ -243,8 +243,8 @@ subroutine Particle(iStage)
 
 ! ... check condition
 
-      if (lweakcharge .and. lnetwork .and. lpolyatom) then
-         call Stop(txroutine,'(lweakcharge .and. lnetwork) not adapted for monoatomic systems',uout)
+      if (lweakcharge .and. lewald .and. lpolyatom) then
+         call Stop(txroutine,'(lweakcharge .and. lnetwork) not adapted for polyatomic systems',uout)
       end if
 
 ! ... allocate memory
@@ -322,6 +322,10 @@ subroutine Particle(iStage)
          allocate(vaux(3,max(1000,2*na_alloc)))
          vaux = 0.0E+00
       end if
+      if (.not.allocated(ivaux)) then
+         allocate(ivaux(3,max(1000,2*na_alloc)))
+         ivaux = 0
+      end if
 
       if (.not.allocated(angvelo)) then
          allocate(angvelo(3,np_alloc))
@@ -348,6 +352,10 @@ subroutine Particle(iStage)
       if (.not.allocated(laztm)) then
          allocate(laztm(na_alloc))
          laztm = .false.
+      end if
+      if (.not.allocated(aztm)) then
+         allocate(aztm(na_alloc))
+         aztm = 0.0E+00
       end if
 
 ! ... set object parameters
@@ -499,7 +507,6 @@ subroutine Particle(iStage)
             write(uout,'()')
             write(uout,'(a,t6,f8.3)') 'pH = ', pH
             if (jatweakcharge /= 0) write(uout,'(a,i8)') 'type of monoatomic particle carring counter charge to titratable charge = ', jatweakcharge
-            pHmpK = pH - pK
          end if
 
          if (lradatbox) then
@@ -2005,6 +2012,8 @@ subroutine SetObjectParam2
 ! ... weak charge: allocate memory, set iatweakcharge, and set pointer iananweakcharge
 
    if (lweakcharge) then
+      ! ... set difference of pH and pK
+      pHmpK = pH - pK
       if (.not.allocated(laz)) then
          allocate(laz(na_alloc)) ! allocate memory for laz
          laz = .false.

@@ -51,7 +51,7 @@
 
          use MolModule, only: ltrace, txstart
          use MolModule, only: iReadInput, iWriteInput, iBeforeSimulation, iBeforeMacrostep, iSimulationStep, iAfterMacrostep, iAfterSimulation
-         use MolModule, only: uin, uout, ucnf, master
+         use MolModule, only: uin, uout, ucnf, master, lsim
          use MolModule, only: Zero, Half, One, Two
          use MolModule, only: npt, nstep, istep
          use MolModule, only: lbcbox, lbcrd, lbcto, lbcsph, lbcell, lbccyl, boxlen, cellside, sphrad, ellrad, cylrad, cyllen
@@ -187,12 +187,30 @@
 
             ! initialize values--------------------------------------------------------------------
             if (txstart == 'continue') then
-               read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, &
-                  tots, SSOParameters, nstepOld
-               if(nstepOld /= nstep) then
-                  call Stop(txroutine, 'can not continue SSO with different &
-                     &number of steps. Consider using zero instead.', uout)
+               if(lsim .and. master) then
+                  read(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters, nstepOld
+                  if(nstepOld /= nstep) then
+                     call Stop(txroutine, 'can not continue SSO with different number of steps. Consider using zero instead.', uout)
+                  end if
                end if
+
+               ! broadcast values
+#if defined (_PAR_)
+               call par_bc_reals (curdtranpt(:)    , npt )
+               call par_bc_int   (SSOPart%i)
+               call par_bc_int   (SSOPart%nextstep)
+               call par_bc_ints8 (ssos(:,:)%n      , nssobin*npt )
+               call par_bc_reals (ssos(:,:)%d2     , nssobin*npt )
+               call par_bc_reals (ssos(:,:)%d4     , nssobin*npt )
+               call par_bc_ints8 (tots(:)%n        , npt )
+               call par_bc_reals (tots(:)%d2       , npt )
+               call par_bc_reals (tots(:)%d4       , npt )
+               call par_bc_reals (SSOParameters(:,:)%used , npt*SSOPart%n )
+               call par_bc_reals (SSOParameters(:,:)%opt  , npt*SSOPart%n )
+               call par_bc_reals (SSOParameters(:,:)%err  , npt*SSOPart%n )
+               call par_bc_int   (nstepOld)
+#endif
+
             else
                curdtranpt(1:npt) = dtransso(1:npt)
                ssos=step(0, Zero, Zero)
@@ -314,8 +332,9 @@
 
          case (iAfterMacrostep)
 
-               write(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, &
-                  tots, SSOParameters, nstep
+               if(lsim .and. master) then
+                  write(ucnf) curdtranpt, SSOPart%i, SSOPart%nextstep, ssos, tots, SSOParameters, nstep
+               end if
 
          case (iAfterSimulation)
 

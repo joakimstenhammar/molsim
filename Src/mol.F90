@@ -33,6 +33,12 @@ module MolModule
    use MeshModule
    use Random_Module, only: k4b
 
+!define standard output unit
+   use, intrinsic :: iso_fortran_env, only : ustdout=>output_unit !, &
+                                          ! ustdin=>input_unit !, &
+                                          ! ustderr=>error_unit
+
+
 ! ... parameters
 
    integer(4), parameter :: mngen  = 5                ! max number of generations
@@ -169,7 +175,7 @@ module MolModule
       real(8)      :: max                   ! maximum value
       integer(4)   :: nbin                  ! number of bins
       logical      :: lnorm                 ! logical flag for normalization
-      character(10):: label                 ! title
+      character(40):: label                 ! title
       integer(4)   :: nvar                  ! expanded into nvar variables
    end type static1D_var
 
@@ -181,33 +187,61 @@ module MolModule
       real(8)      :: max(2)                ! maximum value
       integer(4)   :: nbin(2)               ! number of bins
       logical      :: lnorm                 ! logical flag for normalization
-      character(10):: label                 ! title
+      character(40):: label                 ! title
       integer(4)   :: nvar                  ! expanded into nvar variables
    end type static2D_var
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v2.4.4'
+   character(29) :: txVersionDate = 'version 6.4.7, v4.0.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
 
-   character(10), parameter :: fin   = 'FIN  '
-   character(10), parameter :: fout  = 'FOUT '
-   character(10), parameter :: fcnf  = 'FCNF '
-   character(10), parameter :: flist = 'FLIST'
-   character(10), parameter :: fuser = 'FUSER'
-   character(10), parameter :: fimg  = 'FIMG '
-   character(10), parameter :: fvtf  = 'FVTF '
-   character(10), parameter :: ftcl  = 'FTCL '
+   character(240) :: project ! name of the project (15 characters shorter than the filenames to have enough space for suffixes
+   ! filenames
+   character(255) :: fin     ! input data
+   character(255) :: fout    ! output data
+   character(255) :: fcnf    ! configuration data
+
+#define STRINGIFY(x) x
+   character(255) :: flib = trim(adjustl(STRINGIFY(FLIBMACRO)))
+
+   character(255) :: flist   ! list data
+   character(255) :: fuser   ! user-provided data
+   character(255) :: fwrl    ! image data in wrl format
+   character(255) :: fvtf    ! VMD: vtf data
+   character(255) :: ftcl    ! VMD: tcl script
+   character(255) :: fgroup  ! group data
+   character(255) :: fpos    ! position data
+   character(255) :: fori    ! orientation data
+   character(255) :: fliv    ! linear velocity data
+   character(255) :: fanv    ! angular velocity data
+   character(255) :: ffor    ! force data
+   character(255) :: ftor    ! torque data
+   character(255) :: fidm    ! induced dipole moment data
+   character(255) :: flaz    ! atom charge status
+   character(255) :: futot   ! potential energy data
+
    integer(4),    parameter :: uin   = 1   ! input data
    integer(4),    parameter :: uout  = 2   ! output data
    integer(4),    parameter :: ucnf  = 3   ! configuration data
+   integer(4),    parameter :: ulib  = 4
    integer(4),    parameter :: ulist = 8   ! list data
    integer(4),    parameter :: uuser = 9   ! user-provided data
-   integer(4),    parameter :: uimg  = 10  ! image data
+   integer(4),    parameter :: uwrl  = 10  ! image data
    integer(4),    parameter :: uvtf  = 11  ! VMD: vtf data
    integer(4),    parameter :: utcl  = 12  ! VMD: tcl script
+   integer(4),    parameter :: ugroup= 15  ! group data
+   integer(4),    parameter :: upos  = 20  ! position data
+   integer(4),    parameter :: uori  = 21  ! orientation data
+   integer(4),    parameter :: uliv  = 22  ! linear velocity data
+   integer(4),    parameter :: uanv  = 23  ! angular velocity data
+   integer(4),    parameter :: ufor  = 24  ! force data
+   integer(4),    parameter :: utor  = 25  ! torque data
+   integer(4),    parameter :: uidm  = 26  ! induced dipole moment data
+   integer(4),    parameter :: ulaz  = 27  ! atom charge status
+   integer(4),    parameter :: uutot = 28  ! potential energy data
 
 ! ... terms
 
@@ -356,10 +390,10 @@ module MolModule
    character(10) :: txct(mnct)             !*name of chain type
    character(10) :: txpt(mnpt)             !*name of particle type
    character(10) :: txat(mnat)             !*name of atom type
-   character(20), allocatable :: txnwtnwt(:) ! name of network type-network type pair
-   character(20), allocatable :: txctct(:) ! name of chain type-chain type pair
-   character(20), allocatable :: txptpt(:) ! name of particle type-particle type pair
-   character(20), allocatable :: txatat(:) ! name of atom type-atom type pair
+   character(21), allocatable :: txnwtnwt(:) ! name of network type-network type pair
+   character(21), allocatable :: txctct(:) ! name of chain type-chain type pair
+   character(21), allocatable :: txptpt(:) ! name of particle type-particle type pair
+   character(21), allocatable :: txatat(:) ! name of atom type-atom type pair
    logical                :: lmonoatom     !
    logical                :: lpolyatom     !
    real(8)                :: massat(mnat)  !*mass of atom type
@@ -384,6 +418,7 @@ module MolModule
    real(8)                :: sigat(mnat)   !*LJ sigma parpameter for atomes of a given type
    real(8)                :: epsat(mnat)   !*LJ epsilon parameter for atomes of a given type
    real(8), allocatable   :: az(:)         ! atom charge
+   real(8), allocatable   :: aztm(:)       ! atom charge (trial move)
    logical                :: latweakcharge(mnat) !*.true. if weak charge among atoms of a given type
    real(8)                :: pK(mnat)      !*pKa
    real(8)                :: pH            ! pH
@@ -824,6 +859,7 @@ module MolModule
    integer(4)                :: ngr(2)     ! number of groups of two different types
    integer(4)                :: ngrgr      ! number of group pairs (ngr(1)*ngr(2))
    integer(4)                :: maxngr     ! maximal number of groups (max of ngr(1:2))
+   integer(4)                :: ngrvar     ! number of group variables (2+ngr(1)+ngr(2))
    type(scalar_var), allocatable, save :: grvar(:) ! containing group number averages
    integer(4),   allocatable :: igrpn(:,:) ! particle (1:np)               -> its group number (1:igr)
    integer(4),   allocatable :: iptgr(:,:) ! gruop number (1:ngr)          -> particle type (1: npt)
@@ -840,6 +876,7 @@ module MolModule
    integer(4)                :: iaux
    real(8)                   :: raux
    real(8), allocatable      :: vaux(:,:)
+   integer(4), allocatable   :: ivaux(:,:)
 
 ! ... parallel parameters (also used in the serial code)
 

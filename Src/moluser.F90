@@ -1642,8 +1642,6 @@ subroutine ChainCOMDump(iStage)
    integer(4) :: m, idum, ic
    integer(4), save :: idumplocal
    type(chainprop_var) :: ChainProperty
-   character(10), save :: fpos  = 'FPOS '
-   integer(4), save    :: upos  = 10
 
    select case (iStage)
    case (iReadInput)
@@ -1969,6 +1967,8 @@ subroutine GroupUser(iStage, m, txtype, lsetconf)
       call GroupAds1(iStage, m)
    else if (txtype(m) == 'ads_layer1_ramp') then
       call GroupAds_layer1_ramp(iStage, m)
+   else if (txtype(m) == 'networkgenerations') then
+      call GroupNetworkGenerations(iStage, m)
    else
       lsetconf =.false.
    end if
@@ -2506,6 +2506,171 @@ subroutine GroupAds_layer1_ramp(iStage, m)
    end select
 
 end subroutine GroupAds_layer1_ramp
+
+!************************************************************************
+!*                                                                      *
+!*     GroupNetworkGenerations                                          *
+!*                                                                      *
+!************************************************************************
+
+! ... group division according to generations of non-periodic network
+
+subroutine GroupNetworkGenerations(iStage,m)
+
+   use MolModule
+   implicit none
+
+   integer(4),    intent(in)     :: iStage
+   integer(4),    intent(in)     :: m
+
+   character(len=*), parameter   :: txroutine = 'GroupNetworkGenerations'
+
+   integer(4), allocatable, save :: igencn(:)    ! chain                   -> its generation
+   integer(4), allocatable, save :: icnclpn(:,:) ! crosslink and particle  -> crosslinked chain
+   integer(4), allocatable, save :: ipnclcn(:,:) ! crosslink and chain     -> crosslinked particle
+   integer(4), allocatable, save :: nclcn(:)     ! chain number            -> its number of cross-links
+
+   integer(4)                    :: ip, igr, ic, ict
+
+   integer(4), parameter         :: inwt = 1 ! Currently works for systems with one network type only
+
+   character(10)                 :: str
+
+   select case (iStage)
+
+   case (iReadInput)
+
+      ! ... for the allocations in subroutine Group: Set ngr(m) high enough
+      ! ... the actual number of generations cannot exceed nc/4 for networks as set by SetNetwork
+      ! ... add 1 in order to account for the cross-links of the network
+      ngr(m) = nc/4 + 1
+
+      if (.not.lnetwork) then
+         call Warn(txroutine,'ref/field == ''networkgenerations'' .and. .not.lnetwork',uout)
+      else if (nnw > 1) then
+         call Warn(txroutine,'ref/field == ''networkgenerations'' .and. nnw > 1',uout)
+      end if
+
+      ! ... alloctate cross-link related pointers
+      if (.not.allocated(icnclpn)) then
+         allocate(icnclpn(maxvalnbondcl,np_alloc))
+         icnclpn = 0
+      end if
+      if (.not.allocated(nclcn)) then
+         allocate(nclcn(nc))
+         nclcn = 0
+      end if
+      if (.not.allocated(ipnclcn)) then
+         allocate(ipnclcn(2,nc))
+         ipnclcn = 0
+      end if
+
+   case (iWriteInput)
+
+      ! ... Evaluate required information
+      call SetNetworkGenerationPointer
+
+      ! ... Determine ngr(m) and assign generations to chains
+      if(.not.allocated(igencn)) allocate(igencn(0:nc))
+      igencn(0:nc) = 0
+      do ic = 1, nc
+         if (nclcn(ic) == 1) then ! dangling chain ic
+            call AssignChainGeneration(ic,0,igencn)
+         end if
+      end do
+
+      ! ... add 1 in order to account for the cross-links of the network as an own group
+      ngr(m) = maxval(igencn(1:nc)) + 1
+
+      ! ... Determine iptgr(igr,m)
+      do ict = 1, nct
+         if (inwtct(ict) == inwt) exit
+      end do
+      iptgr(1:ngr(m)-1,m) = iptpn(ipnsegcn(1,icnct(ict))) ! particle type constituting chains of network
+      iptgr(ngr(m),m) = iptclnwt(inwt) ! particle type constituting cross-links of network
+
+      ! ... Determine grvar(igrpnt(m,igr))%label
+      str = '      '
+      do igr = 1, ngr(m)
+         write(str,'(i10)') igr
+         grvar(igrpnt(m,igr))%label = "nw-gen:"//trim(adjustl(str))
+      end do
+
+      ! Set igrpn(ip,m) in order to know it for image generation - Group assignment of particles is fixed throughout the simulation
+      do ip = 1, np
+         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), iptpn(ip) == iptclnwt(inwt))
+         grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+      end do
+
+   case (iSimulationStep)
+
+      do ip = 1, np
+         ! particle ip is either:
+         ! -> part of a chain of network (igrpn is then the ID of its respective chain generation igrpn = igencn)
+         ! -> part of the group of cross-links of the network (igrpn is then the highest group number: igrpn = ngr(m))
+         ! -> no part of the network (igrpn is then the ID of its respective chain generations: igrpn = igencn = 0)
+         igrpn(ip,m) = merge(ngr(m), igencn(icnpn(ip)), iptpn(ip) == iptclnwt(inwt))
+         grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+      end do
+
+   end select
+
+contains
+
+!........................................................................
+
+recursive subroutine AssignChainGeneration(ic,jc,igencn)
+
+   implicit none
+
+   integer(4), intent(in)     :: ic, jc
+   integer(4), intent(inout)  :: igencn(0:nc)
+
+   integer(4)  :: jccl
+   integer(4)  :: icl, ibondcl
+   integer(4)  :: ipnode
+
+   if ((igencn(ic) > (igencn(jc)+1)) .or. (igencn(ic) == 0)) then
+      igencn(ic) = igencn(jc) + 1
+      do icl = 1, nclcn(ic)
+         ipnode = ipnclcn(icl,ic)
+         do ibondcl = 1, nbondcl(ipnode)
+            jccl = icnclpn(ibondcl,ipnode)
+            if (ic == jccl) cycle ! ... don't go back to where you came from
+            call AssignChainGeneration(jccl,ic,igencn)
+         end do
+      end do
+   else
+      continue
+   end if
+
+end subroutine AssignChainGeneration
+
+!........................................................................
+
+subroutine SetNetworkGenerationPointer
+
+   use MolModule
+   implicit none
+
+   integer(4)  :: ip
+   integer(4)  :: ibondcl
+   integer(4)  :: ic
+
+   do ip = 1, np
+      if ((nbondcl(ip) > 0) .and. (icnpn(ip) == 0)) then ! ip is a node: It got crosslinks but it's no part of a chain
+         do ibondcl = 1, nbondcl(ip)
+            ic = icnpn(bondcl(ibondcl,ip))
+            nclcn(ic) = nclcn(ic) + 1
+            icnclpn(ibondcl,ip) = ic
+            ipnclcn(nclcn(ic),ic) = ip
+         end do
+      end if
+   end do
+
+end subroutine SetNetworkGenerationPointer
+
+end subroutine GroupNetworkGenerations
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

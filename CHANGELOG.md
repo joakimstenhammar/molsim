@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.0.0] - 2017-07-17
+### Changed
+- The image generation via ImageVTF has been revised
+- Coloring according to group assignment is now possible
+- Splitting of VTF file is now possible
+
+## [3.2.2] - 2017-07-11
+### Fixed
+- Fixed bugs in the parallel routines
+
+## [3.2.1] - 2017-07-10
+### Fixed
+- Fixed a bug in the Testin Makefile
+
+## [3.2.0] - 2017-07-05
+### Changed
+- Allow for parallel execution of Molsim of systems containing weak charges
+- Enable the possibility to use Ewald summation together with weak charges
+### Fixed
+- Minor bugs related to weak charges
+
+## [3.1.0] - 2017-07-05
+### Changed
+- Extended features for the usage of finite networks
+- Change in network topology
+- Network Statistics
+- Network related grouping scheme
+
+## [3.0.0] - 2017-07-05 - Myrapla
+### Fixes
+- fixed some minor bugs
+### Changed
+- changed the way the testin directory works
+- molsim now uses the command line argumends in fortran
+
+
+## [2.4.5] - 2017-04-24 - Quapsel
+### Fixed
+- fixes a bug in the sso routine, which prevented continuation of parallel simulations
+
 ## [2.4.4] - 2017-04-12 - Quapsel
 ### Fixed
 - fixes a bug in the sso routine, which lead to "Not a Number" error.

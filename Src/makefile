@@ -145,7 +145,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   OPT_normal = $(OPT_format) -O2
   OPT_quick := $(OPT_format) -O0	#quick compilation
   OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
-  OPT_debug := $(OPT_format) -O0 -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan   # provide useful info at exceptions (use for debug)
+  OPT_debug := $(OPT_format) -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow -finit-real=nan   # provide useful info at exceptions (use for debug)
   OPT_warn := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion# provides many warnings
 
   mode = default
@@ -232,6 +232,18 @@ ifeq ($(CBIND), TRUE)                      #F03 c-bindings
     ifeq ($(mode),test)
       DEFINES_BASE += -D_TEST_
     endif
+    ifeq ($(mode),normal)
+      DEFINES_BASE += -D_NORMAL_
+    endif
+    ifeq ($(mode),debug)
+      DEFINES_BASE += -D_DEBUG_
+    endif
+    ifeq ($(mode),warn)
+      DEFINES_BASE += -D_WARN_
+    endif
+    ifeq ($(mode),quick)
+      DEFINES_BASE += -D_QUICK_
+    endif
 endif
 
 
@@ -261,6 +273,8 @@ ifeq ($(ARCH), ALARIK_GFORTRAN)
  FLAG_SER += -I$(FFTW3_HOME)/include
  FLAG_PAR += -I$(FFTW3_HOME)/include
 endif
+
+mollib = $(abspath molsim.lib)
 
 #-----------------------------------------------------------------
 #                          Common libraries
@@ -352,14 +366,19 @@ ver	:
 	@echo Version is specified as \"$(VER)\"
 	@echo bindir is \"$(BINDIR)\"
 
+install:
+	cp molsim_ser $(HOME)/bin/molsim_ser$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_ser$(VER)
+	cp molsim_par $(HOME)/bin/molsim_par$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_par$(VER)
+
+uninstall:
+	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_par$(VER)
+
 molsim_ser     : molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
 	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe;
-	cp molsim_ser $(HOME)/bin/molsim_ser$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_ser$(VER)
 molsim_par     : molsim_par.o $(OBJS2)
 	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
 	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe;
-	cp molsim_par $(HOME)/bin/molsim_par$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_par$(VER)
 moldyn         : moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
 	mkdir -p ../Bin; mv moldyn.exe ../Bin/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
@@ -369,7 +388,7 @@ testmesh       : testmesh.o mesh.o
 	./testmesh.exe
 
 mol.o           : mol.F90         statistics.o mesh.o mollib.o
-	$(COMP_SER) $(FLAG_SER) -c mol.F90
+	$(COMP_SER) -DFLIBMACRO=\"$(mollib)\" $(FLAG_SER) -c mol.F90
 molsim.o        : molsim.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c molsim.F90
 moldyn.o        : moldyn.F90	statistics.o
@@ -402,11 +421,11 @@ dump.o		: dump.F90 	mol.o
 	$(COMP_SER) $(FLAG_SER) -c dump.F90
 group.o		: group.F90	mol.o
 	$(COMP_SER) $(FLAG_SER) -c group.F90
-static.o        : static.F90      mol.o      statistics.o mollib.o
+static.o        : static.F90      mol.o      statistics.o mollib.o potential.o
 	$(COMP_SER) $(FLAG_SER) -c static.F90
 dynamic.o        : dynamic.F90      mol.o      statistics.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c dynamic.F90
-image.o         : image.F90      mol.o
+image.o         : image.F90      mol.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c image.F90
 statistics.o    : statistics.F90 mollib.o
 	$(COMP_SER) $(FLAG_SER) -c statistics.F90
@@ -448,7 +467,7 @@ dump_par.o	: dump.F90 	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o dump_par.o -c dump.F90
 group_par.o	: group.F90	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o group_par.o -c group.F90
-static_par.o    : static.F90      mol.o      statistics_par.o mollib_par.o
+static_par.o    : static.F90      mol.o      statistics_par.o mollib_par.o potential.o
 	$(COMP_PAR) $(FLAG_PAR) -o static_par.o -c static.F90
 dynamic_par.o    : dynamic.F90      mol.o      statistics_par.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o dynamic_par.o -c dynamic.F90

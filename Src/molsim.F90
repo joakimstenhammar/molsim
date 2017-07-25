@@ -46,7 +46,7 @@ program MolsimDriver
    if (master .and. (nproc > mnproc)) call Stop(txroutine, 'nproc > mnproc',uout)
    call par_comm_rank(myid, master, slave)
    if (master) write(*,'(a,i5,/)') 'Molsim: start of parallel run, number of processes =' ,nproc
-   call par_handshake(myid, master, slave, nproc, 6)
+   call par_handshake(myid, master, slave, nproc, ustdout)
    call par_timing('start', master, nproc, uout)
 #endif
 
@@ -184,12 +184,64 @@ subroutine IOMolsim(iStage)
    character(40), parameter :: txroutine ='IOMolsim'
    character(4) :: txistep1
 
+   character(len=128) :: arg
+   integer(4) :: i
+
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
    if (ltime) call CpuAdd('start', txroutine, 0, uout)
 
    select case (iStage)
    case (iReadInput)
+
+      !parse command line arguments
+      if (command_argument_count() == 0) then
+         call Stop(txroutine, 'No arguments provided', ustdout)
+      end if
+
+      do i = 1, command_argument_count()
+         call get_command_argument(i, arg)
+
+         select case (arg)
+         case ('-v', '--version', '-V')
+            if(master) then
+               write(*,'(a)') txVersionDate
+# ifdef _TEST_
+               write(*,'(a)') "mode = test"
+# elif _NORMAL_
+               write(*,'(a)') "mode = normal"
+# elif _WARN_
+               write(*,'(a)') "mode = warn"
+# elif _DEBUG_
+               write(*,'(a)') "mode = debug"
+# elif _QUICK_
+               write(*,'(a)') "mode = quick"
+# endif
+            end if
+            stop 0
+         end select
+      end do
+
+      !set filenames from the last argument
+      call get_command_argument(command_argument_count(), project)
+      fin   = trim(adjustl(project))//'.in'
+      fout  = trim(adjustl(project))//'.out'
+      fcnf  = trim(adjustl(project))//'.cnf'
+      flist = trim(adjustl(project))//'.list'
+      fuser = trim(adjustl(project))//'.user'
+      fwrl  = trim(adjustl(project))//'.wrl'
+      fvtf  = trim(adjustl(project))//'.vtf'
+      ftcl  = trim(adjustl(project))//'.tcl'
+      fgroup= trim(adjustl(project))//'.group'
+      fpos  = trim(adjustl(project))//'.pos'
+      fori  = trim(adjustl(project))//'.ori'
+      fliv  = trim(adjustl(project))//'.liv'
+      fanv  = trim(adjustl(project))//'.anv'
+      ffor  = trim(adjustl(project))//'.for'
+      ftor  = trim(adjustl(project))//'.tor'
+      fidm  = trim(adjustl(project))//'.idm'
+      flaz  = trim(adjustl(project))//'.laz'
+      futot = trim(adjustl(project))//'.utot'
 
 ! ... open FIN and FOUT
 
@@ -232,16 +284,18 @@ subroutine IOMolsim(iStage)
       if (lradatbox) Call WarnAtomOutsideBox(1, na)
 #if defined (ALARIK_INTEL)
 #else
-     if (np < 10000) call WarnHCOverlap(1, np)
+      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (itest == 1)   call TestSimulation
 
-      if (master) call CpuTot(uout)
       if (master) call FileFlush(uout)
 
    case (iBeforeMacrostep)
 
       if (nstep1 == 0) call Stop(txroutine, 'nstep1 == 0', uout)
+      if (lsim .and. master) write(uout, *)
+      if (lsim .and. master) call WriteDateTime(uout)
+      if (lsim .and. master) call CpuTot(uout)
       if (lsim .and. master) then
          write(txistep1,'(i4)') istep1
          call WriteHead(1, 'result of macrostep '//txistep1, uout)
@@ -257,12 +311,12 @@ subroutine IOMolsim(iStage)
       if (lradatbox) Call WarnAtomOutsideBox(1, na)
 #if defined (ALARIK_INTEL)
 #else
-     if (np < 10000) call WarnHCOverlap(1, np)
+      if (np < 10000) call WarnHCOverlap(1, np)
 #endif
       if (master) call FileFlush(uout)
-      if (lsim .and. master) call WriteDateTime(6)
-      if (lsim .and. master) write(6,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
-      if (lsim .and. master) call FileFlush(6)
+      if (lsim .and. master) call WriteDateTime(ustdout)
+      if (lsim .and. master) write(ustdout,'(a,i4,a,/)') 'macrostep', istep1 , ' is completed'
+      if (lsim .and. master) call FileFlush(ustdout)
 
    case (iAfterSimulation)
 
@@ -533,13 +587,13 @@ subroutine IOSystem(iStage)
          write(uout,'(a)') '--------------'
          write(uout,'(a,t15,a,t35,a)')  'number', 'generic name', 'file name'
          write(uout,'(a,t15,a,t35,a)')  '------', '------------', '---------'
-         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', fin
-         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', fout
-         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', fcnf
-         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', flist
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uimg,   'fimg ', fimg
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', fvtf
-         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', ftcl    ! TO BE FIXED
+         write(uout,'(i4,t20,a,t35,a)')                 uin,    'fin  ', trim(fin)
+         write(uout,'(i4,t20,a,t35,a)')                 uout,   'fout ', trim(fout)
+         if (lsim) write(uout,'(i4,t20,a,t35,a)')       ucnf,   'fcnf ', trim(fcnf)
+         if (ilist/= 0) write(uout,'(i4,t20,a,t35,a)')  ulist,  'flist', trim(flist)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uwrl,   'fwrl ', trim(fwrl)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     uvtf,   'fvtf ', trim(fvtf)
+         if (limage) write(uout,'(i4,t20,a,t35,a)')     utcl,   'ftcl ', trim(ftcl)    ! TO BE FIXED
       end if
 
    case (iAfterSimulation)
@@ -721,7 +775,10 @@ subroutine IOCnf(str)
          if (lmvt) np = npread
          read(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
          if (lclink) read(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
-         if (lweakcharge) read(ucnf) laz(1:np)
+         if (lweakcharge) then
+            read(ucnf) laz(1:np)
+            where (.not. laz(1:np)) az(1:np) = Zero
+         end if
          if (lmd .and. .not.GetlSetVel()) then
             read(ucnf,end = 998) (rod(1:3,ip),quad(0:3,ip),ip = 1,np)
  998        continue
@@ -730,17 +787,21 @@ subroutine IOCnf(str)
       end if
 
 #if defined (_PAR_)
-      call par_bc_ints (nstep1done, 1   )
-      call par_bc_ints (iseed     , 1   )
-      call par_bc_reals (am     , 1   )
-      call par_bc_ints (ix     , 1   )
-      call par_bc_ints (iy     , 1   )
+      call par_bc_int (nstep1done)
+      call par_bc_int (iseed)
+      call par_bc_real (am)
+      call par_bc_int (ix)
+      call par_bc_int (iy)
       call par_bc_reals(boxlen    , 3   )
       call par_bc_reals(ro        , 3*np)
       call par_bc_reals(qua       , 4*np)
       if (lclink) then
          call par_bc_ints(nbondcl ,   np)
          call par_bc_ints(bondcl  , maxvalnbondcl*np)
+      end if
+      if (lweakcharge) then
+         call par_bc_logicals(laz ,   np)
+         call par_bc_reals(az     ,   np)
       end if
       if (lmd .and. .not.GetlSetVel()) then
          call par_bc_reals(rod    , 3*np)
@@ -1423,7 +1484,7 @@ subroutine ThermoAver(iStage)
       var(iekin                  )%label = 'kinetic energy                 = '
       var(iutot                  )%label = 'total potential energy         = '
       var(iutwob                 )%label = ' total two-body energy         = '
-      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'         = '
+      var(iutwob+1:iutwob+nptpt)%label = '  '//txptpt(1:nptpt)//'        = '
       var(iurec                  )%label = ' pot. energy from rec. space   = '
       var(iustat                 )%label = ' electrostatic energy          = '
       var(iupol                  )%label = ' polarization energy           = '
@@ -1471,6 +1532,7 @@ subroutine ThermoAver(iStage)
                                       write(uout,fmt1) var(iutot         )%label, u%tot/np
                                       write(uout,fmt1c)(var(iutwob+iptjpt)%label, u%twob(iptjpt)/np,iptjpt = 0,nptpt)
          if (lcharge .and. lewald)    write(uout,fmt1) var(iurec         )%label, u%rec/np
+         if (lweakcharge .and. lewald) write(uout,fmt1) var(iurec         )%label, u%rec/np
          if (ldipole .or. ldipolesph) write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iustat        )%label, u%stat/np
          if (lpolarization)           write(uout,fmt1) var(iupol         )%label, u%pol/np
@@ -1610,6 +1672,7 @@ subroutine ThermoAver(iStage)
          call ThermoAverSub(lmc, fmt1, var(ivar )%label, var(ivar )%avs2, var(ivar )%fls2, ucheck%twob(ivar-iutwob))
          end do
          if (lcharge .and. lewald) call ThermoAverSub(lmc, fmt1, var(iurec)%label, var(iurec)%avs2, var(iurec)%fls2, ucheck%rec)
+         if (lweakcharge .and. lewald) call ThermoAverSub(lmc, fmt1, var(iurec)%label, var(iurec)%avs2, var(iurec)%fls2, ucheck%rec)
          if (ldipole .or. ldipolesph) call ThermoAverSub(lmc, fmt1, var(iustat)%label, var(iustat)%avs2, var(iustat)%fls2, ucheck%stat)
          if (lpolarization) call ThermoAverSub(lmc, fmt1, var(iustat)%label, var(iustat)%avs2, var(iustat)%fls2, ucheck%stat)
          if (lpolarization) call ThermoAverSub(lmc, fmt1, var(iupol )%label, var(iupol )%avs2, var(iupol )%fls2, ucheck%pol )
@@ -1676,6 +1739,7 @@ subroutine ThermoAver(iStage)
                   call TempWrite(ivar   ,fmt2,uout)
          end do
          if (lcharge .and. lewald) call TempWrite(iurec ,fmt2,uout)
+         if (lweakcharge .and. lewald) call TempWrite(iurec ,fmt2,uout)
          if (ldipole .or. ldipolesph) call TempWrite(iustat ,fmt2,uout)
          if (lpolarization) call TempWrite(iustat ,fmt2,uout)
          if (lpolarization) call TempWrite(iupol  ,fmt2,uout)
@@ -2545,7 +2609,7 @@ subroutine DistFunc(iStage)
 ! ... check condition
 
       if (maxval(vtype%nbin) > mnbin_df) call Stop(txroutine, 'vtype%nbin > mnbin_df', uout)
-      if (lmc .and. (rcutdist < rcut)) call Warn(txroutine, 'lmc .and. (rcutdist < rcut)',uout)
+      if (lmc .and. (rcutdist < rcut)) call Warn(txroutine, 'lmc .and. (rcutdist < rcut): distfunc considers smaller region then energy evaluation',uout)
 
    case (iWriteInput)
 
@@ -2894,6 +2958,7 @@ subroutine DistFunc(iStage)
          if (ltime) call CpuAdd('interrupt', ' ', 0, uout)
          usave = u                   ! save potential energies
          if (lcharge .and. lewald) call UEwald
+         if (lweakcharge .and. lewald) call UEwald
          if (ldipole .and. lewald) call UDipoleEwald
          if (lchain) call UBond
          if (lchain) call UAngle
@@ -2910,7 +2975,7 @@ subroutine DistFunc(iStage)
       if (ltime) call CpuAdd('start', 'comm', 0, uout)
       call par_allreduce_reals(ubind, vaux, np  )
       call par_allreduce_reals(force, vaux, 3*na)
-      call par_allreduce_reals(virial, vaux, 1   )
+      call par_allreduce_real(virial, raux)
       if (ltime) call CpuAdd('stop', 'comm', 0, uout)
 #endif
 

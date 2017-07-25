@@ -49,6 +49,7 @@ module CoordinateModule
 
    real(8),      allocatable :: rnwt(:)       ! radius of network type inwt [Allocate with nnwt]
    character(8), allocatable :: txoriginnwt(:)! network center of network type inwt ("origin" and "random") [Allocate with nnwt]
+   real(8),      allocatable :: shiftnwt(:,:) ! shift of cut-off sphere center center during finite network generation
 
    real(8)       :: radlimit(2)               ! lower and upper radial limit of particles (for SetCoreCell)
 
@@ -323,7 +324,7 @@ subroutine SetConfiguration
                                   radatset, lranori,  bondscl, anglemin,                             &
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
-                                  rnwt, txoriginnwt,                                                 &
+                                  rnwt, txoriginnwt, shiftnwt,                                       &
                                   radlimit,                                                          &
                                   itestcoordinate
 
@@ -351,6 +352,9 @@ subroutine SetConfiguration
       end if
       if(.not.allocated(txoriginnwt)) then
          allocate(txoriginnwt(nnwt))
+      end if
+      if(.not.allocated(shiftnwt)) then
+         allocate(shiftnwt(3,nnwt))
       end if
    end if
 
@@ -407,8 +411,9 @@ subroutine SetConfiguration
    itestcoordinate   = 0
 
    if (lnetwork) then
-      rnwt(1:nnwt)        = 10.0
-      txoriginnwt(1:nnwt) = 'origin'
+      rnwt(1:nnwt)         = 10.0
+      txoriginnwt(1:nnwt)  = 'random'
+      shiftnwt(1:3,1:nnwt) = Zero
    end if
 
    rewind(uin)
@@ -569,14 +574,12 @@ subroutine SetConfiguration
       end if
    end do
 
-   if (master) then
-      if (lclink) then
-         if (count(txsetconf == 'periodicnetwork') > 0) then
-            write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
-         end if
-         if (count(txsetconf == 'network') > 0) then
-            write(uout,'(a,t60,i8)') 'number of crosslinks                     = ', ncl
-         end if
+   if (lclink .and. master) then
+      if (count(txsetconf == 'periodicnetwork') > 0) then
+         write(uout,'(a,t45,i8)') 'number of crosslinks                     = ', ncl
+      end if
+      if (count(txsetconf == 'network') > 0) then
+         write(uout,'(a,t60,i8)') 'number of crosslinks                     = ', ncl
       end if
    end if
 
@@ -1470,7 +1473,7 @@ subroutine SuperballSub(radcir)            ! calculate radius of the circle for 
          end do
          r21(1:3) = ro(1:3,ipnsegcn(1,ic))-ro(1:3,ipnsegcn(2,ic))
          r2 = r21(1)**2 + r21(2)**2 + r21(3)**2
-         of = SuperballOverlapOF(r2,r21,ori(1,1,ipnsegcn(1,ic)),ori(1,1,ipnsegcn(2,ic)))
+         of = SuperballOverlapOF(r21,ori(1,1,ipnsegcn(1,ic)),ori(1,1,ipnsegcn(2,ic)))
          write(*,'(a,i5,2f15.10)') 'SuperballSub (qsuperball < qsuperball_max_nr): iter, radcir, of', iter, radcir, of
       end do
    else
@@ -2152,7 +2155,7 @@ subroutine SetNetwork(ipt)
    integer(4)     :: inwt                ! network type counter
    integer(4)     :: inw                 ! network counter
    integer(4)     :: ntry, itry          ! counter attempts to set gel
-   integer(4)     :: nclmade             ! number of crossliks formed
+   integer(4)     :: nclmade             ! number of crosslinks formed
    integer(4), allocatable :: ipclbeg(:) ! id of particles that begin crosslinks
    integer(4), allocatable :: ipclend(:) ! id of particles that ends crosslinks
 
@@ -2194,7 +2197,7 @@ subroutine SetNetwork(ipt)
 
 ! ... determine nnode, ronode, nstrand, rostrand, nclnode
 
-   call SetNetworkPos(rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
+   call SetNetworkPos(shiftnwt(1:3,inwt), rnwt(inwt), bond(ict)%eq, npct(ict), nnode, ronode, nstrand, rostrand, nclnode)
 
 ! ... when particle and chain number don't accord to the neccesary ones: stop excecution and write required numbers
 
@@ -2223,7 +2226,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
          if (txoriginnwt(inwt) == 'origin') then
             rorigin = Zero
-         else
+         else if (txoriginnwt(inwt) == 'random') then
             if (lbcsph) then
                do
                   rorigin(1) = Two*sphrad*(Random(iseed) - Half)
@@ -2239,6 +2242,8 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
             else
                call Stop (txroutine, 'txbc is not compatible with origin position of network', uout)
             end if
+         else
+            call Stop(txroutine,'invalid choice of txoriginnwt',uout)
          end if
 
 ! ... set node particles
@@ -2309,11 +2314,12 @@ end subroutine SetNetwork
 
 !........................................................................
 
-subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
+subroutine SetNetworkPos(shiftxyz, radgel, bondlen, npstrand, nnode, ronodeout, nstrand, rostrandout, nclnode)
 
    use CoordinateModule
    implicit none
 
+   real(8),    intent(in)  :: shiftxyz(3)             ! shift unit cell of diamond cell by shiftxyz in the respective direction
    real(8),    intent(in)  :: radgel                  ! radius of gel
    real(8),    intent(in)  :: bondlen                 ! length of strand bond-length
    integer(4), intent(in)  :: npstrand                ! number of particles in strand
@@ -2360,6 +2366,12 @@ subroutine SetNetworkPos(radgel, bondlen, npstrand, nnode, ronodeout, nstrand, r
 
    nclnode = 4                                     ! each node has 4 crosslinks
    call SetDiamond(nlp,rol,oril)                   ! get diamond unit cell informations
+
+ ! ... shift coordinates of diamond lattice
+   rol(1,1:8) = modulo(rol(1,1:8)+1-shiftxyz(1),1.0)
+   rol(2,1:8) = modulo(rol(2,1:8)+1-shiftxyz(2),1.0)
+   rol(3,1:8) = modulo(rol(3,1:8)+1-shiftxyz(3),1.0)
+
    radgel2 = radgel**2                             ! network radius squared
    celllen = Four*sqrt(Third)*bondlen*(npstrand+1) ! length of one cubic unit cell
    xbondlen = sqrt(Third) * bondlen                ! bond length projected on an external axis

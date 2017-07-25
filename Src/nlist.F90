@@ -353,7 +353,7 @@ subroutine LoadBalanceRealSpace(myid, master, nproc, iobjlow, iobjupp, iobjmyid,
    character(40), parameter :: txroutine='LoadBalanceRealSpace'
    integer(4) :: nobj, nobjmyid
 #if defined (_PAR_)
-   integer(4) :: vaux(1000)
+   integer(4) :: ivaux(1000), iaux
 #endif
 
    nobj = iobjupp - iobjlow + 1
@@ -373,7 +373,7 @@ subroutine LoadBalanceRealSpace(myid, master, nproc, iobjlow, iobjupp, iobjmyid,
 
    nobjmyid = iobjmyid(2) - iobjmyid(1) + 1
 #if defined (_PAR_)
-   call par_allreduce_ints(nobjmyid, vaux, 1)
+   call par_allreduce_int(nobjmyid, iaux)
 #endif
    if (nobjmyid /= nobj) call Stop(txroutine, 'error in values of iobjmyid', unit)
 
@@ -391,7 +391,7 @@ subroutine TestLoadBalanceRealSpace(unit)
 #endif
    iobjmyidx(1:2,myid) = iobjmyid(1:2)
 #if defined (_PAR_)
-   call par_allreduce_ints(iobjmyidx, vaux, 2*nproc)
+   call par_allreduce_ints(iobjmyidx, ivaux, 2*nproc)
 #endif
    if (master) then
       call WriteHead(3, 'Test'//trim(txroutine), unit)
@@ -1079,8 +1079,8 @@ subroutine TestVList(unit)
    sumnneighpnproc(myid)       = sum(nneighpn(1:npmyid))
 
 #if defined (_PAR_)
-   call par_allreduce_ints(npmyidproc,      vaux, nproc)
-   call par_allreduce_ints(sumnneighpnproc, vaux, nproc)
+   call par_allreduce_ints(npmyidproc,      ivaux, nproc)
+   call par_allreduce_ints(sumnneighpnproc, ivaux, nproc)
 #endif
 
    if (master) then
@@ -1333,8 +1333,8 @@ subroutine CalcTotNeighbourPair(ntotpppair, ntotaapair)
    end do
 
 #if defined (_PAR_)
-   call par_allreduce_ints(ntotpppair, vaux, 1)      ! allreduce of ntotpppair
-   call par_allreduce_ints(ntotaapair, vaux, 1)      ! allreduce of ntotaapair
+   call par_allreduce_int(ntotpppair, iaux)      ! allreduce of ntotpppair
+   call par_allreduce_int(ntotaapair, iaux)      ! allreduce of ntotaapair
 #endif
 
 end subroutine CalcTotNeighbourPair
