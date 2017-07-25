@@ -369,13 +369,13 @@ uninstall:
 
 molsim_ser     : molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
-	mkdir -p ../Bin; mv molsim_ser.exe ../Bin/molsim_ser.exe;
+	mkdir -p $(BINDIR); mv molsim_ser.exe $(BINDIR)/molsim_ser.exe;
 molsim_par     : molsim_par.o $(OBJS2)
 	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
-	mkdir -p ../Bin; mv molsim_par.exe ../Bin/molsim_par.exe;
+	mkdir -p $(BINDIR); mv molsim_par.exe $(BINDIR)/molsim_par.exe;
 moldyn         : moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
-	mkdir -p ../Bin; mv moldyn.exe ../Bin/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
+	mkdir -p $(BINDIR); mv moldyn.exe $(BINDIR)/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
 
 testmesh       : testmesh.o mesh.o
 	$(COMP_SER) $(FLAG_SER) -o testmesh.exe testmesh.o mesh.o
@@ -486,7 +486,7 @@ tidy 	:
 #*****************************************************************
 
 clean 	:
-	rm -f *.o *.mod *.i90 ../bin/*.exe *__genmod*
+	rm -f *.o *.mod *.i90 $(BINDIR)/*.exe *__genmod*
 
 #*****************************************************************
 #*                         Print                                 *

@@ -1,0 +1,86 @@
+&nmlSystem
+ txtitle   =   'microgel',
+ txmode    = 'simulation',
+ txmethod  =         'mc',
+ txensemb  =        'nvt',
+ txbc      =        'xyz',
+ txstart   =    'setconf',
+ boxlen(1) =         100 ,
+ boxlen(2) =         100 ,
+ boxlen(3) =         100 ,
+ temp      =      298.15 ,
+ prsr      =       1.013 ,
+ iseed     =           1 ,
+ nstep1    =           1 ,
+ nstep2    =          10 ,
+ lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .f.,  ldynamic = .f.,  limage = .f. ,
+ itest     =  0 ,  ipart =  0 ,  iatom =  0 ,  iaver =  0 ,  ishow  =  0 ,  iplot   =  0 ,  ilist    =  0 ,  ltrace = .f. ,
+ lblockaver = .f.,
+/
+&nmlScale
+/
+&nmlParticle
+ lclink           =       .true.,
+ nnwt             =           1 ,
+ nct              =           1 ,
+ txct(1)          =   'strand_L',
+ ncct(1)          =         184 ,
+ npt              =           3 ,
+ txpt(1)          =      'nodeL', txpt(2)       =  'monL', txpt(3)       =  'cIon',
+ nppt(1)          =          71 , nppt(2)       =    368 , nppt(3)       =    368 ,
+ natpt(1)         =           1 , natpt(2)      =      1 , natpt(3)      =      1 ,
+ txat(1)          =      'nodeL', txat(2)       =  'monL', txat(3)       =  'cIon',
+ radat(1)         =         2.0 , radat(2)      =    2.0 , radat(3)      =    2.0 ,
+ zat(1)           =         0.0 , zat(2)        =   -1.0 , zat(3)        =   +1.0 ,
+ npptct(1,1)      =           0 , npptct(2,1)   =      2 , npptct(3,1)   =      0 ,
+ maxnbondcl(1)    =           4 , maxnbondcl(2) =      2 , maxnbondcl(3) =      0 ,
+ naatpt(1,1)      =           1 , naatpt(1,2)   =      1 , naatpt(1,3)   =      1 ,
+ txaat(1,1)       =      'nodeL', txaat(1,2)    =  'monL', txaat(1,3)    =  'cIon',
+ txelec           = 'weakcharge' ,
+ pH               =          1.0 ,
+ latweakcharge(2) =          .t. ,
+ pK(2)            =         14.0 ,
+ jatweakcharge(2) =            3 ,
+/
+&nmlNetworkConfiguration
+ nnwnwt(1)     =           1 ,
+ iptclnwt(1)   =           1 ,
+ ncctnwt(1,1)  =         184 ,
+ txnwt(1)      =   'microgel',
+ txtoponwt(1)  =    'default',
+/
+&nmlPotential
+ relpermitt =   78.3 ,
+ rcut       =   50.0 ,
+ lewald     =    .t. ,
+ txewaldrec =  'std' ,
+ iewaldopt  =      1 ,
+/
+&nmlPotentialChain
+ bond(1) = 2.4, 2, 5.0,
+ clink   = 2.4, 2, 5.0,
+/
+&nmlSetConfiguration
+ rnwt(1)         =     44.0 ,
+ txoriginnwt(1)  =  'random',
+ txsetconf(1)    = 'network',
+ txsetconf(2)    = 'network',
+ txsetconf(3)   =  'random' ,
+/
+&nmlMC
+ isamp = 1,
+ pspart(1)     =  1.0 , pspart(2)     =  0.995 , pspart(3)     =   1.0 ,
+ dtran(1)      = -4.5 , dtran(2)      = -8.400 , dtran(3)      = -50.0 ,
+ pcharge(1)    =  0.0 , pcharge(2)    =  0.005 , pcharge(3)    =   0.0 ,
+/
+&nmlGroup
+ ref   = 'weakcharge',
+ field = 'type=all',
+ lwref =        .f.,
+/
+&nmlIntList
+ inlist  =     1 ,
+ drnlist = 100.0 ,
+/
+&nmlStatic
+/

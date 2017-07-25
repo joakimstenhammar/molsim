@@ -1969,6 +1969,8 @@ subroutine GroupUser(iStage, m, txtype, lsetconf)
       call GroupAds_layer1_ramp(iStage, m)
    else if (txtype(m) == 'networkgenerations') then
       call GroupNetworkGenerations(iStage, m)
+   else if (txtype(m) == 'weakcharge') then
+      call GroupWeakCharge(iStage, m)
    else
       lsetconf =.false.
    end if
@@ -2671,6 +2673,88 @@ subroutine SetNetworkGenerationPointer
 end subroutine SetNetworkGenerationPointer
 
 end subroutine GroupNetworkGenerations
+
+!************************************************************************
+!*                                                                      *
+!*     GroupWeakCharge                                                  *
+!*                                                                      *
+!************************************************************************
+
+! ... group division according to titratable species - respective division in
+! ... charged and uncharged state
+! ...
+! ... currently works for monoatomic systems only
+
+subroutine GroupWeakCharge(iStage,m)
+
+   use MolModule
+   implicit none
+
+   integer(4),    intent(in)     :: iStage
+   integer(4),    intent(in)     :: m
+
+   character(len=*), parameter   :: txroutine = 'GroupWeakCharge'
+
+   character(len=9), parameter   :: txchargestate(2) = [ 'charged  ', 'uncharged' ]
+
+   integer(4), allocatable, save :: igrref(:,:) ! group reference for fast assignment of particles to groups
+
+   integer(4)                    :: ichargestate, ip, ipt, igr
+
+   select case (iStage)
+
+   case (iReadInput)
+
+      if (.not.lweakcharge) then
+         call Stop(txroutine,'ref/field == ''weakcharge'' .and. .not.lweakcharge',uout)
+      else if (.not.lmonoatom) then
+         call Stop(txroutine,'ref/field == ''weakcharge'' .and. .not.lmonoatom',uout)
+      end if
+
+      ngr(m) = 0
+      do ipt = 1, npt   !                   weak charge?            counterion?
+         ngr(m) = merge(ngr(m)+2, ngr(m)+1, latweakcharge(ipt) .or. any(jatweakcharge(1:npt) == ipt))
+      end do
+
+      if (.not.allocated(igrref)) then
+         allocate(igrref(2,npt))
+         igrref = 0
+      end if
+
+   case (iWriteInput)
+
+      ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
+      igr = 0
+      do ipt = 1, npt
+         if (latweakcharge(ipt) .or. any(jatweakcharge(1:npt) == ipt)) then ! weak charge or counterion
+            do ichargestate = 1, 2
+               igr = igr + 1
+               iptgr(igr,m) = ipt
+               grvar(igrpnt(m,igr))%label = trim(adjustl(txchargestate(ichargestate)))//' '//&
+                                           &trim(adjustl(txpt(ipt)))
+               igrref(ichargestate,ipt) = igr
+            end do
+         else ! no charge or fixed charge
+            igr = igr + 1
+            iptgr(igr,m) = ipt
+            grvar(igrpnt(m,igr))%label = trim(adjustl(txpt(ipt)))
+            igrref(1:2,ipt) = igr
+         end if
+      end do
+
+   case (iSimulationStep)
+
+      igrpn(1:np,m) = 0
+      do ipt = 1, npt
+         do ip = ipnpt(ipt), ipnpt(ipt)+nppt(ipt)-1
+            igrpn(ip,m) = merge(igrref(1,ipt), igrref(2,ipt), laz(ip))
+            grvar(igrpnt(m,igrpn(ip,m)))%value = grvar(igrpnt(m,igrpn(ip,m)))%value + 1
+         end do
+      end do
+
+   end select
+
+end subroutine GroupWeakCharge
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
