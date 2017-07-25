@@ -282,7 +282,6 @@ end module EnergyModule
 subroutine UTotal(iStage)
 
    use EnergyModule
-   use FlexLJEnergyModule, only: UFlexLJ
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -343,6 +342,7 @@ subroutine UTotal(iStage)
       if (lmonoatom) then
          if (lvlist) call UTwoBodyA
          if (lllist) call UTwoBodyALList
+         if (lclist) call UTwoBodyACellList
       else
          call UTwoBodyP
       end if
@@ -383,10 +383,6 @@ end if
 
       call UDielDis
 
-   end if
-
-   if(lflexLJ) then
-      call UFlexLJ(u%twob,u%tot, force, virial)
    end if
 
    if (lchain) call UBond
@@ -662,6 +658,127 @@ end subroutine StopUTwoBodyALList
 !........................................................................
 
 end subroutine UTwoBodyALList
+
+!************************************************************************
+!*                                                                      *
+!*     UTwoBodyACellList                                                *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate two-body potential energy
+!     only monoatomic particles
+!     cell list version
+
+subroutine UTwoBodyACellList
+
+   use MolModule,      only: ro, iptpn, iptpt, rcut2, Zero, r2atat, r2umin
+   use MolModule,      only: nptpt, np
+   use MolModule,      only: nproc, myid, uout, ltime
+   use MolModule,      only: iubuflow, ubuf, lmonoatom, nbuf
+   use MolModule,      only: u, force, virial
+   use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip, ipnext
+
+   implicit none
+   character(40), parameter :: txroutine ='UTwoBodyAOldCellList'
+
+   integer(4) :: ip, jp, ipt, jpt, iptjpt, jploc, ibuf
+   real(8)    :: dr(3), r2, d, usum, fsum, virtwob
+
+   type(cell_type), pointer :: icell, ncell
+   integer(4)               :: incell
+
+   if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
+
+   if (ltime) call CpuAdd('start', txroutine, 2, uout)
+
+   u%twob(0:nptpt) = Zero
+   virtwob         = Zero
+
+! ... contribution from pairs where only one particle is moved
+   do ip = 1, np
+      ipt = iptpn(ip)
+      icell => cellip(ip)%p
+      do incell = 1 + myid, icell%nneighcell, nproc ! increment with nproc to have parallel execution
+         ncell => icell%neighcell(incell)%p
+         jp = ncell%iphead
+         do jploc = 1, ncell%npart
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
+            call PBCr2(dr(1), dr(2), dr(3), r2)
+            if (r2 > rcut2) cycle
+            if (r2 < r2umin(iptjpt)) call StopUTwoBodyACellList
+            if (r2 < r2atat(iptjpt)) then
+               usum = 1d10                ! emulate hs overlap
+               fsum = 1d10                ! emulate hs overlap
+            else
+               ibuf = iubuflow(iptjpt)
+               do
+                  if (r2 >= ubuf(ibuf)) exit
+                  ibuf = ibuf+12
+                  if (ibuf > nbuf) call StopIbuf('txptpt',iptjpt)
+               end do
+               d = r2-ubuf(ibuf)
+               usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
+                      d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
+               fsum = ubuf(ibuf+7)+d*(ubuf(ibuf+8)+d*(ubuf(ibuf+9)+ &
+                      d*(ubuf(ibuf+10)+d*ubuf(ibuf+11))))
+            end if
+
+            u%twob(iptjpt) = u%twob(iptjpt) + usum
+            force(1,ip) = force(1,ip) + (fsum * dr(1))
+            force(2,ip) = force(2,ip) + (fsum * dr(2))
+            force(3,ip) = force(3,ip) + (fsum * dr(3))
+            force(1,jp) = force(1,jp) - (fsum * dr(1))
+            force(2,jp) = force(2,jp) - (fsum * dr(2))
+            force(3,jp) = force(3,jp) - (fsum * dr(3))
+            virtwob     = virtwob     - (fsum * r2)
+            jp = ipnext(jp)
+         end do
+      end do
+   end do
+
+   u%twob(0) = sum(u%twob(1:nptpt))
+
+   u%tot     = u%tot         + u%twob(0)
+   virial    = virial        + virtwob
+
+   if (ltime) call CpuAdd('stop', txroutine, 2, uout)
+
+contains
+
+!........................................................................
+
+subroutine StopIbuf(txstring,i)
+   implicit none
+   character(*), intent(in) :: txstring
+   integer(4),   intent(in) :: i
+   write(uout,*)
+   write(uout,'(a,i5)') txstring, i
+   call Stop(txroutine, 'ibuf > nbuf', uout)
+end subroutine StopIbuf
+
+subroutine StopUTwoBodyACellList
+   use MolModule, only: boxlen2, dpbc
+   implicit none
+   write(uout,'(a,i5)')  'ip', ip
+   write(uout,'(a,i5)')  'jp', jp
+   write(uout,'(a,3e15.5)') 'ro(ip)         = ', ro(1:3,ip)
+   write(uout,'(a,3e15.5)') 'ro(jp)         = ', ro(1:3,jp)
+   write(uout,'(a,3e15.5)') 'boxlen2        = ', boxlen2
+   write(uout,'(a,3e15.5)') 'dpbc           = ', dpbc
+   write(uout,'(a,i15)')    'uout           = ', uout
+   write(uout,'(a,i15)')    'myid           = ', myid
+   write(uout,'(a,i15)')    'iptjpt         = ', iptjpt
+   write(uout,'(a,e15.5)')  'r2             = ', r2
+   write(uout,'(a,e15.5)')  'r2umin(iptjpt) = ', r2umin(iptjpt)
+   call Stop(txroutine, 'r2 < r2umin(iptjpt)', uout)
+end subroutine StopUTwoBodyACellList
+
+!........................................................................
+
+
+end subroutine UTwoBodyACellList
 
 !************************************************************************
 !*                                                                      *
@@ -4784,9 +4901,11 @@ subroutine UDielDisSph
          r12 = sqrt( (r(1,ip)-r(1,jp))**2 + (r(2,ip)-r(2,jp))**2 + (r(3,ip)-r(3,jp))**2 )
                                                  ! ion--ion and ion--image interaction
          if ((r1 < boundaryrad) .and. (r2 < boundaryrad)) then
-            u%twob(iptjpt) = u%twob(iptjpt) + epsi2FourPi*(az(ip)*az(jp))*(One/(r12*eta) + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
+            u%twob(iptjpt) = u%twob(iptjpt) + epsi2FourPi*(az(ip)*az(jp)) * &
+               (One/(r12*eta) + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
          else
-            u%twob(iptjpt) = u%twob(iptjpt) + epsi2FourPi*(az(ip)*az(jp))*(One/r12 + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
+            u%twob(iptjpt) = u%twob(iptjpt) + epsi2FourPi*(az(ip)*az(jp)) * &
+               (One/r12 + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
          end if
       end do
                                                  ! ion--self-image interaction and Born energy
@@ -6130,7 +6249,8 @@ subroutine UExternalHollowSphere
      if (r1 < rInSphere) then
          sum = sum - zat(iat)*threehalf*(rInSphere**2-rOutSphere**2)/(rOutSphere**3-rInSphere**3)
      else if (r1 <= rOutSphere) then
-         sum = sum - zat(iat)/(rOutSphere**3-rInSphere**3)*(half*r2+rInSphere**3/r1-threehalf*rInSphere**2+threehalf*(rInSphere**2-rOutSphere**2))
+         sum = sum - zat(iat)/(rOutSphere**3-rInSphere**3) * &
+            (half*r2+rInSphere**3/r1-threehalf*rInSphere**2+threehalf*(rInSphere**2-rOutSphere**2))
      else if (r1 > rOutSphere) then
          sum = sum + zat(iat)/r1
      end if
@@ -6724,7 +6844,11 @@ subroutine EwaldSetup
          termcsc = 0.0E+00
          termscc = 0.0E+00
          termccc = 0.0E+00
-         allocate(sinkxtm(naewald,0:ncut2d), coskxtm(naewald,0:ncut2d), sinkytm(naewald,0:ncut2d), coskytm(naewald,0:ncut2d), stat = ierr)
+         allocate(sinkxtm(naewald,0:ncut2d),&
+            coskxtm(naewald,0:ncut2d),&
+            sinkytm(naewald,0:ncut2d),&
+            coskytm(naewald,0:ncut2d),&
+            stat = ierr)
          sinkxtm = 0.0E+00
          coskxtm = 0.0E+00
          sinkytm = 0.0E+00
@@ -6992,7 +7116,7 @@ subroutine AlphaToNcut()
       xold = xnew
    end do
    if (i > 40) call Stop(txroutine,'i > 40',6)
-   ncut = xnew + One
+   ncut = int(xnew + One)
 end subroutine AlphaToNcut
 
 !........................................................................
