@@ -2042,7 +2042,6 @@ subroutine SetObjectParam2
 
 ! ... check some conditions
 
-               if (abs(zat(jat)) /= One) call Stop(txroutine,'abs(zat(jat)) /= 1', uout) ! only charge = +-1 supported
                if (naat(jat) /= 1) call Stop(txroutine,'naat(jat) /= 1', uout) ! particle with counter charge has to be an ion
 
 ! ... sum up number of ionizable units for which jat shall be used as counterion type
