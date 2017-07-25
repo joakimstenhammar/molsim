@@ -348,6 +348,7 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
       end do
    end do
 
+
 ! ... contribution from pairs where both particles are displaced
 
    if (lptmdutwob) then      ! not adapted for _PAR_ !!
@@ -814,12 +815,12 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
             dr(1:3) = rotm(1:3,iploc)-rotm(1:3,jploc)
             call PBCr2(dr(1), dr(2), dr(3), r2)
             if (lellipsoid) Then
-               if (EllipsoidOverlap(r2,dr,oritm(:,:,iploc),ori(:,:,jp),radellipsoid2,aellipsoid)) return
+               if (EllipsoidOverlap(r2,dr,oritm(:,:,iploc),oritm(:,:,jploc),radellipsoid2,aellipsoid)) return
             end if
             if (lsuperball) Then
-               if (SuperballOverlap(r2,dr,oritm(:,:,iploc),ori(:,:,jp))) return
+               if (SuperballOverlap(r2,dr,oritm(:,:,iploc),oritm(:,:,jploc))) return
             end if
-            if (r2 < rcut2) cycle
+            if (r2 > rcut2) cycle
             if (r2 < r2atat(iptjpt)) return ! Hard Sphere overlap
             if (r2 < r2umin(iptjpt)) return ! outside lower end
 
@@ -905,7 +906,6 @@ subroutine UTwoBodyAOldCellList
          end do
       end do
    end do
-
 
 ! ... contribution from pairs where both particle is moved
 
