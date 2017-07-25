@@ -99,7 +99,6 @@
 subroutine DUTotal(lhsoverlap,lhepoverlap)
 
    use EnergyModule
-   use FlexLJEnergyModule, only: DUFlexLJ
    implicit none
 
    logical,    intent(out) :: lhsoverlap        ! =.true. hard-core overlap
@@ -188,11 +187,6 @@ end if
       call DUDielDis(lhsoverlap)
       if (lhsoverlap) goto 400
 
-   end if
-
-   if(lflexLJ) then
-      call DUFlexLJ(du%twob,du%tot,lhsoverlap)
-      if(lhsoverlap) goto 400
    end if
 
    if (lchain) call DUBond
