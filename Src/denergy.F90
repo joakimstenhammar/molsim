@@ -779,20 +779,21 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
                if (lsuperball) Then
                   if (SuperballOverlap(r2,dr,oritm(:,:,iploc),ori(:,:,jp))) return
                end if
-               if (r2 > rcut2) cycle
-               if (r2 < r2atat(iptjpt)) return ! Hard Sphere overlap
-               if (r2 < r2umin(iptjpt)) return ! outside lower end
+               if (r2 < rcut2) then
+                  if (r2 < r2atat(iptjpt)) return ! Hard Sphere overlap
+                  if (r2 < r2umin(iptjpt)) return ! outside lower end
 
-               ibuf = iubuflow(iptjpt)
-               do
-                  if (r2 >= ubuf(ibuf)) exit
-                  ibuf = ibuf+12
-               end do
-               d = r2-ubuf(ibuf)
-               usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
-                                 d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
+                  ibuf = iubuflow(iptjpt)
+                  do
+                     if (r2 >= ubuf(ibuf)) exit
+                     ibuf = ibuf+12
+                  end do
+                  d = r2-ubuf(ibuf)
+                  usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
+                                    d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
 
-               utwobnew(iptjpt) = utwobnew(iptjpt) + usum
+                  utwobnew(iptjpt) = utwobnew(iptjpt) + usum
+               end if
             end if
             jp = ipnext(jp)
         end do
@@ -818,7 +819,7 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
             if (lsuperball) Then
                if (SuperballOverlap(r2,dr,oritm(:,:,iploc),ori(:,:,jp))) return
             end if
-            if (r2 > rcut2) cycle
+            if (r2 < rcut2) cycle
             if (r2 < r2atat(iptjpt)) return ! Hard Sphere overlap
             if (r2 < r2umin(iptjpt)) return ! outside lower end
 
@@ -887,17 +888,18 @@ subroutine UTwoBodyAOldCellList
                dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
                call PBCr2(dr(1), dr(2), dr(3), r2)
                !as the old configuration should be free of overlaps one can skip the checks
-               if (r2 > rcut2) cycle
-               ibuf = iubuflow(iptjpt)
-               do
-                  if (r2 >= ubuf(ibuf)) exit
-                  ibuf = ibuf+12
-               end do
-               d = r2-ubuf(ibuf)
-               usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
-                                 d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
+               if (r2 < rcut2) then
+                  ibuf = iubuflow(iptjpt)
+                  do
+                     if (r2 >= ubuf(ibuf)) exit
+                     ibuf = ibuf+12
+                  end do
+                  d = r2-ubuf(ibuf)
+                  usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
+                                    d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
 
-               utwobold(iptjpt) = utwobold(iptjpt) + usum
+                  utwobold(iptjpt) = utwobold(iptjpt) + usum
+               end if
             end if
             jp = ipnext(jp)
          end do

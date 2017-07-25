@@ -702,11 +702,18 @@ subroutine UTwoBodyACellList
          ncell => icell%neighcell(incell)%p
          jp = ncell%iphead
          do jploc = 1, ncell%npart
+            if (jp <= ip) then
+               jp = ipnext(jp)
+               cycle
+            end if
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
             dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
             call PBCr2(dr(1), dr(2), dr(3), r2)
-            if (r2 > rcut2) cycle
+            if (r2 > rcut2) then
+               jp = ipnext(jp)
+               cycle
+            end if
             if (r2 < r2umin(iptjpt)) call StopUTwoBodyACellList
             if (r2 < r2atat(iptjpt)) then
                usum = 1d10                ! emulate hs overlap

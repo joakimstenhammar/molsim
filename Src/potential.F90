@@ -194,7 +194,7 @@ subroutine IOPotTwoBody(iStage)
                            lsuperball, radsuperball, qsuperball, txmethodsuperball, nitersuperball, tolsuperball, meshdepthsuperball, &
                            dl_damp, dl_cut, dr_damp, dr_cut, lstatsuperball,        &
                            luext,                                                   &
-                           lmonoatom, itestpot, lflexLJ
+                           lmonoatom, itestpot
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -264,8 +264,6 @@ subroutine IOPotTwoBody(iStage)
       luext          =.false.
 
       itestpot       = 0
-
-      lflexLJ        = .false.
 
 ! ... consistence with earlier versions
 
