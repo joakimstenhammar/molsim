@@ -1,3 +1,11 @@
+!************************************************************************
+!*                                                                      *
+!*     CellList                                                         *
+!*                                                                      *
+!************************************************************************
+
+! ... a new improved implementation of the linked list
+
 module CellListModule
 
 implicit none
@@ -5,26 +13,27 @@ private
 public UpdateCellip, InitCellList, SetCellList, CellListAver, TestCellList
 public pcellro, cell_type, cell_pointer_array, cellip, ipnext
 
-integer(4)  :: maxneighcell
-type cell_pointer_array
-   type(cell_type), pointer  :: p => null()
-end type cell_pointer_array
+integer(4)                               :: maxneighcell
 
 type cell_type
-   integer(4)  :: id       ! fore easy recognition
-   integer(4)  :: npart
-   integer(4)  :: nneighcell
+   integer(4)                            :: id           ! for easy recognition
+   integer(4)                            :: npart
+   integer(4)                            :: nneighcell
    type(cell_pointer_array), allocatable :: neighcell(:)
-   integer(4)  :: iphead
+   integer(4)                            :: iphead
 end type cell_type
 
-integer(4), allocatable :: ipnext(:)
-integer(4), allocatable :: ipprev(:)
+type cell_pointer_array
+   type(cell_type), pointer              :: p => null()
+end type cell_pointer_array
 
-type(cell_type), target, allocatable  :: cell(:,:,:)    !cells
-type(cell_pointer_array), allocatable  :: cellip(:) !cell of each particle
-integer(4)  :: ncell(3)                !number of cells in x y z in each octant
-real(8)     :: ircell(3)                  !inverse edge length of each cell
+integer(4), allocatable                  :: ipnext(:)
+integer(4), allocatable                  :: ipprev(:)
+
+type(cell_type), target, allocatable     :: cell(:,:,:)  ! cells
+type(cell_pointer_array), allocatable    :: cellip(:)    ! cell of each particle
+integer(4)                               :: ncell(3)     ! number of cells in x y z in each octant
+real(8)                                  :: ircell(3)    ! inverse edge length of each cell
 
 contains
 
@@ -35,15 +44,15 @@ subroutine InitCellList(rcell, iStage)
    use MolModule, only: np
    use MolModule, only: rcut, rcut2
 
-   real(8), intent(in)  :: rcell
-   integer(4), intent(in)  :: iStage
-   character(40), parameter :: txroutine ='InitCellList'
-   integer(4)  :: ix, iy, iz, neigh(3), ineigh, id
-   type(cell_type), pointer :: icell
-   integer(4), allocatable :: directions(:,:), directionindex(:), tmpidneigh(:)
-   integer(4) :: idir !
-   real(8)  :: r2
+   real(8)    , intent(in)               :: rcell
+   integer(4) , intent(in)               :: iStage
+   character(40), parameter              :: txroutine ='InitCellList'
+   integer(4),               allocatable :: directions(:,:) ,directionindex(:), tmpidneigh(:)
    type(cell_pointer_array), allocatable :: icellid(:)
+   type(cell_type), pointer              :: icell
+   integer(4)                            :: idir
+   integer(4)                            :: ix, iy, iz, neigh(3), ineigh, id
+   real(8)                               :: r2
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -79,6 +88,7 @@ subroutine InitCellList(rcell, iStage)
    allocate(ipprev(1:np))
    ipnext = 0
    ipprev = 0
+
    ! cell structure when ncell(1:3) = 4
    !        +-----+-----+-----+-----+
    !       /.., 3/     /     /     /|
@@ -109,12 +119,10 @@ subroutine InitCellList(rcell, iStage)
       do iy = lbound(cell,dim=2), ubound(cell,dim=2)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             id = id + 1
-            icell => cell(ix,iy,iz)
-            icell%id = id ! sets the id
-            !allocate(cell(ix,iy,iz)%ip(np)) ! allocate cell particles
-            icell%iphead = 0
-            icell%npart = 0        ! initialize cell particles
-            icellid(id)%p => icell
+            icellid(id)%p        => cell(ix,iy,iz)
+            icellid(id)%p%id     = id ! sets the id
+            icellid(id)%p%iphead = 0
+            icellid(id)%p%npart  = 0        ! initialize cell particles
          end do
       end do
    end do
@@ -200,7 +208,7 @@ subroutine getPBCneighcell(cellc, dirc, neighc, r2)
       end where
    end if
 
-   dr(1:3) = max(0,abs(dirc(1:3))-1)/ircell(1:3) !distance to outer end of cell
+   dr(1:3) = max(0,abs(dirc(1:3))-1)/ircell(1:3) !distance to closest part of cell
    if(lPBC) then
       call PBC(dr(1), dr(2), dr(3))
    end if
@@ -211,14 +219,10 @@ pure function alreadyneighbour(id, oldid) result(lneigh)
    integer(4),      intent(in)  :: id
    integer(4), intent(in)  :: oldid(:)
    logical :: lneigh
-   if(any(oldid(:) .eq. id)) then
-      lneigh = .true.
-   else
-      lneigh = .false.
-   end if
+   lneigh = any(oldid(:) .eq. id)
 end function alreadyneighbour
 
-function pcellro(ro) result(icell)
+pure function pcellro(ro) result(icell)
    use MolModule, only: boxlen2
    implicit none
    real(8), intent(in)  :: ro(3)
@@ -236,15 +240,15 @@ subroutine AddIpToCell(ip, icell)
    integer(4)  :: jp
 
    icell%npart = icell%npart + 1
-   jp = icell%iphead !current head
-   icell%iphead = ip ! make ip the head
-   if(jp .ne. 0) then !when a head is present
+   jp = icell%iphead  ! current head
+   icell%iphead = ip  ! make ip the head
+   if(jp .ne. 0) then ! when a head is present
       ipprev(jp) = ip ! move the head one down
-      ipnext(ip) = jp
-   else
-      ipprev(ip) = 0 !particle is alone in cell
+      ipnext(ip) = jp ! make old head particle next to ip
+   else               ! new particle is alone in cell
       ipnext(ip) = 0
    end if
+   ipprev(ip) = 0     ! there is no particle before the head
 
    cellip(ip)%p => icell !associate particle with cell
 
@@ -261,7 +265,7 @@ subroutine RmIpFromCell(ip, icell)
    prevp = ipprev(ip)
    if (nextp .eq. 0) then ! ip is at the tail
       if( icell%iphead .eq. ip ) then ! ip is at head
-         !no particles are left
+         ! no particles are left
          icell%iphead = 0
       else
          ! make the previous partice the tail

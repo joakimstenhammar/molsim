@@ -4876,6 +4876,8 @@ subroutine MCUpdate
       call SetAtomProp(ip, ip, .false.)                        ! atom and dipole
       drostep(1:3,ip) = drostep(1:3,ip)+drotm(1:3,iploc)       ! displacement
    end do
+
+   !update cell list
    if(lclist) then
       do iploc = 1, nptm
          ip = ipnptm(iploc)
