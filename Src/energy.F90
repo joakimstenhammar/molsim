@@ -715,9 +715,9 @@ subroutine UTwoBodyACellList
                cycle
             end if
             if (r2 < r2umin(iptjpt)) call StopUTwoBodyACellList
-            if (r2 < r2atat(iptjpt)) then
-               usum = 1d10                ! emulate hs overlap
-               fsum = 1d10                ! emulate hs overlap
+            if (r2 < r2atat(iptjpt)) then ! emulate hs overlap
+               usum = 1d10
+               fsum = 1d10
             else
                ibuf = iubuflow(iptjpt)
                do
@@ -733,12 +733,8 @@ subroutine UTwoBodyACellList
             end if
 
             u%twob(iptjpt) = u%twob(iptjpt) + usum
-            force(1,ip) = force(1,ip) + (fsum * dr(1))
-            force(2,ip) = force(2,ip) + (fsum * dr(2))
-            force(3,ip) = force(3,ip) + (fsum * dr(3))
-            force(1,jp) = force(1,jp) - (fsum * dr(1))
-            force(2,jp) = force(2,jp) - (fsum * dr(2))
-            force(3,jp) = force(3,jp) - (fsum * dr(3))
+            force(1:3,ip) = force(1:3,ip) + (fsum * dr(1:3))
+            force(1:3,jp) = force(1:3,jp) - (fsum * dr(1:3))
             virtwob     = virtwob     - (fsum * r2)
             jp = ipnext(jp)
          end do
