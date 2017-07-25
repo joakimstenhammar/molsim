@@ -8715,7 +8715,9 @@ subroutine NetworkRadialDF(iStage)
             do ipt = 1, npt
                if (zat(iatpt(ipt)) == Zero) cycle
                do ip = ipnpt(ipt), ipnpt(ipt) + nppt(ipt) - 1
-                  if (lweakcharge .and. .not.laz(ip)) cycle
+                  if (lweakcharge) then
+                     if (.not.laz(ip)) cycle
+                  end if
                   dr(1:3) = ro(1:3,ip) - rcom(1:3)
                   call PBCr2(dr(1), dr(2), dr(3), r2)
                   r1 = sqrt(r2)

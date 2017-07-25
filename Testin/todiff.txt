@@ -210,3 +210,4 @@ salt.mc.weakcharge.ewald.out
 vtfimage.fnw.mc.out
 vtfimage.fnw.mc.tcl
 vtfimage.fnw.mc.vtf
+amphoteric.counterions.mc.out

@@ -33,11 +33,11 @@
  maxnbondcl(1)    =           1 , maxnbondcl(2)    =     0 ,
  naatpt(1,1)      =           1 , naatpt(1,2)      =     1 ,
  txaat(1,1)       =        'awc', txaat(1,2)       = 'cion',
+ itestpart        =          10 ,
  latweakcharge(1) =          .t., latweakcharge(2) =    .f.,
  pk(1)            =        12.0 ,
  pH               =         1.0 ,
- jatweakcharge    =           2 ,
- itestpart        =          10 ,
+ jatweakcharge(1) =           2 ,
 /
 &nmlPotential
  relpermitt =  78.3 ,
