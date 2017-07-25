@@ -48,7 +48,7 @@
  pH               = 7.0 ,
  latweakcharge(1) =  .t.,
  pK(1)            = 7.0 ,
- jatweakcharge    = 2,
+ jatweakcharge(1) = 2,
 /
 ! relative permittivity of water at 25°C from Malmberg1956
 &nmlPotential
