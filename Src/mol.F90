@@ -793,9 +793,6 @@ module MolModule
    real(8)       :: rcap                   !*capside (shell) inner radius
    real(8)       :: dcap                   !*capside (shell) thickness
 
-! ... flexible Lennard Jones Potential
-   logical  :: lflexLJ
-
 ! ... energy
 
    real(8)       :: ekin = 0.0d0           ! kinetic energy

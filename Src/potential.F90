@@ -168,7 +168,6 @@ end subroutine PotentialDriver
 subroutine IOPotTwoBody(iStage)
 
    use PotentialModule
-   use flexLJEnergyModule, only: IOPotFlexLJ
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -318,11 +317,6 @@ subroutine IOPotTwoBody(iStage)
 
       cyllen2 = half*cyllen
 
-! ... IO for flexLJ Potential
-      if(lflexLJ) then
-         call IOPotFlexLJ(iStage)   ! IO
-      end if
-
 ! ... prepare for ewald summation (rcut might be changed)
 
       if (lewald) call EwaldSetup
@@ -360,11 +354,6 @@ subroutine IOPotTwoBody(iStage)
       end if
 
    case (iWriteInput)
-
-! ... flexible LJ potential
-      if(lflexLJ) then
-         call IOPotFlexLJ(iStage)
-      end if
 
 ! ... check conditions
 
