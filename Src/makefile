@@ -413,9 +413,9 @@ genericneighbour.o	: genericneighbour.F90    mol.o celllist.o
 	$(COMP_SER) $(FLAG_SER) -c genericneighbour.F90
 ljenergy.o      : ljenergy.F90    mol.o genericneighbour.o
 	$(COMP_SER) $(FLAG_SER) -c ljenergy.F90
-energy.o        : energy.F90      mol.o	mollib.o ljenergy.o
+energy.o        : energy.F90      mol.o	mollib.o celllist.o
 	$(COMP_SER) $(FLAG_SER) -c energy.F90
-denergy.o       : denergy.F90     mol.o	energy.o mollib.o ljenergy.o
+denergy.o       : denergy.F90     mol.o	energy.o mollib.o celllist.o
 	$(COMP_SER) $(FLAG_SER) -c denergy.F90
 dump.o		: dump.F90 	mol.o
 	$(COMP_SER) $(FLAG_SER) -c dump.F90
