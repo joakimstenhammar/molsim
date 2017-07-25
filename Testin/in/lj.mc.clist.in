@@ -1,0 +1,42 @@
+ &nmlSystem
+  txTitle ='lj',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',   txstart ='setconf',
+  nstep1= 1,        nstep2= 10,
+  boxlen= 3*16.0,
+  temp  = 120.28,       prsr  = 0.1013,
+  temp  = 240.56,       prsr  = 0,
+  iseed = 1,
+  lcont =.t.,  laver =.t.,  ldist =.t., limage = .t., lstatic = .f.,
+  itest = 0,   ipart = 1,   ishow = 1,  iplot = 1,   ilist = 1,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'lj',
+  nppt  =  2048,
+  natpt =  1,
+  txat  = 'cente',
+  massat= 40.0,
+  radat = 0.35,
+  sigat = 1.0,
+  epsat = 1.0,
+  naatpt(1,1)=  1,
+  txaat(1,1) = 'cente',
+ /
+ &nmlPotential
+  rcut  = 3.5,
+  txpot = '(1,6,12)',
+ /
+ &nmlSetConfiguration
+  txsetconf(1)='fcclattice',
+  nucell(1,1) =  8,  8,  8,
+ /
+ &nmlMC
+  isamp = 1,
+  pspart = 1.0, dtran = 0.2,
+ /
+ &nmlIntList txintlist = 'clist',/
+ &nmlDist vtype(5) = .t., 0.0, 5.0, 100, idist=10 /
+ &nmlImage lvrml =.true. /
+ &nmlVRML txwhen = 'after_run' /
