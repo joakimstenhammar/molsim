@@ -2712,8 +2712,8 @@ subroutine GroupWeakCharge(iStage,m)
       end if
 
       ngr(m) = 0
-      do ipt = 1, npt   !                   weak charge?             counterion?
-         ngr(m) = merge(ngr(m)+2, ngr(m)+1, latweakcharge(ipt) .or. (ipt == jatweakcharge))
+      do ipt = 1, npt   !                   weak charge?            counterion?
+         ngr(m) = merge(ngr(m)+2, ngr(m)+1, latweakcharge(ipt) .or. any(jatweakcharge(1:npt) == ipt))
       end do
 
       if (.not.allocated(igrref)) then
@@ -2726,7 +2726,7 @@ subroutine GroupWeakCharge(iStage,m)
       ! ... Determine iptgr(igr,m), grvar(igrpnt(m,igr))%label
       igr = 0
       do ipt = 1, npt
-         if (latweakcharge(ipt) .or. (ipt == jatweakcharge)) then ! weak charge or counterion
+         if (latweakcharge(ipt) .or. any(jatweakcharge(1:npt) == ipt)) then ! weak charge or counterion
             do ichargestate = 1, 2
                igr = igr + 1
                iptgr(igr,m) = ipt
