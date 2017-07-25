@@ -391,7 +391,7 @@ moldyn.o        : moldyn.F90	statistics.o
 	$(COMP_SER) $(FLAG_SER) -c moldyn.F90
 particle.o      : particle.F90    mol.o mollib.o
 	$(COMP_SER) $(FLAG_SER) -c particle.F90
-potential.o     : potential.F90   mol.o ljenergy.o
+potential.o     : potential.F90   mol.o
 	$(COMP_SER) $(FLAG_SER) -c potential.F90
 coordinate.o    : coordinate.F90  mol.o
 	$(COMP_SER) $(FLAG_SER) -c coordinate.F90
@@ -439,7 +439,7 @@ molsim_par.o    : molsim.F90      mol.o      statistics_par.o mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o molsim_par.o -c molsim.F90
 particle_par.o  : particle.F90    mol.o mollib.o
 	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90
-potential_par.o : potential.F90   mol.o ljenergy_par.o
+potential_par.o : potential.F90   mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o potential_par.o -c potential.F90
 coordinate_par.o : coordinate.F90 mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o coordinate_par.o -c coordinate.F90
@@ -451,9 +451,9 @@ bd_par.o        : bd.F90      mol.o	md_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o bd_par.o -c bd.F90
 nlist_par.o     : nlist.F90       mol.o celllist_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o nlist_par.o -c nlist.F90
-energy_par.o    : energy.F90      mol.o	mollib_par.o ljenergy_par.o
+energy_par.o    : energy.F90      mol.o	mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o energy_par.o -c energy.F90
-denergy_par.o   : denergy.F90 	mol.o	energy_par.o	mollib_par.o ljenergy_par.o
+denergy_par.o   : denergy.F90 	mol.o	energy_par.o	mollib_par.o
 	$(COMP_PAR) $(FLAG_PAR) -o denergy_par.o -c denergy.F90
 dump_par.o	: dump.F90 	mol.o
 	$(COMP_PAR) $(FLAG_PAR) -o dump_par.o -c dump.F90
