@@ -193,7 +193,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v4.0.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v4.2.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -394,42 +394,41 @@ module MolModule
    character(21), allocatable :: txctct(:) ! name of chain type-chain type pair
    character(21), allocatable :: txptpt(:) ! name of particle type-particle type pair
    character(21), allocatable :: txatat(:) ! name of atom type-atom type pair
-   logical                :: lmonoatom     !
-   logical                :: lpolyatom     !
-   real(8)                :: massat(mnat)  !*mass of atom type
-   real(8), allocatable   :: masspt(:)     ! mass of particle type
-   real(8), allocatable   :: massnwt(:)    ! mass of network type
-   real(8), allocatable   :: massipt(:)    ! inverse mass of particle type
-   real(8), allocatable   :: massinwt(:)   ! inverse mass of network type
-   real(8), allocatable   :: mompt(:,:)    ! moments of inertia of particle type
-   real(8), allocatable   :: momipt(:,:)   ! inverse moments of inertia of particle type
-   real(8), allocatable   :: massp(:)      ! mass of particle
-   real(8), allocatable   :: massip(:)     ! inverse mass of particle
-   real(8), allocatable   :: momp(:,:)     ! moments of inertia of particle
-   real(8), allocatable   :: momip(:,:)    ! inverse moments of inertia of particle
-   real(8)                :: radat(mnat)   !*hard-core radius of atom type
-   integer(4), allocatable:: itradegfree(:)! number of translational degrees of freedom of a particle type
-   integer(4), allocatable:: irotdegfree(:)! number of rotational degrees of freedom of a particle type
-   real(8), allocatable   :: racom(:)      !
-   real(8), allocatable   :: r1atat(:)     !
-   real(8), allocatable   :: r2atat(:)     !
-   real(8)                :: zat(mnat)     !*charge of atoms of a given type
-   real(8)                :: zatalpha(mnat)!*1/(sqrt(2) times the width of Gaussian charge distribution)
-   real(8)                :: sigat(mnat)   !*LJ sigma parpameter for atomes of a given type
-   real(8)                :: epsat(mnat)   !*LJ epsilon parameter for atomes of a given type
-   real(8), allocatable   :: az(:)         ! atom charge
-   real(8), allocatable   :: aztm(:)       ! atom charge (trial move)
-   logical                :: latweakcharge(mnat) !*.true. if weak charge among atoms of a given type
-   real(8)                :: pK(mnat)      !*pKa
-   real(8)                :: pH            ! pH
-   real(8)                :: pHmpK(mnat)   ! pH - pKa
-   integer(4)             :: iatweakcharge ! type of atom carrying weak charge
-   integer(4)             :: jatweakcharge !*type of atom carrying counter charge to weak charge (0 means no counter charge)
-   integer(4), allocatable:: iananweakcharge(:) ! atom carrying weak charge -> its atom carrying its couterion charge
-   logical, allocatable   :: laz(:)        ! .true. if atom is charged
-   logical, allocatable   :: laztm(:)      ! .true. if atom is charged (trial move)
-   logical, allocatable   :: lpset(:)      ! logical valiable being .true. for setted paricles
-   logical                :: lradatbox     ! use atom and atom radius when checking if particle inside box
+   logical                    :: lmonoatom     !
+   logical                    :: lpolyatom     !
+   real(8)                    :: massat(mnat)  !*mass of atom type
+   real(8), allocatable       :: masspt(:)     ! mass of particle type
+   real(8), allocatable       :: massnwt(:)    ! mass of network type
+   real(8), allocatable       :: massipt(:)    ! inverse mass of particle type
+   real(8), allocatable       :: massinwt(:)   ! inverse mass of network type
+   real(8), allocatable       :: mompt(:,:)    ! moments of inertia of particle type
+   real(8), allocatable       :: momipt(:,:)   ! inverse moments of inertia of particle type
+   real(8), allocatable       :: massp(:)      ! mass of particle
+   real(8), allocatable       :: massip(:)     ! inverse mass of particle
+   real(8), allocatable       :: momp(:,:)     ! moments of inertia of particle
+   real(8), allocatable       :: momip(:,:)    ! inverse moments of inertia of particle
+   real(8)                    :: radat(mnat)   !*hard-core radius of atom type
+   integer(4), allocatable    :: itradegfree(:)! number of translational degrees of freedom of a particle type
+   integer(4), allocatable    :: irotdegfree(:)! number of rotational degrees of freedom of a particle type
+   real(8), allocatable       :: racom(:)      !
+   real(8), allocatable       :: r1atat(:)     !
+   real(8), allocatable       :: r2atat(:)     !
+   real(8)                    :: zat(mnat)     !*charge of atoms of a given type
+   real(8)                    :: zatalpha(mnat)!*1/(sqrt(2) times the width of Gaussian charge distribution)
+   real(8)                    :: sigat(mnat)   !*LJ sigma parpameter for atomes of a given type
+   real(8)                    :: epsat(mnat)   !*LJ epsilon parameter for atomes of a given type
+   real(8), allocatable       :: az(:)         ! atom charge
+   real(8), allocatable       :: aztm(:)       ! atom charge (trial move)
+   logical                    :: latweakcharge(mnat) !*.true. if weak charge among atoms of a given type
+   integer(4)                 :: jatweakcharge(mnat) !*type of atom carrying counter charge to weak charge iat (0 means no counter charge)
+   real(8)                    :: pH            ! pH
+   real(8)                    :: pK(mnat)      !*pKa
+   real(8)                    :: pHmpK(mnat)   ! pH - pKa
+   integer(4), allocatable    :: iananweakcharge(:) ! atom carrying weak charge -> its atom carrying its couterion charge
+   logical, allocatable       :: laz(:)        ! .true. if atom is charged
+   logical, allocatable       :: laztm(:)      ! .true. if atom is charged (trial move)
+   logical, allocatable       :: lpset(:)      ! logical valiable being .true. for setted paricles
+   logical                    :: lradatbox     ! use atom and atom radius when checking if particle inside box
 
                                            ! equivalences:
                                            ! nnw          = sum(nnwnwt(1:nnwt))

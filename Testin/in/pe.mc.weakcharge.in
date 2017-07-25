@@ -24,14 +24,14 @@
   radat =  2.0,   2.0,
   zat =   -1.0,   1.0,
   txelec = 'weakcharge'
-  latweakcharge = .t.,
-  pK = 0.0,
-  pH = 1.0,
-  jatweakcharge = 2,
   naatpt(1,1) =  1,
   txaat(1,1) = 'pe-',
   naatpt(1,2) = 1,
   txaat(1,2) = 'cion+',
+  latweakcharge(1) = .t.,
+  pK(1) = 0.0,
+  pH = 1.0,
+  jatweakcharge(1) = 2,
  /
  &nmlPotential
   rcut = 0,

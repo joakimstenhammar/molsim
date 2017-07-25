@@ -3330,7 +3330,7 @@ subroutine ChargeChange(iStage)
       end do
    end if
    ianatm(1) = ia               ! update ianatm
-   if (jatweakcharge > 0) then  ! get id of atom and particle carrying counter charge
+   if (jatweakcharge(iatan(ia)) > 0) then  ! get id of atom and particle carrying counter charge
       nptm = 2
       ia = iananweakcharge(ianatm(1))  ! id of atom
       ianatm(2) = ia

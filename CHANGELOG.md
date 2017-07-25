@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.2.0] - 2017-07-25
+### Changed
+- Grouping scheme for systems containing weak charges (ionizable species)
+
+## [4.1.0] - 2017-07-25
+### Changed
+- Molsim has been extended by the possibility to simulate multiple ionizable species with explicit counterions.
+
 ## [4.0.0] - 2017-07-17
 ### Changed
 - The image generation via ImageVTF has been revised
