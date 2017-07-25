@@ -15,6 +15,10 @@ public pcellro, cell_type, cell_pointer_array, cellip, ipnext
 
 integer(4)                               :: maxneighcell
 
+type cell_pointer_array
+   type(cell_type), pointer              :: p => null()
+end type cell_pointer_array
+
 type cell_type
    integer(4)                            :: id           ! for easy recognition
    integer(4)                            :: npart
@@ -22,10 +26,6 @@ type cell_type
    type(cell_pointer_array), allocatable :: neighcell(:)
    integer(4)                            :: iphead
 end type cell_type
-
-type cell_pointer_array
-   type(cell_type), pointer              :: p => null()
-end type cell_pointer_array
 
 integer(4), allocatable                  :: ipnext(:)
 integer(4), allocatable                  :: ipprev(:)
@@ -222,7 +222,7 @@ pure function alreadyneighbour(id, oldid) result(lneigh)
    lneigh = any(oldid(:) .eq. id)
 end function alreadyneighbour
 
-pure function pcellro(ro) result(icell)
+function pcellro(ro) result(icell)
    use MolModule, only: boxlen2
    implicit none
    real(8), intent(in)  :: ro(3)
@@ -231,6 +231,7 @@ pure function pcellro(ro) result(icell)
 
    i = floor((ro+ boxlen2)*ircell)
    icell => cell(i(1), i(2), i(3))
+
 end function pcellro
 
 subroutine AddIpToCell(ip, icell)
