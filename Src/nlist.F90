@@ -76,17 +76,18 @@ module NListModule
 
    use MolModule
 
-   logical       :: lnolist                ! flag for no interaction
-   integer(4)    :: inlist                 ! interval of updating neighbour list
-   real(8)       :: drnlist                ! skin thickness
-   logical       :: lvlistllist            ! flag for using linked lists to make verlet list
-   integer(4)    :: ndivllist(3)           ! number of liked-list cells in one direction
-   integer(4)    :: ncellllist             ! number of liked-list cells
-   real(8)       :: celli(3)               ! 1 / cell lengths
-   integer(4)    :: npartperproc           ! number of particles per processor
-   integer(4)    :: maxnneigh              ! maximum number of neighbours; used in memory allocation
+   logical    :: lnolist      ! flag for no interaction
+   integer(4) :: inlist       ! interval of updating neighbour list
+   real(8)    :: drnlist      ! skin thickness
+   logical    :: lvlistllist  ! flag for using linked lists to make verlet list
+   integer(4) :: ndivllist(3) ! number of liked-list cells in one direction
+   integer(4) :: ncellllist   ! number of liked-list cells
+   real(8)    :: celli(3)     ! 1 / cell lengths
+   integer(4) :: npartperproc ! number of particles per processor
+   integer(4) :: npmyid       ! number of particles handled by processor myid
+   integer(4) :: maxnneigh    ! maximum number of neighbours; used in memory allocation
 
-   real(8), allocatable, save :: drosum(:,:)                ! sum of displacements   !Pascal Hebbeker moved vom subroutine NList
+   real(8), allocatable :: drosum(:,:)  ! sum of displacements
 
 end module NListModule
 
