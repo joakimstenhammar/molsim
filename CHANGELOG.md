@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [3.0.0] - 2017-07-05 - Myrapla
 ### Fixes
 - fixed some minor bugs
+
 ### Changed
 - changed the way the testin directory works
 - molsim now uses the command line argumends in fortran
@@ -154,3 +155,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - The raw version from Per Linse was added.
 - A README was added
 - The version number was incoprorated
+
+# Changed Input
+ -  [4.0.0] in `nmlVtfImage` the second argument was removed from `tximage`, and the forner third and fourth argument are moved to position 2 and 3. See [
+Image generation for VMD](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/imagevtf)
