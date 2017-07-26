@@ -50,22 +50,19 @@ When you are assigned to a merge request you are supposed to read the changes in
 
 Some general rules when commenting the changes of the code:
 * When reviewing the code, mark comments regarding ''cosmetic'' changes in the code with :sparkles: (`:sparkles:`).
-* Mark all general comments (*i.e.* comments not related to a specific line of code) which require further attention with :negative_squared_cross_mark: (`:negative_squared_cross_mark:`).
 
 Besides of the reviewing of the detailed code modifications, please check whether all requirements in [this checklist](#appendix-checklist) have been met. When you are finished reviewing all modifications and all discussions have been resolved, remove the WIP-prefix from the merge request. This signals the author of the modifications, that his branch may be merged.
 
 ## 5. How to resolve all discussions
-When the assignee of your merge request has fully reviewed your modifications, it is your responsibility to resolve all discussions. There are two types of discussions:
-* General comments with a :negative_squared_cross_mark: in it. Resolve the described issue and change the :negative_squared_cross_mark: to a :white_check_mark: (`:white_check_mark:`).
-* Line-oriented comments: Resolve the described issue and mark the discussion as resolved.
+When the assignee of your merge request has fully reviewed your modifications, it is your responsibility to resolve all discussions by marking them as resolved.
 
-Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still, it is better to resolve it  or discuss with the assignee, why for example it should not be changed.
+Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still, it is better to resolve it or discuss with the assignee, why for example it should not be changed.
 
 ## 6. How to merge it
 When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. But first you need to perform some housekeeping:
 
 ### 6.1 Update the Changelog
-Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
+Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/). If you created backwards incompatible changes in the input, please describe your changes in the changelog.
 
 ### 6.2 Declare Stable
 Declare your version as the current stable version. Do this by running `make declarestable` in the `Testin` directory and commit/push the new `stable.md5sum` file.
