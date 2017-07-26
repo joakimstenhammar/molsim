@@ -62,7 +62,7 @@ Discussions with a :sparkles: in it are only of cosmetic nature. You are not obl
 When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. But first you need to perform some housekeeping:
 
 ### 6.1 Update the Changelog
-Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/).
+Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/). If you created backwards incompatible changes in the input, please describe your changes in the changelog.
 
 ### 6.2 Declare Stable
 Declare your version as the current stable version. Do this by running `make declarestable` in the `Testin` directory and commit/push the new `stable.md5sum` file.
