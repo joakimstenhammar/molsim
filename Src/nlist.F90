@@ -561,7 +561,6 @@ subroutine NList(iStage)
          drosum = 0.0E+00
       end if
 
-
    case (iBeforeMacrostep)
 
       drosum = Zero
