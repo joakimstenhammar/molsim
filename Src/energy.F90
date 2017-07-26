@@ -676,7 +676,7 @@ subroutine UTwoBodyACellList
    use MolModule,      only: nproc, myid, uout, ltime
    use MolModule,      only: iubuflow, ubuf, lmonoatom, nbuf
    use MolModule,      only: u, force, virial
-   use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip, ipnext
+   use CellListModule, only: pcellro, cell_type, cellip, ipnext
 
    implicit none
    character(40), parameter :: txroutine ='UTwoBodyAOldCellList'

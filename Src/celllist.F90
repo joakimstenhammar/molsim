@@ -11,7 +11,7 @@ module CellListModule
 implicit none
 private
 public UpdateCellip, InitCellList, SetCellList, CellListAver, TestCellList
-public pcellro, cell_type, cell_pointer_array, cellip, ipnext
+public pcellro, cell_type, cellip, ipnext
 
 integer(4)                               :: maxneighcell
 

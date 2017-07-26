@@ -740,7 +740,7 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
    use MolModule,      only: lellipsoid, lsuperball, oritm, ori, radellipsoid2, aellipsoid
    use MolModule,      only: du, iubuflow, ubuf, r2umin
    use EnergyModule,   only: utwobnew
-   use CellListModule, only: pcellro, cell_type, cell_pointer_array, ipnext
+   use CellListModule, only: pcellro, cell_type, ipnext
 
    implicit none
    character(40), parameter :: txroutine ='UTwoBodyANewCellList'
@@ -861,7 +861,7 @@ subroutine UTwoBodyAOldCellList
    use MolModule,      only: nproc, myid
    use MolModule,      only: du, iubuflow, ubuf
    use EnergyModule,   only: utwobold
-   use CellListModule, only: pcellro, cell_type, cell_pointer_array, cellip, ipnext
+   use CellListModule, only: pcellro, cell_type, cellip, ipnext
 
    implicit none
    character(40), parameter :: txroutine ='UTwoBodyAOldCellList'
