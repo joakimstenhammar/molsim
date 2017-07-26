@@ -221,6 +221,13 @@ subroutine Particle(iStage)
 
       if (lmc .and. lintsite) call Stop(txroutine, 'nonatomic interaction sites not implemented for lmc', uout)
 
+      if (any(sum(npptct(:,1:nct),DIM=1) == 0)) then
+         call Stop(txroutine, 'a chain without any particles was defined', uout)
+      end if
+      if (any(nppt(1:npt) <= 0)) then
+         call Stop(txroutine, 'a particle type without any particles was defined', uout)
+      end if
+
 ! ... take case of double meaning of dipain
 
       do ipt = 1, mnpt
