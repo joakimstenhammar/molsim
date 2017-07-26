@@ -925,7 +925,6 @@ subroutine ImageVTF(iStage,iimage,lgr)
    integer(4),                 save :: ngrloc              ! number of local groups
    integer(4),    allocatable, save :: iatgrloc(:)         ! atom type of local group igrloc
    character(40), allocatable, save :: txgrloc(:)          ! name of local group
-   character(40), allocatable, save :: txatloc(:)          ! name of atom type, declared with length 40
 
    logical,                    save :: lsplitvtf = .false. ! flag for splitting the vtf file in multiple files
 
@@ -968,16 +967,19 @@ subroutine ImageVTF(iStage,iimage,lgr)
 ! ... allocations
 
       if (.not.allocated(atsize)) then
-         allocate(atsize(nat), rgbcolor(3,0:ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc), txatloc(ngrloc))
-         txatloc = ''
+         allocate(atsize(nat), rgbcolor(3,0:ngrloc), iatgrloc(ngrloc), txgrloc(ngrloc))
       end if
 
 ! ... determine the atom type and name of the local group igrloc
 
-      txatloc(1:nat) = txat(1:nat) ! transfer character(10) to character(40) for function merge
       do igrloc = 1, ngrloc
-         iatgrloc(igrloc) = merge(iatgr(igrloc,itypegr), igrloc, lgr)
-         txgrloc(igrloc) = merge(grvar(igrpnt(itypegr,igrloc))%label, txatloc(igrloc), lgr)
+         if (lgr) then
+            iatgrloc(igrloc) = iatgr(igrloc,itypegr)
+            txgrloc(igrloc) = grvar(igrpnt(itypegr,igrloc))%label
+         else
+            iatgrloc(igrloc) = igrloc
+            txgrloc(igrloc) = txat(igrloc)
+         end if
       end do
 
 ! ... set default values
@@ -1101,7 +1103,7 @@ subroutine ImageVTF(iStage,iimage,lgr)
       write(uout,'()')
       write(uout,'(a,i4)')   'number of images made             = ', iframe+1
 
-      if (allocated(atsize)) deallocate(atsize,rgbcolor,iatgrloc,txgrloc,txatloc)
+      if (allocated(atsize)) deallocate(atsize,rgbcolor,iatgrloc,txgrloc)
 
       if (master .and. .not.lsplitvtf) close(uvtf)
 
