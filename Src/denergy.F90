@@ -207,7 +207,7 @@ end if
    if (ltrace) call WriteTrace(4, trim(txroutine)//'_after_Pack', iSimulationStep)
 #endif
 
-  !call TestDUTotal
+!  call TestDUTotal
 
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
