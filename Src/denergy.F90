@@ -348,7 +348,6 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
       end do
    end do
 
-
 ! ... contribution from pairs where both particles are displaced
 
    if (lptmdutwob) then      ! not adapted for _PAR_ !!
