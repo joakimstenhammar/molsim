@@ -311,16 +311,20 @@ end subroutine UpdateCellip
 subroutine SetCellList
 
    use MolModule, only: np, ro
+   use MolModule, only: ltime, uout
    implicit none
 
+   character(40), parameter              :: txroutine ='SetCellList'
    integer(4)  :: ip
    type(cell_type), pointer :: celltmp
 
+   if (ltime) call CpuAdd('start', txroutine, 1, uout)
    cell(:,:,:)%npart = 0
    do ip = 1, np
       celltmp => pcellro(ro(1:3,ip))
       call AddiptoCell(ip, celltmp)
    end do
+   if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine SetCellList
 
