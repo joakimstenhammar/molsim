@@ -127,7 +127,7 @@ ifeq ($(ARCH), LOCAL_INTEL)
     OPT_SER = $(OPT_warn)
   endif
 
-  COMP_PAR = $(MPIFC)
+  COMP_PAR = mpiifort
 
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
@@ -174,6 +174,10 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   endif
   LLIB =
 
+  COMP_PAR = mpifort
+  LINK_PAR = $(COMP_PAR)
+  OPT_PAR  = $(OPT_SER)
+
 endif
 
 #-----------------
@@ -186,7 +190,7 @@ ifeq ($(ARCH), ALARIK_INTEL)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3
 
-  COMP_PAR = $(MPIFC)
+  COMP_PAR = mpiifort
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
 
@@ -208,7 +212,7 @@ ifeq ($(ARCH), ALARIK_GFORTRAN)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none  -g
 
-  COMP_PAR = $(MPIFC)
+  COMP_PAR = mpifort
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
 
