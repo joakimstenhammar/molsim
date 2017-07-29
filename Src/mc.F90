@@ -3016,7 +3016,7 @@ end subroutine NetworkMove
 subroutine VolChange(iStage)
 
    use MCModule
-   use CellListModule, only: InitCellList, UpdateCellip
+   use CellListModule, only: InitCellList, SetCellList
    use NListModule, only: drnlist
    implicit none
 
@@ -3054,10 +3054,8 @@ subroutine VolChange(iStage)
    end do
    call SetAtomPos(1, np, lintsite)
    if (lclist) then
-      call InitCellList(rcut + drnlist, iStage, update=.true.)
-      do i = 1, np
-         call UpdateCellip(i)
-      end do
+      call InitCellList(rcut + drnlist, iStage)
+      call SetCellList()
    end if
 
 !  ............. evaluate energy difference ...............
@@ -3092,10 +3090,8 @@ subroutine VolChange(iStage)
       ro = ro*boxlenratio
       call SetAtomPos(1, np, .false.)
       if (lclist) then
-         call InitCellList(rcut + drnlist, iStage, update=.true.)
-         do i = 1, np
-            call UpdateCellip(i)
-         end do
+         call InitCellList(rcut + drnlist, iStage)
+         call SetCellList()
       end if
 
    end if

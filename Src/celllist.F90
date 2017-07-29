@@ -40,16 +40,15 @@ real(8)                                  :: cellHalfBoxLen(3) = 0.0 ! half boxle
 
 contains
 
-subroutine InitCellList(rcell, iStage, update)
+subroutine InitCellList(rcell, iStage)
 
    use MolModule, only: ltrace, ltime, uout
-   use MolModule, only: lbcbox, boxlen, lPBC, lntp
+   use MolModule, only: lbcbox, boxlen, lPBC
    use MolModule, only: np
    use MolModule, only: rcut, rcut2
 
    real(8),    intent(in)                :: rcell
    integer(4), intent(in)                :: iStage
-   logical,    intent(in), optional      :: update ! to reinitialize the celllist
    character(40), parameter              :: txroutine ='InitCellList'
    integer(4),               allocatable :: directions(:,:) ,directionindex(:), tmpidneigh(:)
    type(cell_pointer_array), allocatable :: icellid(:)
@@ -68,21 +67,7 @@ subroutine InitCellList(rcell, iStage, update)
       call Stop(txroutine, 'celllist needs cubic box (lbcbox should be true)', uout)
    end if
 
-   if( present(update)) then
-      if (update) then
-         if(.not. any(boxlen(1:3) > cellBoxLen(1:3))) then
-            ! the box is not larger than the previous cell list, we do not need to create a new cell list
-            return
-         end if
-      end if
-   end if
-
-   if(lntp) then
-      ! for ntp ensemble, make cell list larger than box, to ave space for expanding volume
-      cellBoxLen = 2.0d0 * boxlen
-   else
-      cellBoxLen = boxlen
-   end if
+   cellBoxLen = boxlen
    cellHalfBoxLen = 0.5d0 * cellBoxLen
 
    ncell(1:3) = max(1,floor(cellBoxLen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellsize is >= rcell
