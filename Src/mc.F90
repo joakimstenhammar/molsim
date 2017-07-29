@@ -3053,10 +3053,10 @@ subroutine VolChange(iStage)
       ro(3,i) = ro(3,i)*boxlenratio
    end do
    call SetAtomPos(1, np, lintsite)
-   if (clist) then
+   if (lclist) then
       call InitCellList(rcut + drnlist, iStage, update=.true.)
       do i = 1, np
-         UpdateCellip(ip)
+         call UpdateCellip(i)
       end do
    end if
 
@@ -3091,10 +3091,10 @@ subroutine VolChange(iStage)
       if (lewald) call EwaldSetup
       ro = ro*boxlenratio
       call SetAtomPos(1, np, .false.)
-      if (clist) then
+      if (lclist) then
          call InitCellList(rcut + drnlist, iStage, update=.true.)
          do i = 1, np
-            UpdateCellip(ip)
+            call UpdateCellip(i)
          end do
       end if
 
