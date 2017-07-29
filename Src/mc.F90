@@ -1083,7 +1083,7 @@ end subroutine IOMC
 subroutine MCPass(iStage)
 
    use MCModule
-   use NListModule, only : drnlist, drosum
+   use nlistmodule, only : drnlist, drosum
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -3016,6 +3016,8 @@ end subroutine NetworkMove
 subroutine VolChange(iStage)
 
    use MCModule
+   use CellListModule, only: InitCellList, UpdateCellip
+   use NListModule, only: drnlist
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -3051,6 +3053,12 @@ subroutine VolChange(iStage)
       ro(3,i) = ro(3,i)*boxlenratio
    end do
    call SetAtomPos(1, np, lintsite)
+   if (clist) then
+      call InitCellList(rcut + drnlist, iStage, update=.true.)
+      do i = 1, np
+         UpdateCellip(ip)
+      end do
+   end if
 
 !  ............. evaluate energy difference ...............
 
@@ -3083,6 +3091,12 @@ subroutine VolChange(iStage)
       if (lewald) call EwaldSetup
       ro = ro*boxlenratio
       call SetAtomPos(1, np, .false.)
+      if (clist) then
+         call InitCellList(rcut + drnlist, iStage, update=.true.)
+         do i = 1, np
+            UpdateCellip(ip)
+         end do
+      end if
 
    end if
 
