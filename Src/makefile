@@ -127,7 +127,13 @@ ifeq ($(ARCH), LOCAL_INTEL)
     OPT_SER = $(OPT_warn)
   endif
 
-  COMP_PAR = mpiifort
+  MPIIFORT := $(shell command -v mpiifort 2> /dev/null)
+  ifdef MPIIFORT
+    COMP_PAR = mpiifort
+  endif
+  ifndef MPIIFORT
+    COMP_PAR = mpifort
+  endif
 
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
