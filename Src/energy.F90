@@ -679,7 +679,7 @@ subroutine UTwoBodyACellList
    use CellListModule, only: pcellro, cell_type, cellip, ipnext
 
    implicit none
-   character(40), parameter :: txroutine ='UTwoBodyAOldCellList'
+   character(40), parameter :: txroutine ='UTwoBodyACellList'
 
    integer(4) :: ip, jp, ipt, jpt, iptjpt, jploc, ibuf
    real(8)    :: dr(3), r2, d, usum, fsum, virtwob
