@@ -30,19 +30,20 @@ end type cell_type
 integer(4), allocatable                  :: ipnext(:)
 integer(4), allocatable                  :: ipprev(:)
 
-type(cell_type), target, allocatable     :: cell(:,:,:)   ! cells
-type(cell_pointer_array), allocatable    :: cellip(:)     ! cell of each particle
-integer(4)                               :: ncell(3) = 0  ! number of cells in x y z in each octant
-real(8)                                  :: cellsize(3) = 0 ! inverse edge length of each cell
-real(8)                                  :: ircell(3) = 0 ! inverse edge length of each cell
-real(8)                                  :: cellBoxLen(3) ! boxlenght used for the celllist
+type(cell_type), target, allocatable     :: cell(:,:,:)             ! cells
+type(cell_pointer_array), allocatable    :: cellip(:)               ! cell of each particle
+integer(4)                               :: ncell(3) = 0            ! number of cells in x y z in each octant
+real(8)                                  :: cellsize(3) = 0.0       ! inverse edge length of each cell
+real(8)                                  :: ircell(3) = 0.0         ! inverse edge length of each cell
+real(8)                                  :: cellBoxLen(3) = 0.0     ! boxlenght used for the celllist
+real(8)                                  :: cellHalfBoxLen(3) = 0.0 ! half boxlenght used for the celllist
 
 contains
 
 subroutine InitCellList(rcell, iStage, update)
 
    use MolModule, only: ltrace, ltime, uout
-   use MolModule, only: lbcbox, boxlen, lPBC
+   use MolModule, only: lbcbox, boxlen, lPBC, lntp
    use MolModule, only: np
    use MolModule, only: rcut, rcut2
 
@@ -67,16 +68,29 @@ subroutine InitCellList(rcell, iStage, update)
       call Stop(txroutine, 'celllist needs cubic box (lbcbox should be true)', uout)
    end if
 
-   ! if(lNPT)
-   ! if (present(update)) then
-   !    if (update) then
-   !       if ( ncell(1:3) == max(1,floor(boxlen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellsize is >= rcell
-   ncell(1:3) = max(1,floor(boxlen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellsize is >= rcell
+   if( present(update)) then
+      if (update) then
+         if(.not. any(boxlen(1:3) > cellBoxLen(1:3))) then
+            ! the box is not larger than the previous cell list, we do not need to create a new cell list
+            return
+         end if
+      end if
+   end if
+
+   if(lntp) then
+      ! for ntp ensemble, make cell list larger than box, to ave space for expanding volume
+      cellBoxLen = 2.0d0 * boxlen
+   else
+      cellBoxLen = boxlen
+   end if
+   cellHalfBoxLen = 0.5d0 * cellBoxLen
+
+   ncell(1:3) = max(1,floor(cellBoxLen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellsize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   !boxlen2/ncell is the cell-size (larger than rcell)
-   cellsize(1:3) = boxlen(1:3)/ncell(1:3) !rcell is the the cell-size (larger than rcut)
+   !2*cellboxlen/ncell is the cell-size (larger than rcell)
+   cellsize(1:3) = cellBoxLen(1:3)/ncell(1:3) !rcell is the the cell-size (larger than rcut)
    ircell(1:3) = 1.0d0/cellsize(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcut)
 
    call allocateCellStrut(ncell, np)
@@ -105,7 +119,8 @@ subroutine InitCellList(rcell, iStage, update)
    !+-----+-----+-----+-----+
 
    !allocate cells and set the id of the cells
-   allocate(icellid(size(cell)))
+   ! allocate(icellid(size(cell)))
+   allocate(icellid(product(ncell(1:3))))
    id = 0
    do ix = 0, ncell(1) - 1
       do iy = 0, ncell(2) - 1
@@ -176,12 +191,12 @@ subroutine InitCellList(rcell, iStage, update)
                   cycle
                end if
 
-               if(.not. any(tmpidneigh(1:ineigh) == cell(neigh(1), neigh(2), neigh(3))%id)) then
+               if(all(tmpidneigh(1:ineigh) /= cell(neigh(1), neigh(2), neigh(3))%id)) then
                   ineigh = ineigh + 1
-                  icell%nneighcell = ineigh
                   tmpidneigh(ineigh) = cell(neigh(1), neigh(2), neigh(3))%id
                end if
             end do
+            icell%nneighcell = ineigh
 
             !allocate memory
             if(allocated(icell%neighcell)) then
@@ -228,15 +243,13 @@ subroutine allocateCellStrut(ncell, np)
 end subroutine
 
 function pcellro(ro) result(icell)
-   use MolModule, only: boxlen2
    implicit none
    real(8), intent(in)  :: ro(3)
    type(cell_type), pointer :: icell
    integer(4)  :: i(3)
 
-   i = floor((ro+ boxlen2)*ircell)
+   i = floor((ro+ cellHalfBoxLen)*ircell)
    icell => cell(i(1), i(2), i(3))
-
 end function pcellro
 
 subroutine AddIpToCell(ip, icell)
