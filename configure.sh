@@ -69,7 +69,7 @@ if locate -l 1 fftw3.f03 > /dev/null && locate -l 1 libfftw3 > /dev/null ; then 
    fi
    fftwpath=`dirname $fftwpathfile`
    echo "FFTW_PATH = $fftwpath" >> Src/make.fftwpath
-   fftwlibs=`dirname $(locate -rb "libfftw3\(.dll\)*\(.a\|.so\)") | uniq`
+   fftwlibs=`dirname $(locate -r "libfftw3\(.dll\)*\(.a\|.so\)$") | uniq`
    npath=`echo "$fftwlibs" | wc -l`
    if [ "$npath" -gt "1" ]; then
       echo ""
