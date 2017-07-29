@@ -93,6 +93,7 @@ elif [ -f "$HOME/.fftw/include/fftw3.f03" ]; then # check for local installation
    echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
 else
    echo "FFTW3 is not found"
+   echo "You can either install it locally, or provide the path to the fftw3 libary."
    read -e -p "Install under ~/.fftw? (y/n)" -i "n" dofftw
    case ${dofftw:0:1} in
       y|Y )
