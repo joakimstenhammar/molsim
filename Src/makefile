@@ -162,7 +162,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   # provides many warnings:
   OPT_warn   := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion
 
-  mode := default
+  mode = normal
   ifeq ($(mode),normal)
     OPT_SER = $(OPT_normal)
   endif
