@@ -20,10 +20,10 @@
 VER=
 VERFILE = ../version.conf
 ifneq ("$(wildcard $(VERFILE))","")
-   VER=.$(shell cat ${VERFILE} )
-   ifeq ($(strip $(shell cat ${VERFILE})),)
-      VER=""
-   endif
+  VER=.$(shell cat ${VERFILE} )
+  ifeq ($(strip $(shell cat ${VERFILE})),)
+    VER=""
+  endif
 endif
 
 BINDIR:=$(abspath ../Bin)
@@ -40,7 +40,7 @@ ARCH = LOCAL_INTEL
 #ARCH = MAC_GFORTRAN
 ARCHFILE = make.arch
 ifneq ("$(wildcard $(ARCHFILE))","")
-   include $(ARCHFILE)
+  include $(ARCHFILE)
 endif
 
 #*****************************************************************
@@ -69,7 +69,7 @@ ifeq ($(CBIND), TRUE)          #F03 c-bindings
   FFTWLIB = none
   FFTWFILE = make.fftwpath
   ifneq ("$(wildcard $(FFTWFILE))","")
-     include $(FFTWFILE)
+    include $(FFTWFILE)
   endif
 
 endif
@@ -78,9 +78,9 @@ endif
 #*                        Compile                                *
 #*****************************************************************
 
-#--------------
+#----------------
 #     LOCAL_INTEL
-#--------------
+#----------------
 
 ifeq ($(ARCH), LOCAL_INTEL)
 
@@ -88,52 +88,63 @@ ifeq ($(ARCH), LOCAL_INTEL)
   LINK_SER = $(COMP_SER)
 
 
-  OPT_SER  = -O3 -qopt-report -qopt-report-phase=vec   # report on vecorization
-  OPT_SER  = -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
-  OPT_SER  = -O3 -ipo -fp-model strict                 # inter processoptimization
-  OPT_SER  = -O3 -traceback -check all     	       # provide useful info at exceptions (gives many #406 warnings)
-  OPT_SER  = -O0                                       # quick compilation (useful for debug)
-  OPT_SER  = -warn     				       # provides many warnings
-  OPT_SER  = -prof-gen                                 # generate profile for profiled-optimization
-  OPT_SER  = -prof-use -O3 -ipo                        # profiled-optimization
-  OPT_SER  = -O3                                       # normal
-  OPT_SER  = -O3 -ipo                                  # inter processoptimization #proviedes approx. 15% more speed
+  OPT_SER = -O3 -qopt-report -qopt-report-phase=vec             # report on vecorization
+  OPT_SER = -O0 -traceback -check bounds -check uninit -ftrapuv # provide useful info at exceptions (use for debug)
+  OPT_SER = -O3 -ipo -fp-model strict                           # inter processoptimization
+  OPT_SER = -O3 -traceback -check all                           # provide useful info at exceptions (gives many #406 warnings)
+  OPT_SER = -O0                                                 # quick compilation (useful for debug)
+  OPT_SER = -warn                                               # provides many warnings
+  OPT_SER = -prof-gen                                           # generate profile for profiled-optimization
+  OPT_SER = -prof-use -O3 -ipo                                  # profiled-optimization
+  OPT_SER = -O3                                                 # normal
+  OPT_SER = -O3 -ipo                                            # inter processoptimization #proviedes approx. 15% more speed
 
-  OPT_normal = -O3 -ipo
-  OPT_quick := -O0	#quick compilation
-  OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
-  OPT_debug := -O0 -traceback -check bounds -check uninit -ftrapuv     # provide useful info at exceptions (use for debug)
-  OPT_warn := -warn     				       # provides many warnings
+  # default compilation
+  OPT_normal := -O3 -ipo
+  # quick compilation:
+  OPT_quick  := -O0
+  # -fp-model strict -fp-model source:
+  OPT_test   := $(OPT_normal)
+  # provide useful info at exceptions (use for debug):
+  OPT_debug  := -O0 -traceback -check bounds -check uninit -ftrapuv
+  # provides many warnings:
+  OPT_warn   := -warn
 
-  mode = default
+  mode = normal
   ifeq ($(mode),normal)
-     	OPT_SER = $(OPT_normal)
+    OPT_SER = $(OPT_normal)
   endif
   ifeq ($(mode),test)
-     	OPT_SER = $(OPT_test)
+    OPT_SER = $(OPT_test)
   endif
   ifeq ($(mode),debug)
-     	OPT_SER = $(OPT_debug)
+    OPT_SER = $(OPT_debug)
   endif
   ifeq ($(mode),quick)
-     	OPT_SER = $(OPT_quick)
+    OPT_SER = $(OPT_quick)
   endif
   ifeq ($(mode),warn)
-     	OPT_SER = $(OPT_warn)
+    OPT_SER = $(OPT_warn)
   endif
 
-  COMP_PAR = $(MPIFC)
+  MPIIFORT := $(shell command -v mpiifort 2> /dev/null)
+  ifdef MPIIFORT
+    COMP_PAR = mpiifort
+  endif
+  ifndef MPIIFORT
+    COMP_PAR = mpifort
+  endif
 
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
 
-   LLIB =
+  LLIB =
 
 endif
 
-#--------------
+#------------------
 #    LOCAL_GFORTRAN
-#--------------
+#------------------
 
 ifeq ($(ARCH), LOCAL_GFORTRAN)
 
@@ -141,36 +152,43 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none
 
-  OPT_format = -ffree-form -ffree-line-length-none
-  OPT_normal = $(OPT_format) -O2
-  OPT_quick := $(OPT_format) -O0	#quick compilation
-  OPT_test := $(OPT_normal) #-fp-model strict -fp-model source
-  OPT_debug := $(OPT_format) -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow -finit-real=nan   # provide useful info at exceptions (use for debug)
-  OPT_warn := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion# provides many warnings
+  OPT_format := -ffree-form -ffree-line-length-none
+  OPT_normal := $(OPT_format) -O2
+  # quick compilation:
+  OPT_quick  := $(OPT_format) -O0
+  OPT_test   := $(OPT_normal)
+  # provide useful info at exceptions (use for debug):
+  OPT_debug  := $(OPT_format) -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow -finit-real=nan
+  # provides many warnings:
+  OPT_warn   := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion
 
-  mode = default
+  mode = normal
   ifeq ($(mode),normal)
-     	OPT_SER = $(OPT_normal)
+    OPT_SER = $(OPT_normal)
   endif
   ifeq ($(mode),test)
-     	OPT_SER = $(OPT_test)
+    OPT_SER = $(OPT_test)
   endif
   ifeq ($(mode),debug)
-     	OPT_SER = $(OPT_debug)
+    OPT_SER = $(OPT_debug)
   endif
   ifeq ($(mode),quick)
-     	OPT_SER = $(OPT_quick)
+    OPT_SER = $(OPT_quick)
   endif
   ifeq ($(mode),warn)
-     	OPT_SER = $(OPT_warn)
+    OPT_SER = $(OPT_warn)
   endif
   LLIB =
 
+  COMP_PAR = mpifort
+  LINK_PAR = $(COMP_PAR)
+  OPT_PAR  = $(OPT_SER)
+
 endif
 
-#--------------
+#-----------------
 #     ALARIK_INTEL
-#--------------
+#-----------------
 
 ifeq ($(ARCH), ALARIK_INTEL)
 
@@ -178,7 +196,7 @@ ifeq ($(ARCH), ALARIK_INTEL)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3
 
-  COMP_PAR = $(MPIFC)
+  COMP_PAR = mpiifort
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
 
@@ -190,9 +208,9 @@ ifeq ($(ARCH), ALARIK_INTEL)
 
 endif
 
-#--------------
+#--------------------
 #     ALARIK_GFORTRAN  (Keep ARCH = ALARIK_INTEL for NOW)
-#--------------
+#--------------------
 
 ifeq ($(ARCH), ALARIK_GFORTRAN)
 
@@ -200,7 +218,7 @@ ifeq ($(ARCH), ALARIK_GFORTRAN)
   LINK_SER = $(COMP_SER)
   OPT_SER  = -O3 -ffree-form -ffree-line-length-none  -g
 
-  COMP_PAR = $(MPIFC)
+  COMP_PAR = mpifort
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
 
@@ -229,21 +247,21 @@ DEFINES_BASE = -D$(ARCH)
 
 ifeq ($(CBIND), TRUE)                      #F03 c-bindings
   DEFINES_BASE += -DF03_CBIND
-    ifeq ($(mode),test)
-      DEFINES_BASE += -D_TEST_
-    endif
-    ifeq ($(mode),normal)
-      DEFINES_BASE += -D_NORMAL_
-    endif
-    ifeq ($(mode),debug)
-      DEFINES_BASE += -D_DEBUG_
-    endif
-    ifeq ($(mode),warn)
-      DEFINES_BASE += -D_WARN_
-    endif
-    ifeq ($(mode),quick)
-      DEFINES_BASE += -D_QUICK_
-    endif
+  ifeq ($(mode),test)
+    DEFINES_BASE += -D_TEST_
+  endif
+  ifeq ($(mode),normal)
+    DEFINES_BASE += -D_NORMAL_
+  endif
+  ifeq ($(mode),debug)
+    DEFINES_BASE += -D_DEBUG_
+  endif
+  ifeq ($(mode),warn)
+    DEFINES_BASE += -D_WARN_
+  endif
+  ifeq ($(mode),quick)
+    DEFINES_BASE += -D_QUICK_
+  endif
 endif
 
 
@@ -258,20 +276,20 @@ FLAG_SER  = $(DEFINES_SER) $(OPT_SER)
 FLAG_PAR  = $(DEFINES_PAR) $(OPT_PAR)
 
 ifeq ($(ARCH), LOCAL_INTEL)
- FLAG_SER += -I$(FFTW_PATH)/include
- FLAG_PAR += -I$(FFTW_PATH)/include
+  FLAG_SER += -I$(FFTW_PATH)/include
+  FLAG_PAR += -I$(FFTW_PATH)/include
 endif
 ifeq ($(ARCH), LOCAL_GFORTRAN)
- FLAG_SER += -I$(FFTW_PATH)/include
- FLAG_PAR += -I$(FFTW_PATH)/include
+  FLAG_SER += -I$(FFTW_PATH)/include
+  FLAG_PAR += -I$(FFTW_PATH)/include
 endif
 ifeq ($(ARCH), ALARIK_INTEL)
- FLAG_SER += -I$(FFTW3_HOME)/include
- FLAG_PAR += -I$(FFTW3_HOME)/include
+  FLAG_SER += -I$(FFTW3_HOME)/include
+  FLAG_PAR += -I$(FFTW3_HOME)/include
 endif
 ifeq ($(ARCH), ALARIK_GFORTRAN)
- FLAG_SER += -I$(FFTW3_HOME)/include
- FLAG_PAR += -I$(FFTW3_HOME)/include
+  FLAG_SER += -I$(FFTW3_HOME)/include
+  FLAG_PAR += -I$(FFTW3_HOME)/include
 endif
 
 mollib = $(abspath molsim.lib)
@@ -281,83 +299,83 @@ mollib = $(abspath molsim.lib)
 #-----------------------------------------------------------------
 
 ifeq ($(FFTWLIB), none)
-   FFTWLINK=$(FFTW_PATH)/lib
+  FFTWLINK=$(FFTW_PATH)/lib
 endif
 
 ifeq ($(ARCH), LOCAL_INTEL)
-   LLIB += -L$(FFTWLIB) -lfftw3 -lm
+  LLIB += -L$(FFTWLIB) -lfftw3 -lm
 endif
 ifeq ($(ARCH), LOCAL_GFORTRAN)
-   LLIB += -L$(FFTWLIB) -lfftw3 -lm
+  LLIB += -L$(FFTWLIB) -lfftw3 -lm
 endif
 ifeq ($(ARCH), ALARIK_INTEL)
-   LLIB += $(FFTW3_HOME)/lib/libfftw3.so  #linker issues with ifort on Alarik => workaround
+  LLIB += $(FFTW3_HOME)/lib/libfftw3.so  #linker issues with ifort on Alarik => workaround
 endif
 
 
 #-----------------------------------------------------------------
 
-OBJS1=mol.o           \
-      particle.o      \
-      potential.o     \
-      coordinate.o    \
-      md.o            \
-      mc.o            \
-      bd.o            \
-      nlist.o         \
-      energy.o        \
-      denergy.o       \
-      dump.o          \
-      group.o         \
-      static.o        \
-      dynamic.o       \
-      image.o         \
-      statistics.o    \
-      mixed.o         \
-      molaux.o        \
-      mollib.o        \
-      moluser.o       \
-      sso.o	      \
+OBJS1=mol.o            \
+      particle.o       \
+      potential.o      \
+      coordinate.o     \
+      md.o             \
+      mc.o             \
+      bd.o             \
+      nlist.o          \
+      energy.o         \
+      denergy.o        \
+      dump.o           \
+      group.o          \
+      static.o         \
+      dynamic.o        \
+      image.o          \
+      statistics.o     \
+      mixed.o          \
+      molaux.o         \
+      mollib.o         \
+      moluser.o        \
+      sso.o            \
       mesh.o
 
-OBJS2=mol.o           \
-      particle_par.o  \
-      potential_par.o \
-      coordinate_par.o\
-      md_par.o        \
-      mc_par.o        \
-      bd_par.o        \
-      nlist_par.o     \
-      energy_par.o    \
-      denergy_par.o   \
-      dump_par.o      \
-      group_par.o     \
-      static_par.o    \
-      dynamic_par.o   \
-      image.o         \
-      statistics_par.o\
-      mixed_par.o     \
-      molaux.o        \
-      mollib_par.o    \
-      parallel_par.o  \
-      moluser_par.o   \
-      sso_par.o       \
+OBJS2=mol.o            \
+      particle_par.o   \
+      potential_par.o  \
+      coordinate_par.o \
+      md_par.o         \
+      mc_par.o         \
+      bd_par.o         \
+      nlist_par.o      \
+      energy_par.o     \
+      denergy_par.o    \
+      dump_par.o       \
+      group_par.o      \
+      static_par.o     \
+      dynamic_par.o    \
+      image.o          \
+      statistics_par.o \
+      mixed_par.o      \
+      molaux.o         \
+      mollib_par.o     \
+      parallel_par.o   \
+      moluser_par.o    \
+      sso_par.o        \
       mesh_par.o
 
-OBJS3=mol.o           \
-      statistics.o    \
-      molaux.o        \
-      mollib.o        \
+OBJS3=mol.o            \
+      statistics.o     \
+      molaux.o         \
+      mollib.o         \
       mesh.o
 
-default : def
-def     :
-	@echo Specify any one of: all, ser, par, molsim_ser, molsim_par, moldyn
-all     : molsim_ser molsim_par
-ser     : molsim_ser
-par     : molsim_par
-ver	:
-	@echo Version is specified as \"$(VER)\"
+default: def
+def:
+	@echo "Specify any one: of all, ser, par, molsim_ser, molsim_par, moldyn"
+all: molsim_ser molsim_par
+ser: molsim_ser
+par: molsim_par
+ver:
+	@[[ -z  "$(VER)"  ]] && echo No version name has been specified. || echo Version is specified as \"$(VER)\"
 	@echo bindir is \"$(BINDIR)\"
 
 install:
@@ -367,138 +385,84 @@ install:
 uninstall:
 	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_par$(VER)
 
-molsim_ser     : molsim.o $(OBJS1)
+molsim_ser: molsim.o $(OBJS1)
 	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
 	mkdir -p $(BINDIR); mv molsim_ser.exe $(BINDIR)/molsim_ser.exe;
-molsim_par     : molsim_par.o $(OBJS2)
+molsim_par: molsim_par.o $(OBJS2)
 	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
 	mkdir -p $(BINDIR); mv molsim_par.exe $(BINDIR)/molsim_par.exe;
-moldyn         : moldyn.o $(OBJS3)
+moldyn:     moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
 	mkdir -p $(BINDIR); mv moldyn.exe $(BINDIR)/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
 
-testmesh       : testmesh.o mesh.o
+testmesh:   testmesh.o mesh.o
 	$(COMP_SER) $(FLAG_SER) -o testmesh.exe testmesh.o mesh.o
 	./testmesh.exe
 
-mol.o           : mol.F90         statistics.o mesh.o mollib.o
-	$(COMP_SER) -DFLIBMACRO=\"$(mollib)\" $(FLAG_SER) -c mol.F90
-molsim.o        : molsim.F90      mol.o      statistics.o mollib.o
-	$(COMP_SER) $(FLAG_SER) -c molsim.F90
-moldyn.o        : moldyn.F90	statistics.o
-	$(COMP_SER) $(FLAG_SER) -c moldyn.F90
-particle.o      : particle.F90    mol.o mollib.o
-	$(COMP_SER) $(FLAG_SER) -c particle.F90
-potential.o     : potential.F90   mol.o
-	$(COMP_SER) $(FLAG_SER) -c potential.F90
-coordinate.o    : coordinate.F90  mol.o
-	$(COMP_SER) $(FLAG_SER) -c coordinate.F90
-md.o            : md.F90        mol.o
-	$(COMP_SER) $(FLAG_SER) -c md.F90
-mc.o            : mc.F90        mol.o	nlist.o mollib.o
-	$(COMP_SER) $(FLAG_SER) -c mc.F90
-bd.o            : bd.F90      mol.o	md.o
-	$(COMP_SER) $(FLAG_SER) -c bd.F90
-nlist.o         : nlist.F90       mol.o
-	$(COMP_SER) $(FLAG_SER) -c nlist.F90
-energy.o        : energy.F90      mol.o	mollib.o
-	$(COMP_SER) $(FLAG_SER) -c energy.F90
-denergy.o       : denergy.F90     mol.o	energy.o	mollib.o
-	$(COMP_SER) $(FLAG_SER) -c denergy.F90
-dump.o		: dump.F90 	mol.o
-	$(COMP_SER) $(FLAG_SER) -c dump.F90
-group.o		: group.F90	mol.o
-	$(COMP_SER) $(FLAG_SER) -c group.F90
-static.o        : static.F90      mol.o      statistics.o mollib.o potential.o
-	$(COMP_SER) $(FLAG_SER) -c static.F90
-dynamic.o        : dynamic.F90      mol.o      statistics.o mollib.o
-	$(COMP_SER) $(FLAG_SER) -c dynamic.F90
-image.o         : image.F90      mol.o mollib.o
-	$(COMP_SER) $(FLAG_SER) -c image.F90
-statistics.o    : statistics.F90 mollib.o
-	$(COMP_SER) $(FLAG_SER) -c statistics.F90
-mixed.o        : mixed.F90      mol.o
-	$(COMP_SER) $(FLAG_SER) -c mixed.F90
-molaux.o        : molaux.F90      mol.o	mollib.o
-	$(COMP_SER) $(FLAG_SER) -c molaux.F90
-mollib.o        : mollib.F90
-	$(COMP_SER) $(FLAG_SER) -c mollib.F90
-moluser.o       : moluser.F90  mol.o   	   statistics.o	potential.o mollib.o
-	$(COMP_SER) $(FLAG_SER) -c moluser.F90
-mesh.o          : mesh.F90
-	$(COMP_SER) $(FLAG_SER) -c mesh.F90
-sso.o      : sso.F90  mc.o	mol.o
-	$(COMP_SER) $(FLAG_SER) -c sso.F90
-testmesh.o      : testmesh.F90  mesh.o
-	$(COMP_SER) $(FLAG_SER) -c testmesh.F90
-molsim_par.o    : molsim.F90      mol.o      statistics_par.o mollib_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o molsim_par.o -c molsim.F90
-particle_par.o  : particle.F90    mol.o mollib.o
-	$(COMP_PAR) $(FLAG_PAR) -o particle_par.o -c particle.F90
-potential_par.o : potential.F90   mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o potential_par.o -c potential.F90
-coordinate_par.o : coordinate.F90 mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o coordinate_par.o -c coordinate.F90
-md_par.o        : md.F90      mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o md_par.o -c md.F90
-mc_par.o        : mc.F90      mol.o	nlist.o mollib_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o mc_par.o -c mc.F90
-bd_par.o        : bd.F90      mol.o	md_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o bd_par.o -c bd.F90
-nlist_par.o     : nlist.F90       mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o nlist_par.o -c nlist.F90
-energy_par.o    : energy.F90      mol.o	mollib_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o energy_par.o -c energy.F90
-denergy_par.o   : denergy.F90 	mol.o	energy_par.o	mollib_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o denergy_par.o -c denergy.F90
-dump_par.o	: dump.F90 	mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o dump_par.o -c dump.F90
-group_par.o	: group.F90	mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o group_par.o -c group.F90
-static_par.o    : static.F90      mol.o      statistics_par.o mollib_par.o potential.o
-	$(COMP_PAR) $(FLAG_PAR) -o static_par.o -c static.F90
-dynamic_par.o    : dynamic.F90      mol.o      statistics_par.o mollib_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o dynamic_par.o -c dynamic.F90
-statistics_par.o   : statistics.F90 mollib_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o statistics_par.o -c statistics.F90
-mixed_par.o     : mixed.F90      mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o mixed_par.o -c mixed.F90
-mollib_par.o    : mollib.F90      mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o mollib_par.o -c mollib.F90
-parallel_par.o  : parallel.F90    mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o parallel_par.o -c parallel.F90
-moluser_par.o : moluser.F90  mol.o     potential_par.o    statistics_par.o mollib_par.o
-	$(COMP_PAR) $(FLAG_PAR) -o moluser_par.o -c moluser.F90
-mesh_par.o    : mesh.F90
-	$(COMP_PAR) $(FLAG_PAR) -o mesh_par.o -c mesh.F90
-sso_par.o      : sso.F90  mc_par.o	mol.o
-	$(COMP_PAR) $(FLAG_PAR) -o sso_par.o -c sso.F90
+%.o: %.F90
+	$(COMP_SER) $(FLAG_SER) -c $<
+%_par.o: %.F90
+	$(COMP_PAR) $(FLAG_PAR) -o $@ -c $<
+
+mol.o: FLAG_SER += -DFLIBMACRO=\"$(mollib)\"
+
+bd.o:             mol.o md.o
+bd_par.o:         mol.o md_par.o
+coordinate.o:     mol.o
+coordinate_par.o: mol.o
+denergy.o:        mol.o energy.o mollib.o
+denergy_par.o:    mol.o energy_par.o mollib_par.o
+dump.o:           mol.o
+dump_par.o:       mol.o
+dynamic.o:        mol.o statistics.o mollib.o
+dynamic_par.o:    mol.o statistics_par.o mollib_par.o
+energy.o:         mol.o mollib.o
+energy_par.o:     mol.o mollib_par.o
+group.o:          mol.o
+group_par.o:      mol.o
+image.o:          mol.o mollib.o
+mc.o:             mol.o nlist.o mollib.o
+mc_par.o:         mol.o nlist.o mollib_par.o
+md.o:             mol.o
+md_par.o:         mol.o
+mesh.o:
+mesh_par.o:
+mixed.o:          mol.o
+mixed_par.o:      mol.o
+mol.o:            statistics.o mesh.o mollib.o
+molaux.o:         mol.o mollib.o
+moldyn.o:         statistics.o
+mollib.o:
+mollib_par.o:     mol.o
+molsim.o:         mol.o statistics.o mollib.o
+molsim_par.o:     mol.o statistics_par.o mollib_par.o
+moluser.o:        mol.o statistics.o potential.o mollib.o
+moluser_par.o:    mol.o potential_par.o statistics_par.o mollib_par.o
+nlist.o:          mol.o
+nlist_par.o:      mol.o
+parallel_par.o:   mol.o
+particle.o:       mol.o mollib.o
+particle_par.o:   mol.o mollib.o
+potential.o:      mol.o
+potential_par.o:  mol.o
+sso.o:            mc.o mol.o
+sso_par.o:        mc_par.o mol.o
+static.o:         mol.o statistics.o mollib.o potential.o
+static_par.o:     mol.o statistics_par.o mollib_par.o potential.o
+statistics.o:     mollib.o
+statistics_par.o: mollib_par.o
+testmesh.o:       mesh.o
 
 #*****************************************************************
 #*                         Tidy                                  *
 #*****************************************************************
 
-tidy 	:
+tidy:
 	rm -f *.o *.mod
 
 #*****************************************************************
 #*                         Clean                                 *
 #*****************************************************************
 
-clean 	:
+clean:
 	rm -f *.o *.mod *.i90 $(BINDIR)/*.exe *__genmod*
-
-#*****************************************************************
-#*                         Print                                 *
-#*****************************************************************
-
-PrintCom = lw
-print	:
-	$(PrintCom) *90
-	$(PrintCom) molsim.ver
-	$(PrintCom) molsim.lib
-	$(PrintCom) molsim_ser
-	$(PrintCom) molsim_par
-	$(PrintCom) moldyn
-	$(PrintCom) makefile
-	$(PrintCom) archive

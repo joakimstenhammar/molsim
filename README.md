@@ -29,6 +29,8 @@ Navigate into the Molsim directroy and run the configure script. This will check
 cd Molsim
 ./configure.sh
 ```
+The configure script tries to locate the FFTW libary. If you want to customize the path of the libary, modify the `Src/make.fftwpath` file. Additionally it will select which compiler to use. To costumize the compiler which is to be used change the `Src/make.arch` file.
+
 Now go to the Src directory and make Molsim:
 ```shell
 cd Molsim/Src
