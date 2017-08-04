@@ -3,8 +3,6 @@ Molsim
 
 MOLSIM is an  integrated MC/molecular dynamics/Brownian dynamics simulation package created by [Per Linse in Lund](http://www.polyelectrolytes2002.fkem1.lu.se/). Version 6.4.7. of Molsim is beeing further developed and extended using this git.
 
-*The following describes the installation of Molsim on the [RWTH-Compute Cluster](https://doc.itc.rwth-aachen.de/display/CC/Home).*
-
 Obtaining the Code
 ------------------
 There are two possibilites of how to obtain the code. You can either simply download the tarball of the code, or clone the whole repository.
