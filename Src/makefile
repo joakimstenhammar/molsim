@@ -375,7 +375,7 @@ all: molsim_ser molsim_par
 ser: molsim_ser
 par: molsim_par
 ver:
-	@echo Version is specified as \"$(VER)\"
+	@[[ -z  "$(VER)"  ]] && echo No version name has been specified. || echo Version is specified as \"$(VER)\"
 	@echo bindir is \"$(BINDIR)\"
 
 install:
