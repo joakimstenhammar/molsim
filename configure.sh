@@ -104,6 +104,7 @@ else
             read -e -p "$FILE not found. Download from fftw.org? (requires wget) " -i "n" dnfftw
             case ${dnfftw:0:1} in
                y|Y )
+                  command -v wget >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Aborting."; exit 1; }
                   wget ftp://ftp.fftw.org/pub/fftw/fftw-3.3.4.tar.gz
                   ;;
                * )
