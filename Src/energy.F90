@@ -26,7 +26,7 @@
 !       !   lcharge
 !       !--------------
 !       !             !
-!       !             !---------- UTwoBody(A/ALList/P)
+!       !             !---------- UTwoBody(A/ALList/ACellList/P)
 !       !             !   lewald
 !       !             !---------- UEwald
 !       !             !   lrf
@@ -342,7 +342,7 @@ subroutine UTotal(iStage)
       if (lmonoatom) then
          if (lvlist) call UTwoBodyA
          if (lllist) call UTwoBodyALList
-         if (lclist) call UTwoBodyACellList
+         if (lCellList) call UTwoBodyACellList
       else
          call UTwoBodyP
       end if

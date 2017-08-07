@@ -35,7 +35,7 @@
 !                      ! lllist
 !                      !-------- LListAver
 !                      !
-!                      ! lclist
+!                      ! lCellList
 !                      !-------- CellListAver
 !                      !
 !                      ! lvlist
@@ -52,7 +52,7 @@
 !                      ! lllist
 !                      !-------- SetLList
 !                      !
-!                      ! lclist
+!                      ! lCellList
 !                      !-------- SetCellList
 !                      !
 !                      ! lvlist
@@ -61,7 +61,7 @@
 !                      ! lllist
 !                      !-------- TestLList
 !                      !
-!                      ! lclist
+!                      ! lCellList
 !                      !-------- TestCellList
 
 !************************************************************************
@@ -159,7 +159,7 @@ subroutine IONList(iStage)
 
    character(40), parameter :: txroutine ='IONList'
    character(80), parameter :: txheading ='neighbour list'
-   character(6), save :: txintlist
+   character(8), save :: txintlist
    real(8)     , save :: facnneigh
    integer(4) :: ierr
 
@@ -190,15 +190,15 @@ subroutine IONList(iStage)
       lnolist = .false.
       lvlist = .false.
       lllist = .false.
-      lclist = .false.
+      lCellList = .false.
       if (txintlist == 'nolist') then
          lnolist = .true.
       else if (txintlist == 'vlist') then
          lvlist = .true.
       else if (txintlist == 'llist') then
          lllist = .true.
-      else if (txintlist == 'clist') then
-         lclist = .true.
+      else if (txintlist == 'celllist') then
+         lCellList = .true.
       else
          call Stop(txroutine, 'unsupported txintlist', uout)
       end if
@@ -278,11 +278,11 @@ subroutine WriteSub
          if (lvlistllist) write(uout,'(a)') 'linked lists used to make verlet list'
       else if (txintlist == 'llist') then
          write(uout,'(a)') 'linked list'
-      else if (txintlist == 'clist') then
+      else if (txintlist == 'celllist') then
          write(uout,'(a)') 'cell list'
       end if
 
-      if(.not. lclist) then
+      if(.not. lCellList) then
          if (inlist == 0) then
             write(uout,'(a)') 'automatic control of update frequency'
          else if (inlist > 0) then
@@ -550,7 +550,7 @@ subroutine NList(iStage)
          call LListAver(iStage)
          if (itest == 4) call TestLList(uout)
       end if
-      if (lclist) then
+      if (lCellList) then
          call InitCellList(rcut + drnlist, iStage)
          call SetCellList()
          call CellListAver(iStage)
@@ -595,7 +595,7 @@ subroutine NList(iStage)
    case (iAfterMacrostep)
 
       if (lvlist) call VListAver(iStage)
-      if (lclist) call CellListAver(iStage)
+      if (lCellList) call CellListAver(iStage)
 
    case (iAfterSimulation)
 
@@ -614,7 +614,7 @@ subroutine NList(iStage)
          write(uout,'(a,t35,i10)')   'total number of cells          = ', ncellllist
          call LListAver(iStage)
       end if
-      if (lclist) call CellListAver(iStage)
+      if (lCellList) call CellListAver(iStage)
 
       if (allocated(drosum)) deallocate(drosum)
       if (allocated(lcellllist)) deallocate(lcellllist, headllist, jpllist)

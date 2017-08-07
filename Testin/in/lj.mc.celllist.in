@@ -36,7 +36,7 @@
   isamp = 1,
   pspart = 1.0, dtran = 0.2,
  /
- &nmlIntList txintlist = 'clist',/
+ &nmlIntList txintlist = 'celllist',/
  &nmlDist vtype(5) = .t., 0.0, 5.0, 100, idist=10 /
  &nmlImage lvrml =.true. /
  &nmlVRML txwhen = 'after_run' /

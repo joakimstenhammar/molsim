@@ -145,7 +145,7 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
       if (lmonoatom) then
          if (lvlist) call DUTwoBody(lhsoverlap, UTwoBodyANew, UTwoBodyAOld)
          if (lllist) call DUTwoBody(lhsoverlap, UTwoBodyANewLList, UTwoBodyAOldLList)
-         if (lclist) call DUTwoBody(lhsoverlap, UTwoBodyANewCellList, UTwoBodyAOldCellList)
+         if (lCellList) call DUTwoBody(lhsoverlap, UTwoBodyANewCellList, UTwoBodyAOldCellList)
       else
          call DUTwoBody(lhsoverlap, UTwoBodyPNew, UTwoBodyPOld)
       end if

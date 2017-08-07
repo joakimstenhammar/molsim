@@ -212,4 +212,4 @@ vtfimage.fnw.mc.tcl
 vtfimage.fnw.mc.vtf
 amphoteric.counterions.mc.out
 group.weakcharge.fnw.out
-lj.mc.clist.out
+lj.mc.celllist.out
