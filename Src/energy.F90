@@ -694,7 +694,6 @@ subroutine UTwoBodyACellList
    u%twob(0:nptpt) = Zero
    virtwob         = Zero
 
-! ... contribution from pairs where only one particle is moved
    do ip = 1, np
       ipt = iptpn(ip)
       icell => cellip(ip)%p
