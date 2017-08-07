@@ -65,14 +65,11 @@ subroutine InitCellList(rcell, iStage)
       call Stop(txroutine, 'CellList needs cubic box (lbcbox should be true)', uout)
    end if
 
-   cellBoxLen = boxlen
-   cellHalfBoxLen = 0.5d0 * cellBoxLen
-
-   ncell(1:3) = max(1,floor(cellBoxLen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellSize is >= rcell
+   ncell(1:3) = max(1,floor(boxlen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellSize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   cellSize(1:3) = cellBoxLen(1:3)/ncell(1:3) !cellSize is the the cell size (larger than rcell)
+   cellSize(1:3) = boxlen(1:3)/ncell(1:3) !cellSize is the the cell size (larger than rcell)
    cellSizei(1:3) = 1.0d0/cellSize(1:3) !cellSizei is the inverse of the cell size (smaller than 1/rcell)
 
    call allocateCellStrut(ncell, np)
@@ -225,12 +222,13 @@ subroutine allocateCellStrut(ncell, np)
 end subroutine
 
 function pcellro(ro) result(icell)
+   use MolModule, only: boxlen2
    implicit none
    real(8), intent(in)  :: ro(3)
    type(cell_type), pointer :: icell
    integer(4)  :: i(3)
 
-   i = floor((ro+ cellHalfBoxLen)*cellSizei)
+   i = floor((ro+ boxlen2)*cellSizei)
    icell => cell(i(1), i(2), i(3))
 end function pcellro
 
