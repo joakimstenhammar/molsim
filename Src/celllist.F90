@@ -52,7 +52,7 @@ subroutine InitCellList(rcell, iStage)
    type(cell_pointer_array), allocatable :: icellid(:)
    type(cell_type), pointer              :: icell
    integer(4)                            :: idir
-   integer(4)                            :: ix, iy, iz, neigh(3), ineigh, id
+   integer(4)                            :: ix, iy, iz, neigh(3), ineigh, id, ixdir, iydir, izdir
    real(8)                               :: r2, dr(3)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -115,7 +115,7 @@ subroutine InitCellList(rcell, iStage)
 
    ! get the directions
 
-   ! the maximum number neighbouring cells in any direction is ceiling(rcut/cellsize)
+   ! the maximum possible number neighbouring cells in any direction is ceiling(rcut/cellsize)
    ! as the cells have neighbours in both positive and negative direction we have multiply the number of cells by two
    ! in addition the central cell is also part if the neighbouring cells (+ 1)
    ! therefore we have 2*ceiling(rcut/cellsize) + 1 cells in each direction
@@ -126,12 +126,14 @@ subroutine InitCellList(rcell, iStage)
    allocate(directions(3,maxneighcell))
    allocate(directionindex(maxneighcell))
    allocate(tmpidneigh(maxneighcell))
-   idir = 0
-   do ix = -ceiling(rcut*cellSizei(1)), ceiling(rcut*cellSizei(1))
-      do iy = -ceiling(rcut*cellSizei(2)), ceiling(rcut*cellSizei(2))
-         do iz = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(3))
 
-            dr(1:3) = max((\0, 0, 0\),abs((/ix, iy, iz/))-1)*cellSize(1:3) !distance to closest part of cell
+   ! loop over all possible neighbouring positions
+   idir = 0
+   do ixdir = -ceiling(rcut*cellSizei(1)), ceiling(rcut*cellSizei(1))
+      do iydir = -ceiling(rcut*cellSizei(2)), ceiling(rcut*cellSizei(2))
+         do izdir = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(3))
+
+            dr(1:3) = max((\0, 0, 0\),abs((/ixdir, iydir, izdir/))-1)*cellSize(1:3) !distance to closest part of cell
 
             if(lPBC) then
                call PBCr2(dr(1), dr(2), dr(3),r2)
@@ -144,7 +146,8 @@ subroutine InitCellList(rcell, iStage)
             end if
 
             idir = idir + 1
-            directions(1:3,idir) = (/ix, iy, iz/)
+            ! store direction as one which is a neighbouring cell
+            directions(1:3,idir) = (/ixdir, iydir, izdir/)
 
          end do
       end do
