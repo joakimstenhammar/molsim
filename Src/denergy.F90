@@ -781,7 +781,7 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
                end if
                if (r2 < rcut2) then
                   if (r2 < r2atat(iptjpt)) return ! Hard Sphere overlap
-                  if (r2 < r2umin(iptjpt)) return ! outside lower end
+                  if (r2 < r2umin(iptjpt)) return ! outside lower end of tabulated potential energy table
 
                   ibuf = iubuflow(iptjpt)
                   do
