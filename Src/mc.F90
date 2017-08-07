@@ -3043,7 +3043,7 @@ subroutine VolChange(iStage)
 
 ! ... calculate new box lengths and coordinates
 
-   boxlenratio = ((volold+dvol*(Random(iseed)-Half))/volold)**(0.3333333333333d0)
+   boxlenratio = ((volold+dvol*(Random(iseed)-Half))/volold)**(Third)
    boxlen(1:3) = boxlen(1:3)*boxlenratio
    call SetBoxParam
    if (lewald) call EwaldSetup
