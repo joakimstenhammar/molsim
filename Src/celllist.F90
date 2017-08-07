@@ -6,6 +6,13 @@
 
 ! ... a new improved implementation of the linked list
 
+! In each cell we store the particles in a linked list. The first in that cell is the head of the cell (given by iphead). Each
+! particle is linked to its next and previous particle in the list by ipnext and ipprev. The last particle in the list is the tail.
+! ipprev of the head is 0 and ipnext of the tail is 0. Therefore we cann loop through all particles of the linked list, by starting
+! with handling iphead, and proceeding by handling the next particle of the particle just considered. When we reach particle 0, we
+! have considered all particles in the list.
+! See Allen, M. P. & Tildesley, D. J., Computer Simulation of Liquids, Oxford University Press, USA, 1987, 149.
+
 module CellListModule
 
 implicit none
@@ -183,13 +190,14 @@ subroutine InitCellList(rcell, iStage)
                end if
 
                if(all(tmpidneigh(1:ineigh) /= cell(neigh(1), neigh(2), neigh(3))%id)) then
+                  ! the neighbouring cell is not already a neighbour
                   ineigh = ineigh + 1
                   tmpidneigh(ineigh) = cell(neigh(1), neigh(2), neigh(3))%id
                end if
             end do
             icell%nneighcell = ineigh
 
-            !allocate memory
+            !allocate memory for the current cell
             if(allocated(icell%neighcell)) then
                deallocate(icell%neighcell)
             end if
