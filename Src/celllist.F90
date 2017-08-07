@@ -364,14 +364,14 @@ subroutine TestCellList(output)
    write(output,'(a,i0)') "Number of cells ", size(cell)
    write(output,'()')
    write(output,'(tr2,a49)') repeat('-',49)
-   write(output,'(tr2,a15,tr2,a15,tr2,a15)') 'cell id', 'ith neighbour', 'id of neighbour'
-   write(output,'(tr2,a15,tr2,a15,tr2,a15)') repeat('-',15), repeat('-', 15), repeat('-',15)
+   write(output,'(3(tr2,a15))') 'cell id', 'ith neighbour', 'id of neighbour'
+   write(output,'(3(tr2,a15))') repeat('-',15), repeat('-', 15), repeat('-',15)
    do ix = lbound(cell,dim=1), ubound(cell,dim=1)
       do iy = lbound(cell,dim=2), ubound(cell,dim=2)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
             icell => cell(ix,iy,iz)
             do ineigh = 1, icell%nneighcell
-               write(output,'(tr2,i15,tr2,i15,tr2,i15)') icell%id, ineigh, icell%neighcell(ineigh)%p%id
+               write(output,'(3(tr2,i15))') icell%id, ineigh, icell%neighcell(ineigh)%p%id
             end do
          end do
       end do
@@ -411,10 +411,10 @@ subroutine TestCellList(output)
    write(output,'(tr2,a49)') repeat('-',49)
    write(output,'()')
    write(output,'(tr2,a49)') repeat('-',49)
-   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') 'particle id', 'cell id', 'prev particle id', 'next particle id'
-   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') repeat('-',15), repeat('-', 15), repeat('-',15), repeat('-',15)
+   write(output,'(4(tr2,a15))') 'particle id', 'cell id', 'prev particle id', 'next particle id'
+   write(output,'(4(tr2,a15))') repeat('-',15), repeat('-', 15), repeat('-',15), repeat('-',15)
    do ip = 1, np
-      write(output,'(tr2,i15,tr2,i15,tr2,i15,tr2,i15)') ip, cellip(ip)%p%id, ipprev(ip), ipnext(ip)
+      write(output,'(4(tr2,i15))') ip, cellip(ip)%p%id, ipprev(ip), ipnext(ip)
    end do
    write(output,'(tr2,a49)') repeat('-',49)
 
