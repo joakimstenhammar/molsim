@@ -287,7 +287,7 @@ subroutine RmIpFromCell(ip, icell)
          ! no particles are left
          icell%iphead = 0
       else
-         ! make the previous partice the tail
+         ! make the previous particle the tail
          ipnext(prevp) = 0
       end if
    else ! ip is not at the tail
