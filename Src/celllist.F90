@@ -60,6 +60,7 @@ subroutine InitCellList(rcell, iStage)
    type(cell_type), pointer              :: icell
    integer(4)                            :: idir
    integer(4)                            :: ix, iy, iz, neigh(3), ineigh, id, ixdir, iydir, izdir
+   integer(4)                            :: minneighcell
    real(8)                               :: r2, dr(3)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -166,6 +167,8 @@ subroutine InitCellList(rcell, iStage)
    ! therefore the hard core overlaps occur as early as possible
    call HeapSortIndex(maxneighcell, real(sum(abs(directions(1:3,1:maxneighcell)),dim=1),kind=8), directionindex(1:maxneighcell))
 
+   minneighcell = huge(minneighcell)
+
    !set the neighbours
    do ix = 0, ncell(1) - 1
       do iy = 0, ncell(2) - 1
@@ -197,6 +200,8 @@ subroutine InitCellList(rcell, iStage)
             end do
             icell%nneighcell = ineigh
 
+            minneighcell = min(minneighcell, ineigh)
+
             !allocate memory for the current cell
             if(allocated(icell%neighcell)) then
                deallocate(icell%neighcell)
@@ -210,6 +215,11 @@ subroutine InitCellList(rcell, iStage)
          end do
       end do
    end do
+
+   if(minneighcell < nproc) then
+      call Warn(txroutine, 'the number of neighbouring cells is smaller than the number of processors, parallel execution
+      will be very inefficient', uout)
+   end if
 
    deallocate(directions, directionindex, tmpidneigh, icellid)
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
@@ -420,7 +430,6 @@ subroutine TestCellList(output)
 
 end subroutine
 
-
 subroutine CellListAver(iStage)
 
    use MolModule, only: uout
@@ -430,8 +439,8 @@ subroutine CellListAver(iStage)
    implicit none
    integer(4), intent(in) :: iStage
    character(80), parameter :: txheading ='cell list statistics'
-   real(8), save    :: nppp(4)         ! number of particles per processor
-   real(8), save    :: nneigh(4)       ! number of neigbours per particle and processor
+   real(8), save    :: nppp(4)         ! number of particles
+   real(8), save    :: nneigh(4)       ! number of neigbours per particle
    type(cell_type), pointer   :: tmpcell
    integer(4)  :: ip, icell
    real(8)     :: nneighip
