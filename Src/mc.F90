@@ -4885,15 +4885,8 @@ subroutine MCUpdate
 !  not sure that lfixedori is needed in the line above Jos
       call SetAtomProp(ip, ip, .false.)                        ! atom and dipole
       drostep(1:3,ip) = drostep(1:3,ip)+drotm(1:3,iploc)       ! displacement
+      if(lCellList) call UpdateCellIp(ip)
    end do
-
-   !update cell list
-   if(lCellList) then
-      do iploc = 1, nptm
-         ip = ipnptm(iploc)
-         call UpdateCellIp(ip)
-      end do
-   end if
 
 end subroutine MCUpdate
 
