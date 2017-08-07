@@ -21,7 +21,7 @@ The just created branch exists only locally, to set it up on the remote reposito
 ```sh
 git push --set-upstream origin <NAME-OF-NEW-BRANCH>
 ```
-You're now in your new branch. You may now begin to implement new features/changes. To be able to measure the changes you introduced to the ouput files, go into the `Testin` directory and run `make save` This will allow you to compare the results of a collection of input files to the results which were generated with the master branch.
+You're now in your new branch. You may now begin to implement new features/changes. Molsim comes with a feature called `Testin`. It allows for an efficient way to check whether changes of the Molsim source code lead to any malfunction of the program. This testing is an integral part of the extension of the Molsim functionality and needs to be performed at least once, before a branch may be merged into the master branch. Please follow [the steps described in the corresponding wiki entry](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/testin) in order to run the `Testin` directory.
 
 ## 2. How to commit features/changes
 The changes you apply to the code should be as efficient and non-invasive as possible. Try to divide your modifications in logically-associated chunks of code. These chunks can then individually be committed and described in a commit message. After you changed something you first have to stage the files in which changes were made and which you'd like to commit.
