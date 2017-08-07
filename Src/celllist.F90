@@ -332,8 +332,8 @@ subroutine SetCellList
    use MolModule, only: ltime, uout
    implicit none
 
-   character(40), parameter              :: txroutine ='SetCellList'
-   integer(4)  :: ip
+   character(40), parameter :: txroutine ='SetCellList'
+   integer(4)               :: ip
    type(cell_type), pointer :: celltmp
 
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
