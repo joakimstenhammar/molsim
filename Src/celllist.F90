@@ -13,6 +13,32 @@
 ! have considered all particles in the list.
 ! See Allen, M. P. & Tildesley, D. J., Computer Simulation of Liquids, Oxford University Press, USA, 1987, 149.
 
+! the simulation box is split into smaller cells, to efficiently calculate the energy to the neighbouring particles. The cell
+! strucutre is sketched in the following:
+
+! cell structure when ncell(1:3) = 4 (the numbers give the index in the array)
+!        +-----+-----+-----+-----+
+!       /.., 3/     /     /     /|
+!      +-----+-----+-----+-----+ |
+!     /.., 2/     /     /     /| +
+!    +-----+-----+-----+-----+ |/|
+!   /.., 1/     /     /     /| + |
+!  +-----+-----+-----+-----+ |/| +
+! /.., 0/     /     /     /| + |/|
+!+-----+-----+-----+-----+ |/| + |
+!| 0, 3| 1, 3| 2, 3| 3, 3| + |/| +
+!| , 0 | , 0 | , 0 | , 0 |/| + |/|
+!+-----+-----+-----+-----+ |/| + |
+!| 0, 2| 1, 2| 2, 2| 3, 2| + |/| +
+!| , 0 | , 0 | , 0 | , 0 |/| + |/
+!+-----+-----+-----+-----+ |/| +
+!| 0, 1| 1, 1| 2, 1| 3, 1| + |/
+!| , 0 | , 0 | , 0 | , 0 |/| +
+!+-----+-----+-----+-----+ |/
+!| 0, 0| 1, 0| 2, 0| 3, 0| +
+!| , 0 | , 0 | , 0 |  0  |/
+!+-----+-----+-----+-----+
+
 module CellListModule
 
 implicit none
@@ -23,45 +49,48 @@ public pcellro, cell_type, cellip, ipnext
 integer(4)                               :: maxneighcell ! maximum number of neighbouring cells
 
 type cell_pointer_array
-   type(cell_type), pointer              :: p => null()
+   type(cell_type), pointer              :: p => null()        ! pointer to a cell, usefull to create an array of pointers
 end type cell_pointer_array
 
 type cell_type
-   integer(4)                            :: id           ! for easy recognition
-   integer(4)                            :: npart
-   integer(4)                            :: nneighcell
-   type(cell_pointer_array), allocatable :: neighcell(:)
-   integer(4)                            :: iphead
+   integer(4)                            :: id                 ! for easy recognition
+   integer(4)                            :: npart              ! number of particles per cell
+   integer(4)                            :: nneighcell         ! number of neighbouring cells
+   type(cell_pointer_array), allocatable :: neighcell(:)       ! pointer to the neighbouring cells
+   integer(4)                            :: iphead             ! first particle in the linked list
 end type cell_type
 
-integer(4), allocatable                  :: ipnext(:)
-integer(4), allocatable                  :: ipprev(:)
+integer(4), allocatable                  :: ipnext(:)          ! ip -> the particle following it in the linked list
+integer(4), allocatable                  :: ipprev(:)          ! ip -> the pervious particle in the linked list
 
-type(cell_type), target, allocatable     :: cell(:,:,:)             ! cells
-type(cell_pointer_array), allocatable    :: cellip(:)               ! cell of each particle
-integer(4)                               :: ncell(3) = 0            ! number of cells in x y z in each octant
-real(8)                                  :: cellSize(3) = 0.0       ! inverse edge length of each cell
-real(8)                                  :: cellSizei(3) = 0.0      ! inverse edge length of each cell
+type(cell_type), target, allocatable     :: cell(:,:,:)        ! cells
+type(cell_pointer_array), allocatable    :: cellip(:)          ! cell of each particle
+integer(4)                               :: ncell(3) = 0       ! number of cells in x y z in each octant
+real(8)                                  :: cellSize(3) = 0.0  ! inverse edge length of each cell
+real(8)                                  :: cellSizei(3) = 0.0 ! inverse edge length of each cell
 
 contains
 
 subroutine InitCellList(rcell, iStage)
 
-   use MolModule, only: ltrace, ltime, uout
+   use MolModule, only: ltrace, ltime, uout, nproc
    use MolModule, only: lbcbox, boxlen, lPBC, dpbc
    use MolModule, only: np
    use MolModule, only: rcut, rcut2
 
-   real(8),    intent(in)                :: rcell
+   real(8),    intent(in)                :: rcell ! minimum size of the cell
    integer(4), intent(in)                :: iStage
    character(40), parameter              :: txroutine ='InitCellList'
-   integer(4),               allocatable :: directions(:,:) ,directionindex(:), tmpidneigh(:)
-   type(cell_pointer_array), allocatable :: icellid(:)
-   type(cell_type), pointer              :: icell
-   integer(4)                            :: idir
-   integer(4)                            :: ix, iy, iz, neigh(3), ineigh, id, ixdir, iydir, izdir
-   integer(4)                            :: minneighcell
-   real(8)                               :: r2, dr(3)
+
+   integer(4), allocatable :: directions(:,:)   ! relative positions of a posible neighbour to a cell
+   integer(4), allocatable :: directionindex(:) ! index of the directions, will be sorted to give cells of increasing distance
+   integer(4), allocatable :: tmpidneigh(:)     ! temporary variable to store the id of the neighbouring cells of an cell
+   type(cell_pointer_array), allocatable :: icellid(:) ! id of a cell -> pointer to the cell
+   type(cell_type), pointer              :: icell      ! pointer to the cell
+   integer(4) :: idir
+   integer(4) :: ix, iy, iz, neigh(3), ineigh, id, ixdir, iydir, izdir
+   integer(4) :: minneighcell ! minimum amount of neighbours a cell has
+   real(8)    :: r2, dr(3)
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -73,7 +102,7 @@ subroutine InitCellList(rcell, iStage)
       call Stop(txroutine, 'CellList needs cubic box (lbcbox should be true)', uout)
    end if
 
-   ncell(1:3) = max((/1, 1, 1/), floor(boxlen(1:3)/rcell)) !floor to underestimate the number of cells
+   ncell(1:3) = max((/1, 1, 1/), floor(boxlen(1:3)/rcell)) ! floor to underestimate the number of cells
    ! therefore the cellSize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
@@ -83,31 +112,9 @@ subroutine InitCellList(rcell, iStage)
 
    call AllocateCellStructure(ncell, np)
 
-   ! cell structure when ncell(1:3) = 4
-   !        +-----+-----+-----+-----+
-   !       /.., 3/     /     /     /|
-   !      +-----+-----+-----+-----+ |
-   !     /.., 2/     /     /     /| +
-   !    +-----+-----+-----+-----+ |/|
-   !   /.., 1/     /     /     /| + |
-   !  +-----+-----+-----+-----+ |/| +
-   ! /.., 0/     /     /     /| + |/|
-   !+-----+-----+-----+-----+ |/| + |
-   !| 0, 3| 1, 3| 2, 3| 3, 3| + |/| +
-   !| , 0 | , 0 | , 0 | , 0 |/| + |/|
-   !+-----+-----+-----+-----+ |/| + |
-   !| 0, 2| 1, 2| 2, 2| 3, 2| + |/| +
-   !| , 0 | , 0 | , 0 | , 0 |/| + |/
-   !+-----+-----+-----+-----+ |/| +
-   !| 0, 1| 1, 1| 2, 1| 3, 1| + |/
-   !| , 0 | , 0 | , 0 | , 0 |/| +
-   !+-----+-----+-----+-----+ |/
-   !| 0, 0| 1, 0| 2, 0| 3, 0| +
-   !| , 0 | , 0 | , 0 |  0  |/
-   !+-----+-----+-----+-----+
-
-   !allocate cells and set the id of the cells
    allocate(icellid(product(ncell(1:3))))
+
+   ! set the id of all the cells
    id = 0
    do ix = 0, ncell(1) - 1
       do iy = 0, ncell(2) - 1
@@ -115,8 +122,6 @@ subroutine InitCellList(rcell, iStage)
             id = id + 1
             icellid(id)%p        => cell(ix,iy,iz)
             icellid(id)%p%id     = id ! sets the id
-            icellid(id)%p%iphead = 0
-            icellid(id)%p%npart  = 0        ! initialize cell particles
          end do
       end do
    end do
@@ -131,54 +136,49 @@ subroutine InitCellList(rcell, iStage)
    ! the total number of neighbouring cells is the product the number of cells in each direction
    maxneighcell = product(2*ceiling(rcut*cellSizei(1:3))+1)
 
+   ! to quickly find all the neighbours we first find the relative coordinates to the neighbours
    allocate(directions(3,maxneighcell))
    allocate(directionindex(maxneighcell))
    allocate(tmpidneigh(maxneighcell))
-
    ! loop over all possible neighbouring positions
    idir = 0
    do ixdir = -ceiling(rcut*cellSizei(1)), ceiling(rcut*cellSizei(1))
       do iydir = -ceiling(rcut*cellSizei(2)), ceiling(rcut*cellSizei(2))
          do izdir = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(3))
-
-            dr(1:3) = max((/0, 0, 0/),abs((/ixdir, iydir, izdir/))-1)*cellSize(1:3) !distance to closest part of cell
-
+            dr(1:3) = max((/0, 0, 0/),abs((/ixdir, iydir, izdir/))-1)*cellSize(1:3) ! distance to closest part of cell
             if(lPBC) then
                call PBCr2(dr(1), dr(2), dr(3),r2)
             else
                r2 = sum(dr(1:3)**2)
             end if
-
             if(r2 > rcut2) then ! distance of the cells so large, that it is not needed
                cycle
             end if
-
             idir = idir + 1
             ! store direction as one which is a neighbouring cell
             directions(1:3,idir) = (/ixdir, iydir, izdir/)
-
          end do
       end do
    end do
-
    maxneighcell = idir
 
    ! sort the directions to have the neighbours with the smallest distance at the beginning
    ! therefore the hard core overlaps occur as early as possible
    call HeapSortIndex(maxneighcell, real(sum(abs(directions(1:3,1:maxneighcell)),dim=1),kind=8), directionindex(1:maxneighcell))
 
+   ! set the neighbours:
    minneighcell = huge(minneighcell)
-
-   !set the neighbours
+   ! loop over all cells
    do ix = 0, ncell(1) - 1
       do iy = 0, ncell(2) - 1
          do iz =  0, ncell(3) - 1
             icell => cell(ix,iy,iz)
 
-            !get cell neighbors
+            ! get cell neighbors
             ineigh = 0
             icell%nneighcell = 0
             tmpidneigh = 0
+            ! loop over all relative positions where a neighbour could be located
             do idir = 1, maxneighcell
                neigh(1:3) = (/ ix, iy, iz/) + directions(1:3, directionindex(idir))
                if(lPBC) then
@@ -188,27 +188,26 @@ subroutine InitCellList(rcell, iStage)
                      neigh = modulo(neigh,ncell)
                   end where
                end if
-               if(any(neigh(1:3) < 0) .or. any(neigh(1:3) >= ncell)) then !neighbour is out of bounds
+               if(any(neigh(1:3) < 0) .or. any(neigh(1:3) >= ncell)) then ! neighbour is out of bounds
                   cycle
                end if
 
                if(all(tmpidneigh(1:ineigh) /= cell(neigh(1), neigh(2), neigh(3))%id)) then
                   ! the neighbouring cell is not already a neighbour
                   ineigh = ineigh + 1
-                  tmpidneigh(ineigh) = cell(neigh(1), neigh(2), neigh(3))%id
+                  tmpidneigh(ineigh) = cell(neigh(1), neigh(2), neigh(3))%id ! keep record of which cells neighbours of icell
                end if
             end do
             icell%nneighcell = ineigh
-
             minneighcell = min(minneighcell, ineigh)
 
-            !allocate memory for the current cell
+            ! allocate memory for the current cell
             if(allocated(icell%neighcell)) then
                deallocate(icell%neighcell)
             end if
             allocate(icell%neighcell(icell%nneighcell))
 
-            ! now assign neighbours
+            ! now setup the pointer to the neighbouring cells
             do ineigh = 1, icell%nneighcell
                icell%neighcell(ineigh)%p => icellid(tmpidneigh(ineigh))%p
             end do
@@ -217,8 +216,7 @@ subroutine InitCellList(rcell, iStage)
    end do
 
    if(minneighcell < nproc) then
-      call Warn(txroutine, 'the number of neighbouring cells is smaller than the number of processors, parallel execution
-      will be very inefficient', uout)
+      call Warn(txroutine, 'number neighbouring cells < number of processors, parallel execution will be inefficient', uout)
    end if
 
    deallocate(directions, directionindex, tmpidneigh, icellid)
@@ -227,6 +225,7 @@ subroutine InitCellList(rcell, iStage)
 end subroutine InitCellList
 
 subroutine AllocateCellStructure(ncell, np)
+   ! allocate the variables needed for the cell list
    implicit none
    integer(4), intent(in) :: ncell(3)
    integer(4), intent(in) :: np
@@ -252,57 +251,60 @@ subroutine AllocateCellStructure(ncell, np)
 end subroutine
 
 function pcellro(ro) result(icell)
+   ! points to the cell at the position ro
    use MolModule, only: boxlen2
    implicit none
-   real(8), intent(in)  :: ro(3)
+   real(8), intent(in)      :: ro(3)
    type(cell_type), pointer :: icell
-   integer(4)  :: i(3)
+   integer(4)               :: i(3)
 
    i = floor((ro+ boxlen2)*cellSizei)
    icell => cell(i(1), i(2), i(3))
 end function pcellro
 
 subroutine AddIpToCell(ip, icell)
+   ! add partice ip to the cell icell
    implicit none
-   integer(4), intent(in)  :: ip
+   integer(4), intent(in)                 :: ip
    type(cell_type), target, intent(inout) :: icell
-   integer(4)  :: jp
+   integer(4)                             :: jp
 
-   icell%npart = icell%npart + 1
-   jp = icell%iphead  ! current head
-   icell%iphead = ip  ! make ip the head
-   if(jp .ne. 0) then ! when a head is present
-      ipprev(jp) = ip ! move the head one down
-      ipnext(ip) = jp ! make old head particle next to ip
-   else               ! new particle is alone in cell
-      ipnext(ip) = 0
+   icell%npart = icell%npart + 1 ! increase the number of particles in the cell by one
+   jp = icell%iphead             ! jp is the current head
+   icell%iphead = ip             ! make ip the head
+   if(jp .ne. 0) then            ! when a head is present:
+      ipprev(jp) = ip            ! make ip the particle previous to the old head
+      ipnext(ip) = jp            ! make old head particle next to ip
+   else                          ! else ip is alone in cell:
+      ipnext(ip) = 0             ! ip is at the tail
    end if
-   ipprev(ip) = 0     ! there is no particle before the head
+   ipprev(ip) = 0                ! there is no particle before the head
 
-   cellip(ip)%p => icell !associate particle with cell
+   cellip(ip)%p => icell         ! associate particle with cell
 
 end subroutine AddIpToCell
 
 subroutine RmIpFromCell(ip, icell)
+   ! remove a particle cell icell
    implicit none
    integer(4), intent(in)  :: ip
    type(cell_type), intent(inout) :: icell
    integer(4)  :: nextp, prevp
 
-   icell%npart = icell%npart - 1
-   nextp = ipnext(ip)
-   prevp = ipprev(ip)
-   if (nextp .eq. 0) then ! ip is at the tail
-      if( icell%iphead .eq. ip ) then ! ip is at head
+   icell%npart = icell%npart - 1 ! decrease the number of particles by one
+   nextp = ipnext(ip) ! nextp is the particle following ip in the linked list
+   prevp = ipprev(ip) ! prevp is the particle before ip in the linked list
+   if (nextp .eq. 0) then ! if ip is at the tail
+      if( icell%iphead .eq. ip ) then ! and ip is at head
          ! no particles are left
          icell%iphead = 0
       else
-         ! make the previous particle the tail
+         ! else make the previous particle the tail
          ipnext(prevp) = 0
       end if
-   else ! ip is not at the tail
-      if( icell%iphead .eq. ip ) then ! ip is at head
-         !make next particle the head
+   else ! if ip is not at the tail
+      if( icell%iphead .eq. ip ) then ! and ip is at head
+         ! make next particle the head
          icell%iphead = nextp
          ipprev(nextp) = 0
       else ! ip is neither at the tail nor at the head
@@ -312,7 +314,7 @@ subroutine RmIpFromCell(ip, icell)
       end if
    end if
 
-   !reset ip
+   ! reset ip
    ipprev(ip) = 0
    ipnext(ip) = 0
    cellip(ip)%p => null()
@@ -320,24 +322,25 @@ subroutine RmIpFromCell(ip, icell)
 end subroutine RmIpFromCell
 
 subroutine UpdateCellIp(ip)
+   ! update the cell of one particle
    use MolModule, only: ro
    implicit none
-   integer(4), intent(in)  :: ip
+   integer(4), intent(in)   :: ip
    type(cell_type), pointer :: cellold
    type(cell_type), pointer :: cellnew
 
-   cellold => cellip(ip)%p
-   cellnew => pcellro(ro(1:3,ip))
+   cellold => cellip(ip)%p             ! old cell of the particle
+   cellnew => pcellro(ro(1:3,ip))      ! cell of the particle at the new position
 
-   if(cellold%id .ne. cellnew%id) then !do not update cell if cell has not changed
-      call RmIpFromCell(ip, cellold)
-      call AddIpToCell(ip, cellnew)
+   if(cellold%id .ne. cellnew%id) then ! do not update cell if cell has not changed
+      call RmIpFromCell(ip, cellold)   ! remove ip from the old cell
+      call AddIpToCell(ip, cellnew)    ! add ip to the new cell
    end if
 
 end subroutine UpdateCellIp
 
 subroutine SetCellList
-
+   ! Set the whole cell list
    use MolModule, only: np, ro
    use MolModule, only: ltime, uout
    implicit none
@@ -347,11 +350,19 @@ subroutine SetCellList
    type(cell_type), pointer :: celltmp
 
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
+
+   !reset all cells
    cell(:,:,:)%npart = 0
+   cell(:,:,:)%iphead = 0
+   ipnext = 0
+   ipprev = 0
+
+   ! add all particles to the cells
    do ip = 1, np
       celltmp => pcellro(ro(1:3,ip))
       call AddIpToCell(ip, celltmp)
    end do
+
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
 end subroutine SetCellList
@@ -393,7 +404,7 @@ subroutine TestCellList(output)
       do jp = 1, np
          dr = ro(1:3,ip)-ro(1:3,jp)
          call PBCr2(dr(1), dr(2), dr(3), r2)
-         if(r2 .le. rcut2) then !check if ip and jp are neighbours
+         if(r2 .le. rcut2) then ! check if ip and jp are neighbours
             lipjpneighbour = .false.
             icell => cellip(ip)%p
             neighbourcells: do incell = 1, icell%nneighcell
@@ -469,8 +480,8 @@ subroutine CellListAver(iStage)
          npPerCell(4) = max(npPerCell(4), real(maxval(cell(:,:,:)%npart)))
 
          do ip = 1, np
-            nNeighPerPartIp = -1.0d0 !do not count the particle itself as a neighbour
-            do icell = 1, cellip(ip)%p%nNeighPerPartcell
+            nNeighPerPartIp = -1.0d0 ! do not count the particle itself as a neighbour
+            do icell = 1, cellip(ip)%p%nneighcell
                tmpcell => cellip(ip)%p%neighcell(icell)%p
                nNeighPerPartIp = nNeighPerPartIp + tmpcell%npart
             end do
