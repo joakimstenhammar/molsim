@@ -454,12 +454,12 @@ subroutine CellListAver(iStage)
       select case (iStage)
       case (iWriteInput)
 
-         npPerCell(1:2)    = 0.0d0
-         npPerCell(3)    =+huge(1.0d0)
-         npPerCell(4)    =-huge(1.0d0)
-         nNeighPerPart(1:2)  = 0.0d0
-         nNeighPerPart(3)  =+huge(1.0d0)
-         nNeighPerPart(4)  =-huge(1.0d0)
+         npPerCell(1:2)     = 0.0d0
+         npPerCell(3)       = +huge(1.0d0)
+         npPerCell(4)       = -huge(1.0d0)
+         nNeighPerPart(1:2) = 0.0d0
+         nNeighPerPart(3)   = +huge(1.0d0)
+         nNeighPerPart(4)   = -huge(1.0d0)
 
       case (iAfterMacrostep)
 
@@ -468,7 +468,7 @@ subroutine CellListAver(iStage)
          npPerCell(3) = min(npPerCell(3), real(minval(cell(:,:,:)%npart)))
          npPerCell(4) = max(npPerCell(4), real(maxval(cell(:,:,:)%npart)))
 
-         do ip=1, np
+         do ip = 1, np
             nNeighPerPartIp = -1.0d0 !do not count the particle itself as a neighbour
             do icell = 1, cellip(ip)%p%nNeighPerPartcell
                tmpcell => cellip(ip)%p%neighcell(icell)%p
@@ -482,8 +482,8 @@ subroutine CellListAver(iStage)
 
       case (iAfterSimulation)
 
-         npPerCell(1)   = npPerCell(1)/(nstep1*size(cell))
-         npPerCell(2)   = sqrt(npPerCell(2)/(nstep1*size(cell))-npPerCell(1)**2)
+         npPerCell(1)     = npPerCell(1)/(nstep1*size(cell))
+         npPerCell(2)     = sqrt(npPerCell(2)/(nstep1*size(cell))-npPerCell(1)**2)
          nNeighPerPart(1) = nNeighPerPart(1)/(nstep1*np)
          nNeighPerPart(2) = sqrt(nNeighPerPart(2)/(nstep1*np)-nNeighPerPart(1)**2)
 
