@@ -354,7 +354,7 @@ subroutine TestCellList(output)
    character(80), parameter :: txheading ='cell list testing'
    character(40), parameter :: txroutine = 'TestCellList'
    integer(4)  :: ix, iy, iz, ineigh
-   type(cell_type), pointer   :: icell, tncell
+   type(cell_type), pointer   :: icell, locncell
    integer(4)  :: ip, jp, incell, jploc, jpneigh
    real(8)  :: dr(3), r2
    logical  :: lipjpneighbour
@@ -392,9 +392,9 @@ subroutine TestCellList(output)
             lipjpneighbour = .false.
             icell => cellip(ip)%p
             do incell = 1, icell%nneighcell
-               tncell => icell%neighcell(incell)%p
-               jpneigh = tncell%iphead
-               do jploc = 1, tncell%npart
+               locncell => icell%neighcell(incell)%p
+               jpneigh = locncell%iphead
+               do jploc = 1, locncell%npart
                   if(jpneigh .eq. jp) then
                      lipjpneighbour = .true.
                      exit
