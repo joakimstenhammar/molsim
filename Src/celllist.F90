@@ -98,7 +98,6 @@ subroutine InitCellList(rcell, iStage)
    !+-----+-----+-----+-----+
 
    !allocate cells and set the id of the cells
-   ! allocate(icellid(size(cell)))
    allocate(icellid(product(ncell(1:3))))
    id = 0
    do ix = 0, ncell(1) - 1
