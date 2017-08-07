@@ -371,19 +371,21 @@ subroutine TestCellList(output)
    use MolModule, only: ro, np
    use MolModule, only: rcut2
    implicit none
-   integer(4), intent(in) :: output
+   integer(4), intent(in)   :: output
    character(80), parameter :: txheading ='cell list testing'
    character(40), parameter :: txroutine = 'TestCellList'
-   integer(4)  :: ix, iy, iz, ineigh
-   type(cell_type), pointer   :: icell, locncell
-   integer(4)  :: ip, jp, incell, jploc, jpneigh
-   real(8)  :: dr(3), r2
-   logical  :: lipjpneighbour
+   type(cell_type), pointer :: icell, locncell
+   integer(4)               :: ix, iy, iz, ineigh
+   integer(4)               :: ip, jp, incell, jploc, jpneigh
+   real(8)                  :: dr(3), r2
+   logical                  :: lipjpneighbour
 
    call WriteHead(2, txheading, output)
+   ! write information on the cells
    write(output,'()')
    write(output,'(a,i0)') "Number of cells ", size(cell)
    write(output,'()')
+   ! write the id of each cell and its neihbours
    write(output,'(tr2,a49)') repeat('-',49)
    write(output,'(3(tr2,a15))') 'cell id', 'ith neighbour', 'id of neighbour'
    write(output,'(3(tr2,a15))') repeat('-',15), repeat('-', 15), repeat('-',15)
@@ -399,10 +401,12 @@ subroutine TestCellList(output)
    end do
    write(output,'(tr2,a49)') repeat('-',49)
    write(output,'()')
+
+   ! check if all neighbouring particles are in neighbouring cells
    write(output,'(tr2,a49)') repeat('-',49)
    do ip = 1, np
       do jp = 1, np
-         dr = ro(1:3,ip)-ro(1:3,jp)
+         dr = ro(1:3,ip) - ro(1:3,jp)
          call PBCr2(dr(1), dr(2), dr(3), r2)
          if(r2 .le. rcut2) then ! check if ip and jp are neighbours
             lipjpneighbour = .false.
@@ -423,14 +427,15 @@ subroutine TestCellList(output)
                write(output, *) "cell(ip)%id: ", cellip(ip)%p%id, "cell(jp)%id): ",cellip(jp)%p%id
                write(output, *) "ro(ip): ",ro(1:3,ip), " ro(jp) ",ro(1:3,jp)
                call Stop(txroutine, 'found two particles which should be neighbours but which are not', output)
-            else
-               continue
             end if
          end if
       end do
    end do
+   write(output, *) "All particles which should be neighbours are in neihbouring cells"
    write(output,'(tr2,a49)') repeat('-',49)
    write(output,'()')
+
+   ! write the cell of each particle, its next and its previous particle
    write(output,'(tr2,a49)') repeat('-',49)
    write(output,'(4(tr2,a15))') 'particle id', 'cell id', 'prev particle id', 'next particle id'
    write(output,'(4(tr2,a15))') repeat('-',15), repeat('-', 15), repeat('-',15), repeat('-',15)
@@ -456,7 +461,6 @@ subroutine CellListAver(iStage)
    real(8), save            :: npPerCell(4)     ! number of particles
    real(8), save            :: nNeighPerPart(4) ! number of neigbours per particle
 
-   type(cell_type), pointer :: tmpcell
    integer(4)               :: ip, icell
    real(8)                  :: nNeighPerPartIp
 
@@ -465,6 +469,7 @@ subroutine CellListAver(iStage)
       select case (iStage)
       case (iWriteInput)
 
+         ! init the variables for the averages
          npPerCell(1:2)     = 0.0d0
          npPerCell(3)       = +huge(1.0d0)
          npPerCell(4)       = -huge(1.0d0)
@@ -474,16 +479,18 @@ subroutine CellListAver(iStage)
 
       case (iAfterMacrostep)
 
+         ! for all cells, sum the number of particles and the number of particles squared
          npPerCell(1) = npPerCell(1) + sum(cell(:,:,:)%npart)
          npPerCell(2) = npPerCell(2) + sum(cell(:,:,:)%npart**2)
+         ! record the lowest and highest number of particles in all cells
          npPerCell(3) = min(npPerCell(3), real(minval(cell(:,:,:)%npart)))
          npPerCell(4) = max(npPerCell(4), real(maxval(cell(:,:,:)%npart)))
 
+         ! measure how many neighbours each particle has
          do ip = 1, np
-            nNeighPerPartIp = -1.0d0 ! do not count the particle itself as a neighbour
-            do icell = 1, cellip(ip)%p%nneighcell
-               tmpcell => cellip(ip)%p%neighcell(icell)%p
-               nNeighPerPartIp = nNeighPerPartIp + tmpcell%npart
+            nNeighPerPartIp = -1.0d0 ! do not count the particle itself as a neighbour, therefore start with -1
+            do icell = 1, cellip(ip)%p%nneighcell ! loop over all neighbouring cells
+               nNeighPerPartIp = nNeighPerPartIp + cellip(ip)%p%neighcell(icell)%p%npart ! add the number of particles in the neighbouring cell
             end do
             nNeighPerPart(1) = nNeighPerPart(1) + nNeighPerPartIp
             nNeighPerPart(2) = nNeighPerPart(2) + nNeighPerPartIp**2
@@ -493,6 +500,7 @@ subroutine CellListAver(iStage)
 
       case (iAfterSimulation)
 
+         ! calculate the average and the standard deviation
          npPerCell(1)     = npPerCell(1)/(nstep1*size(cell))
          npPerCell(2)     = sqrt(npPerCell(2)/(nstep1*size(cell))-npPerCell(1)**2)
          nNeighPerPart(1) = nNeighPerPart(1)/(nstep1*np)
