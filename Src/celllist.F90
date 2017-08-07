@@ -65,12 +65,13 @@ subroutine InitCellList(rcell, iStage)
       call Stop(txroutine, 'CellList needs cubic box (lbcbox should be true)', uout)
    end if
 
-   ncell(1:3) = max(1,floor(boxlen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellSize is >= rcell
+   ncell(1:3) = max((/1, 1, 1/), floor(boxlen(1:3)/rcell)) !floor to underestimate the number of cells
+   ! therefore the cellSize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   cellSize(1:3) = boxlen(1:3)/ncell(1:3) !cellSize is the the cell size (larger than rcell)
-   cellSizei(1:3) = 1.0d0/cellSize(1:3) !cellSizei is the inverse of the cell size (smaller than 1/rcell)
+   cellSize(1:3) = boxlen(1:3)/ncell(1:3) ! cellSize is the the cell size (larger than rcell)
+   cellSizei(1:3) = 1.0d0/cellSize(1:3)   ! cellSizei is the inverse of the cell size (smaller than 1/rcell)
 
    call allocateCellStrut(ncell, np)
 
@@ -130,7 +131,7 @@ subroutine InitCellList(rcell, iStage)
       do iy = -ceiling(rcut*cellSizei(2)), ceiling(rcut*cellSizei(2))
          do iz = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(2))
 
-            dr(1:3) = max(0,abs((/ix, iy, iz/))-1)*cellSize(1:3) !distance to closest part of cell
+            dr(1:3) = max((\0, 0, 0\),abs((/ix, iy, iz/))-1)*cellSize(1:3) !distance to closest part of cell
 
             if(lPBC) then
                call PBCr2(dr(1), dr(2), dr(3),r2)
