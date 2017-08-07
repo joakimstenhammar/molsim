@@ -74,9 +74,8 @@ subroutine InitCellList(rcell, iStage)
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   !2*cellboxlen/ncell is the cell-size (larger than rcell)
-   cellsize(1:3) = cellBoxLen(1:3)/ncell(1:3) !rcell is the the cell-size (larger than rcut)
-   ircell(1:3) = 1.0d0/cellsize(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcut)
+   cellsize(1:3) = cellBoxLen(1:3)/ncell(1:3) !cellsize is the the cell-size (larger than rcell)
+   ircell(1:3) = 1.0d0/cellsize(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcell)
 
    call allocateCellStrut(ncell, np)
 
