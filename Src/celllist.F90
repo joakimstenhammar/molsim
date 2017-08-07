@@ -17,7 +17,7 @@ module CellListModule
 
 implicit none
 private
-public UpdateCellip, InitCellList, SetCellList, CellListAver, TestCellList
+public UpdateCellIp, InitCellList, SetCellList, CellListAver, TestCellList
 public pcellro, cell_type, cellip, ipnext
 
 integer(4)                               :: maxneighcell ! maximum number of neighbouring cells
@@ -309,7 +309,7 @@ subroutine RmIpFromCell(ip, icell)
 
 end subroutine RmIpFromCell
 
-subroutine UpdateCellip(ip)
+subroutine UpdateCellIp(ip)
    use MolModule, only: ro
    implicit none
    integer(4), intent(in)  :: ip
@@ -324,7 +324,7 @@ subroutine UpdateCellip(ip)
       call AddIpToCell(ip, cellnew)
    end if
 
-end subroutine UpdateCellip
+end subroutine UpdateCellIp
 
 subroutine SetCellList
 

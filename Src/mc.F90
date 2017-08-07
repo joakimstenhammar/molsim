@@ -4859,7 +4859,7 @@ end subroutine Metropolis
 subroutine MCUpdate
 
    use MCModule
-   use CellListModule, only: UpdateCellip
+   use CellListModule, only: UpdateCellIp
    implicit none
 
    integer(4) :: ip, iploc
@@ -4891,7 +4891,7 @@ subroutine MCUpdate
    if(lclist) then
       do iploc = 1, nptm
          ip = ipnptm(iploc)
-         call UpdateCellip(ip)
+         call UpdateCellIp(ip)
       end do
    end if
 
