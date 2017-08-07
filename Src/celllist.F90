@@ -490,7 +490,8 @@ subroutine CellListAver(iStage)
          do ip = 1, np
             nNeighPerPartIp = -1.0d0 ! do not count the particle itself as a neighbour, therefore start with -1
             do icell = 1, cellip(ip)%p%nneighcell ! loop over all neighbouring cells
-               nNeighPerPartIp = nNeighPerPartIp + cellip(ip)%p%neighcell(icell)%p%npart ! add the number of particles in the neighbouring cell
+               ! add the number of particles in the neighbouring cell
+               nNeighPerPartIp = nNeighPerPartIp + cellip(ip)%p%neighcell(icell)%p%npart
             end do
             nNeighPerPart(1) = nNeighPerPart(1) + nNeighPerPartIp
             nNeighPerPart(2) = nNeighPerPart(2) + nNeighPerPartIp**2
