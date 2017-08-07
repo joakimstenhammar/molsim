@@ -282,7 +282,7 @@ subroutine WriteSub
          write(uout,'(a)') 'cell list'
       end if
 
-      if(.not. lCellList) then
+      if(lvlist .or. lllist) then
          if (inlist == 0) then
             write(uout,'(a)') 'automatic control of update frequency'
          else if (inlist > 0) then
