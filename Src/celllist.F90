@@ -66,8 +66,8 @@ integer(4), allocatable                  :: ipprev(:)          ! ip -> the pervi
 type(cell_type), target, allocatable     :: cell(:,:,:)        ! cells
 type(cell_pointer_array), allocatable    :: cellip(:)          ! cell of each particle
 integer(4)                               :: ncell(3) = 0       ! number of cells in x y z in each octant
-real(8)                                  :: cellSize(3) = 0.0  ! inverse edge length of each cell
-real(8)                                  :: cellSizei(3) = 0.0 ! inverse edge length of each cell
+real(8)                                  :: cellSize(3) = 0.0  ! edge length of the cells
+real(8)                                  :: cellSizei(3) = 0.0 ! inverse edge length of the cells
 
 contains
 
