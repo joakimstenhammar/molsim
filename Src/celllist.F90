@@ -437,51 +437,55 @@ subroutine CellListAver(iStage)
    use MolModule, only: master, nstep1
    use MolModule, only: iWriteInput, iAfterMacrostep, iAfterSimulation
    implicit none
-   integer(4), intent(in) :: iStage
+   integer(4), intent(in)   :: iStage
    character(80), parameter :: txheading ='cell list statistics'
-   real(8), save    :: nppp(4)         ! number of particles
-   real(8), save    :: nneigh(4)       ! number of neigbours per particle
-   type(cell_type), pointer   :: tmpcell
-   integer(4)  :: ip, icell
-   real(8)     :: nneighip
+
+   ! variables to average the cell statistics
+   ! 1: average ; 2: standard deviation ; 3: minimum ; 4: maximum
+   real(8), save            :: npPerCell(4)     ! number of particles
+   real(8), save            :: nNeighPerPart(4) ! number of neigbours per particle
+
+   type(cell_type), pointer :: tmpcell
+   integer(4)               :: ip, icell
+   real(8)                  :: nNeighPerPartIp
 
 
    if (master) then
       select case (iStage)
       case (iWriteInput)
 
-         nppp(1:2)    = 0.0d0
-         nppp(3)    =+huge(1.0d0)
-         nppp(4)    =-huge(1.0d0)
-         nneigh(1:2)  = 0.0d0
-         nneigh(3)  =+huge(1.0d0)
-         nneigh(4)  =-huge(1.0d0)
+         npPerCell(1:2)    = 0.0d0
+         npPerCell(3)    =+huge(1.0d0)
+         npPerCell(4)    =-huge(1.0d0)
+         nNeighPerPart(1:2)  = 0.0d0
+         nNeighPerPart(3)  =+huge(1.0d0)
+         nNeighPerPart(4)  =-huge(1.0d0)
 
       case (iAfterMacrostep)
 
-         nppp(1) = nppp(1) + sum(cell(:,:,:)%npart)
-         nppp(2) = nppp(2) + sum(cell(:,:,:)%npart**2)
-         nppp(3) = min(nppp(3), real(minval(cell(:,:,:)%npart)))
-         nppp(4) = max(nppp(4), real(maxval(cell(:,:,:)%npart)))
+         npPerCell(1) = npPerCell(1) + sum(cell(:,:,:)%npart)
+         npPerCell(2) = npPerCell(2) + sum(cell(:,:,:)%npart**2)
+         npPerCell(3) = min(npPerCell(3), real(minval(cell(:,:,:)%npart)))
+         npPerCell(4) = max(npPerCell(4), real(maxval(cell(:,:,:)%npart)))
 
          do ip=1, np
-            nneighip = -1.0d0 !do not count the particle itself as a neighbour
-            do icell = 1, cellip(ip)%p%nneighcell
+            nNeighPerPartIp = -1.0d0 !do not count the particle itself as a neighbour
+            do icell = 1, cellip(ip)%p%nNeighPerPartcell
                tmpcell => cellip(ip)%p%neighcell(icell)%p
-               nneighip = nneighip + tmpcell%npart
+               nNeighPerPartIp = nNeighPerPartIp + tmpcell%npart
             end do
-            nneigh(1) = nneigh(1) + nneighip
-            nneigh(2) = nneigh(2) + nneighip**2
-            nneigh(3) = min(nneigh(3), nneighip)
-            nneigh(4) = max(nneigh(4), nneighip)
+            nNeighPerPart(1) = nNeighPerPart(1) + nNeighPerPartIp
+            nNeighPerPart(2) = nNeighPerPart(2) + nNeighPerPartIp**2
+            nNeighPerPart(3) = min(nNeighPerPart(3), nNeighPerPartIp)
+            nNeighPerPart(4) = max(nNeighPerPart(4), nNeighPerPartIp)
          end do
 
       case (iAfterSimulation)
 
-         nppp(1)   = nppp(1)/(nstep1*size(cell))
-         nppp(2)   = sqrt(nppp(2)/(nstep1*size(cell))-nppp(1)**2)
-         nneigh(1) = nneigh(1)/(nstep1*np)
-         nneigh(2) = sqrt(nneigh(2)/(nstep1*np)-nneigh(1)**2)
+         npPerCell(1)   = npPerCell(1)/(nstep1*size(cell))
+         npPerCell(2)   = sqrt(npPerCell(2)/(nstep1*size(cell))-npPerCell(1)**2)
+         nNeighPerPart(1) = nNeighPerPart(1)/(nstep1*np)
+         nNeighPerPart(2) = sqrt(nNeighPerPart(2)/(nstep1*np)-nNeighPerPart(1)**2)
 
          call WriteHead(2, txheading, uout)
          write(uout,'()')
@@ -493,10 +497,10 @@ subroutine CellListAver(iStage)
          'no of part per cell', 'no of neighbours per part'
          write(uout,'(t12,a,t34,a)') &
          '-------------------', '----------------------------------'
-         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'average', nppp(1), nneigh(1)
-         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'one sd ', nppp(2), nneigh(2)
-         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'minimum', nppp(3), nneigh(3)
-         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'maximum', nppp(4), nneigh(4)
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'average', npPerCell(1), nNeighPerPart(1)
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'one sd ', npPerCell(2), nNeighPerPart(2)
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'minimum', npPerCell(3), nNeighPerPart(3)
+         write(uout,'(a,t10,f15.1,10x,f15.1,15x,2f15.1)') 'maximum', npPerCell(4), nNeighPerPart(4)
 
       end select
    end if
