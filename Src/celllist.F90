@@ -13,7 +13,7 @@ private
 public UpdateCellip, InitCellList, SetCellList, CellListAver, TestCellList
 public pcellro, cell_type, cellip, ipnext
 
-integer(4)                               :: maxneighcell
+integer(4)                               :: maxneighcell ! maximum number of neighbouring cells
 
 type cell_pointer_array
    type(cell_type), pointer              :: p => null()
@@ -325,7 +325,7 @@ subroutine SetCellList
    cell(:,:,:)%npart = 0
    do ip = 1, np
       celltmp => pcellro(ro(1:3,ip))
-      call AddiptoCell(ip, celltmp)
+      call AddIpToCell(ip, celltmp)
    end do
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
