@@ -41,7 +41,7 @@ contains
 subroutine InitCellList(rcell, iStage)
 
    use MolModule, only: ltrace, ltime, uout
-   use MolModule, only: lbcbox, boxlen, lPBC
+   use MolModule, only: lbcbox, boxlen, lPBC, dpbc
    use MolModule, only: np
    use MolModule, only: rcut, rcut2
 
@@ -133,7 +133,7 @@ subroutine InitCellList(rcell, iStage)
       do iydir = -ceiling(rcut*cellSizei(2)), ceiling(rcut*cellSizei(2))
          do izdir = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(3))
 
-            dr(1:3) = max((\0, 0, 0\),abs((/ixdir, iydir, izdir/))-1)*cellSize(1:3) !distance to closest part of cell
+            dr(1:3) = max((/0, 0, 0/),abs((/ixdir, iydir, izdir/))-1)*cellSize(1:3) !distance to closest part of cell
 
             if(lPBC) then
                call PBCr2(dr(1), dr(2), dr(3),r2)
@@ -171,13 +171,14 @@ subroutine InitCellList(rcell, iStage)
             tmpidneigh = 0
             do idir = 1, maxneighcell
                neigh(1:3) = (/ ix, iy, iz/) + directions(1:3, directionindex(idir))
-               if(lPBC) then !apply periodic boundary conditions
-                  where (neigh > ncell - 1)
-                     neigh = 0
-                  elsewhere (neigh < 0)
-                     neigh = ncell - 1
+               if(lPBC) then
+                  ! apply periodic boundary conditions in directions where dpbc equals the boxlen,
+                  ! to apply only the right periodic boundary conditions
+                  where (((neigh >= ncell) .or. (neigh < 0)) .and. (dpbc == boxlen))
+                     neigh = modulo(neigh,ncell)
                   end where
-               else if(any(neigh(1:3) < 0) .or. any(neigh(1:3) >= ncell)) then !neighbour is out of bounds
+               end if
+               if(any(neigh(1:3) < 0) .or. any(neigh(1:3) >= ncell)) then !neighbour is out of bounds
                   cycle
                end if
 
