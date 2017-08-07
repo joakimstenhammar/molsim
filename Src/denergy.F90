@@ -744,8 +744,8 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
 
    implicit none
    character(40), parameter :: txroutine ='UTwoBodyANewCellList'
-   logical, intent(out)    :: lHsOverlap
-   integer(4), intent(out) :: ipOverlap
+   logical, intent(out)     :: lHsOverlap
+   integer(4), intent(out)  :: ipOverlap
 
    integer(4) :: ip, jp, ipt, jpt, iptjpt, iploc, jploc, ibuf
    real(8)    :: dr(3), r2, d, usum
@@ -789,9 +789,7 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
                      ibuf = ibuf+12
                   end do
                   d = r2-ubuf(ibuf)
-                  usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
-                                    d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
-
+                  usum = ubuf(ibuf+1) + d*(ubuf(ibuf+2) + d*(ubuf(ibuf+3) + d*(ubuf(ibuf+4) + d*(ubuf(ibuf+5) + d*ubuf(ibuf+6)))))
                   utwobnew(iptjpt) = utwobnew(iptjpt) + usum
                end if
             end if
