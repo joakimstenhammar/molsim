@@ -859,7 +859,7 @@ subroutine UTwoBodyAOldCellList
    use MolModule,      only: nproc, myid
    use MolModule,      only: du, iubuflow, ubuf
    use EnergyModule,   only: utwobold
-   use CellListModule, only: pcellro, cell_type, cellip, ipnext
+   use CellListModule, only: cell_type, cellip, ipnext
 
    implicit none
    character(40), parameter :: txroutine ='UTwoBodyAOldCellList'
