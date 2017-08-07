@@ -129,7 +129,7 @@ subroutine InitCellList(rcell, iStage)
    idir = 0
    do ix = -ceiling(rcut*cellSizei(1)), ceiling(rcut*cellSizei(1))
       do iy = -ceiling(rcut*cellSizei(2)), ceiling(rcut*cellSizei(2))
-         do iz = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(2))
+         do iz = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(3))
 
             dr(1:3) = max((\0, 0, 0\),abs((/ix, iy, iz/))-1)*cellSize(1:3) !distance to closest part of cell
 
