@@ -3,8 +3,6 @@ Molsim
 
 MOLSIM is an  integrated MC/molecular dynamics/Brownian dynamics simulation package created by [Per Linse in Lund](http://www.polyelectrolytes2002.fkem1.lu.se/). Version 6.4.7. of Molsim is beeing further developed and extended using this git.
 
-*The following describes the installation of Molsim on the [RWTH-Compute Cluster](https://doc.itc.rwth-aachen.de/display/CC/Home).*
-
 Obtaining the Code
 ------------------
 There are two possibilites of how to obtain the code. You can either simply download the tarball of the code, or clone the whole repository.
@@ -29,6 +27,8 @@ Navigate into the Molsim directroy and run the configure script. This will check
 cd Molsim
 ./configure.sh
 ```
+The configure script tries to locate the FFTW libary. If you want to customize the path of the libary, modify the `Src/make.fftwpath` file. Additionally it will select which compiler to use. To costumize the compiler which is to be used change the `Src/make.arch` file.
+
 Now go to the Src directory and make Molsim:
 ```shell
 cd Molsim/Src
