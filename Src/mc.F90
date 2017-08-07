@@ -1083,7 +1083,7 @@ end subroutine IOMC
 subroutine MCPass(iStage)
 
    use MCModule
-   use nlistmodule, only : drnlist, drosum
+   use NListModule, only : drnlist, drosum
    implicit none
 
    integer(4), intent(in) :: iStage
