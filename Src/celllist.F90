@@ -363,12 +363,9 @@ subroutine TestCellList(output)
    write(output,'()')
    write(output,'(a,i0)') "Number of cells ", size(cell)
    write(output,'()')
-   write(output,'(tr2,a49)') &
-   repeat('-',49)
-   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
-   'cell id', 'ith neighbour', 'id of neighbour'
-   write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
-   repeat('-',15), repeat('-', 15), repeat('-',15)
+   write(output,'(tr2,a49)') repeat('-',49)
+   write(output,'(tr2,a15,tr2,a15,tr2,a15)') 'cell id', 'ith neighbour', 'id of neighbour'
+   write(output,'(tr2,a15,tr2,a15,tr2,a15)') repeat('-',15), repeat('-', 15), repeat('-',15)
    do ix = lbound(cell,dim=1), ubound(cell,dim=1)
       do iy = lbound(cell,dim=2), ubound(cell,dim=2)
          do iz = lbound(cell,dim=3), ubound(cell,dim=3)
@@ -379,11 +376,9 @@ subroutine TestCellList(output)
          end do
       end do
    end do
-   write(output,'(tr2,a49)') &
-   repeat('-',49)
+   write(output,'(tr2,a49)') repeat('-',49)
    write(output,'()')
-   write(output,'(tr2,a49)') &
-   repeat('-',49)
+   write(output,'(tr2,a49)') repeat('-',49)
    do ip = 1, np
       do jp = 1, np
          dr = ro(1:3,ip)-ro(1:3,jp)
@@ -391,45 +386,37 @@ subroutine TestCellList(output)
          if(r2 .le. rcut2) then !check if ip and jp are neighbours
             lipjpneighbour = .false.
             icell => cellip(ip)%p
-            do incell = 1, icell%nneighcell
+            neighbourcells: do incell = 1, icell%nneighcell
                locncell => icell%neighcell(incell)%p
                jpneigh = locncell%iphead
                do jploc = 1, locncell%npart
                   if(jpneigh .eq. jp) then
                      lipjpneighbour = .true.
-                     exit
+                     exit neighbourcells
                   end if
                   jpneigh = ipnext(jpneigh)
                end do
-               if(lipjpneighbour) then
-                  exit
-               end if
-            end do
+            end do neighbourcells
             if(.not. lipjpneighbour) then
                write(output, *) "Error ip ", ip, " and jp ", jp , "are not in neighbouring cells!"
                write(output, *) "cell(ip)%id: ", cellip(ip)%p%id, "cell(jp)%id): ",cellip(jp)%p%id
                write(output, *) "ro(ip): ",ro(1:3,ip), " ro(jp) ",ro(1:3,jp)
-                  call Stop(txroutine, 'found two particles which should be neighbours but which are not', output)
+               call Stop(txroutine, 'found two particles which should be neighbours but which are not', output)
             else
                continue
             end if
          end if
       end do
    end do
-   write(output,'(tr2,a49)') &
-   repeat('-',49)
+   write(output,'(tr2,a49)') repeat('-',49)
    write(output,'()')
-   write(output,'(tr2,a49)') &
-   repeat('-',49)
-   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') &
-   'particle id', 'cell id', 'prev particle id', 'next particle id'
-   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') &
-   repeat('-',15), repeat('-', 15), repeat('-',15), repeat('-',15)
+   write(output,'(tr2,a49)') repeat('-',49)
+   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') 'particle id', 'cell id', 'prev particle id', 'next particle id'
+   write(output,'(tr2,a15,tr2,a15,tr2,a15,tr2,a15)') repeat('-',15), repeat('-', 15), repeat('-',15), repeat('-',15)
    do ip = 1, np
       write(output,'(tr2,i15,tr2,i15,tr2,i15,tr2,i15)') ip, cellip(ip)%p%id, ipprev(ip), ipnext(ip)
    end do
-   write(output,'(tr2,a49)') &
-   repeat('-',49)
+   write(output,'(tr2,a49)') repeat('-',49)
 
 end subroutine
 
