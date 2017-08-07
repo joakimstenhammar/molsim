@@ -80,7 +80,7 @@ subroutine InitCellList(rcell, iStage)
    cellSize(1:3) = boxlen(1:3)/ncell(1:3) ! cellSize is the the cell size (larger than rcell)
    cellSizei(1:3) = 1.0d0/cellSize(1:3)   ! cellSizei is the inverse of the cell size (smaller than 1/rcell)
 
-   call allocateCellStrut(ncell, np)
+   call AllocateCellStructure(ncell, np)
 
    ! cell structure when ncell(1:3) = 4
    !        +-----+-----+-----+-----+
@@ -216,7 +216,7 @@ subroutine InitCellList(rcell, iStage)
 
 end subroutine InitCellList
 
-subroutine allocateCellStrut(ncell, np)
+subroutine AllocateCellStructure(ncell, np)
    implicit none
    integer(4), intent(in) :: ncell(3)
    integer(4), intent(in) :: np
