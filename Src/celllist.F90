@@ -113,7 +113,15 @@ subroutine InitCellList(rcell, iStage)
    end do
 
    ! get the directions
+
+   ! the maximum number neighbouring cells in any direction is ceiling(rcut/cellsize)
+   ! as the cells have neighbours in both positive and negative direction we have multiply the number of cells by two
+   ! in addition the central cell is also part if the neighbouring cells (+ 1)
+   ! therefore we have 2*ceiling(rcut/cellsize) + 1 cells in each direction
+   ! (when the cellsize is larger than rcut (drnlist .ge. 0.0), we have 3 cells in each direction)
+   ! the total number of neighbouring cells is the product the number of cells in each direction
    maxneighcell = product(2*ceiling(rcut*cellSizei(1:3))+1)
+
    allocate(directions(3,maxneighcell))
    allocate(directionindex(maxneighcell))
    allocate(tmpidneigh(maxneighcell))
