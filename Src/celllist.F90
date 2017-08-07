@@ -33,10 +33,10 @@ integer(4), allocatable                  :: ipprev(:)
 type(cell_type), target, allocatable     :: cell(:,:,:)             ! cells
 type(cell_pointer_array), allocatable    :: cellip(:)               ! cell of each particle
 integer(4)                               :: ncell(3) = 0            ! number of cells in x y z in each octant
-real(8)                                  :: cellsize(3) = 0.0       ! inverse edge length of each cell
-real(8)                                  :: ircell(3) = 0.0         ! inverse edge length of each cell
-real(8)                                  :: cellBoxLen(3) = 0.0     ! boxlenght used for the celllist
-real(8)                                  :: cellHalfBoxLen(3) = 0.0 ! half boxlenght used for the celllist
+real(8)                                  :: CellSize(3) = 0.0       ! inverse edge length of each cell
+real(8)                                  :: CellSizei(3) = 0.0      ! inverse edge length of each cell
+real(8)                                  :: cellBoxLen(3) = 0.0     ! boxlenght used for the CellList
+real(8)                                  :: cellHalfBoxLen(3) = 0.0 ! half boxlenght used for the CellList
 
 contains
 
@@ -64,18 +64,18 @@ subroutine InitCellList(rcell, iStage)
       call Stop(txroutine, 'rcell .le. 0.0', uout)
    end if
    if(.not. lbcbox) then
-      call Stop(txroutine, 'celllist needs cubic box (lbcbox should be true)', uout)
+      call Stop(txroutine, 'CellList needs cubic box (lbcbox should be true)', uout)
    end if
 
    cellBoxLen = boxlen
    cellHalfBoxLen = 0.5d0 * cellBoxLen
 
-   ncell(1:3) = max(1,floor(cellBoxLen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the cellsize is >= rcell
+   ncell(1:3) = max(1,floor(cellBoxLen(1:3)/rcell)) !floor to underestimate the number of cells, therefore the CellSize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   cellsize(1:3) = cellBoxLen(1:3)/ncell(1:3) !cellsize is the the cell-size (larger than rcell)
-   ircell(1:3) = 1.0d0/cellsize(1:3) !ircell is the inverse of the cell-size (smaller than 1/rcell)
+   CellSize(1:3) = cellBoxLen(1:3)/ncell(1:3) !CellSize is the the cell size (larger than rcell)
+   CellSizei(1:3) = 1.0d0/CellSize(1:3) !CellSizei is the inverse of the cell size (smaller than 1/rcell)
 
    call allocateCellStrut(ncell, np)
 
@@ -119,16 +119,16 @@ subroutine InitCellList(rcell, iStage)
    end do
 
    ! get the directions
-   maxneighcell = product(2*ceiling(rcut*ircell(1:3))+1)
+   maxneighcell = product(2*ceiling(rcut*CellSizei(1:3))+1)
    allocate(directions(3,maxneighcell))
    allocate(directionindex(maxneighcell))
    allocate(tmpidneigh(maxneighcell))
    idir = 0
-   do ix = -ceiling(rcut*ircell(1)), ceiling(rcut*ircell(1))
-      do iy = -ceiling(rcut*ircell(2)), ceiling(rcut*ircell(2))
-         do iz = -ceiling(rcut*ircell(3)), ceiling(rcut*ircell(2))
+   do ix = -ceiling(rcut*CellSizei(1)), ceiling(rcut*CellSizei(1))
+      do iy = -ceiling(rcut*CellSizei(2)), ceiling(rcut*CellSizei(2))
+         do iz = -ceiling(rcut*CellSizei(3)), ceiling(rcut*CellSizei(2))
 
-            dr(1:3) = max(0,abs((/ix, iy, iz/))-1)*cellsize(1:3) !distance to closest part of cell
+            dr(1:3) = max(0,abs((/ix, iy, iz/))-1)*CellSize(1:3) !distance to closest part of cell
 
             if(lPBC) then
                call PBCr2(dr(1), dr(2), dr(3),r2)
@@ -232,7 +232,7 @@ function pcellro(ro) result(icell)
    type(cell_type), pointer :: icell
    integer(4)  :: i(3)
 
-   i = floor((ro+ cellHalfBoxLen)*ircell)
+   i = floor((ro+ cellHalfBoxLen)*CellSizei)
    icell => cell(i(1), i(2), i(3))
 end function pcellro
 
@@ -476,7 +476,7 @@ subroutine CellListAver(iStage)
          write(uout,'()')
          write(uout,'(a,i0)') "Number of cells ", size(cell)
          write(uout,'()')
-         write(uout,'(a,3f14.4)') "Size of Cells in x,y,z", 1.0d0/ircell(1:3)
+         write(uout,'(a,3f14.4)') "Size of cells in x,y,z", 1.0d0/CellSizei(1:3)
          write(uout,'()')
          write(uout,'(t12,a,t34,a)') &
          'no of part per cell', 'no of neighbours per part'
