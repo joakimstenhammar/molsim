@@ -894,9 +894,7 @@ subroutine UTwoBodyAOldCellList
                      ibuf = ibuf+12
                   end do
                   d = r2-ubuf(ibuf)
-                  usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
-                                    d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
-
+                  usum = ubuf(ibuf+1) + d*(ubuf(ibuf+2) + d*(ubuf(ibuf+3) + d*(ubuf(ibuf+4) + d*(ubuf(ibuf+5) + d*ubuf(ibuf+6)))))
                   utwobold(iptjpt) = utwobold(iptjpt) + usum
                end if
             end if
@@ -925,9 +923,7 @@ subroutine UTwoBodyAOldCellList
                   ibuf = ibuf+12
                end do
                d = r2-ubuf(ibuf)
-               usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
-                                 d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
-
+               usum = ubuf(ibuf+1) + d*(ubuf(ibuf+2) + d*(ubuf(ibuf+3) + d*(ubuf(ibuf+4) + d*(ubuf(ibuf+5) + d*ubuf(ibuf+6)))))
                utwobold(iptjpt) = utwobold(iptjpt) + usum
             end if
          end do
