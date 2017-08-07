@@ -366,7 +366,7 @@ subroutine TestCellList(output)
    write(output,'(tr2,a49)') &
    repeat('-',49)
    write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
-   'cell id', 'i neighbour', 'id of neighbour'
+   'cell id', 'ith neighbour', 'id of neighbour'
    write(output,'(tr2,a15,tr2,a15,tr2,a15)') &
    repeat('-',15), repeat('-', 15), repeat('-',15)
    do ix = lbound(cell,dim=1), ubound(cell,dim=1)
@@ -412,7 +412,6 @@ subroutine TestCellList(output)
                   call Stop(txroutine, 'found two particles which should be neighbours but which are not', output)
             else
                continue
-               !write(output, *) "ip ", ip, " and jp ", jp , "are neighbours"
             end if
          end if
       end do
