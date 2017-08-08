@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.3.0] - 2017-08-08
+### Added
+- Added an new and improved version of the cell list
+
 ## [4.2.2] - 2017-07-26
 ### Fixed
 - Minor bug fixed in ImageVTF: Use if-construct instead of merge function to satisfy gfortran compiler
