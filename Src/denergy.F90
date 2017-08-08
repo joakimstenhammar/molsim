@@ -109,6 +109,7 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
 
    external UTwoBodyANew, UTwoBodyAOld
    external UTwoBodyANewLList, UTwoBodyAOldLList
+   external UTwoBodyANewCellList, UTwoBodyAOldCellList
    external UTwoBodyPNew, UTwoBodyPOld
    external UWeakChargeANew, UWeakChargeAOld
    external UWeakChargePNew, UWeakChargePOld
@@ -144,6 +145,7 @@ subroutine DUTotal(lhsoverlap,lhepoverlap)
       if (lmonoatom) then
          if (lvlist) call DUTwoBody(lhsoverlap, UTwoBodyANew, UTwoBodyAOld)
          if (lllist) call DUTwoBody(lhsoverlap, UTwoBodyANewLList, UTwoBodyAOldLList)
+         if (lCellList) call DUTwoBody(lhsoverlap, UTwoBodyANewCellList, UTwoBodyAOldCellList)
       else
          call DUTwoBody(lhsoverlap, UTwoBodyPNew, UTwoBodyPOld)
       end if
@@ -719,6 +721,219 @@ subroutine UTwoBodyAOldLList
   400 continue
 
 end subroutine UTwoBodyAOldLList
+
+!************************************************************************
+!*                                                                      *
+!*     UTwoBodyANewCellList                                             *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate two-body potential energy for old configuration
+!     only monoatomic particles
+!     cell list version
+
+subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
+
+   use MolModule,      only: ro, rotm, iptpn, iptpt, rcut2, r2atat, Zero
+   use MolModule,      only: ipnptm, nptm, lptm, lptmdutwob, nptpt
+   use MolModule,      only: nproc, myid
+   use MolModule,      only: lellipsoid, lsuperball, oritm, ori, radellipsoid2, aellipsoid
+   use MolModule,      only: du, iubuflow, ubuf, r2umin
+   use EnergyModule,   only: utwobnew
+   use CellListModule, only: pcellro, cell_type, ipnext
+
+   implicit none
+   character(40), parameter :: txroutine ='UTwoBodyANewCellList'
+   logical, intent(out)     :: lHsOverlap
+   integer(4), intent(out)  :: ipOverlap
+
+   integer(4) :: ip, jp, ipt, jpt, iptjpt, iploc, jploc, ibuf
+   real(8)    :: dr(3), r2, d, usum
+
+   type(cell_type), pointer :: icell, ncell
+   integer(4)               :: incell
+   logical    :: EllipsoidOverlap, SuperballOverlap
+
+   utwobnew(0:nptpt) = Zero
+   lHsOverlap = .true.
+   ipOverlap = 1
+
+! ... contribution from pairs where only one particle is moved
+   do iploc = 1, nptm
+      ip    =  ipnptm(iploc)
+      ipt   =  iptpn(ip)
+      icell => pcellro(rotm(1:3,iploc))
+      do incell = 1 + myid, icell%nneighcell, nproc ! increment with nproc to have parallel execution
+         ncell => icell%neighcell(incell)%p
+         jp = ncell%iphead
+         do jploc = 1, ncell%npart
+            ipOverlap = jp
+            if (.not. lptm(jp)) then
+               jpt = iptpn(jp)
+               iptjpt = iptpt(ipt,jpt)
+               dr(1:3) = rotm(1:3,iploc)-ro(1:3,jp)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
+               if (lellipsoid) Then
+                  if (EllipsoidOverlap(r2,dr,oritm(:,:,iploc),ori(:,:,jp),radellipsoid2,aellipsoid)) return
+               end if
+               if (lsuperball) Then
+                  if (SuperballOverlap(r2,dr,oritm(:,:,iploc),ori(:,:,jp))) return
+               end if
+               if (r2 < rcut2) then
+                  if (r2 < r2atat(iptjpt)) return ! Hard Sphere overlap
+                  if (r2 < r2umin(iptjpt)) return ! outside lower end of tabulated potential energy table
+
+                  ibuf = iubuflow(iptjpt)
+                  do
+                     if (r2 >= ubuf(ibuf)) exit
+                     ibuf = ibuf+12
+                  end do
+                  d = r2-ubuf(ibuf)
+                  usum = ubuf(ibuf+1) + d*(ubuf(ibuf+2) + d*(ubuf(ibuf+3) + d*(ubuf(ibuf+4) + d*(ubuf(ibuf+5) + d*ubuf(ibuf+6)))))
+                  utwobnew(iptjpt) = utwobnew(iptjpt) + usum
+               end if
+            end if
+            jp = ipnext(jp)
+        end do
+      end do
+   end do
+
+! ... contribution from pairs where both particle is moved
+
+   if (lptmdutwob) then
+      do iploc = 1, nptm
+         ip = ipnptm(iploc)
+         ipt = iptpn(ip)
+         do jploc = iploc + 1 + myid, nptm, nproc ! increment with nproc for parallel simulations
+            jp = ipnptm(jploc)
+            ipOverlap = jp
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr(1:3) = rotm(1:3,iploc)-rotm(1:3,jploc)
+            call PBCr2(dr(1), dr(2), dr(3), r2)
+            if (lellipsoid) Then
+               if (EllipsoidOverlap(r2,dr,oritm(:,:,iploc),oritm(:,:,jploc),radellipsoid2,aellipsoid)) return
+            end if
+            if (lsuperball) Then
+               if (SuperballOverlap(r2,dr,oritm(:,:,iploc),oritm(:,:,jploc))) return
+            end if
+            if (r2 < rcut2) then
+               if (r2 < r2atat(iptjpt)) return ! Hard Sphere overlap
+               if (r2 < r2umin(iptjpt)) return ! outside lower end
+
+               ibuf = iubuflow(iptjpt)
+               do
+                  if (r2 >= ubuf(ibuf)) exit
+                  ibuf = ibuf+12
+               end do
+               d = r2-ubuf(ibuf)
+               usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
+                                 d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
+
+               utwobnew(iptjpt) = utwobnew(iptjpt) + usum
+            end if
+         end do
+      end do
+   end if
+
+   utwobnew(0) = sum(utwobnew(1:nptpt))
+   du%twob(0:nptpt) = du%twob(0:nptpt) + utwobnew(0:nptpt)
+   lhsoverlap =.false.
+
+end subroutine UTwoBodyANewCellList
+
+!************************************************************************
+!*                                                                      *
+!*     UTwoBodyAOldCellList                                             *
+!*                                                                      *
+!************************************************************************
+
+! ... calculate two-body potential energy for old configuration
+!     only monoatomic particles
+!     cell list version
+
+subroutine UTwoBodyAOldCellList
+
+   use MolModule,      only: ro, iptpn, iptpt, rcut2, Zero
+   use MolModule,      only: ipnptm, nptm, lptm, lptmdutwob, nptpt
+   use MolModule,      only: nproc, myid
+   use MolModule,      only: du, iubuflow, ubuf
+   use EnergyModule,   only: utwobold
+   use CellListModule, only: cell_type, cellip, ipnext
+
+   implicit none
+   character(40), parameter :: txroutine ='UTwoBodyAOldCellList'
+
+   integer(4) :: ip, jp, ipt, jpt, iptjpt, iploc, jploc, ibuf
+   real(8)    :: dr(3), r2, d, usum
+
+   type(cell_type), pointer :: icell, ncell
+   integer(4)               :: incell
+
+   utwobold(0:nptpt) = Zero
+
+! ... contribution from pairs where only one particle is moved
+   do iploc = 1, nptm
+      ip = ipnptm(iploc)
+      ipt = iptpn(ip)
+      icell => cellip(ip)%p
+      do incell = 1 + myid, icell%nneighcell, nproc ! increment with nproc to have parallel execution
+         ncell => icell%neighcell(incell)%p
+         jp = ncell%iphead
+         do jploc = 1, ncell%npart
+            if (.not. lptm(jp)) then
+               jpt = iptpn(jp)
+               iptjpt = iptpt(ipt,jpt)
+               dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
+               call PBCr2(dr(1), dr(2), dr(3), r2)
+               !as the old configuration should be free of overlaps one can skip the checks
+               if (r2 < rcut2) then
+                  ibuf = iubuflow(iptjpt)
+                  do
+                     if (r2 >= ubuf(ibuf)) exit
+                     ibuf = ibuf+12
+                  end do
+                  d = r2-ubuf(ibuf)
+                  usum = ubuf(ibuf+1) + d*(ubuf(ibuf+2) + d*(ubuf(ibuf+3) + d*(ubuf(ibuf+4) + d*(ubuf(ibuf+5) + d*ubuf(ibuf+6)))))
+                  utwobold(iptjpt) = utwobold(iptjpt) + usum
+               end if
+            end if
+            jp = ipnext(jp)
+         end do
+      end do
+   end do
+
+! ... contribution from pairs where both particle is moved
+
+   if (lptmdutwob) then
+      do iploc = 1, nptm
+         ip = ipnptm(iploc)
+         ipt = iptpn(ip)
+         do jploc = iploc + 1 + myid, nptm, nproc ! increment with nproc for parallel simulations
+            jp = ipnptm(jploc)
+            jpt = iptpn(jp)
+            iptjpt = iptpt(ipt,jpt)
+            dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
+            call PBCr2(dr(1), dr(2), dr(3), r2)
+            !as the old configuration should be free of overlaps one can skip the checks
+            if (r2 < rcut2) then
+               ibuf = iubuflow(iptjpt)
+               do
+                  if (r2 >= ubuf(ibuf)) exit
+                  ibuf = ibuf+12
+               end do
+               d = r2-ubuf(ibuf)
+               usum = ubuf(ibuf+1) + d*(ubuf(ibuf+2) + d*(ubuf(ibuf+3) + d*(ubuf(ibuf+4) + d*(ubuf(ibuf+5) + d*ubuf(ibuf+6)))))
+               utwobold(iptjpt) = utwobold(iptjpt) + usum
+            end if
+         end do
+      end do
+   end if
+
+   utwobold(0) = sum(utwobold(1:nptpt))
+   du%twob(0:nptpt) = du%twob(0:nptpt) - utwobold(0:nptpt)
+
+end subroutine UTwoBodyAOldCellList
 
 !************************************************************************
 !*                                                                      *
@@ -2642,9 +2857,11 @@ subroutine DUDielDisSph(lhsoverlap)
             if (r12**2 < r2atat(iptjpt)) goto 400
                                                  ! ion--ion  and ion--self-image interaction
             if ((r1 < boundaryrad) .and. (r2 < boundaryrad)) then
-               du%twob(iptjpt) = du%twob(iptjpt) + signepsi2FourPi*(az(ip)*az(jp))*(One/(r12*eta) + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
+               du%twob(iptjpt) = du%twob(iptjpt) + signepsi2FourPi*(az(ip)*az(jp)) &
+                  * (One/(r12*eta) + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
             else
-               du%twob(iptjpt) = du%twob(iptjpt) + signepsi2FourPi*(az(ip)*az(jp))*(One/r12 + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
+               du%twob(iptjpt) = du%twob(iptjpt) + signepsi2FourPi*(az(ip)*az(jp)) &
+                  * (One/r12 + ImageIntSph(lmaxdiel,boundaryrad,eta,r1,r2,cosa))
             end if
          end do
                                                  ! ion--self-image interaction and Born energy
@@ -2801,7 +3018,8 @@ subroutine DUAngle
                if(( iploc > 1 ) .and. (iploc < nptm)) then
                   call DUAngleSub(rotm(1:3,iploc-1), rotm(1:3,iploc), rotm(1:3,iploc+1), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))
                else
-                  call DUAngleSub(rotm(1:3,iptmpn(jp_m)), rotm(1:3,iploc), rotm(1:3,iptmpn(jp_p)), ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))  ! Jos
+                  call DUAngleSub(rotm(1:3,iptmpn(jp_m)), rotm(1:3,iploc), rotm(1:3,iptmpn(jp_p)), &
+                     ro(1:3,jp_m), ro(1:3,ip), ro(1:3,jp_p))  ! Jos
                end if
             else
                if(iploc > 1) then
@@ -3633,7 +3851,8 @@ subroutine DUExternalHollowSphere
       if (r1 < rInSphere) then
          sum = sum - zat(iat)*threehalf*(rInSphere**2-rOutSphere**2)/(rOutSphere**3-rInSphere**3)
       else if (r1 <= rOutSphere) then
-         sum = sum - zat(iat)/(rOutSphere**3-rInSphere**3)*(half*r2+rInSphere**3/r1-threehalf*rInSphere**2+threehalf*(rInSphere**2-rOutSphere**2))
+         sum = sum - zat(iat)/(rOutSphere**3-rInSphere**3) * &
+            (half*r2+rInSphere**3/r1-threehalf*rInSphere**2+threehalf*(rInSphere**2-rOutSphere**2))
       else if (r1 > rOutSphere) then
          sum = sum + zat(iat)/r1
       end if
@@ -3643,7 +3862,8 @@ subroutine DUExternalHollowSphere
       if (r1 < rInSphere) then
          sum = sum + zat(iat)*threehalf*(rInSphere**2-rOutSphere**2)/(rOutSphere**3-rInSphere**3)
       else if (r1 <= rOutSphere) then
-         sum = sum + zat(iat)/(rOutSphere**3-rInSphere**3)*(half*r2+rInSphere**3/r1-threehalf*rInSphere**2+threehalf*(rInSphere**2-rOutSphere**2))
+         sum = sum + zat(iat)/(rOutSphere**3-rInSphere**3) * &
+            (half*r2+rInSphere**3/r1-threehalf*rInSphere**2+threehalf*(rInSphere**2-rOutSphere**2))
       else if (r1 > rOutSphere) then
          sum = sum - zat(iat)/r1
       end if
@@ -3675,7 +3895,8 @@ subroutine  DUExternalHardCylinder
          r2old = r(1,ia)**2+r(2,ia)**2
          rlnew = sqrt(r2new + cyllen2**2)
          rlold = sqrt(r2old + cyllen2**2)
-         du%external = du%external + EpsiFourPi*zCylinder*zat(iatan(ia))*log((rlnew+cyllen2)/(rlnew-cyllen2)*(rlold-cyllen2)/(rlold+cyllen2))
+         du%external = du%external + EpsiFourPi*zCylinder*zat(iatan(ia)) * &
+            log((rlnew+cyllen2)/(rlnew-cyllen2)*(rlold-cyllen2)/(rlold+cyllen2))
       end if
    end do
 end subroutine DUExternalHardCylinder
@@ -4174,7 +4395,8 @@ end if
                   usum = usum+ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
                           d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
 
-           if (itest == 90) write(uout,'(a,2i5,2l5,2f10.5)') 'xx   ia, ja, laztm, laztm, usum', ia,ja,laztm(ialoc),laztm(jaloc), usum  !cc
+           if (itest == 90) write(uout,'(a,2i5,2l5,2f10.5)') 'xx   ia, ja, laztm, laztm, usum', &
+              ia, ja, laztm(ialoc), laztm(jaloc), usum
                end do
             end do
       if (nptm == natm) then

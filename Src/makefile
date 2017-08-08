@@ -336,7 +336,8 @@ OBJS1=mol.o            \
       mollib.o         \
       moluser.o        \
       sso.o            \
-      mesh.o
+      mesh.o           \
+      celllist_par.o
 
 OBJS2=mol.o            \
       particle_par.o   \
@@ -360,7 +361,8 @@ OBJS2=mol.o            \
       parallel_par.o   \
       moluser_par.o    \
       sso_par.o        \
-      mesh_par.o
+      mesh_par.o       \
+      celllist_par.o
 
 OBJS3=mol.o            \
       statistics.o     \
@@ -408,21 +410,23 @@ mol.o: FLAG_SER += -DFLIBMACRO=\"$(mollib)\"
 
 bd.o:             mol.o md.o
 bd_par.o:         mol.o md_par.o
+celllist.o:       mol.o
+celllist_par.o:   mol.o
 coordinate.o:     mol.o
 coordinate_par.o: mol.o
-denergy.o:        mol.o energy.o mollib.o
-denergy_par.o:    mol.o energy_par.o mollib_par.o
+denergy.o:        mol.o energy.o mollib.o celllist.o
+denergy_par.o:    mol.o energy_par.o mollib_par.o celllist_par.o
 dump.o:           mol.o
 dump_par.o:       mol.o
 dynamic.o:        mol.o statistics.o mollib.o
 dynamic_par.o:    mol.o statistics_par.o mollib_par.o
-energy.o:         mol.o mollib.o
-energy_par.o:     mol.o mollib_par.o
+energy.o:         mol.o mollib.o celllist.o
+energy_par.o:     mol.o mollib_par.o celllist_par.o
 group.o:          mol.o
 group_par.o:      mol.o
 image.o:          mol.o mollib.o
-mc.o:             mol.o nlist.o mollib.o
-mc_par.o:         mol.o nlist.o mollib_par.o
+mc.o:             mol.o nlist.o mollib.o celllist.o
+mc_par.o:         mol.o nlist.o mollib_par.o celllist_par.o
 md.o:             mol.o
 md_par.o:         mol.o
 mesh.o:
@@ -438,8 +442,8 @@ molsim.o:         mol.o statistics.o mollib.o
 molsim_par.o:     mol.o statistics_par.o mollib_par.o
 moluser.o:        mol.o statistics.o potential.o mollib.o
 moluser_par.o:    mol.o potential_par.o statistics_par.o mollib_par.o
-nlist.o:          mol.o
-nlist_par.o:      mol.o
+nlist.o:          mol.o celllist.o
+nlist_par.o:      mol.o celllist_par.o
 parallel_par.o:   mol.o
 particle.o:       mol.o mollib.o
 particle_par.o:   mol.o mollib.o

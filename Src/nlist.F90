@@ -35,6 +35,9 @@
 !                      ! lllist
 !                      !-------- LListAver
 !                      !
+!                      ! lCellList
+!                      !-------- CellListAver
+!                      !
 !                      ! lvlist
 !                      !-------- SetVList
 !                      !            !
@@ -49,11 +52,17 @@
 !                      ! lllist
 !                      !-------- SetLList
 !                      !
+!                      ! lCellList
+!                      !-------- SetCellList
+!                      !
 !                      ! lvlist
 !                      !-------- TestVList
 !                      !
 !                      ! lllist
 !                      !-------- TestLList
+!                      !
+!                      ! lCellList
+!                      !-------- TestCellList
 
 !************************************************************************
 !*                                                                      *
@@ -67,18 +76,18 @@ module NListModule
 
    use MolModule
 
-   logical       :: lnolist                ! flag for no interaction
-   integer(4)    :: inlist                 ! interval of updating neighbour list
-   real(8)       :: drnlist                ! skin thickness
-   logical       :: lvlistllist            ! flag for using linked lists to make verlet list
-   integer(4)    :: ndivllist(3)           ! number of liked-list cells in one direction
-   integer(4)    :: ncellllist             ! number of liked-list cells
-   real(8)       :: celli(3)               ! 1 / cell lengths
-   integer(4)    :: npartperproc           ! number of particles per processor
-   integer(4)    :: npmyid                 ! number of particles handled by processor myid
-   integer(4)    :: maxnneigh              ! maximum number of neighbours; used in memory allocation
+   logical    :: lnolist      ! flag for no interaction
+   integer(4) :: inlist       ! interval of updating neighbour list
+   real(8)    :: drnlist      ! skin thickness
+   logical    :: lvlistllist  ! flag for using linked lists to make verlet list
+   integer(4) :: ndivllist(3) ! number of liked-list cells in one direction
+   integer(4) :: ncellllist   ! number of liked-list cells
+   real(8)    :: celli(3)     ! 1 / cell lengths
+   integer(4) :: npartperproc ! number of particles per processor
+   integer(4) :: npmyid       ! number of particles handled by processor myid
+   integer(4) :: maxnneigh    ! maximum number of neighbours; used in memory allocation
 
-   real(8), allocatable, save :: drosum(:,:)                ! sum of displacements   !Pascal Hebbeker moved vom subroutine NList
+   real(8), allocatable :: drosum(:,:)  ! sum of displacements
 
 end module NListModule
 
@@ -150,7 +159,7 @@ subroutine IONList(iStage)
 
    character(40), parameter :: txroutine ='IONList'
    character(80), parameter :: txheading ='neighbour list'
-   character(6), save :: txintlist
+   character(8), save :: txintlist
    real(8)     , save :: facnneigh
    integer(4) :: ierr
 
@@ -181,12 +190,15 @@ subroutine IONList(iStage)
       lnolist = .false.
       lvlist = .false.
       lllist = .false.
+      lCellList = .false.
       if (txintlist == 'nolist') then
          lnolist = .true.
       else if (txintlist == 'vlist') then
          lvlist = .true.
       else if (txintlist == 'llist') then
          lllist = .true.
+      else if (txintlist == 'celllist') then
+         lCellList = .true.
       else
          call Stop(txroutine, 'unsupported txintlist', uout)
       end if
@@ -266,12 +278,16 @@ subroutine WriteSub
          if (lvlistllist) write(uout,'(a)') 'linked lists used to make verlet list'
       else if (txintlist == 'llist') then
          write(uout,'(a)') 'linked list'
+      else if (txintlist == 'celllist') then
+         write(uout,'(a)') 'cell list'
       end if
 
-      if (inlist == 0) then
-         write(uout,'(a)') 'automatic control of update frequency'
-      else if (inlist > 0) then
-         write(uout,'(a,t35,i10)') 'update interval                = ', inlist
+      if(lvlist .or. lllist) then
+         if (inlist == 0) then
+            write(uout,'(a)') 'automatic control of update frequency'
+         else if (inlist > 0) then
+            write(uout,'(a,t35,i10)') 'update interval                = ', inlist
+         end if
       end if
       if(lvlist) then
          write(uout,'(a,t35,f12.3)') 'layer thickness                = ', drnlist
@@ -509,6 +525,7 @@ end subroutine LoadBalanceRecSpace
 subroutine NList(iStage)
 
    use NListModule
+   use CellListModule, only: InitCellList, SetCellList, CellListAver, TestCellList
    implicit none
    integer(4), intent(in) :: iStage
 
@@ -533,6 +550,12 @@ subroutine NList(iStage)
          call LListAver(iStage)
          if (itest == 4) call TestLList(uout)
       end if
+      if (lCellList) then
+         call InitCellList(rcut + drnlist, iStage)
+         call SetCellList()
+         call CellListAver(iStage)
+         if (itest == 4) call TestCellList(uout)
+      end if
 
       if (.not.allocated(drosum)) then
          allocate(drosum(3,np_alloc))
@@ -545,31 +568,34 @@ subroutine NList(iStage)
 
    case (iSimulationStep)
 
-      if (inlist == 0) then                             ! adjusted update interval
-         r2max1 = Zero
-         r2max2 = Zero
-         do ip = 1, np
-            drosum(1:3,ip) = drosum(1:3,ip)+drostep(1:3,ip)
-            r2 = sum(drosum(1:3,ip)**2)
-            if (r2 > r2max1) then
-               r2max1 = r2
-            else if (r2 > r2max2) then
-               r2max2 = r2
+      if(lvlist .or. lllist) then   !do not update the celllist regulary, instead update the celllist in mc.F90 after an successful step
+         if (inlist == 0) then                             ! adjusted update interval
+            r2max1 = Zero
+            r2max2 = Zero
+            do ip = 1, np
+               drosum(1:3,ip) = drosum(1:3,ip)+drostep(1:3,ip)
+               r2 = sum(drosum(1:3,ip)**2)
+               if (r2 > r2max1) then
+                  r2max1 = r2
+               else if (r2 > r2max2) then
+                  r2max2 = r2
+               end if
+            end do
+            if (sqrt(r2max1)+sqrt(r2max2) > drnlist) then
+               drosum = Zero
+               call NListSub
             end if
-         end do
-         if (sqrt(r2max1)+sqrt(r2max2) > drnlist) then
-            drosum = Zero
-            call NListSub
+         else if (inlist > 0) then                        ! regular update interval
+            if (mod(istep2,inlist) == 0) call NListSub
+         else
+            call Stop(txroutine, 'inlist negative', uout)
          end if
-      else if (inlist > 0) then                        ! regular update interval
-         if (mod(istep2,inlist) == 0) call NListSub
-      else
-         call Stop(txroutine, 'inlist negative', uout)
       end if
 
    case (iAfterMacrostep)
 
       if (lvlist) call VListAver(iStage)
+      if (lCellList) call CellListAver(iStage)
 
    case (iAfterSimulation)
 
@@ -588,9 +614,10 @@ subroutine NList(iStage)
          write(uout,'(a,t35,i10)')   'total number of cells          = ', ncellllist
          call LListAver(iStage)
       end if
+      if (lCellList) call CellListAver(iStage)
 
-       if (allocated(drosum)) deallocate(drosum)
-       if (allocated(lcellllist)) deallocate(lcellllist, headllist, jpllist)
+      if (allocated(drosum)) deallocate(drosum)
+      if (allocated(lcellllist)) deallocate(lcellllist, headllist, jpllist)
 
    end select
 
@@ -1365,5 +1392,3 @@ function Getncellllist()
    integer(4) :: Getncellllist
    Getncellllist = ncellllist
 end function Getncellllist
-
-

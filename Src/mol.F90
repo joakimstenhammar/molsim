@@ -193,7 +193,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v4.2.2'
+   character(29) :: txVersionDate = 'version 6.4.7, v4.3.0'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -648,6 +648,7 @@ module MolModule
    logical   , allocatable :: lcellllist(:)! list of cells to be used for a position (local)
    integer(4), allocatable :: headllist(:) ! head of the linked list
    integer(4), allocatable :: jpllist(:)   ! linked list
+   logical                 :: lCellList       ! flag for cell lists
 
 ! ... two-body potential and its lookup table
 

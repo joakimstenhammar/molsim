@@ -3016,6 +3016,8 @@ end subroutine NetworkMove
 subroutine VolChange(iStage)
 
    use MCModule
+   use CellListModule, only: InitCellList, SetCellList
+   use NListModule, only: drnlist
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -3041,7 +3043,7 @@ subroutine VolChange(iStage)
 
 ! ... calculate new box lengths and coordinates
 
-   boxlenratio = ((volold+dvol*(Random(iseed)-Half))/volold)**(0.3333333333333d0)
+   boxlenratio = ((volold+dvol*(Random(iseed)-Half))/volold)**(Third)
    boxlen(1:3) = boxlen(1:3)*boxlenratio
    call SetBoxParam
    if (lewald) call EwaldSetup
@@ -3051,6 +3053,10 @@ subroutine VolChange(iStage)
       ro(3,i) = ro(3,i)*boxlenratio
    end do
    call SetAtomPos(1, np, lintsite)
+   if (lCellList) then
+      call InitCellList(rcut + drnlist, iStage)
+      call SetCellList()
+   end if
 
 !  ............. evaluate energy difference ...............
 
@@ -3083,6 +3089,10 @@ subroutine VolChange(iStage)
       if (lewald) call EwaldSetup
       ro = ro*boxlenratio
       call SetAtomPos(1, np, .false.)
+      if (lCellList) then
+         call InitCellList(rcut + drnlist, iStage)
+         call SetCellList()
+      end if
 
    end if
 
@@ -4849,6 +4859,7 @@ end subroutine Metropolis
 subroutine MCUpdate
 
    use MCModule
+   use CellListModule, only: UpdateCellIp
    implicit none
 
    integer(4) :: ip, iploc
@@ -4874,6 +4885,7 @@ subroutine MCUpdate
 !  not sure that lfixedori is needed in the line above Jos
       call SetAtomProp(ip, ip, .false.)                        ! atom and dipole
       drostep(1:3,ip) = drostep(1:3,ip)+drotm(1:3,iploc)       ! displacement
+      if(lCellList) call UpdateCellIp(ip)
    end do
 
 end subroutine MCUpdate
