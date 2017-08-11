@@ -337,7 +337,7 @@ OBJS1=mol.o            \
       moluser.o        \
       sso.o            \
       mesh.o           \
-      celllist_par.o
+      celllist.o
 
 OBJS2=mol.o            \
       particle_par.o   \
