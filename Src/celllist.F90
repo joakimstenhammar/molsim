@@ -89,7 +89,7 @@ subroutine InitCellList(rcell, iStage)
    type(cell_type), pointer              :: icell      ! pointer to the cell
    integer(4) :: idir
    integer(4) :: ix, iy, iz, neigh(3), ineigh, id, ixdir, iydir, izdir
-   integer(4) :: dirRange(3)
+   integer(4) :: dirRange(3), ncellold(3)
    integer(4) :: minneighcell ! minimum amount of neighbours a cell has
    real(8)    :: dr(3)
 
@@ -103,6 +103,7 @@ subroutine InitCellList(rcell, iStage)
       call Stop(txroutine, 'CellList needs cubic box (lbcbox should be true)', uout)
    end if
 
+   ncellold = ncell
    ncell(1:3) = max((/1, 1, 1/), floor(boxlen(1:3)/rcell)) ! floor to underestimate the number of cells
    ! therefore the cellSize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
@@ -127,6 +128,13 @@ subroutine InitCellList(rcell, iStage)
       dirRange = 0
    end where
    maxneighcell = product(2*dirRange(1:3)+1)
+
+   !check if the cells are already correlty set in the previous call of InitCellList
+   if ( all(ncellold == ncell)) then
+      ! initialization is not needed
+      if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+      return
+   end if
 
    ! get the directions
    ! to quickly find all the neighbours we first find the relative coordinates to the neighbours
