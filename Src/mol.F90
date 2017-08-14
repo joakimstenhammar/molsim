@@ -317,6 +317,7 @@ module MolModule
    real(8)       :: lenscl                 ! scaling factor of box length and particle positions
    logical       :: lPBC                   ! periodic boundary conditions
    real(8)       :: dpbc(3)                ! =boxlen for some pbc, otherwise zero
+   logical       :: ldpbc(3)               ! true for some pbc
 
 ! ... scaling
 

@@ -100,9 +100,12 @@ subroutine PBC(dx,dy,dz)
 
    if (lPBC) then                                                              ! periodic boundary condition
       if (lbcbox) then                                                         ! box-like cell
-         if (abs(dx) > boxlen2(1)) dx = dx - sign(dpbc(1),dx)
-         if (abs(dy) > boxlen2(2)) dy = dy - sign(dpbc(2),dy)
-         if (abs(dz) > boxlen2(3)) dz = dz - sign(dpbc(3),dz)
+         ! if (abs(dx) > boxlen2(1)) dx = dx - sign(dpbc(1),dx)
+         ! if (abs(dy) > boxlen2(2)) dy = dy - sign(dpbc(2),dy)
+         ! if (abs(dz) > boxlen2(3)) dz = dz - sign(dpbc(3),dz)
+         if(ldpbc(1)) dx = mod(dx, boxlen2(1))
+         if(ldpbc(2)) dy = mod(dy, boxlen2(2))
+         if(ldpbc(3)) dz = mod(dz, boxlen2(3))
       else if (lbcrd) then                                                     ! rhombic dodecahedral cell
          if (abs(dx) > boxlen2(1)) dx = dx - sign(boxlen(1),dx)
          if (abs(dy) > boxlen2(2)) dy = dy - sign(boxlen(2),dy)
@@ -144,9 +147,12 @@ subroutine PBCr2(dx,dy,dz,r2)
 
    if (lPBC) then                                                              ! periodic boundary condition
       if (lbcbox) then                                                         ! box-like cell
-         if (abs(dx) > boxlen2(1)) dx = dx - sign(dpbc(1),dx)
-         if (abs(dy) > boxlen2(2)) dy = dy - sign(dpbc(2),dy)
-         if (abs(dz) > boxlen2(3)) dz = dz - sign(dpbc(3),dz)
+         ! if (abs(dx) > boxlen2(1)) dx = dx - sign(dpbc(1),dx)
+         ! if (abs(dy) > boxlen2(2)) dy = dy - sign(dpbc(2),dy)
+         ! if (abs(dz) > boxlen2(3)) dz = dz - sign(dpbc(3),dz)
+         if(ldpbc(1)) dx = mod(dx, boxlen2(1))
+         if(ldpbc(2)) dy = mod(dy, boxlen2(2))
+         if(ldpbc(3)) dz = mod(dz, boxlen2(3))
       else if (lbcrd) then                                                     ! rhombic dodecahedral cell
          if (abs(dx) > boxlen2(1)) dx = dx - sign(boxlen(1),dx)
          if (abs(dy) > boxlen2(2)) dy = dy - sign(boxlen(2),dy)
@@ -328,12 +334,17 @@ subroutine SetBoxParam
       vol = boxlen(1)*boxlen(2)*boxlen(3)
       if (txbc == 'xyz') then                                          ! pbc in x-, y-, and z-dir
          dpbc = boxlen
+         ldpbc = .true.
       else if (txbc == 'xy') then                                      ! pbc in x- and y-dir
          dpbc(1:2) = boxlen(1:2)
          dpbc(3) = Zero
+         ldpbc(1:2) = .true.
+         ldpbc(3) = .false.
       else if (txbc == 'z') then                                       ! pbc in z-dir
          dpbc(1:2) = Zero
          dpbc(3) = boxlen(3)
+         ldpbc(1:2) = .false.
+         ldpbc(3) = .true.
       end if
    else if (txbc == 'rd') then                                         ! rhombic dodecahedral cell
       lbcrd  = .true.
