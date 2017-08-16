@@ -1974,20 +1974,20 @@ contains
 
 subroutine SetFirstSegment                                           ! set first segment
    character(40), parameter :: txroutine ='SetFirstSegment'
-   integer(4) :: ic = 0
+   integer(4) :: icloc
    integer(4) :: ix, iy, iz
    real(8) :: rlen(3), rorigin(3)
 
    if (txfirstseg == 'lattice') then                                 ! pc lattice
-      ic = ic + 1
-      if (ic == 1) then
+      icloc = ic + 1 - icnct(ict)
+      if (icloc == 1) then
          if (product(nucell(1:3,ipt)) < ncct(ictgen(0))) call stop(txroutine, 'nucell too small', uout)
          rlen(1:3) = (rcupp(1:3,ipt)-rclow(1:3,ipt))/nucell(1:3,ipt) ! prepare rlen
          rorigin(1:3) = Half*(rclow(1:3,ipt)+rcupp(1:3,ipt))         ! prepare rorigin
       end if
-      iz =  mod(ic-1,nucell(3,ipt))                                  ! inner loop: z-direction
-      iy =  mod((ic-1)/nucell(3,ipt), nucell(2,ipt))
-      ix = (ic-1)/(nucell(2,ipt)*nucell(3,ipt))                      ! outer loop: x-direction
+      iz =  mod(icloc-1,nucell(3,ipt))                                  ! inner loop: z-direction
+      iy =  mod((icloc-1)/nucell(3,ipt), nucell(2,ipt))
+      ix = (icloc-1)/(nucell(2,ipt)*nucell(3,ipt))                      ! outer loop: x-direction
       ro(1,ip) = ((ix-Half*nucell(1,ipt)+roshift(1,ipt)) * rlen(1)) + rorigin(1)
       ro(2,ip) = ((iy-Half*nucell(2,ipt)+roshift(2,ipt)) * rlen(2)) + rorigin(2)
       ro(3,ip) = ((iz-Half*nucell(3,ipt)+roshift(3,ipt)) * rlen(3)) + rorigin(3)
