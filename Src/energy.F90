@@ -476,9 +476,10 @@ subroutine UTwoBodyA
          dz = ro(3,ip)-ro(3,jp)
          call PBCr2(dx,dy,dz,r2)
          if (r2 > rcut2) cycle
-         if (r2 < r2umin(iptjpt)) call StopUTwoBodyA
          if (r2 < r2atat(iptjpt)) then
             usum = 1d10                ! emulate hs overlap
+         else if (r2 < r2umin(iptjpt)) then
+            call StopUTwoBodyA
          else
             ibuf = iubuflow(iptjpt)
             do
@@ -587,9 +588,10 @@ subroutine UTwoBodyALList
             dz = ro(3,ip)-ro(3,jp)
             call PBCr2(dx,dy,dz,r2)
             if (r2 > rcut2) goto 199
-            if (r2 < r2umin(iptjpt)) call StopUTwoBodyALList
             if (r2 < r2atat(iptjpt)) then
                usum = 1d10                ! emulate hs overlap
+            else if (r2 < r2umin(iptjpt)) then
+               call StopUTwoBodyALList
             else
                ibuf = iubuflow(iptjpt)
                do
@@ -707,10 +709,11 @@ subroutine UTwoBodyACellList
                dr(1:3) = ro(1:3,ip)-ro(1:3,jp)
                call PBCr2(dr(1), dr(2), dr(3), r2)
                if (r2 < rcut2) then
-                  if (r2 < r2umin(iptjpt)) call StopUTwoBodyACellList
                   if (r2 < r2atat(iptjpt)) then ! emulate hs overlap
                      usum = 1d10
                      fsum = 1d10
+                  else if (r2 < r2umin(iptjpt)) then
+                     call StopUTwoBodyACellList
                   else
                      ibuf = iubuflow(iptjpt)
                      do
