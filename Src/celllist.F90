@@ -121,7 +121,7 @@ subroutine InitCellList(rcell, iStage)
    dirRange(1:3) = ceiling(rcut*cellSizei(1:3))
 
    ! where the neighbouring cells extend along the whole box length, it is not needed to have cells
-   ! this way we also prevent neighbouring cells (from different directions) to show to the same direction due to periodic boundary
+   ! this way we also prevent neighbouring cells (from different directions) to point to the same cell due to periodic boundary
    ! conditions
    where (2*dirRange(1:3)+1 >= ncell(1:3))
       ncell = 1
@@ -129,7 +129,7 @@ subroutine InitCellList(rcell, iStage)
    end where
    maxneighcell = product(2*dirRange(1:3)+1)
 
-   !check if the cells are already correlty set in the previous call of InitCellList
+   !check if the cells are already correctly set in the previous call of InitCellList
    if ( all(ncellold == ncell)) then
       ! initialization is not needed
       if (ltime) call CpuAdd('stop', txroutine, 1, uout)
