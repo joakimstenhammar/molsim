@@ -100,22 +100,25 @@ subroutine PBC(dx,dy,dz)
 
    if (lPBC) then                                                              ! periodic boundary condition
       if (lbcbox) then                                                         ! box-like cell
-         if (abs(dx) > boxlen2(1)) dx = dx - sign(dpbc(1),dx)
-         if (abs(dy) > boxlen2(2)) dy = dy - sign(dpbc(2),dy)
-         if (abs(dz) > boxlen2(3)) dz = dz - sign(dpbc(3),dz)
+         ! if (abs(dx) > boxlen2(1)) dx = dx - sign(dpbc(1),dx)
+         ! if (abs(dy) > boxlen2(2)) dy = dy - sign(dpbc(2),dy)
+         ! if (abs(dz) > boxlen2(3)) dz = dz - sign(dpbc(3),dz)
+         if (abs(dx) > boxlen2(1)) dx = dx - dpbc(1) * ANINT(dx*boxleni(1))
+         if (abs(dy) > boxlen2(2)) dy = dy - dpbc(2) * ANINT(dy*boxleni(2))
+         if (abs(dz) > boxlen2(3)) dz = dz - dpbc(3) * ANINT(dz*boxleni(3))
       else if (lbcrd) then                                                     ! rhombic dodecahedral cell
-         if (abs(dx) > boxlen2(1)) dx = dx - sign(boxlen(1),dx)
-         if (abs(dy) > boxlen2(2)) dy = dy - sign(boxlen(2),dy)
-         if (abs(dz) > boxlen2(3)) dz = dz - sign(boxlen(3),dz)
+         if (abs(dx) > boxlen2(1)) dx = dx - boxlen(1) * ANINT(dx*boxleni(1))
+         if (abs(dy) > boxlen2(2)) dy = dy - boxlen(2) * ANINT(dy*boxleni(2))
+         if (abs(dz) > boxlen2(3)) dz = dz - boxlen(3) * ANINT(dz*boxleni(3))
          if (abs(dx) + abs(dy) + SqTwo*abs(dz) > boxlen(1)) then
             dx = dx - sign(boxlen2(1),dx)
             dy = dy - sign(boxlen2(2),dy)
             dz = dz - sign(boxlen2(3),dz)
          end if
       else if (lbcto) then                                                     ! truncated octahedral cell
-         if (abs(dx) > boxlen2(1)) dx = dx - sign(boxlen(1),dx)
-         if (abs(dy) > boxlen2(2)) dy = dy - sign(boxlen(2),dy)
-         if (abs(dz) > boxlen2(3)) dz = dz - sign(boxlen(3),dz)
+         if (abs(dx) > boxlen2(1)) dx = dx - boxlen(1) * ANINT(dx*boxleni(1))
+         if (abs(dy) > boxlen2(2)) dy = dy - boxlen(2) * ANINT(dy*boxleni(2))
+         if (abs(dz) > boxlen2(3)) dz = dz - boxlen(3) * ANINT(dz*boxleni(3))
          if (abs(dx) + abs(dy) + abs(dz) > ThreeHalf*boxlen2(1)) then
             dx = dx - sign(boxlen2(1),dx)
             dy = dy - sign(boxlen2(2),dy)
