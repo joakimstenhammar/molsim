@@ -757,13 +757,15 @@ subroutine IOCnf(str)
       if (master) then
          rewind(ucnf)
          if (txstart == 'zero') then
-!           read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30--2005-09-02
-!           read(ucnf) nstep1done, iseed, raux, raux, raux   !  1999-12-21--2003-09-30
-!           read(ucnf) nstep1done, iaux, boxlen              !  2005-09-02--2007-03-16
+!           read(ucnf) nstep1done, iseed, boxlen               ! -1999-12-21, 2003-09-30--2005-09-02
+!           read(ucnf) nstep1done, iseed, raux, raux, raux     !  1999-12-21--2003-09-30
+!           read(ucnf) nstep1done, iaux, boxlen                !  2005-09-02--2007-03-16
             if (lntp) then
-               read(ucnf) nstep1done, iaux, boxlen           !  2007-03-16-
+               ! read(ucnf) nstep1done, iaux, boxlen           !  2007-03-16-
+               read(ucnf) nstep1done, iaux, raux, iaux, iaux, boxlen           !  2017-08-22-
             else
-               read(ucnf) nstep1done, iaux, raux, raux, raux !  2007-03-16-
+               ! read(ucnf) nstep1done, iaux, raux, raux, raux !  2007-03-16-
+               read(ucnf) nstep1done, iaux, raux, iaux, iaux, raux, raux, raux !  2017-08-22-
             end if
          else if (txstart == 'continue') then
             read(ucnf) nstep1done, iseed, am, ix, iy, boxlen             ! 2017-01-05-
