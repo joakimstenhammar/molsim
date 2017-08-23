@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.3.2] - 2017-08-23
+### Fixed
+- the speed of creating the celllist was increased, to have a more efficient method of carrying out npt calculations
+- the periodic boundary conditions of `PBC` work also if the coordinates are more than one cell away
+- when setting chains on a lattice, and the creation of the configuration for one chain fails, it tries again on the same lattice point, and not on the next one
+- if the distance is smaller than `r2umin` and also smaller than `radatat` then it is treated as an hard core overlap
+### Added
+- added a `gprof` mode to the `gfortran` compilation to allow for profiling with `gprof`
+
 ## [4.3.1] - 2017-08-23
 ### Fixed
 - fixed reading of variables from ucnf file, as the parameter have changed with version 2.2.0
