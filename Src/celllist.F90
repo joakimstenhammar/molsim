@@ -103,7 +103,7 @@ subroutine InitCellList(rcell, iStage)
       call Stop(txroutine, 'CellList needs cubic box (lbcbox should be true)', uout)
    end if
 
-   ncellold = ncell
+   ncellold(1:3) = ncell(1:3)
    ncell(1:3) = max((/1, 1, 1/), floor(boxlen(1:3)/rcell)) ! floor to underestimate the number of cells
    ! therefore the cellSize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
@@ -124,13 +124,13 @@ subroutine InitCellList(rcell, iStage)
    ! this way we also prevent neighbouring cells (from different directions) to point to the same cell due to periodic boundary
    ! conditions
    where (2*dirRange(1:3)+1 >= ncell(1:3))
-      ncell = 1
+      ncell(1:3) = 1
       dirRange = 0
    end where
    maxneighcell = product(2*dirRange(1:3)+1)
 
    !check if the cells are already correctly set in the previous call of InitCellList
-   if ( all(ncellold == ncell)) then
+   if ( all(ncellold(1:3) == ncell(1:3))) then
       ! initialization is not needed
       if (ltime) call CpuAdd('stop', txroutine, 1, uout)
       return
@@ -203,11 +203,11 @@ subroutine InitCellList(rcell, iStage)
                if(lPBC) then
                   ! apply periodic boundary conditions in directions where dpbc equals the boxlen,
                   ! to apply only the right periodic boundary conditions
-                  where (((neigh >= ncell) .or. (neigh < 0)) .and. (dpbc == boxlen))
+                  where (((neigh(1:3) >= ncell(1:3)) .or. (neigh(1:3) < 0)) .and. (dpbc(1:3) == boxlen(1:3)))
                      neigh = modulo(neigh,ncell)
                   end where
                end if
-               if(any(neigh(1:3) < 0) .or. any(neigh(1:3) >= ncell)) then ! neighbour is out of bounds
+               if(any(neigh(1:3) < 0) .or. any(neigh(1:3) >= ncell(1:3))) then ! neighbour is out of bounds
                   cycle
                end if
 
