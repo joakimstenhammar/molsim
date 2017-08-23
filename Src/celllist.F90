@@ -84,7 +84,7 @@ subroutine InitCellList(rcell, iStage)
 
    integer(4), allocatable :: directions(:,:)          ! relative positions of a possible neighbour to a cell
    integer(4), allocatable :: directionsSorted(:,:)    ! sorted relative positions of a possible neighbour to a cell
-   integer(4), allocatable :: directionindex(:)        ! index of the directions, sorted to give cells of increasing distance
+   integer(4), allocatable :: directionIndex(:)        ! index of the directions, sorted to give cells of increasing distance
    type(cell_pointer_array), allocatable :: icellid(:) ! id of a cell -> pointer to the cell
    type(cell_type), pointer              :: icell      ! pointer to the cell
    integer(4) :: idir
@@ -140,7 +140,7 @@ subroutine InitCellList(rcell, iStage)
    ! to quickly find all the neighbours we first find the relative coordinates to the neighbours
    allocate(directions(3,maxneighcell))
    allocate(directionsSorted(3,maxneighcell))
-   allocate(directionindex(maxneighcell))
+   allocate(directionIndex(maxneighcell))
    ! loop over all possible neighbouring positions
    idir = 0
    do ixdir = -dirRange(1), dirRange(1)
@@ -160,9 +160,9 @@ subroutine InitCellList(rcell, iStage)
 
    ! sort the directions to have the neighbours with the smallest distance at the beginning
    ! therefore the hard core overlaps occur as early as possible
-   call HeapSortIndex(maxneighcell, real(sum(abs(directions(1:3,1:maxneighcell)),dim=1),kind=8), directionindex(1:maxneighcell))
+   call HeapSortIndex(maxneighcell, real(sum(abs(directions(1:3,1:maxneighcell)),dim=1),kind=8), directionIndex(1:maxneighcell))
    do idir = 1, maxneighcell
-      directionsSorted(1:3,idir) = directions(1:3, directionindex(idir))
+      directionsSorted(1:3,idir) = directions(1:3, directionIndex(idir))
    end do
 
    ! allocate the cell structure
@@ -173,7 +173,7 @@ subroutine InitCellList(rcell, iStage)
    do ix = 0, ncell(1) - 1
       do iy = 0, ncell(2) - 1
          do iz =  0, ncell(3) - 1
-            id = idCoord((/ix, iy, iz/))
+            id = idCellPos((/ix, iy, iz/))
             icellid(id)%p        => cell(ix,iy,iz)
             icellid(id)%p%id     = id ! sets the id
          end do
@@ -213,7 +213,7 @@ subroutine InitCellList(rcell, iStage)
 
                ineigh = ineigh + 1
                ! setup the pointer to the neighbouring cells
-               icell%neighcell(ineigh)%p => icellid(idCoord(neigh(1:3)))%p
+               icell%neighcell(ineigh)%p => icellid(idCellPos(neigh(1:3)))%p
             end do
             icell%nneighcell = ineigh
             minneighcell = min(minneighcell, ineigh)
@@ -225,17 +225,17 @@ subroutine InitCellList(rcell, iStage)
       call Warn(txroutine, 'number neighbouring cells < number of processors, parallel execution will be inefficient', uout)
    end if
 
-   deallocate(directions, directionindex, icellid)
+   deallocate(directions, directionIndex, icellid)
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
    contains
 
-      pure function idCoord(coord) result(id)
+      pure function idCellPos(cellPos) result(id)
          implicit none
-         integer(4), intent(in) :: coord(3)
+         integer(4), intent(in) :: cellPos(3)
          integer(4)             :: id
-         id = coord(1) + coord(2)*(ncell(1)) + coord(3)*(ncell(1)*ncell(2)) + 1
-      end function idCoord
+         id = cellPos(1) + cellPos(2)*(ncell(1)) + cellPos(3)*(ncell(1)*ncell(2)) + 1
+      end function idCellPos
 
 end subroutine InitCellList
 
