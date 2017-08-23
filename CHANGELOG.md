@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.3.1] - 2017-08-23
+### Fixed
+- fixed reading of variables from ucnf file, as the parameter have changed with version 2.2.0
+
 ## [4.3.0] - 2017-08-08
 ### Added
 - Added an new and improved version of the cell list

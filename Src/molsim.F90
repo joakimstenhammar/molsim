@@ -736,7 +736,8 @@ end subroutine IOScale
 subroutine IOCnf(str)
 
    use MolModule
-   use Random_Module, only: am, ix, iy
+   use Random_Module, only: am, ix, iy, k4b
+   use ISO_FORTRAN_ENV
    implicit none
 
    character(*) :: str
@@ -744,7 +745,8 @@ subroutine IOCnf(str)
    character(40), parameter :: txroutine ='IOCnf'
    integer(4)   :: ip, npread
    logical      :: GetlSetVel
-  integer(4) :: ierr
+   integer(4)   :: ierr
+   integer(k4b) :: ik4bAux
 
 !   write(*,*) 'IOCNF start: str= ',str
 
@@ -757,19 +759,24 @@ subroutine IOCnf(str)
       if (master) then
          rewind(ucnf)
          if (txstart == 'zero') then
-!           read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30--2005-09-02
-!           read(ucnf) nstep1done, iseed, raux, raux, raux   !  1999-12-21--2003-09-30
-!           read(ucnf) nstep1done, iaux, boxlen              !  2005-09-02--2007-03-16
+!           read(ucnf) nstep1done, iseed, boxlen               ! -1999-12-21, 2003-09-30--2005-09-02
+!           read(ucnf) nstep1done, iseed, raux, raux, raux     !  1999-12-21--2003-09-30
+!           read(ucnf) nstep1done, iaux, boxlen                !  2005-09-02--2007-03-16
             if (lntp) then
-               read(ucnf) nstep1done, iaux, boxlen           !  2007-03-16-
+               read(ucnf, iostat=ierr) nstep1done, iaux, raux, ik4bAux, ik4bAux, boxlen !  2017-08-22-
+               if(ierr .ne. 0) then ! try old format
+                  backspace(ucnf)
+                  read(ucnf) nstep1done, iaux, boxlen          !  2007-03-16--2017-08-22
+               end if
             else
-               read(ucnf) nstep1done, iaux, raux, raux, raux !  2007-03-16-
+               ! read(ucnf) nstep1done, iaux, raux, raux, raux !  2007-03-16--2017-08-22
+               read(ucnf, iostat=ierr) nstep1done              !  2017-08-22-
             end if
          else if (txstart == 'continue') then
-            read(ucnf) nstep1done, iseed, am, ix, iy, boxlen             ! 2017-01-05-
+            read(ucnf) nstep1done, iseed, am, ix, iy, boxlen   ! 2017-01-05-
 
-            !read(ucnf) nstep1done, iseed, boxlen             ! -1999-12-21, 2003-09-30-2017-01-05
-!           read(ucnf) nstep1done, iseed, raux, raux, raux   !  1999-12-21--2003-09-30
+            !read(ucnf) nstep1done, iseed, boxlen              ! -1999-12-21, 2003-09-30-2017-01-05
+!           read(ucnf) nstep1done, iseed, raux, raux, raux     !  1999-12-21--2003-09-30
          end if
          read(ucnf) npread, iaux, raux, raux, laux, laux
          if (lmvt) np = npread
