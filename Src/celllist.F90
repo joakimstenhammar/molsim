@@ -127,14 +127,14 @@ subroutine InitCellList(rcell, iStage)
       ncell(1:3) = 1
       dirRange = 0
    end where
-   maxneighcell = product(2*dirRange(1:3)+1)
-
    !check if the cells are already correctly set in the previous call of InitCellList
    if ( all(ncellold(1:3) == ncell(1:3))) then
       ! initialization is not needed
       if (ltime) call CpuAdd('stop', txroutine, 1, uout)
       return
    end if
+
+   maxneighcell = product(2*dirRange(1:3)+1)
 
    ! get the directions
    ! to quickly find all the neighbours we first find the relative coordinates to the neighbours
