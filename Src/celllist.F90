@@ -82,9 +82,9 @@ subroutine InitCellList(rcell, iStage)
    integer(4), intent(in)                :: iStage
    character(40), parameter              :: txroutine ='InitCellList'
 
-   integer(4), allocatable :: directions(:,:)   ! relative positions of a posible neighbour to a cell
-   integer(4), allocatable :: directionsSorted(:,:)   ! sorted relative positions of a posible neighbour to a cell
-   integer(4), allocatable :: directionindex(:) ! index of the directions, will be sorted to give cells of increasing distance
+   integer(4), allocatable :: directions(:,:)          ! relative positions of a possible neighbour to a cell
+   integer(4), allocatable :: directionsSorted(:,:)    ! sorted relative positions of a possible neighbour to a cell
+   integer(4), allocatable :: directionindex(:)        ! index of the directions, sorted to give cells of increasing distance
    type(cell_pointer_array), allocatable :: icellid(:) ! id of a cell -> pointer to the cell
    type(cell_type), pointer              :: icell      ! pointer to the cell
    integer(4) :: idir
@@ -109,7 +109,7 @@ subroutine InitCellList(rcell, iStage)
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   cellSize(1:3) = boxlen(1:3)/ncell(1:3) ! cellSize is the the cell size (larger than rcell)
+   cellSize(1:3) = boxlen(1:3)/ncell(1:3) ! cellSize is the cell size (larger than rcell)
    cellSizei(1:3) = 1.0d0/cellSize(1:3)   ! cellSizei is the inverse of the cell size (smaller than 1/rcell)
 
    ! the maximum possible number neighbouring cells in any direction is ceiling(rcut/cellsize)
@@ -191,7 +191,7 @@ subroutine InitCellList(rcell, iStage)
          do iz =  0, ncell(3) - 1
             icell => cell(ix,iy,iz)
 
-            ! get cell neighbors
+            ! get cell neighbours
             ineigh = 0
             ! allocate memory for the current cell
             allocate(icell%neighcell(maxneighcell))
@@ -278,7 +278,7 @@ function pcellro(ro) result(icell)
 end function pcellro
 
 subroutine AddIpToCell(ip, icell)
-   ! add partice ip to the cell icell
+   ! add particle ip to the cell icell
    implicit none
    integer(4), intent(in)                 :: ip
    type(cell_type), target, intent(inout) :: icell
@@ -400,7 +400,7 @@ subroutine TestCellList(output)
    write(output,'()')
    write(output,'(a,i0)') "Number of cells ", size(cell)
    write(output,'()')
-   ! write the id of each cell and its neihbours
+   ! write the id of each cell and its neighbours
    write(output,'(tr2,a49)') repeat('-',49)
    write(output,'(3(tr2,a15))') 'cell id', 'ith neighbour', 'id of neighbour'
    write(output,'(3(tr2,a15))') repeat('-',15), repeat('-', 15), repeat('-',15)
@@ -474,7 +474,7 @@ subroutine CellListAver(iStage)
    ! variables to average the cell statistics
    ! 1: average ; 2: standard deviation ; 3: minimum ; 4: maximum
    real(8), save            :: npPerCell(4)     ! number of particles
-   real(8), save            :: nNeighPerPart(4) ! number of neigbours per particle
+   real(8), save            :: nNeighPerPart(4) ! number of neighbours per particle
 
    integer(4)               :: ip, icell
    real(8)                  :: nNeighPerPartIp
