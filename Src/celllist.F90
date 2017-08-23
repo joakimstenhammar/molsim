@@ -65,7 +65,10 @@ integer(4), allocatable                  :: ipprev(:)          ! ip -> the pervi
 
 type(cell_type), target, allocatable     :: cell(:,:,:)        ! cells
 type(cell_pointer_array), allocatable    :: cellip(:)          ! cell of each particle
-integer(4)                               :: ncell(3) = 0       ! number of cells in x y z in each octant
+! integer(4)                               :: ncellZ = 0       ! number of cells in x y z in each octant
+integer(4)                               :: ncellX = 0       ! number of cells in x y z in each octant
+integer(4)                               :: ncellY = 0       ! number of cells in x y z in each octant
+integer(4)                               :: ncellZ = 0       ! number of cells in x y z in each octant
 real(8)                                  :: cellSize(3) = 0.0  ! edge length of the cells
 real(8)                                  :: cellSizei(3) = 0.0 ! inverse edge length of the cells
 
@@ -82,15 +85,16 @@ subroutine InitCellList(rcell, iStage)
    integer(4), intent(in)                :: iStage
    character(40), parameter              :: txroutine ='InitCellList'
 
-   integer(4), allocatable :: directions(:,:)   ! relative positions of a posible neighbour to a cell
-   integer(4), allocatable :: directionindex(:) ! index of the directions, will be sorted to give cells of increasing distance
-   integer(4), allocatable :: tmpidneigh(:)     ! temporary variable to store the id of the neighbouring cells of an cell
+   integer(4), allocatable :: directions(:,:)          ! relative positions of a possible neighbour to a cell
+   integer(4), allocatable :: directionsSorted(:,:)    ! sorted relative positions of a possible neighbour to a cell
+   integer(4), allocatable :: directionIndex(:)        ! index of the directions, sorted to give cells of increasing distance
    type(cell_pointer_array), allocatable :: icellid(:) ! id of a cell -> pointer to the cell
    type(cell_type), pointer              :: icell      ! pointer to the cell
    integer(4) :: idir
    integer(4) :: ix, iy, iz, neigh(3), ineigh, id, ixdir, iydir, izdir
+   integer(4) :: dirRange(3), ncelloldX, ncelloldY, ncelloldZ
    integer(4) :: minneighcell ! minimum amount of neighbours a cell has
-   real(8)    :: r2, dr(3)
+   real(8)    :: dr(3), ircell
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
    if (ltime) call CpuAdd('start', txroutine, 1, uout)
@@ -102,31 +106,21 @@ subroutine InitCellList(rcell, iStage)
       call Stop(txroutine, 'CellList needs cubic box (lbcbox should be true)', uout)
    end if
 
-   ncell(1:3) = max((/1, 1, 1/), floor(boxlen(1:3)/rcell)) ! floor to underestimate the number of cells
+   ncelloldX = ncellX
+   ncelloldY = ncellY
+   ncelloldZ = ncellZ
+   ircell = 1.0d0/rcell
+   ncellX = max(1, floor(boxlen(1)*ircell)) ! floor to underestimate the number of cells
+   ncellY = max(1, floor(boxlen(2)*ircell)) ! floor to underestimate the number of cells
+   ncellZ = max(1, floor(boxlen(3)*ircell)) ! floor to underestimate the number of cells
    ! therefore the cellSize is >= rcell
    ! underestimation as when rcell = rcut one wants to have the cells larger than rcut
    ! but at least one cell in each direction is needed
 
-   cellSize(1:3) = boxlen(1:3)/ncell(1:3) ! cellSize is the the cell size (larger than rcell)
+   cellSize(1) = boxlen(1)/ncellX ! cellSize is the cell size (larger than rcell)
+   cellSize(2) = boxlen(2)/ncellY ! cellSize is the cell size (larger than rcell)
+   cellSize(3) = boxlen(3)/ncellZ ! cellSize is the cell size (larger than rcell)
    cellSizei(1:3) = 1.0d0/cellSize(1:3)   ! cellSizei is the inverse of the cell size (smaller than 1/rcell)
-
-   call AllocateCellStructure(ncell, np)
-
-   allocate(icellid(product(ncell(1:3))))
-
-   ! set the id of all the cells
-   id = 0
-   do ix = 0, ncell(1) - 1
-      do iy = 0, ncell(2) - 1
-         do iz =  0, ncell(3) - 1
-            id = id + 1
-            icellid(id)%p        => cell(ix,iy,iz)
-            icellid(id)%p%id     = id ! sets the id
-         end do
-      end do
-   end do
-
-   ! get the directions
 
    ! the maximum possible number neighbouring cells in any direction is ceiling(rcut/cellsize)
    ! as the cells have neighbours in both positive and negative direction we have multiply the number of cells by two
@@ -134,29 +128,51 @@ subroutine InitCellList(rcell, iStage)
    ! therefore we have 2*ceiling(rcut/cellsize) + 1 cells in each direction
    ! (when the cellsize is larger than rcut (drnlist .ge. 0.0), we have 3 cells in each direction)
    ! the total number of neighbouring cells is the product the number of cells in each direction
-   maxneighcell = product(2*ceiling(rcut*cellSizei(1:3))+1)
+   dirRange(1:3) = ceiling(rcut*cellSizei(1:3))
 
+   ! where the neighbouring cells extend along the whole box length, it is not needed to have cells
+   ! this way we also prevent neighbouring cells (from different directions) to point to the same cell due to periodic boundary
+   ! conditions
+   if (2*dirRange(1) + 1 > ncellX) then
+      ncellX = 1
+      dirRange(1) = 0
+   end if
+   if (2*dirRange(2) + 1 > ncellY) then
+      ncellY = 1
+      dirRange(2) = 0
+   end if
+   if (2*dirRange(3) + 1 > ncellZ) then
+      ncellZ = 1
+      dirRange(3) = 0
+   end if
+   ! check if the cells are already correctly set in the previous call of InitCellList
+   if ( (ncelloldX == ncellX) .and. (ncelloldY == ncellY) .and. (ncelloldZ == ncellZ)) then
+      ! initialization is not needed
+      if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+      return
+   end if
+
+   maxneighcell = product(2*dirRange(1:3)+1)
+
+   ! get the directions
    ! to quickly find all the neighbours we first find the relative coordinates to the neighbours
    allocate(directions(3,maxneighcell))
-   allocate(directionindex(maxneighcell))
-   allocate(tmpidneigh(maxneighcell))
+   allocate(directionsSorted(3,maxneighcell))
+   allocate(directionIndex(maxneighcell))
    ! loop over all possible neighbouring positions
    idir = 0
-   do ixdir = -ceiling(rcut*cellSizei(1)), ceiling(rcut*cellSizei(1))
-      do iydir = -ceiling(rcut*cellSizei(2)), ceiling(rcut*cellSizei(2))
-         do izdir = -ceiling(rcut*cellSizei(3)), ceiling(rcut*cellSizei(3))
+   do ixdir = -dirRange(1), dirRange(1)
+      do iydir = -dirRange(2), dirRange(2)
+         do izdir = -dirRange(3), dirRange(3)
             dr(1:3) = max((/0, 0, 0/),abs((/ixdir, iydir, izdir/))-1)*cellSize(1:3) ! distance to closest part of cell
-            if(lPBC) then
-               call PBCr2(dr(1), dr(2), dr(3),r2)
-            else
-               r2 = sum(dr(1:3)**2)
-            end if
-            if(r2 > rcut2) then ! distance of the cells so large, that it is not needed
+            if(sum(dr(1:3)**2) > rcut2) then ! distance of the cells so large, that it is not needed
                cycle
             end if
             idir = idir + 1
             ! store direction as one which is a neighbouring cell
-            directions(1:3,idir) = (/ixdir, iydir, izdir/)
+            directions(1,idir) = ixdir
+            directions(2,idir) = iydir
+            directions(3,idir) = izdir
          end do
       end do
    end do
@@ -164,53 +180,63 @@ subroutine InitCellList(rcell, iStage)
 
    ! sort the directions to have the neighbours with the smallest distance at the beginning
    ! therefore the hard core overlaps occur as early as possible
-   call HeapSortIndex(maxneighcell, real(sum(abs(directions(1:3,1:maxneighcell)),dim=1),kind=8), directionindex(1:maxneighcell))
+   call HeapSortIndex(maxneighcell, real(sum(abs(directions(1:3,1:maxneighcell)),dim=1),kind=8), directionIndex(1:maxneighcell))
+   do idir = 1, maxneighcell
+      directionsSorted(1:3,idir) = directions(1:3, directionIndex(idir))
+   end do
+
+   ! allocate the cell structure
+   call AllocateCellStructure(ncellX, ncellY, ncellZ, np)
+
+   allocate(icellid(ncellX * ncellY * ncellZ))
+   ! set the id of all the cells
+   do ix = 0, ncellX - 1
+      do iy = 0, ncellY - 1
+         do iz =  0, ncellZ - 1
+            id = idCellPos((/ix, iy, iz/))
+            icellid(id)%p        => cell(ix,iy,iz)
+            icellid(id)%p%id     = id ! sets the id
+         end do
+      end do
+   end do
+
 
    ! set the neighbours:
+
+   ! temporary array holding the index of the neighbouring cells
    minneighcell = huge(minneighcell)
    ! loop over all cells
-   do ix = 0, ncell(1) - 1
-      do iy = 0, ncell(2) - 1
-         do iz =  0, ncell(3) - 1
+   do ix = 0, ncellX - 1
+      do iy = 0, ncellY - 1
+         do iz =  0, ncellZ - 1
             icell => cell(ix,iy,iz)
 
-            ! get cell neighbors
+            ! get cell neighbours
             ineigh = 0
-            icell%nneighcell = 0
-            tmpidneigh = 0
+            ! allocate memory for the current cell
+            allocate(icell%neighcell(maxneighcell))
             ! loop over all relative positions where a neighbour could be located
             do idir = 1, maxneighcell
-               neigh(1:3) = (/ ix, iy, iz/) + directions(1:3, directionindex(idir))
+               neigh(1) = ix + directionsSorted(1, idir)
+               neigh(2) = iy + directionsSorted(2, idir)
+               neigh(3) = iz + directionsSorted(3, idir)
                if(lPBC) then
                   ! apply periodic boundary conditions in directions where dpbc equals the boxlen,
                   ! to apply only the right periodic boundary conditions
-                  where (((neigh >= ncell) .or. (neigh < 0)) .and. (dpbc == boxlen))
-                     neigh = modulo(neigh,ncell)
-                  end where
+                  if (((neigh(1) >= ncellX) .or. (neigh(1) < 0)) .and. (dpbc(1) == boxlen(1))) neigh(1) = modulo(neigh(1),ncellX)
+                  if (((neigh(2) >= ncellY) .or. (neigh(2) < 0)) .and. (dpbc(2) == boxlen(2))) neigh(2) = modulo(neigh(2),ncellY)
+                  if (((neigh(3) >= ncellZ) .or. (neigh(3) < 0)) .and. (dpbc(3) == boxlen(3))) neigh(3) = modulo(neigh(3),ncellZ)
                end if
-               if(any(neigh(1:3) < 0) .or. any(neigh(1:3) >= ncell)) then ! neighbour is out of bounds
-                  cycle
-               end if
+               if (((neigh(1) >= ncellX) .or. (neigh(1) < 0)) .or. &
+                   ((neigh(2) >= ncellY) .or. (neigh(2) < 0)) .or. &
+                   ((neigh(3) >= ncellZ) .or. (neigh(3) < 0))) cycle
 
-               if(all(tmpidneigh(1:ineigh) /= cell(neigh(1), neigh(2), neigh(3))%id)) then
-                  ! the neighbouring cell is not already a neighbour
-                  ineigh = ineigh + 1
-                  tmpidneigh(ineigh) = cell(neigh(1), neigh(2), neigh(3))%id ! keep record of which cells neighbours of icell
-               end if
+               ineigh = ineigh + 1
+               ! setup the pointer to the neighbouring cells
+               icell%neighcell(ineigh)%p => icellid(idCellPos(neigh(1:3)))%p
             end do
             icell%nneighcell = ineigh
             minneighcell = min(minneighcell, ineigh)
-
-            ! allocate memory for the current cell
-            if(allocated(icell%neighcell)) then
-               deallocate(icell%neighcell)
-            end if
-            allocate(icell%neighcell(icell%nneighcell))
-
-            ! now setup the pointer to the neighbouring cells
-            do ineigh = 1, icell%nneighcell
-               icell%neighcell(ineigh)%p => icellid(tmpidneigh(ineigh))%p
-            end do
          end do
       end do
    end do
@@ -219,15 +245,26 @@ subroutine InitCellList(rcell, iStage)
       call Warn(txroutine, 'number neighbouring cells < number of processors, parallel execution will be inefficient', uout)
    end if
 
-   deallocate(directions, directionindex, tmpidneigh, icellid)
+   deallocate(directions, directionIndex, icellid)
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
+
+   contains
+
+      pure function idCellPos(cellPos) result(id)
+         implicit none
+         integer(4), intent(in) :: cellPos(3)
+         integer(4)             :: id
+         id = cellPos(1) + cellPos(2)*(ncellX) + cellPos(3)*(ncellX*ncellY) + 1
+      end function idCellPos
 
 end subroutine InitCellList
 
-subroutine AllocateCellStructure(ncell, np)
+subroutine AllocateCellStructure(ncellX, ncellY, ncellZ, np)
    ! allocate the variables needed for the cell list
    implicit none
-   integer(4), intent(in) :: ncell(3)
+   integer(4), intent(in) :: ncellX
+   integer(4), intent(in) :: ncellY
+   integer(4), intent(in) :: ncellZ
    integer(4), intent(in) :: np
 
    if(allocated(cell)) then
@@ -242,7 +279,7 @@ subroutine AllocateCellStructure(ncell, np)
    if(allocated(ipprev)) then
       deallocate(ipprev)
    end if
-   allocate(cell(0:(ncell(1)-1),0:(ncell(2)-1),0:(ncell(3)-1)))
+   allocate(cell(0:(ncellX-1),0:(ncellY-1),0:(ncellZ-1)))
    allocate(cellip(1:np))
    allocate(ipnext(1:np))
    allocate(ipprev(1:np))
@@ -263,7 +300,7 @@ function pcellro(ro) result(icell)
 end function pcellro
 
 subroutine AddIpToCell(ip, icell)
-   ! add partice ip to the cell icell
+   ! add particle ip to the cell icell
    implicit none
    integer(4), intent(in)                 :: ip
    type(cell_type), target, intent(inout) :: icell
@@ -385,7 +422,7 @@ subroutine TestCellList(output)
    write(output,'()')
    write(output,'(a,i0)') "Number of cells ", size(cell)
    write(output,'()')
-   ! write the id of each cell and its neihbours
+   ! write the id of each cell and its neighbours
    write(output,'(tr2,a49)') repeat('-',49)
    write(output,'(3(tr2,a15))') 'cell id', 'ith neighbour', 'id of neighbour'
    write(output,'(3(tr2,a15))') repeat('-',15), repeat('-', 15), repeat('-',15)
@@ -459,7 +496,7 @@ subroutine CellListAver(iStage)
    ! variables to average the cell statistics
    ! 1: average ; 2: standard deviation ; 3: minimum ; 4: maximum
    real(8), save            :: npPerCell(4)     ! number of particles
-   real(8), save            :: nNeighPerPart(4) ! number of neigbours per particle
+   real(8), save            :: nNeighPerPart(4) ! number of neighbours per particle
 
    integer(4)               :: ip, icell
    real(8)                  :: nNeighPerPartIp

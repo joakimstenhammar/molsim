@@ -161,6 +161,8 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   OPT_debug  := $(OPT_format) -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow -finit-real=nan
   # provides many warnings:
   OPT_warn   := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion
+  # time the execution
+  OPT_gprof  := $(OPT_format) -O0 -pg
 
   mode = normal
   ifeq ($(mode),normal)
@@ -177,6 +179,9 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   endif
   ifeq ($(mode),warn)
     OPT_SER = $(OPT_warn)
+  endif
+  ifeq ($(mode),gprof)
+    OPT_SER = $(OPT_gprof)
   endif
   LLIB =
 
@@ -261,6 +266,9 @@ ifeq ($(CBIND), TRUE)                      #F03 c-bindings
   endif
   ifeq ($(mode),quick)
     DEFINES_BASE += -D_QUICK_
+  endif
+  ifeq ($(mode),gprof)
+    DEFINES_BASE += -D_GPROF_
   endif
 endif
 
