@@ -267,6 +267,9 @@ ifeq ($(CBIND), TRUE)                      #F03 c-bindings
   ifeq ($(mode),quick)
     DEFINES_BASE += -D_QUICK_
   endif
+  ifeq ($(mode),gprof)
+    DEFINES_BASE += -D_GPROF_
+  endif
 endif
 
 

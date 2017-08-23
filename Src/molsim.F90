@@ -216,6 +216,8 @@ subroutine IOMolsim(iStage)
                write(*,'(a)') "mode = debug"
 # elif _QUICK_
                write(*,'(a)') "mode = quick"
+# elif _GRPOF_
+               write(*,'(a)') "mode = gprof"
 # endif
             end if
             stop 0
