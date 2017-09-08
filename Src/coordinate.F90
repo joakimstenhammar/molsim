@@ -31,7 +31,7 @@ module CoordinateModule
 
    use MolModule
 
-   integer(4), parameter :: ntrydef = 100     ! default number of trials per particle
+   integer(4), parameter :: ntrydef = 1000     ! default number of trials per particle
 
    character(20), allocatable :: txsetconf(:) ! select way of generating start configuration
    integer(4), allocatable    :: nucell(:,:)  ! number of unit cells in x-, y-, and z-direction
