@@ -342,7 +342,7 @@ end subroutine IOMolsim
 subroutine IOSystem(iStage)
 
    use MolModule
-   use Random_Module, only: ix, iy, k4b, Random
+   use Random_Module, only: ix, iy, k4b
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -350,6 +350,7 @@ subroutine IOSystem(iStage)
    character(40), parameter :: txroutine ='IOSystem'
    real(8) :: SecondsSinceStart
    integer(k4b) :: ixseed, iyseed, iseedtmp
+   real(8)      :: Random
    logical      :: luseXYseed
 
    namelist /nmlSystem/ txtitle,                                                               &
