@@ -68,6 +68,7 @@ end module CoordinateModule
 subroutine Coordinate(iStage)
 
    use CoordinateModule
+   use Random_Module, only: ix, iy
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -143,7 +144,9 @@ subroutine Coordinate(iStage)
          call SetAtomProp(1, np, .false.)
          if (master) then
             write(uout,'(a)') 'box lengths and coordinates: read from fcnf'
-            write(uout,'(a,t35,i15)') 'current seed                   = ', iseed
+            write(uout,'(a,t35,i15)') 'current iseed                  = ', abs(iseed)
+            write(uout,'(a,t35,i15)') 'current ixseed                 = ', ix
+            write(uout,'(a,t35,i15)') 'current iyseed                 = ', iy
             if (lbcbox) then
                write(uout,'(a,t35,3(f10.3,2x))') 'current box lengths (x,y,z)    = ', boxlen
             else if (lbcrd .or. lbcto) then
@@ -169,7 +172,9 @@ subroutine Coordinate(iStage)
          call SetAtomProp(1, np, .false.)
          if (master) then
             write(uout,'(a)') 'seed, box lengths, and coordinates: read from fcnf'
-            write(uout,'(a,t35,i15)') 'current seed                   = ', iseed
+            write(uout,'(a,t35,i15)') 'current iseed                  = ', abs(iseed)
+            write(uout,'(a,t35,i15)') 'current ixseed                 = ', ix
+            write(uout,'(a,t35,i15)') 'current iyseed                 = ', iy
             if (lbcbox) then
                write(uout,'(a,t35,3(f10.3,2x))') 'current box lengths (x,y,z)    = ', boxlen
             else if (lbcrd .or. lbcto) then

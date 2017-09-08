@@ -420,7 +420,7 @@ bd.o:             mol.o md.o
 bd_par.o:         mol.o md_par.o
 celllist.o:       mol.o
 celllist_par.o:   mol.o
-coordinate.o:     mol.o
+coordinate.o:     mol.o mollib.o
 coordinate_par.o: mol.o
 denergy.o:        mol.o energy.o mollib.o celllist.o
 denergy_par.o:    mol.o energy_par.o mollib_par.o celllist_par.o
