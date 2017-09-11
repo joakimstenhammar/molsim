@@ -1,0 +1,40 @@
+ &nmlSystem
+  txtitle ='test of the random number generator',
+  txmode ='simulation',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',  txstart ='setconf',
+  nstep1     = 1,
+  nstep2     = 1,
+  boxlen     = 3*20.0,
+  temp       = 1.0,
+  prsr       = 1.0,
+  iseed      = 33550336,
+  ixseed     = 496,
+  iyseed     = 8128,
+  luseXYseed = .t.,
+  lcont      = .t.,
+  laver      = .t.,
+  iatom      = 1,
+/
+ &nmlScale
+ /
+ &nmlParticle
+  npt   = 1,
+  txpt  = 'particle',
+  nppt  =  28,
+  natpt =  1,
+  txat  = 'atomType',
+  massat=  1.0,
+  radat =  2.8,
+  naatpt(1,1) =  1,
+  txaat(1,1) = 'atom',
+ /
+ &nmlPotential
+ /
+ &nmlSetConfiguration
+  txsetconf(1) ='random',
+  ntrydef = 1000,
+ /
+ &nmlMC
+  dtran = 0.6,
+ /
+ &nmlIntList /
