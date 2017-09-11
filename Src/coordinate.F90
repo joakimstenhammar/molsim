@@ -144,7 +144,7 @@ subroutine Coordinate(iStage)
          call SetAtomProp(1, np, .false.)
          if (master) then
             write(uout,'(a)') 'box lengths and coordinates: read from fcnf'
-            write(uout,'(a,t35,i15)') 'current iseed                  = ', abs(iseed)
+            write(uout,'(a,t35,i15)') 'current iseed                  = ', iseed
             write(uout,'(a,t35,i15)') 'current ixseed                 = ', ix
             write(uout,'(a,t35,i15)') 'current iyseed                 = ', iy
             if (lbcbox) then

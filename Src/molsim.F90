@@ -661,7 +661,7 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         write(uout,'(a,t35,i12)') 'iseed of random generator      = ', abs(iseed)
+         write(uout,'(a,t35,i12)') 'iseed of random generator      = ', iseed
          write(uout,'(a,t35,i12)') 'ixseed of random generator     = ', ix
          write(uout,'(a,t35,i12)') 'iyseed of random generator     = ', iy
          write(uout,'()')
