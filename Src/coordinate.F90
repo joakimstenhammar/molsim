@@ -31,7 +31,7 @@ module CoordinateModule
 
    use MolModule
 
-   integer(4), parameter :: ntrydef = 1000     ! default number of trials per particle
+   integer(4)    :: ntrydef                   ! default number of trials per particle
 
    character(20), allocatable :: txsetconf(:) ! select way of generating start configuration
    integer(4), allocatable    :: nucell(:,:)  ! number of unit cells in x-, y-, and z-direction
@@ -330,7 +330,7 @@ subroutine SetConfiguration
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
                                   rnwt, txoriginnwt, shiftnwt,                                       &
-                                  radlimit,                                                          &
+                                  radlimit, ntrydef,                                                 &
                                   itestcoordinate
 
    if (.not.allocated(txsetconf)) then
@@ -414,6 +414,7 @@ subroutine SetConfiguration
    iptnode           = 0
    ictstrand         = 0
    itestcoordinate   = 0
+   ntrydef           = 100
 
    if (lnetwork) then
       rnwt(1:nnwt)         = 10.0
