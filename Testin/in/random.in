@@ -37,4 +37,4 @@
  &nmlMC
   dtran = 0.6,
  /
- &nmlIntList /
+ &nmlIntList drnlist = 10.0,/
