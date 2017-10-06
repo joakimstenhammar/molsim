@@ -4215,6 +4215,8 @@ subroutine ChainDF(iStage)
             end do
          end if
       end do
+      ! set nvar accoding to ivar, to skipped chain if hierachical structure
+      nvar = ivar
       call DistFuncSample(iStage, nvar, var)
 
    case (iBeforeSimulation)
