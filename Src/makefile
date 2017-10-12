@@ -185,9 +185,14 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   endif
   LLIB =
 
+  GCCVERSIONLTEQ4 := $(shell expr `gcc -dumpversion | cut -f1 -d.` \<= 4)
+  ifeq "$(GCCVERSIONLTEQ4)" "1"
+    OPT_SER += -D_NOIEEE_
+  endif
   COMP_PAR = mpifort
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
+
 
 endif
 

@@ -1443,7 +1443,9 @@ end subroutine MainAver
 subroutine ThermoAver(iStage)
 
    use MolModule
+#if !defined (_NOIEEE_)
    use, intrinsic :: IEEE_ARITHMETIC
+#endif
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1649,7 +1651,11 @@ subroutine ThermoAver(iStage)
       rtemp2 = GasConstant*(var(itemp)%avs2*scltem)**2
       if (lnve) then
          if(rtemp == 0.0d0) then !prevent division by zero
+#if !defined (_NOIEEE_)
             cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+#else
+            cv = huge(cv)
+#endif
          else
             cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
          end if
@@ -1723,7 +1729,11 @@ subroutine ThermoAver(iStage)
          rtemp2 = GasConstant*(var(itemp)%avs1*scltem)**2
          if (lnve) then
             if(rtemp == 0.0d0) then !prevent division by zero
+#if !defined (_NOIEEE_)
                cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+#else
+               cv = huge(cv)
+#endif
             else
                cv = 1.5*GasConstant/(one-(var(iekin)%fls1*sclene)**2/(1.5*np*rtemp**2))/sclhca
             end if
@@ -2028,7 +2038,9 @@ end subroutine IndDipMomAver
 subroutine ChainAver(iStage)
 
    use MolModule
+#if !defined (_NOIEEE_)
    use, intrinsic :: IEEE_ARITHMETIC
+#endif
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -2127,7 +2139,11 @@ subroutine ChainAver(iStage)
            PerLengthRg(var(3+ioffset)%avs2**2, (npct(ict)-1)*(var(1+ioffset)%avs2))
          if (var(10+ioffset)%avs2 == One) then
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+#if !defined (_NOIEEE_)
             IEEE_VALUE((var(10+ioffset)%avs2),IEEE_QUIET_NAN)
+#else
+            huge(var(10+ioffset)%avs2)
+#endif
          else
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
@@ -2157,7 +2173,11 @@ subroutine ChainAver(iStage)
            PerLengthRg(var(3+ioffset)%avs1**2, (npct(ict)-1)*(var(1+ioffset)%avs1))
          if (var(10+ioffset)%avs1 == One) then
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+#if !defined (_NOIEEE_)
             IEEE_VALUE((var(10+ioffset)%avs1),IEEE_QUIET_NAN)
+#else
+            huge(var(10+ioffset)%avs1)
+#endif
          else
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
