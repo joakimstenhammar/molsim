@@ -57,13 +57,16 @@ CBIND = TRUE
 ifeq ($(CBIND), TRUE)          #F03 c-bindings
 
   ifeq ($(ARCH), LOCAL_INTEL)
-    FFTW_PATH=/usr/local
+    FFTW_PATH=/usr/local/include
   endif
   ifeq ($(ARCH), LOCAL_GFORTRAN)
-    FFTW_PATH=/usr/local
+    FFTW_PATH=/usr/local/include
   endif
   ifeq ($(ARCH), ALARIK_INTEL)
-    FFTW_PATH=/$(FFTW3_HOME)
+    FFTW_PATH=/$(FFTW3_HOME)/include
+  endif
+  ifeq ($(ARCH), ALARIK_GFORTRAN)
+    FFTW_PATH=/$(FFTW3_HOME)/include
   endif
 
   FFTWLIB = none
@@ -128,11 +131,16 @@ ifeq ($(ARCH), LOCAL_INTEL)
   endif
 
   MPIIFORT := $(shell command -v mpiifort 2> /dev/null)
-  ifdef MPIIFORT
-    COMP_PAR = mpiifort
+  ifdef MPIFC
+    COMP_PAR = $(MPIFC)
   endif
-  ifndef MPIIFORT
-    COMP_PAR = mpifort
+  ifndef MPIFC
+    ifdef MPIIFORT
+      COMP_PAR = mpiifort
+    endif
+    ifndef MPIIFORT
+      COMP_PAR = mpifort
+    endif
   endif
 
   LINK_PAR = $(COMP_PAR)
@@ -189,7 +197,12 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   ifeq "$(GCCVERSIONLTEQ4)" "1"
     OPT_SER += -D_NOIEEE_
   endif
-  COMP_PAR = mpifort
+  ifdef MPIFC
+    COMP_PAR = $(MPIFC)
+  endif
+  ifndef MPIFC
+    COMP_PAR = mpifort
+  endif
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
 
@@ -288,22 +301,8 @@ DEFINES_PAR  = $(DEFINES_BASE) -D_PAR_
 FLAG_SER  = $(DEFINES_SER) $(OPT_SER)
 FLAG_PAR  = $(DEFINES_PAR) $(OPT_PAR)
 
-ifeq ($(ARCH), LOCAL_INTEL)
-  FLAG_SER += -I$(FFTW_PATH)/include
-  FLAG_PAR += -I$(FFTW_PATH)/include
-endif
-ifeq ($(ARCH), LOCAL_GFORTRAN)
-  FLAG_SER += -I$(FFTW_PATH)/include
-  FLAG_PAR += -I$(FFTW_PATH)/include
-endif
-ifeq ($(ARCH), ALARIK_INTEL)
-  FLAG_SER += -I$(FFTW3_HOME)/include
-  FLAG_PAR += -I$(FFTW3_HOME)/include
-endif
-ifeq ($(ARCH), ALARIK_GFORTRAN)
-  FLAG_SER += -I$(FFTW3_HOME)/include
-  FLAG_PAR += -I$(FFTW3_HOME)/include
-endif
+FLAG_SER += -I$(FFTW_PATH)
+FLAG_PAR += -I$(FFTW_PATH)
 
 mollib = $(abspath molsim.lib)
 
@@ -312,7 +311,7 @@ mollib = $(abspath molsim.lib)
 #-----------------------------------------------------------------
 
 ifeq ($(FFTWLIB), none)
-  FFTWLINK=$(FFTW_PATH)/lib
+  FFTWLIB=$(FFTW_PATH)/lib
 endif
 
 ifeq ($(ARCH), LOCAL_INTEL)

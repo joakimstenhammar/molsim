@@ -22,79 +22,129 @@ set -e
 
 i=ifort
 echo -n "Checking ifort ..."
-command -v ifort >/dev/null 2>&1 || {
-   echo "no";
-   echo -n "Checking gfortran ..."
-   command -v gfortran >/dev/null 2>&1 || {
-      echo "Error: fortran compiler required for MOLSIM"
-      exit 1;
-   }
+if command -v ifort >/dev/null 2>&1; then
    echo "yes"
-   read -e -p "Use gfortran instead? " -i "y" dogfortran
-   case ${dogfortran:0:1} in
-          y|Y )
-            echo -n "Enabling gfortran in the makefile ..."
-            echo "ARCH = LOCAL_GFORTRAN" >> Src/make.arch
-         ;;
-         * )
-            echo "Error: fortran compiler required for MOLSIM"
-            exit 1;
-      esac
-}
-echo "yes"
-
-#progs=("")
-#for i in "${progs[@]}"; do
-   #echo -n "Checking $i ..."
-   #command -v $i >/dev/null 2>&1 || { echo >&2 "I require $i but it's not installed.  Aborting."; exit 1; }
-   #echo "yes"
-#done
-
-echo -n "checking for FFTW3 using locate .."
-if locate -l 1 fftw3.f03 > /dev/null && locate -l 1 libfftw3 > /dev/null ; then # found fftw3
-   fftwpaths=`dirname $(locate -b "fftw3.f03") | uniq`
-   npath=`echo "$fftwpaths" | wc -l`
-   if [ "$npath" -gt "1" ]; then
-      echo ""
-      echo "Which fftw3 version should be used?"
-      select d in $(echo $fftwpaths); do
-         if [ -n "$d" ]; then
-            echo "$d selected"
-            fftwpathfile=$d
-            break
-         fi
-      done
-   else
-      fftwpathfile=$fftwpaths
-   fi
-   fftwpath=`dirname $fftwpathfile`
-   echo "FFTW_PATH = $fftwpath" >> Src/make.fftwpath
-   fftwlibs=`dirname $(locate -r "libfftw3\(.dll\)*\(.a\|.so\)$") | uniq`
-   npath=`echo "$fftwlibs" | wc -l`
-   if [ "$npath" -gt "1" ]; then
-      echo ""
-      echo "Which fftw3 lib should be used?"
-      select d in $(echo $fftwlibs); do
-         if [ -n "$d" ]; then
-            echo "$d selected"
-            fftwlibfile=$d
-            break
-         fi
-      done
-   else
-      fftwlibfile=$fftwlibs
-   fi
-   fftwlib=`dirname $fftwlibfile`
-   echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
-
-elif [ -f "$HOME/.fftw/include/fftw3.f03" ]; then # check for local installation
-   echo "FFTW_PATH = $HOME/.fftw" >> Src/make.fftwpath
-   fftwlib=`ls -d $HOME/.fftw/lib*`
-   echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
+   lifort=true
 else
-   echo "FFTW3 is not found"
+   echo "no"
+   lifort=false
+fi
+echo -n "Checking gfortran ..."
+if command -v gfortran >/dev/null 2>&1; then
+   echo "yes"
+   lgfortran=true
+else
+   echo "no"
+   lgfortran=false
+fi
+echo -n "Checking mpiifort ..."
+if command -v mpiifort >/dev/null 2>&1; then
+   echo "yes"
+   lintelmpi=true
+   intelmpiFC=$( mpiifort -show | { read -a array ; echo ${array[0]} ; })
+   echo "mpiifort uses $intelmpiFC"
+else
+   echo "no"
+   lintelmpi=false
+   intelmpiFC=""
+fi
+echo -n "Checking mpifort ..."
+if command -v mpifort >/dev/null 2>&1; then
+   echo "yes"
+   lopenmpi=true
+   openmpiFC=$(mpifort -show | { read -a array ; echo ${array[0]} ; })
+   echo "mpifort uses $openmpiFC"
+else
+   echo "no"
+   lopenmpi=false
+   openmpiFC=""
+fi
+
+FC="none"
+MPIFC="none"
+if [ $lifort = true ] && [ "$intelmpiFC" = "ifort" ]; then
+   echo "Found intelmpi and ifort"
+   FC="ifort"
+   MPIFC="mpiifort"
+elif [ $lifort = true ] && [ "$openmpiFC" = "ifort" ]; then
+   echo "Found openmpi and ifort"
+   FC="ifort"
+   MPIFC="mpifort"
+elif [ $lgfortran = true ] && [ "$openmpiFC" = "gfortran" ]; then
+   echo "Found openmpi and gfortran"
+   FC="gfortran"
+   MPIFC="mpifort"
+elif [ $lgfortran = true ] && [ "$intelmpiFC" = "gfortran" ]; then
+   echo "Found intelmpi and gfortran"
+   FC="gfortran"
+   MPIFC="mpiifort"
+else
+   echo "Warning: Could not detect an working mpi compiler combination. Unless the mpi compiler is adapted, the compilation of the parallel version will fail"
+   if [ $lifort = true ]; then
+      echo "Using ifort"
+      FC="ifort"
+   elif [ $lgfortran = true ]; then
+      echo "Using gfortran"
+      FC="gfortran"
+   else
+      echo "Warning: Automatic detection a the fortran compiler failed"
+   fi
+fi
+
+setcomp=false
+while [ $setcomp = false ]; do
+   read -e -p "Use $FC as a compiler and $MPIFC as mpi compiler? " -i "y" docomp
+   case ${docomp:0:1} in
+      y|Y )
+         setcomp=true
+         ;;
+      * )
+         read -e -p "Which compiler to use? " -i "$FC" FC
+         read -e -p "Which mpi compiler to use? " -i "$MPIFC" MPIFC
+   esac
+done
+if [ "$FC" = "gfortran" ]; then
+   echo "ARCH = LOCAL_GFORTRAN" > Src/make.arch
+elif [ "$FC" = "ifort" ]; then
+   echo "ARCH = LOCAL_INTEL" > Src/make.arch
+else
+   echo "Compiler $FC is not supported by molsim"
+   exit 1
+fi
+echo "MPIFC = $MPIFC" >> Src/make.arch
+
+fftwpath="other"
+fftwlib="other"
+echo -n "checking for FFTW3 using locate .."
+fftwfound=`locate -l 1 -r "fftw3\.f03$" > /dev/null && locate -l 1 -r "libfftw3\(\.dll\)*\(\.a\|\.so\)$" > /dev/null`
+if $fftwfound ; then # found fftw3
+   fftwpaths=`dirname $(locate -r "fftw3\.f03$") | uniq`
+   echo ""
+   echo "Which fftw3 version should be used?"
+   select d in $(echo $fftwpaths "other"); do
+      if [ -n "$d" ]; then
+         echo "$d selected"
+         fftwpath=$d
+         break
+      fi
+   done
+
+   fftwlibs=`dirname $(locate -r "libfftw3\(\.dll\)*\(\.a\|\.so\)$") | uniq`
+   echo ""
+   echo "Which fftw3 lib should be used?"
+   select d in $(echo $fftwlibs "other"); do
+      if [ -n "$d" ]; then
+         echo "$d selected"
+         fftwlib=$d
+         break
+      fi
+   done
+fi
+
+if [ "$fftwlib" = "other" ] || [ "$fftwpath" = "other" ]; then
+   echo "Automatic detection of FFTW3 failed."
    echo "You can either install it locally, or provide the path to the fftw3 libary."
-   read -e -p "Install under ~/.fftw? (y/n)" -i "n" dofftw
+   read -e -p "Install under ~/.fftw? (y/n) " -i "n" dofftw
    case ${dofftw:0:1} in
       y|Y )
          FILE="fftw-3.3.4.tar.gz"
@@ -143,22 +193,19 @@ else
          echo ""
          echo "FFTW installed"
          echo ""
-         echo "FFTW_PATH = $HOME/.fftw" >> Src/make.fftwpath
+         fftwpath="$HOME/.fftw/include"
          fftwlib=`ls -d $HOME/.fftw/lib*`
-         echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
          ;;
       * )
          echo "Please provide the path to the directory of the fftw3.f03 file:"
-         read -i "/usr/local/" fftwpath1
-         fftwpath=`dirname $fftwpath1`
-         echo "FFTW_PATH = $fftwpath" >> Src/make.fftwpath
+         read -e -i "/" fftwpath
 
          echo "Please provide the path to the directory of the fftw3 libary (libfftw3):"
-         read -i "$fftwpath/lib" fftwlib1
-         fftwlib=`dirname $fftwpath1`
-         echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
+         read -e -i "/" fftwlib
    esac
 fi
+echo "FFTW_PATH = $fftwpath" > Src/make.fftwpath
+echo "FFTWLIB = $fftwlib" >> Src/make.fftwpath
 echo "yes"
 
 echo -n "Checking ~/bin ..."
