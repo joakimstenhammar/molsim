@@ -378,10 +378,14 @@ OBJS3=mol.o            \
       mollib.o         \
       mesh.o
 
+.PHONY: default def all molsim_ser molsim_par ser par moldyn ver install uninstall clean tidy testmesh
+
 default: def
 def:
 	@echo "Specify any one: of all, ser, par, molsim_ser, molsim_par, moldyn"
 all: ser par
+molsim_ser: $(BINDIR)/molsim_ser.exe
+molsim_par: $(BINDIR)/molsim_par.exe
 ser: $(BINDIR)/molsim_ser.exe
 par: $(BINDIR)/molsim_par.exe
 moldyn: $(BINDIR)/moldyn.exe
