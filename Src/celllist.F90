@@ -77,7 +77,7 @@ contains
 subroutine InitCellList(rcell, iStage)
 
    use MolModule, only: ltrace, ltime, uout, nproc
-   use MolModule, only: lbcbox, boxlen, lPBC, dpbc
+   use MolModule, only: lbcbox, boxlen, lPBC, dpbc, boxleni
    use MolModule, only: np
    use MolModule, only: rcut, rcut2
 
@@ -136,14 +136,20 @@ subroutine InitCellList(rcell, iStage)
    if (2*dirRange(1) + 1 > ncellX) then
       ncellX = 1
       dirRange(1) = 0
+      cellSize(1) = boxlen(1)
+      cellSizei(1) = boxleni(1)
    end if
    if (2*dirRange(2) + 1 > ncellY) then
       ncellY = 1
       dirRange(2) = 0
+      cellSize(2) = boxlen(2)
+      cellSizei(2) = boxleni(2)
    end if
    if (2*dirRange(3) + 1 > ncellZ) then
       ncellZ = 1
       dirRange(3) = 0
+      cellSize(3) = boxlen(3)
+      cellSizei(3) = boxleni(3)
    end if
    ! check if the cells are already correctly set in the previous call of InitCellList
    if ( (ncelloldX == ncellX) .and. (ncelloldY == ncellY) .and. (ncelloldZ == ncellZ)) then
