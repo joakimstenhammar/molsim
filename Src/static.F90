@@ -2129,7 +2129,9 @@ end subroutine SFPBC
 subroutine ScatIntens(nbin, q, sfpar)
 
    use MolModule
+#if !defined (_NOIEEE_)
    use, intrinsic :: IEEE_ARITHMETIC
+#endif
    implicit none
 
    character(40), parameter :: txroutine ='ScatIntens'
@@ -2199,7 +2201,11 @@ subroutine ScatIntens(nbin, q, sfpar)
       if(fazero(ipt) .ne. 0.0d0) then
          fac = One/fazero(ipt)
       else
+#if !defined (_NOIEEE_)
          fac = IEEE_VALUE(fac,IEEE_QUIET_NAN)
+#else
+         fac = huge(fac)
+#endif
       end if
 
 
