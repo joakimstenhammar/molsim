@@ -397,11 +397,13 @@ uninstall:
 	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_par$(VER)
 
 $(BINDIR)/molsim_ser.exe: molsim.o $(OBJS1)
-	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
-	mkdir -p $(BINDIR); mv molsim_ser.exe $(BINDIR)/molsim_ser.exe;
+	mkdir -p $(BINDIR)
+	$(LINK_SER) $(FLAG_SER) -o $@ $^ $(LLIB)
+
 $(BINDIR)/molsim_par.exe: molsim_par.o $(OBJS2)
-	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
-	mkdir -p $(BINDIR); mv molsim_par.exe $(BINDIR)/molsim_par.exe;
+	mkdir -p $(BINDIR)
+	$(LINK_PAR) $(FLAG_PAR) -o $@ $^ $(LLIB)
+
 $(BINDIR)/moldyn.exe:     moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
 	mkdir -p $(BINDIR); mv moldyn.exe $(BINDIR)/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
