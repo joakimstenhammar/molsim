@@ -1,8 +1,7 @@
-#!/bin/bash -
+#!/usr/bin/env bash
 set -o nounset                              # Treat unset variables as an error
 set -e
 
-i=ifort
 echo -n "Checking ifort ..."
 if command -v ifort >/dev/null 2>&1; then
    echo "yes"
@@ -61,7 +60,7 @@ elif [ $lgfortran = true ] && [ "$intelmpiFC" = "gfortran" ]; then
    FC="gfortran"
    MPIFC="mpiifort"
 else
-   echo "Warning: Could not detect an working mpi compiler combination. Unless the mpi compiler is adapted, the compilation of the parallel version will fail"
+   echo "Warning: Could not detect a working mpi compiler combination. Unless the mpi compiler is adapted, the compilation of the parallel version will fail"
    if [ $lifort = true ]; then
       echo "Using ifort"
       FC="ifort"
@@ -69,7 +68,7 @@ else
       echo "Using gfortran"
       FC="gfortran"
    else
-      echo "Warning: Automatic detection a the fortran compiler failed"
+      echo "Warning: Automatic detection of the fortran compiler failed"
    fi
 fi
 
@@ -214,11 +213,11 @@ else
 fi
 
 case ${doconf:0:1} in
-    y|Y )
+   y|Y )
       read -e -p "Name of the version? " -i "" ver
       echo $ver > $conffile
-    ;;
-    * )
-        echo "not changing $conffile"
-    ;;
+      ;;
+   * )
+      echo "not changing $conffile"
+      ;;
 esac
