@@ -342,12 +342,16 @@ end subroutine IOMolsim
 subroutine IOSystem(iStage)
 
    use MolModule
+   use Random_Module, only: ix, iy, k4b
    implicit none
 
    integer(4), intent(in) :: iStage
 
    character(40), parameter :: txroutine ='IOSystem'
    real(8) :: SecondsSinceStart
+   integer(k4b)  :: ixseed, iyseed, iseedtmp
+   real(8)       :: Random
+   logical, save :: luseXYseed
 
    namelist /nmlSystem/ txtitle,                                                               &
                         txmode,                                                                &
@@ -355,7 +359,7 @@ subroutine IOSystem(iStage)
                         boxlen, cellside, sphrad, ellrad, cylrad, cyllen, lenscl,              &
                         temp, prsr,                                                            &
                         nstep1, nstep2,                                                        &
-                        iseed, maxcpu,                                                         &
+                        iseed, ixseed, iyseed, luseXYseed, maxcpu,                             &
                         lcont, laver, lti,   ldist, ldump, lgroup, lstatic, ldynamic, limage,  &
                         itest, ipart, iatom, iaver, ishow, iplot,  ilist,                      &
                         ltrace, lblockaver,                                                    &
@@ -367,29 +371,32 @@ subroutine IOSystem(iStage)
    select case (iStage)
    case (iReadInput)
 
-      txmode   = 'simulation'
-      txuser   = ' '
-      lenscl   = One
-      maxcpu   = 0
-      lcont    = .false.
-      laver    = .false.
-      lti      = .false.
-      ldist    = .false.
-      ldump    = .false.
-      lgroup   = .false.
-      lstatic  = .false.
-      ldynamic = .false.
-      limage   = .false.
-      itest    = 0
-      ipart    = 0
-      iatom    = 0
-      iaver    = 0
-      ishow    = 0
-      iplot    = 0
-      ilist    = 0
-      ltrace   = .false.
-      lblockaver= .false.
-      ltime    = .true.
+      txmode     = 'simulation'
+      txuser     = ' '
+      lenscl     = One
+      maxcpu     = 0
+      lcont      = .false.
+      laver      = .false.
+      lti        = .false.
+      ldist      = .false.
+      ldump      = .false.
+      lgroup     = .false.
+      lstatic    = .false.
+      ldynamic   = .false.
+      limage     = .false.
+      itest      = 0
+      ipart      = 0
+      iatom      = 0
+      iaver      = 0
+      ishow      = 0
+      iplot      = 0
+      ilist      = 0
+      ltrace     = .false.
+      lblockaver = .false.
+      ltime      = .true.
+      ixseed     = -1
+      iyseed     = -1
+      luseXYseed = .false.
 
       rewind(uin)
       read(uin,nmlSystem)
@@ -497,8 +504,21 @@ subroutine IOSystem(iStage)
       tempst = temp
       prsrst = prsr
       volst  = vol
-      if (iseed <= 0) iseed = int(1.0e+6*SecondsSinceStart())
-      iseed = -abs(iseed)     !the first seed should be negative, as the random seed generator is only initialized properly when the passed seed is negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed) when iseed > 0
+
+      if (luseXYseed) then ! the ix and iy are to be used
+         ! initialize with a negative numberthe random number generator to set the value of am (see Random function)
+         iseedtmp = -abs(iseed)
+         raux = Random(iseedtmp)
+         ! set the ix and iy values as requested in the input file
+         ix = ixseed
+         iy = iyseed
+      else
+         if (iseed <= 0) iseed = int(1.0e+6*SecondsSinceStart())
+         ! the first seed should be negative, as the random seed generator is only initialized properly when the passed seed is
+         ! negative. Note that the seed returned is positive an not changing on subsequent calls of Random(iseed) when iseed > 0:
+         iseed = -abs(iseed)
+      end if
+
 
    case (iWriteInput)
 
@@ -544,7 +564,14 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
+         if(luseXYseed) then
+            write(uout,'(a)')         'using iseed, ixseed and iyseed from the input'
+            write(uout,'(a,t35,i12)') 'iseed of random generator      = ', iseed
+            write(uout,'(a,t35,i12)') 'ixseed of random generator     = ', ix
+            write(uout,'(a,t35,i12)') 'iyseed of random generator     = ', iy
+         else
+            write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
+         end if
          write(uout,'()')
          if (maxcpu > 0) then
             write(uout,'(a,t35,i10)') 'maximum cpu time (seconds)     = ', maxcpu
@@ -634,7 +661,9 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
+         write(uout,'(a,t35,i12)') 'iseed of random generator      = ', iseed
+         write(uout,'(a,t35,i12)') 'ixseed of random generator     = ', ix
+         write(uout,'(a,t35,i12)') 'iyseed of random generator     = ', iy
          write(uout,'()')
 
       end if
@@ -1443,7 +1472,9 @@ end subroutine MainAver
 subroutine ThermoAver(iStage)
 
    use MolModule
+#if !defined (_NOIEEE_)
    use, intrinsic :: IEEE_ARITHMETIC
+#endif
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -1649,7 +1680,11 @@ subroutine ThermoAver(iStage)
       rtemp2 = GasConstant*(var(itemp)%avs2*scltem)**2
       if (lnve) then
          if(rtemp == 0.0d0) then !prevent division by zero
+#if !defined (_NOIEEE_)
             cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+#else
+            cv = huge(cv)
+#endif
          else
             cv = 1.5*GasConstant/(one-(var(iekin)%fls2*sclene)**2/(1.5*np*rtemp**2))/sclhca
          end if
@@ -1723,7 +1758,11 @@ subroutine ThermoAver(iStage)
          rtemp2 = GasConstant*(var(itemp)%avs1*scltem)**2
          if (lnve) then
             if(rtemp == 0.0d0) then !prevent division by zero
+#if !defined (_NOIEEE_)
                cv = IEEE_VALUE(cv,IEEE_QUIET_NAN)
+#else
+               cv = huge(cv)
+#endif
             else
                cv = 1.5*GasConstant/(one-(var(iekin)%fls1*sclene)**2/(1.5*np*rtemp**2))/sclhca
             end if
@@ -2028,7 +2067,9 @@ end subroutine IndDipMomAver
 subroutine ChainAver(iStage)
 
    use MolModule
+#if !defined (_NOIEEE_)
    use, intrinsic :: IEEE_ARITHMETIC
+#endif
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -2127,7 +2168,11 @@ subroutine ChainAver(iStage)
            PerLengthRg(var(3+ioffset)%avs2**2, (npct(ict)-1)*(var(1+ioffset)%avs2))
          if (var(10+ioffset)%avs2 == One) then
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+#if !defined (_NOIEEE_)
             IEEE_VALUE((var(10+ioffset)%avs2),IEEE_QUIET_NAN)
+#else
+            huge(var(10+ioffset)%avs2)
+#endif
          else
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             (var(1+ioffset)%avs2)/(One-var(10+ioffset)%avs2)
@@ -2157,7 +2202,11 @@ subroutine ChainAver(iStage)
            PerLengthRg(var(3+ioffset)%avs1**2, (npct(ict)-1)*(var(1+ioffset)%avs1))
          if (var(10+ioffset)%avs1 == One) then
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
+#if !defined (_NOIEEE_)
             IEEE_VALUE((var(10+ioffset)%avs1),IEEE_QUIET_NAN)
+#else
+            huge(var(10+ioffset)%avs1)
+#endif
          else
             write(uout,'(a,t35,2f15.5)') 'persist. l. (<cos(180-angle)>) = ', &
             (var(1+ioffset)%avs1)/(One-var(10+ioffset)%avs1)
