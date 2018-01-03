@@ -1,22 +1,4 @@
 #!/bin/bash -
-#===============================================================================
-#
-#          FILE: configure.sh
-#
-#         USAGE: ./configure.sh
-#
-#   DESCRIPTION:
-#
-#       OPTIONS: ---
-#  REQUIREMENTS: ---
-#          BUGS: ---
-#         NOTES: ---
-#        AUTHOR: YOUR NAME (),
-#  ORGANIZATION:
-#       CREATED: 28/07/2016 09:09
-#      REVISION: 2016-10-26 16:39
-#===============================================================================
-
 set -o nounset                              # Treat unset variables as an error
 set -e
 
