@@ -160,7 +160,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   # provide useful info at exceptions (use for debug):
   OPT_debug  := $(OPT_format) -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow -finit-real=nan
   # provides many warnings:
-  OPT_warn   := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion
+  OPT_warn   := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion -Wno-unused-function
   # time the execution
   OPT_gprof  := $(OPT_format) -O0 -pg
 
@@ -378,12 +378,17 @@ OBJS3=mol.o            \
       mollib.o         \
       mesh.o
 
+.PHONY: default def all molsim_ser molsim_par ser par moldyn ver install uninstall clean tidy testmesh
+
 default: def
 def:
 	@echo "Specify any one: of all, ser, par, molsim_ser, molsim_par, moldyn"
-all: molsim_ser molsim_par
-ser: molsim_ser
-par: molsim_par
+all: ser par
+molsim_ser: $(BINDIR)/molsim_ser.exe
+molsim_par: $(BINDIR)/molsim_par.exe
+ser: $(BINDIR)/molsim_ser.exe
+par: $(BINDIR)/molsim_par.exe
+moldyn: $(BINDIR)/moldyn.exe
 ver:
 	@[[ -z  "$(VER)"  ]] && echo No version name has been specified. || echo Version is specified as \"$(VER)\"
 	@echo bindir is \"$(BINDIR)\"
@@ -395,13 +400,15 @@ install:
 uninstall:
 	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_par$(VER)
 
-molsim_ser: molsim.o $(OBJS1)
-	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
-	mkdir -p $(BINDIR); mv molsim_ser.exe $(BINDIR)/molsim_ser.exe;
-molsim_par: molsim_par.o $(OBJS2)
-	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
-	mkdir -p $(BINDIR); mv molsim_par.exe $(BINDIR)/molsim_par.exe;
-moldyn:     moldyn.o $(OBJS3)
+$(BINDIR)/molsim_ser.exe: molsim.o $(OBJS1)
+	mkdir -p $(BINDIR)
+	$(LINK_SER) $(FLAG_SER) -o $@ $^ $(LLIB)
+
+$(BINDIR)/molsim_par.exe: molsim_par.o $(OBJS2)
+	mkdir -p $(BINDIR)
+	$(LINK_PAR) $(FLAG_PAR) -o $@ $^ $(LLIB)
+
+$(BINDIR)/moldyn.exe:     moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
 	mkdir -p $(BINDIR); mv moldyn.exe $(BINDIR)/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
 
@@ -444,8 +451,8 @@ mixed_par.o:      mol.o
 mol.o:            statistics.o mesh.o mollib.o
 molaux.o:         mol.o mollib.o
 moldyn.o:         statistics.o
-mollib.o:         mol.o
-mollib_par.o:     mol.o
+mollib.o:
+mollib_par.o:
 molsim.o:         mol.o statistics.o mollib.o
 molsim_par.o:     mol.o statistics_par.o mollib_par.o
 moluser.o:        mol.o statistics.o potential.o mollib.o
