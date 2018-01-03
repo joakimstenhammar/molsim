@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.4.0] - 2018-01-03
+### Fixed
+- the variable `nvar` is set correctly for `chaindf`. This was not the case before (when `lhierarchical = .true.`), resulting in division by zero for the uninitialized positions in the `var` array in `DistFuncSamp ►le`.
+- Compatibility issues with gfortran 4.8 were fixed
+- The way the configure script determines which compiler to use is improved.
+**NOTE** You have rerun the configure script when upgrading to this version
+- The calculation of the cellsize in the case that a cell is as wide as the box is fixed.
+- Some makefile dependencies are fixed
+### Added
+- a framework to give explicitly the random number seeds was added
+### Changed
+- the random number seeds are given in the output file
+- `ntrydef`, the number of tries to set a configuration, is now an input parameter
+- The makefile now has the binary executable as the ultimate target, so that make only runs when it is really of use
+
 ## [4.3.2] - 2017-08-23
 ### Fixed
 - the speed of creating the celllist was increased, to have a more efficient method of carrying out npt calculations
