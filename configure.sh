@@ -100,7 +100,7 @@ echo -n "checking for FFTW3 using locate .."
 if locate -l 1 -r "fftw3\.f03$" > /dev/null && locate -l 1 -r "libfftw3\(\.dll\)*\(\.a\|\.so\)$" > /dev/null ; then
    fftwpaths=`dirname $(locate -r "fftw3\.f03$") | uniq`
    echo ""
-   echo "Which fftw3 version should be used?"
+   echo "Which FFTW3 version should be used?"
    select d in $(echo $fftwpaths "other"); do
       if [ -n "$d" ]; then
          echo "$d selected"
@@ -111,7 +111,7 @@ if locate -l 1 -r "fftw3\.f03$" > /dev/null && locate -l 1 -r "libfftw3\(\.dll\)
 
    fftwlibs=`dirname $(locate -r "libfftw3\(\.dll\)*\(\.a\|\.so\)$") | uniq`
    echo ""
-   echo "Which fftw3 lib should be used?"
+   echo "Which FFTW3 lib should be used?"
    select d in $(echo $fftwlibs "other"); do
       if [ -n "$d" ]; then
          echo "$d selected"
@@ -124,7 +124,7 @@ fi
 if [ "$fftwlib" = "other" ] || [ "$fftwpath" = "other" ]; then
    echo ""
    echo "Automatic detection of FFTW3 failed."
-   echo "You can either install it locally, or provide the path to the fftw3 libary."
+   echo "You can either install it locally, or provide the path to the FFTW3 libary."
    read -e -p "Install under ~/.fftw? (y/n) " -i "n" dofftw
    case ${dofftw:0:1} in
       y|Y )
@@ -181,7 +181,7 @@ if [ "$fftwlib" = "other" ] || [ "$fftwpath" = "other" ]; then
          echo "Please provide the path to the directory of the fftw3.f03 file:"
          read -e -i "/" fftwpath
 
-         echo "Please provide the path to the directory of the fftw3 libary (libfftw3):"
+         echo "Please provide the path to the directory of the FFTW3 libary (libfftw3):"
          read -e -i "/" fftwlib
    esac
 fi
