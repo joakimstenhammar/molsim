@@ -564,13 +564,13 @@ subroutine IOSystem(iStage)
          end if
          write(uout,'(a,t35,e10.3)') 'volume                         = ', vol
          write(uout,'()')
-         if(.not. luseXYseed) then
-            write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
-         else
+         if(luseXYseed) then
             write(uout,'(a)')         'using iseed, ixseed and iyseed from the input'
             write(uout,'(a,t35,i12)') 'iseed of random generator      = ', iseed
             write(uout,'(a,t35,i12)') 'ixseed of random generator     = ', ix
             write(uout,'(a,t35,i12)') 'iyseed of random generator     = ', iy
+         else
+            write(uout,'(a,t35,i10)') 'seed of random generator       = ', abs(iseed)
          end if
          write(uout,'()')
          if (maxcpu > 0) then
