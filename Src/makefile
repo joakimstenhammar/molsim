@@ -432,7 +432,7 @@ bd_par.o:         mol.o md_par.o
 celllist.o:       mol.o
 celllist_par.o:   mol.o
 coordinate.o:     mol.o mollib.o
-coordinate_par.o: mol.o
+coordinate_par.o: mol.o mollib_par.o
 denergy.o:        mol.o energy.o mollib.o celllist.o
 denergy_par.o:    mol.o energy_par.o mollib_par.o celllist_par.o
 dump.o:           mol.o
@@ -456,7 +456,7 @@ mol.o:            statistics.o mesh.o mollib.o
 molaux.o:         mol.o mollib.o
 moldyn.o:         statistics.o
 mollib.o:
-mollib_par.o:     mol.o
+mollib_par.o:
 molsim.o:         mol.o statistics.o mollib.o
 molsim_par.o:     mol.o statistics_par.o mollib_par.o
 moluser.o:        mol.o statistics.o potential.o mollib.o
