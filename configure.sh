@@ -97,8 +97,7 @@ echo "MPIFC = $MPIFC" >> Src/make.arch
 fftwpath="other"
 fftwlib="other"
 echo -n "checking for FFTW3 using locate .."
-fftwfound=`locate -l 1 -r "fftw3\.f03$" > /dev/null && locate -l 1 -r "libfftw3\(\.dll\)*\(\.a\|\.so\)$" > /dev/null`
-if $fftwfound ; then # found fftw3
+if locate -l 1 -r "fftw3\.f03$" > /dev/null && locate -l 1 -r "libfftw3\(\.dll\)*\(\.a\|\.so\)$" > /dev/null ; then
    fftwpaths=`dirname $(locate -r "fftw3\.f03$") | uniq`
    echo ""
    echo "Which fftw3 version should be used?"
@@ -123,6 +122,7 @@ if $fftwfound ; then # found fftw3
 fi
 
 if [ "$fftwlib" = "other" ] || [ "$fftwpath" = "other" ]; then
+   echo ""
    echo "Automatic detection of FFTW3 failed."
    echo "You can either install it locally, or provide the path to the fftw3 libary."
    read -e -p "Install under ~/.fftw? (y/n) " -i "n" dofftw
@@ -191,6 +191,7 @@ echo "yes"
 
 echo -n "Checking ~/bin ..."
 if [[ ! ":$PATH:" == *":$HOME/bin:"* ]]; then
+   echo ""
    echo "Setting up ~/bin"
    mkdir -p $HOME/bin
 
