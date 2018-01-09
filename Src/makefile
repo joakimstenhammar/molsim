@@ -57,13 +57,16 @@ CBIND = TRUE
 ifeq ($(CBIND), TRUE)          #F03 c-bindings
 
   ifeq ($(ARCH), LOCAL_INTEL)
-    FFTW_PATH=/usr/local
+    FFTW_PATH=/usr/local/include
   endif
   ifeq ($(ARCH), LOCAL_GFORTRAN)
-    FFTW_PATH=/usr/local
+    FFTW_PATH=/usr/local/include
   endif
   ifeq ($(ARCH), ALARIK_INTEL)
-    FFTW_PATH=/$(FFTW3_HOME)
+    FFTW_PATH=/$(FFTW3_HOME)/include
+  endif
+  ifeq ($(ARCH), ALARIK_GFORTRAN)
+    FFTW_PATH=/$(FFTW3_HOME)/include
   endif
 
   FFTWLIB = none
@@ -128,11 +131,16 @@ ifeq ($(ARCH), LOCAL_INTEL)
   endif
 
   MPIIFORT := $(shell command -v mpiifort 2> /dev/null)
-  ifdef MPIIFORT
-    COMP_PAR = mpiifort
+  ifdef MPIFC
+    COMP_PAR = $(MPIFC)
   endif
-  ifndef MPIIFORT
-    COMP_PAR = mpifort
+  ifndef MPIFC
+    ifdef MPIIFORT
+      COMP_PAR = mpiifort
+    endif
+    ifndef MPIIFORT
+      COMP_PAR = mpifort
+    endif
   endif
 
   LINK_PAR = $(COMP_PAR)
@@ -160,7 +168,7 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   # provide useful info at exceptions (use for debug):
   OPT_debug  := $(OPT_format) -fimplicit-none -fbacktrace -g -fcheck=all -ffpe-trap=zero,overflow -finit-real=nan
   # provides many warnings:
-  OPT_warn   := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion
+  OPT_warn   := $(OPT_format) -O0 -Wall -Wno-character-truncation -Wno-conversion -Wno-unused-function
   # time the execution
   OPT_gprof  := $(OPT_format) -O0 -pg
 
@@ -185,9 +193,19 @@ ifeq ($(ARCH), LOCAL_GFORTRAN)
   endif
   LLIB =
 
-  COMP_PAR = mpifort
+  GCCVERSIONLTEQ4 := $(shell expr `gcc -dumpversion | cut -f1 -d.` \<= 4)
+  ifeq "$(GCCVERSIONLTEQ4)" "1"
+    OPT_SER += -D_NOIEEE_
+  endif
+  ifdef MPIFC
+    COMP_PAR = $(MPIFC)
+  endif
+  ifndef MPIFC
+    COMP_PAR = mpifort
+  endif
   LINK_PAR = $(COMP_PAR)
   OPT_PAR  = $(OPT_SER)
+
 
 endif
 
@@ -283,22 +301,8 @@ DEFINES_PAR  = $(DEFINES_BASE) -D_PAR_
 FLAG_SER  = $(DEFINES_SER) $(OPT_SER)
 FLAG_PAR  = $(DEFINES_PAR) $(OPT_PAR)
 
-ifeq ($(ARCH), LOCAL_INTEL)
-  FLAG_SER += -I$(FFTW_PATH)/include
-  FLAG_PAR += -I$(FFTW_PATH)/include
-endif
-ifeq ($(ARCH), LOCAL_GFORTRAN)
-  FLAG_SER += -I$(FFTW_PATH)/include
-  FLAG_PAR += -I$(FFTW_PATH)/include
-endif
-ifeq ($(ARCH), ALARIK_INTEL)
-  FLAG_SER += -I$(FFTW3_HOME)/include
-  FLAG_PAR += -I$(FFTW3_HOME)/include
-endif
-ifeq ($(ARCH), ALARIK_GFORTRAN)
-  FLAG_SER += -I$(FFTW3_HOME)/include
-  FLAG_PAR += -I$(FFTW3_HOME)/include
-endif
+FLAG_SER += -I$(FFTW_PATH)
+FLAG_PAR += -I$(FFTW_PATH)
 
 mollib = $(abspath molsim.lib)
 
@@ -307,7 +311,7 @@ mollib = $(abspath molsim.lib)
 #-----------------------------------------------------------------
 
 ifeq ($(FFTWLIB), none)
-  FFTWLINK=$(FFTW_PATH)/lib
+  FFTWLIB=$(FFTW_PATH)/lib
 endif
 
 ifeq ($(ARCH), LOCAL_INTEL)
@@ -378,12 +382,17 @@ OBJS3=mol.o            \
       mollib.o         \
       mesh.o
 
+.PHONY: default def all molsim_ser molsim_par ser par moldyn ver install uninstall clean tidy testmesh
+
 default: def
 def:
 	@echo "Specify any one: of all, ser, par, molsim_ser, molsim_par, moldyn"
-all: molsim_ser molsim_par
-ser: molsim_ser
-par: molsim_par
+all: ser par
+molsim_ser: $(BINDIR)/molsim_ser.exe
+molsim_par: $(BINDIR)/molsim_par.exe
+ser: $(BINDIR)/molsim_ser.exe
+par: $(BINDIR)/molsim_par.exe
+moldyn: $(BINDIR)/moldyn.exe
 ver:
 	@[[ -z  "$(VER)"  ]] && echo No version name has been specified. || echo Version is specified as \"$(VER)\"
 	@echo bindir is \"$(BINDIR)\"
@@ -395,13 +404,15 @@ install:
 uninstall:
 	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_par$(VER)
 
-molsim_ser: molsim.o $(OBJS1)
-	$(LINK_SER) $(FLAG_SER) -o molsim_ser.exe molsim.o $(OBJS1) $(LLIB)
-	mkdir -p $(BINDIR); mv molsim_ser.exe $(BINDIR)/molsim_ser.exe;
-molsim_par: molsim_par.o $(OBJS2)
-	$(LINK_PAR) $(FLAG_PAR) -o molsim_par.exe molsim_par.o $(OBJS2) $(LLIB)
-	mkdir -p $(BINDIR); mv molsim_par.exe $(BINDIR)/molsim_par.exe;
-moldyn:     moldyn.o $(OBJS3)
+$(BINDIR)/molsim_ser.exe: molsim.o $(OBJS1)
+	mkdir -p $(BINDIR)
+	$(LINK_SER) $(FLAG_SER) -o $@ $^ $(LLIB)
+
+$(BINDIR)/molsim_par.exe: molsim_par.o $(OBJS2)
+	mkdir -p $(BINDIR)
+	$(LINK_PAR) $(FLAG_PAR) -o $@ $^ $(LLIB)
+
+$(BINDIR)/moldyn.exe:     moldyn.o $(OBJS3)
 	$(COMP_SER) $(FLAG_SER) -o moldyn.exe moldyn.o $(OBJS3) $(LLIB)
 	mkdir -p $(BINDIR); mv moldyn.exe $(BINDIR)/moldyn.exe; cp moldyn $(HOME)/bin/moldyn$(VER)
 
@@ -420,8 +431,8 @@ bd.o:             mol.o md.o
 bd_par.o:         mol.o md_par.o
 celllist.o:       mol.o
 celllist_par.o:   mol.o
-coordinate.o:     mol.o
-coordinate_par.o: mol.o
+coordinate.o:     mol.o mollib.o
+coordinate_par.o: mol.o mollib_par.o
 denergy.o:        mol.o energy.o mollib.o celllist.o
 denergy_par.o:    mol.o energy_par.o mollib_par.o celllist_par.o
 dump.o:           mol.o
@@ -445,7 +456,7 @@ mol.o:            statistics.o mesh.o mollib.o
 molaux.o:         mol.o mollib.o
 moldyn.o:         statistics.o
 mollib.o:
-mollib_par.o:     mol.o
+mollib_par.o:
 molsim.o:         mol.o statistics.o mollib.o
 molsim_par.o:     mol.o statistics_par.o mollib_par.o
 moluser.o:        mol.o statistics.o potential.o mollib.o

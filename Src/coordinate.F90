@@ -31,7 +31,7 @@ module CoordinateModule
 
    use MolModule
 
-   integer(4), parameter :: ntrydef = 100     ! default number of trials per particle
+   integer(4)    :: ntrydef                   ! default number of trials per particle
 
    character(20), allocatable :: txsetconf(:) ! select way of generating start configuration
    integer(4), allocatable    :: nucell(:,:)  ! number of unit cells in x-, y-, and z-direction
@@ -68,6 +68,7 @@ end module CoordinateModule
 subroutine Coordinate(iStage)
 
    use CoordinateModule
+   use Random_Module, only: ix, iy
    implicit none
 
    integer(4), intent(in) :: iStage
@@ -143,7 +144,9 @@ subroutine Coordinate(iStage)
          call SetAtomProp(1, np, .false.)
          if (master) then
             write(uout,'(a)') 'box lengths and coordinates: read from fcnf'
-            write(uout,'(a,t35,i15)') 'current seed                   = ', iseed
+            write(uout,'(a,t35,i15)') 'current iseed                  = ', iseed
+            write(uout,'(a,t35,i15)') 'current ixseed                 = ', ix
+            write(uout,'(a,t35,i15)') 'current iyseed                 = ', iy
             if (lbcbox) then
                write(uout,'(a,t35,3(f10.3,2x))') 'current box lengths (x,y,z)    = ', boxlen
             else if (lbcrd .or. lbcto) then
@@ -169,7 +172,9 @@ subroutine Coordinate(iStage)
          call SetAtomProp(1, np, .false.)
          if (master) then
             write(uout,'(a)') 'seed, box lengths, and coordinates: read from fcnf'
-            write(uout,'(a,t35,i15)') 'current seed                   = ', iseed
+            write(uout,'(a,t35,i15)') 'current iseed                  = ', iseed
+            write(uout,'(a,t35,i15)') 'current ixseed                 = ', ix
+            write(uout,'(a,t35,i15)') 'current iyseed                 = ', iy
             if (lbcbox) then
                write(uout,'(a,t35,3(f10.3,2x))') 'current box lengths (x,y,z)    = ', boxlen
             else if (lbcrd .or. lbcto) then
@@ -325,7 +330,7 @@ subroutine SetConfiguration
                                   ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
                                   rnwt, txoriginnwt, shiftnwt,                                       &
-                                  radlimit,                                                          &
+                                  radlimit, ntrydef,                                                 &
                                   itestcoordinate
 
    if (.not.allocated(txsetconf)) then
@@ -409,6 +414,7 @@ subroutine SetConfiguration
    iptnode           = 0
    ictstrand         = 0
    itestcoordinate   = 0
+   ntrydef           = 100
 
    if (lnetwork) then
       rnwt(1:nnwt)         = 10.0
