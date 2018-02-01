@@ -402,7 +402,7 @@ install:
 	cp molsim_par $(HOME)/bin/molsim_par$(VER); sed -i "s|^bin=.*|bin=$(BINDIR)|g" $(HOME)/bin/molsim_par$(VER)
 
 uninstall:
-	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_par$(VER)
+	rm -f $(HOME)/bin/molsim_par$(VER) $(HOME)/bin/molsim_ser$(VER)
 
 $(BINDIR)/molsim_ser.exe: molsim.o $(OBJS1)
 	mkdir -p $(BINDIR)
