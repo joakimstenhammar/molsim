@@ -2462,6 +2462,7 @@ subroutine HierarchicalRg2(vsumr2)
          ict = ictgen(igen)
          do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1
             do iseg = 1, npct(ict)
+               ip = ipnsegcn(iseg,ic)
                dx = vaux(1,ip)-xcom
                dy = vaux(2,ip)-ycom
                dz = vaux(3,ip)-zcom
