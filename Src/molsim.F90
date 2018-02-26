@@ -2374,11 +2374,9 @@ subroutine HierarchicalAver(iStage)
    character(80), parameter :: txheading ='hierarchical quantities'
    integer(4)      , save :: nvar
    type(scalar_var), allocatable, save :: var(:)
-   real(8) :: rg
+   real(8) :: rg2
 
    if (slave) return   ! master only
-
-   if (nh > 1) return  ! routine only adapted for nh = 1 (one hierarchical structure)
 
    if (ltrace) call WriteTrace(2, txroutine, iStage)
 
@@ -2402,22 +2400,22 @@ subroutine HierarchicalAver(iStage)
 
    case (iSimulationStep)
 
-      call HierarchicalRg(rg)
-      var(1)%value = rg
+      call HierarchicalRg2(rg2)
+      var(1)%value = rg2
       call ScalarSample(iStage, 1, nvar, var)
 
    case (iAfterMacrostep)
 
       call ScalarSample(iStage, 1, nvar, var)
       if (lsim .and. master) write(ucnf) var
-      call ScalarNorm(iStage, 1, nvar, var, 1)
+      call ScalarNorm(iStage, 1, nvar, var, 2) ! get root of mean squared value
       call WriteHead(2, txheading, uout)
       call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,f15.5,f15.0)', uout)
 
    case (iAfterSimulation)
 
       call ScalarSample(iStage, 1, nvar, var)
-      call ScalarNorm(iStage, 1, nvar, var, 1)
+      call ScalarNorm(iStage, 1, nvar, var, 2)
       call WriteHead(2, txheading, uout)
       call ScalarWrite(iStage, 1, nvar, var, 1, '(a,t35,4f15.5,f15.0)', uout)
 
@@ -2429,40 +2427,53 @@ contains
 
 !........................................................................
 
-subroutine HierarchicalRg(vsumr)
+subroutine HierarchicalRg2(vsumr2)
 
-! ... assumes that ipnhn and nphn are apporiate (contigeously ip)
+! ... assumes that ipnhn and nphn are apporiate
 ! ... size of hierarchical structure should be smaller than half box size
 
-   real(8), intent(out) :: vsumr    ! rms radius of gyration
+   real(8), intent(out) :: vsumr2    ! radius of gyration squared
    real(8) :: xcom, ycom, zcom, dx, dy, dz, r2, rref(1:3)
-   integer(4) :: ip
+   integer(4) :: ip, ih, igen, ic, ict, iseg
 
-   rref(1:3) = ro(1:3,ipnhn)
-   do ip = ipnhn, ipnhn + nphn - 1
-      dx = ro(1,ip) - rref(1)
-      dy = ro(2,ip) - rref(2)
-      dz = ro(3,ip) - rref(3)
-      call PBC(dx,dy,dz)
-      vaux(1,ip) = rref(1) + dx
-      vaux(2,ip) = rref(2) + dy
-      vaux(3,ip) = rref(3) + dz
+   vsumr2 = Zero
+   do ih = 1, nh
+      rref(1:3) = ro(1:3,ipnsegcn(1,icihigen(ih, 0)))
+      do igen = 0, ngen
+         ict = ictgen(igen)
+         do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1
+            do iseg = 1, npct(ict)
+               ip = ipnsegcn(iseg,ic)
+               dx = ro(1,ip) - rref(1)
+               dy = ro(2,ip) - rref(2)
+               dz = ro(3,ip) - rref(3)
+               call PBC(dx,dy,dz)
+               vaux(1,ip) = rref(1) + dx
+               vaux(2,ip) = rref(2) + dy
+               vaux(3,ip) = rref(3) + dz
+            end do
+         end do
+      end do
+      xcom = sum(vaux(1,ipnhn:ipnhn+nphn-1))/nphn
+      ycom = sum(vaux(2,ipnhn:ipnhn+nphn-1))/nphn
+      zcom = sum(vaux(3,ipnhn:ipnhn+nphn-1))/nphn
+
+      do igen = 0, ngen
+         ict = ictgen(igen)
+         do ic = icihigen(ih,igen), icihigen(ih,igen) + nch(igen) -1
+            do iseg = 1, npct(ict)
+               dx = vaux(1,ip)-xcom
+               dy = vaux(2,ip)-ycom
+               dz = vaux(3,ip)-zcom
+               call PBCr2(dx, dy, dz,r2)
+               vsumr2 = vsumr2 + r2
+            end do
+         end do
+      end do
    end do
+   vsumr2 = vsumr2/(nphn*nh)
 
-   xcom = sum(vaux(1,ipnhn:ipnhn+nphn-1))/nphn
-   ycom = sum(vaux(2,ipnhn:ipnhn+nphn-1))/nphn
-   zcom = sum(vaux(3,ipnhn:ipnhn+nphn-1))/nphn
-   vsumr = Zero
-   do ip = ipnhn, ipnhn + nphn - 1
-      dx = vaux(1,ip)-xcom
-      dy = vaux(2,ip)-ycom
-      dz = vaux(3,ip)-zcom
-      r2 = dx**2+dy**2+dz**2
-      vsumr = vsumr + r2
-   end do
-   vsumr = sqrt(vsumr/nphn)
-
-end subroutine HierarchicalRg
+end subroutine HierarchicalRg2
 
 !........................................................................
 
