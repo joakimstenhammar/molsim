@@ -20,35 +20,89 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     DumpModule                                                       *
-!*                                                                      *
+!> \page dump dump.F90
+!! **DumpModule**
+!! *module for dumping*
 !************************************************************************
 
-! ... module for dumping
-
+!> \page nmlDump
+!! The namelist  \ref nmlDump contains variables that control the interval and variables dumped or read.  Dumping is performed when \ref txmode = 'simulation' and reading when \ref txmode = 'analysis'.
+!! * Variables:
+!!  * \subpage idump
+!!  * \subpage txptdump
+!!  * \subpage ldpos
+!!  * \subpage ldori
+!!  * \subpage ldliv
+!!  * \subpage ldanv
+!!  * \subpage ldfor
+!!  * \subpage ldtor
+!!  * \subpage ldidm
+!!  * \subpage ldumpuser
 module DumpModule
 
    use MolModule
+!> \page ldpos
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle positions.
+!! * `.false.` No dumping/reading of particle positions.
 
+!> \page ldori
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle orientations.
+!! * `.false.`: No dumping/reading of particle orientations.
+
+!> \page ldliv
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle linear velocities.
+!! * `.false.`: No dumping/reading of particle linear velocities.
+
+!> \page ldanv
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle angular velocities.
+!! * `.false.`: No dumping/reading of particle positions.
+
+!> \page ldfor
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle forces.
+!! * `.false.`: No dumping/reading of particle forces.
+
+!> \page ldtor
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle torques.
+!! * `.false.`: No dumping/reading of particle torques.
+
+!> \page ldidm
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle induced dipole moments.
+!! * `.false.`: No dumping/reading of induced dipole moments.
+
+!> \page ldumpuser
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Call of DumpUser, driver for user-provided dumping routines.
+!! * `.false.`: No such call.
    logical       :: ldpos, ldori, ldliv, ldanv, ldfor, ldtor, ldidm, ldlaz, ldutot, ldumpuser ! logical flag for dumping
    integer(4)    :: iplow                                                                     ! lower particle to be dumped
    integer(4)    :: ipupp                                                                     ! upper particle to be dumped
    integer(4)    :: ialow                                                                     ! lower atom to be dumped
    integer(4)    :: iaupp                                                                     ! upper atom to be dumped
-
 ! ... external units
 
 
 end module DumpModule
 
 !************************************************************************
-!*                                                                      *
-!*     DumpDriver                                                       *
-!*                                                                      *
+!> \page dump dump.F90
+!! **DumpDriver**
+!! *dump driver*
 !************************************************************************
-
-! ... dump driver
 
 subroutine DumpDriver(iStage)
 
@@ -105,12 +159,16 @@ subroutine DumpDriver(iStage)
 end subroutine DumpDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IODump                                                           *
-!*                                                                      *
+!> \page dump dump.F90
+!! **IODump**
+!! *performing i/o on dump variables*
 !************************************************************************
 
-! ... performing i/o on dump variables
+!> \page txptdump
+!! `character(20)`
+!! **default:** '`all`'
+!! * '`all`': Data for particles of all types are dumped.
+!! * '`xxx`': Data for particles of type ipt is dumped when 'xxx'=\ref txpt (ipt).
 
 subroutine IODump(iStage)
 
@@ -200,12 +258,11 @@ subroutine IODump(iStage)
 end subroutine IODump
 
 !************************************************************************
-!*                                                                      *
-!*     DoDump                                                           *
-!*                                                                      *
+!> \page dump dump.F90
+!! **DoDump**
+!! *performing dumping matters*
 !************************************************************************
 
-! ... performing dumping matters
 
 subroutine DoDump(str)
 

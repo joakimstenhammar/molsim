@@ -1,19 +1,18 @@
 ! ... 'version 6.4.7, Sep 18, 2015'
 
 !************************************************************************
-!*                                                                      *
-!*     StatisticsModule                                                 *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **StatisticsModule**
+!! *module for statistics*
 !************************************************************************
 
-! ... module for statistics
 
 module StatisticsModule
 
 ! ... data structure for scalar quantities
 
    integer(4), parameter :: mnblocklen = 20
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type scalar_var
       character(40) :: label                             ! label
       real(8)       :: norm                              ! normalization factor
@@ -44,7 +43,7 @@ module StatisticsModule
 ! ... data structure for one-dimensional distribution functions
 
    integer(4), parameter :: mnbin_df =1000
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type df_var
       character(27) :: label                             ! label
       real(8)       :: norm                              ! normalization factor
@@ -65,7 +64,7 @@ module StatisticsModule
 
    integer(4), parameter :: mnbin_df2d = 40
 !   integer(4), parameter :: mnbin_df2d = 100            ! Elliposids (Erik W)
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type df2d_var
       character(27) :: label                             ! label of df
       real(8)       :: norm                              ! normalization factor
@@ -86,12 +85,11 @@ module StatisticsModule
 end module StatisticsModule
 
 !************************************************************************
-!*                                                                      *
-!*     SetlBlockAver                                                    *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **SetlBlockAver**
+!! *set variable \ref lblockaver*
 !************************************************************************
 
-! ... set variable lblockaver
 
 subroutine SetlBlockAver(lwrite)
 
@@ -104,12 +102,11 @@ subroutine SetlBlockAver(lwrite)
 end subroutine SetlBlockAver
 
 !************************************************************************
-!*                                                                      *
-!*     ScalarSample                                                     *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **ScalarSample**
+!! *sample scalar quantities*
 !************************************************************************
 
-! ... sample scalar quantities
 
 subroutine ScalarSample(iStage, ilow, iupp, var)
 
@@ -127,12 +124,11 @@ subroutine ScalarSample(iStage, ilow, iupp, var)
 end subroutine ScalarSample
 
 !************************************************************************
-!*                                                                      *
-!*     ScalarSampleBlock                                                *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **ScalarSampleBlock**
+!! *sample scalar quantities; fixed block length*
 !************************************************************************
 
-! ... sample scalar quantities; fixed block length
 
 subroutine ScalarSampleBlock(iStage, ilow, iupp, var)
 
@@ -205,12 +201,11 @@ subroutine ScalarSampleBlock(iStage, ilow, iupp, var)
 end subroutine ScalarSampleBlock
 
 !************************************************************************
-!*                                                                      *
-!*     ScalarSampleExtrap                                               *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **ScalarSampleExtrap**
+!! *sample scalar quantities; extrapolate to large blocklen*
 !************************************************************************
 
-! ... sample scalar quantities; extrapolate to large blocklen
 
 subroutine ScalarSampleExtrap(iStage, ilow, iupp, var)
 
@@ -351,12 +346,11 @@ end subroutine ScalarSampleWrite
 end subroutine ScalarSampleExtrap
 
 !************************************************************************
-!*                                                                      *
-!*     ScalarNorm                                                       *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **ScalarNorm**
+!! *normalize scalar quantities*
 !************************************************************************
 
-! ... normalize scalar quantities
 
 subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
 
@@ -470,12 +464,11 @@ subroutine ScalarNorm(iStage, ilow, iupp, var, iopt)
 end subroutine ScalarNorm
 
 !************************************************************************
-!*                                                                      *
-!*     ScalarWrite                                                      *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **ScalarWrite**
+!! *write scalar quantities*
 !************************************************************************
 
-! ... write scalar quantities
 
 subroutine ScalarWrite(iStage, ilow, iupp, var, iopt, fmt, unit)
 
@@ -539,12 +532,11 @@ end subroutine ScalarWrite
 
 ! #if defined (_PAR_)
 ! !************************************************************************
-! !*                                                                      *
-! !*     ScalarAllReduce                                                  *
-! !*                                                                      *
+!> \page statistics statistics.F90
+!! **ScalarAllReduce**
+!! *make all_reduce of scalar quantities*
 ! !************************************************************************
 
-! ! ... make all_reduce of scalar quantities
 
 ! subroutine ScalarAllReduce(iStage, ilow, iupp, var, raux)
 
@@ -585,12 +577,11 @@ end subroutine ScalarWrite
 ! #endif
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncSample                                                   *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncSample**
+!! *sample distribution functions*
 !************************************************************************
 
-! ... sample distribution functions
 
 subroutine DistFuncSample(iStage, nvar, var)
 
@@ -657,12 +648,11 @@ subroutine DistFuncSample(iStage, nvar, var)
 end subroutine DistFuncSample
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncNorm                                                     *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncNorm**
+!! *normalize distribution functions*
 !************************************************************************
 
-! ... normalize distribution functions
 
 !     bin * sum(avs2) = nsamp2
 
@@ -690,12 +680,11 @@ subroutine DistFuncNorm(ilow, iupp, var)
 end subroutine DistFuncNorm
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncHead                                                     *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncHead**
+!! *write heading of distribution functions*
 !************************************************************************
 
-! ... write heading of distribution functions
 
 subroutine DistFuncHead(nvar, var, unit)
 
@@ -716,12 +705,11 @@ subroutine DistFuncHead(nvar, var, unit)
 end subroutine DistFuncHead
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncWrite                                                    *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncWrite**
+!! *control the calls of DistFuncShow, DistFuncPlot, and DistFuncList*
 !************************************************************************
 
-! ... control the calls of DistFuncShow, DistFuncPlot, and DistFuncList
 
 subroutine DistFuncWrite(txheading, nvar, var, lout, llist, ishow, iplot, ilist)
 
@@ -744,12 +732,11 @@ subroutine DistFuncWrite(txheading, nvar, var, lout, llist, ishow, iplot, ilist)
 end subroutine DistFuncWrite
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncShow                                                     *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncShow**
+!! *list bin numbers, x, y, and dy of distribution functions*
 !************************************************************************
 
-! ... list bin numbers, x, y, and dy of distribution functions
 
 subroutine DistFuncShow(il, txheading, nvar, var, unit)
 
@@ -785,12 +772,11 @@ subroutine DistFuncShow(il, txheading, nvar, var, unit)
 end subroutine DistFuncShow
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncPlot                                                     *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncPlot**
+!! *plot distribution functions*
 !************************************************************************
 
-! ... plot distribution functions
 
 subroutine DistFuncPlot(nvar, var, unit)
 
@@ -812,12 +798,11 @@ subroutine DistFuncPlot(nvar, var, unit)
 end subroutine DistFuncPlot
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncList                                                     *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncList**
+!! *list x, y, and dy values of distribution functions*
 !************************************************************************
 
-! ... list x, y, and dy values of distribution functions
 
 subroutine DistFuncList(il, txheading, nvar, var, unit)
 
@@ -843,12 +828,11 @@ subroutine DistFuncList(il, txheading, nvar, var, unit)
 end subroutine DistFuncList
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncAverValue                                                *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncAverValue**
+!! *calculate and write average of distribution functions*
 !************************************************************************
 
-! ... calculate and write average of distribution functions
 
 subroutine DistFuncAverValue(nvar, var, unit)
 
@@ -878,12 +862,11 @@ subroutine DistFuncAverValue(nvar, var, unit)
 end subroutine DistFuncAverValue
 
 !************************************************************************
-!*                                                                      *
-!*     DistFuncAverDist                                                 *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncAverDist**
+!! *calculate average and spread among distribution functions*
 !************************************************************************
 
-! ... calculate average and spread among distribution functions
 
 subroutine DistFuncAverDist(nvar2, ilow, iupp, var, var2, var2_spread)
 
@@ -935,12 +918,11 @@ end subroutine DistFuncAverDist
 
 #if defined (_PAR_)
 !************************************************************************
-!*                                                                      *
-!*     DistFuncAllReduce                                                *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFuncAllReduce**
+!! *make all_reduce of df quantities*
 !************************************************************************
 
-! ... make all_reduce of df quantities
 
 subroutine DistFuncAllReduce(iStage, ilow, iupp, var, raux)
 
@@ -969,12 +951,11 @@ end subroutine DistFuncAllReduce
 #endif
 
 !************************************************************************
-!*                                                                      *
-!*     DistFunc2DSample                                                 *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFunc2DSample**
+!! *sample two-dimensional distribution functions*
 !************************************************************************
 
-! ... sample two-dimensional distribution functions
 
 subroutine DistFunc2DSample(iStage, nvar, var)
 
@@ -1054,12 +1035,11 @@ subroutine DistFunc2DSample(iStage, nvar, var)
 end subroutine DistFunc2DSample
 
 !************************************************************************
-!*                                                                      *
-!*     DistFunc2DNorm                                                   *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFunc2DNorm**
+!! *normalize two-dimensinal distribution functions*
 !************************************************************************
 
-! ... normalize two-dimensinal distribution functions
 
 !     bin(1) * bin(2) * sum(avs2) = nsamp2
 
@@ -1087,12 +1067,11 @@ subroutine DistFunc2DNorm(ilow, iupp, var)
 end subroutine DistFunc2DNorm
 
 !************************************************************************
-!*                                                                      *
-!*     DistFunc2DHead                                                   *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFunc2DHead**
+!! *write heading of two-dimensional distribution functions*
 !************************************************************************
 
-! ... write heading of two-dimensional distribution functions
 
 subroutine DistFunc2DHead(nvar, var, unit)
 
@@ -1115,12 +1094,11 @@ subroutine DistFunc2DHead(nvar, var, unit)
 end subroutine DistFunc2DHead
 
 !************************************************************************
-!*                                                                      *
-!*     DistFunc2DShow                                                   *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFunc2DShow**
+!! *list bin numbers and z as well as bin numbers and \ref dz of two-dimensional distribution functions*
 !************************************************************************
 
-! ... list bin numbers and z as well as bin numbers and dz of two-dimensional distribution functions
 
 subroutine DistFunc2DShow(il, txheading, nvar, var, unit)
 
@@ -1155,12 +1133,11 @@ subroutine DistFunc2DShow(il, txheading, nvar, var, unit)
 end subroutine DistFunc2DShow
 
 !************************************************************************
-!*                                                                      *
-!*     DistFunc2DList                                                   *
-!*                                                                      *
+!> \page statistics statistics.F90
+!! **DistFunc2DList**
+!! *list bin numbers and z as well as bin numbers and \ref dz of two-dimensional distribution functions*
 !************************************************************************
 
-! ... list bin numbers and z as well as bin numbers and dz of two-dimensional distribution functions
 
 subroutine DistFunc2DList(il, txheading, nvar, var, unit)
 

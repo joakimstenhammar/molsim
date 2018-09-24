@@ -351,30 +351,8 @@ OBJS1=mol.o            \
       mesh.o           \
       celllist.o
 
-OBJS2=mol.o            \
-      particle_par.o   \
-      potential_par.o  \
-      coordinate_par.o \
-      md_par.o         \
-      mc_par.o         \
-      bd_par.o         \
-      nlist_par.o      \
-      energy_par.o     \
-      denergy_par.o    \
-      dump_par.o       \
-      group_par.o      \
-      static_par.o     \
-      dynamic_par.o    \
-      image.o          \
-      statistics_par.o \
-      mixed_par.o      \
-      molaux.o         \
-      mollib_par.o     \
-      parallel_par.o   \
-      moluser_par.o    \
-      sso_par.o        \
-      mesh_par.o       \
-      celllist_par.o
+OBJS2=$(OBJS1:.o=_par.o)
+OBJS2+=parallel_par.o
 
 OBJS3=mol.o            \
       statistics.o     \
@@ -421,60 +399,66 @@ testmesh:   testmesh.o mesh.o
 	./testmesh.exe
 
 %.o: %.F90
-	$(COMP_SER) $(FLAG_SER) -c $<
+	$(COMP_SER) $(FLAG_SER) -o $@ -c $<
 %_par.o: %.F90
 	$(COMP_PAR) $(FLAG_PAR) -o $@ -c $<
 
 mol.o: FLAG_SER += -DFLIBMACRO=\"$(mollib)\"
+mol_par.o: FLAG_PAR += -DFLIBMACRO=\"$(mollib)\"
 
 bd.o:             mol.o md.o
-bd_par.o:         mol.o md_par.o
+bd_par.o:         mol_par.o md_par.o
 celllist.o:       mol.o
-celllist_par.o:   mol.o
+celllist_par.o:   mol_par.o
 coordinate.o:     mol.o mollib.o
-coordinate_par.o: mol.o mollib_par.o
+coordinate_par.o: mol_par.o mollib_par.o
 denergy.o:        mol.o energy.o mollib.o celllist.o
-denergy_par.o:    mol.o energy_par.o mollib_par.o celllist_par.o
+denergy_par.o:    mol_par.o energy_par.o mollib_par.o celllist_par.o
 dump.o:           mol.o
-dump_par.o:       mol.o
+dump_par.o:       mol_par.o
 dynamic.o:        mol.o statistics.o mollib.o
-dynamic_par.o:    mol.o statistics_par.o mollib_par.o
+dynamic_par.o:    mol_par.o statistics_par.o mollib_par.o
 energy.o:         mol.o mollib.o celllist.o
-energy_par.o:     mol.o mollib_par.o celllist_par.o
+energy_par.o:     mol_par.o mollib_par.o celllist_par.o
 group.o:          mol.o
-group_par.o:      mol.o
+group_par.o:      mol_par.o
 image.o:          mol.o mollib.o
+image_par.o:      mol_par.o mollib_par.o
 mc.o:             mol.o nlist.o mollib.o celllist.o
-mc_par.o:         mol.o nlist.o mollib_par.o celllist_par.o
+mc_par.o:         mol_par.o nlist_par.o mollib_par.o celllist_par.o
 md.o:             mol.o
-md_par.o:         mol.o
+md_par.o:         mol_par.o
 mesh.o:
 mesh_par.o:
 mixed.o:          mol.o
-mixed_par.o:      mol.o
+mixed_par.o:      mol_par.o
 mol.o:            statistics.o mesh.o mollib.o
+mol_par.o:        statistics_par.o mesh_par.o mollib_par.o
 molaux.o:         mol.o mollib.o
+molaux_par.o:     mol_par.o mollib_par.o
 moldyn.o:         statistics.o
+moldyn_par.o:     statistics_par.o
 mollib.o:
 mollib_par.o:
 molsim.o:         mol.o statistics.o mollib.o
-molsim_par.o:     mol.o statistics_par.o mollib_par.o
+molsim_par.o:     mol_par.o statistics_par.o mollib_par.o
 moluser.o:        mol.o statistics.o potential.o mollib.o
-moluser_par.o:    mol.o potential_par.o statistics_par.o mollib_par.o
+moluser_par.o:    mol_par.o potential_par.o statistics_par.o mollib_par.o
 nlist.o:          mol.o celllist.o
-nlist_par.o:      mol.o celllist_par.o
-parallel_par.o:   mol.o
+nlist_par.o:      mol_par.o celllist_par.o
+parallel_par.o:   mol_par.o
 particle.o:       mol.o mollib.o
-particle_par.o:   mol.o mollib.o
+particle_par.o:   mol_par.o mollib_par.o
 potential.o:      mol.o
-potential_par.o:  mol.o
+potential_par.o:  mol_par.o
 sso.o:            mc.o mol.o
-sso_par.o:        mc_par.o mol.o
+sso_par.o:        mc_par.o mol_par.o
 static.o:         mol.o statistics.o mollib.o potential.o
-static_par.o:     mol.o statistics_par.o mollib_par.o potential.o
+static_par.o:     mol_par.o statistics_par.o mollib_par.o potential_par.o
 statistics.o:     mollib.o
 statistics_par.o: mollib_par.o
 testmesh.o:       mesh.o
+testmesh_par.o:   mesh_par.o
 
 #*****************************************************************
 #*                         Tidy                                  *

@@ -89,12 +89,11 @@
 !       !---------- UExternal
 
 !************************************************************************
-!*                                                                      *
-!*     EnergyModule                                                     *
-!*                                                                      *
+!> \page energy energy.F90
+!! **EnergyModule**
+!! *module for energy*
 !************************************************************************
 
-! ... module for energy
 
 module EnergyModule
 
@@ -257,12 +256,11 @@ module EnergyModule
 end module EnergyModule
 
 !************************************************************************
-!*                                                                      *
-!*     UTotal                                                           *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UTotal**
+!! *calculate energies, forces, torques, virial, and pressure*
 !************************************************************************
 
-! ... calculate energies, forces, torques, virial, and pressure
 
 !     calculated properties:   u%tot
 !                              u%twob()
@@ -438,12 +436,11 @@ end subroutine UTotal
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyA                                                        *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UTwoBodyA**
+!! *calculate two-body potential energy; only monoatomic particles*
 !************************************************************************
 
-! ... calculate two-body potential energy; only monoatomic particles
 
 subroutine UTwoBodyA
 
@@ -547,12 +544,11 @@ end subroutine StopUTwoBodyA
 end subroutine UTwoBodyA
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyALList                                                   *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UTwoBodyALList**
+!! *calculate two-body potential energy; only monoatomic particles*
 !************************************************************************
 
-! ... calculate two-body potential energy; only monoatomic particles
 !     linked list version
 
 subroutine UTwoBodyALList
@@ -662,12 +658,11 @@ end subroutine StopUTwoBodyALList
 end subroutine UTwoBodyALList
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyACellList                                                *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UTwoBodyACellList**
+!! *calculate two-body potential energy*
 !************************************************************************
 
-! ... calculate two-body potential energy
 !     only monoatomic particles
 !     cell list version
 
@@ -782,12 +777,11 @@ end subroutine StopUTwoBodyACellList
 end subroutine UTwoBodyACellList
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyP                                                        *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UTwoBodyP**
+!! *calculate two-body potential energy; general particles*
 !************************************************************************
 
-! ... calculate two-body potential energy; general particles
 
 subroutine UTwoBodyP
 
@@ -902,12 +896,11 @@ end subroutine StopUTwoBodyP
 end subroutine UTwoBodyP
 
 !************************************************************************
-!*                                                                      *
-!*     UEwald                                                           *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UEwald**
+!! *calculate potential energy, forces, and virial from charges; k-space*
 !************************************************************************
 
-! ... calculate potential energy, forces, and virial from charges; k-space
 
 subroutine UEwald
 
@@ -1399,12 +1392,11 @@ end subroutine TestUEwald
 end subroutine UEwald
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldSetArray                                                    *
-!*                                                                      *
+!> \page energy energy.F90
+!! **EwaldSetArray**
+!! *calculate eikx, eiky, and eikz arrays used for ewald summation; k-space*
 !************************************************************************
 
-! ... calculate eikx, eiky, and eikz arrays used for ewald summation; k-space
 
 subroutine EwaldSetArray(ialow, iaupp)
 
@@ -1434,12 +1426,11 @@ subroutine EwaldSetArray(ialow, iaupp)
 end subroutine EwaldSetArray
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldSetArray2d                                                  *
-!*                                                                      *
+!> \page energy energy.F90
+!! **EwaldSetArray2d**
+!! *calculate sinkx, coskx, sinky, and cosky arrays used for ewald summation; k-space*
 !************************************************************************
 
-! ... calculate sinkx, coskx, sinky, and cosky arrays used for ewald summation; k-space
 
 subroutine EwaldSetArray2d(ialow, iaupp)
 
@@ -1474,12 +1465,11 @@ end subroutine EwaldSetArray2d
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*    UDipole                                                           *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UDipole**
+!! *calculate potential energy from charges and dipoles*
 !************************************************************************
 
-! ... calculate potential energy from charges and dipoles
 
 !     the code presuposses that charges are given in elementary units
 
@@ -1589,12 +1579,11 @@ end subroutine TestUDipole
 end subroutine UDipole
 
 !************************************************************************
-!*                                                                      *
-!*     UDipoleP                                                         *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UDipoleP**
+!! *calculate potential, field, and field gradient from charges and dipoles*
 !************************************************************************
 
-! ... calculate potential, field, and field gradient from charges and dipoles
 
 subroutine UDipoleP
 
@@ -1809,12 +1798,11 @@ end subroutine TestUDipoleP
 end subroutine UDipoleP
 
 !************************************************************************
-!*                                                                      *
-!*     UDipoleEwald                                                     *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UDipoleEwald**
+!! *calculate potential, field, and field gradient from charges and dipoles; k-space*
 !************************************************************************
 
-! ... calculate potential, field, and field gradient from charges and dipoles; k-space
 
 subroutine UDipoleEwald
 
@@ -2323,12 +2311,11 @@ end subroutine TestUDipoleEwald
 end subroutine UDipoleEwald
 
 !************************************************************************
-!*                                                                      *
-!*     UManyBodyP                                                       *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UManyBodyP**
+!! *calculate many-body potential energy; general particles*
 !************************************************************************
 
-! ... calculate many-body potential energy; general particles
 
 !     includes also:
 !     two-body electrostatic contribution
@@ -2510,12 +2497,11 @@ end subroutine TestUManyBodyP2
 end subroutine UManyBodyP
 
 !************************************************************************
-!*                                                                      *
-!*     FieldStat                                                        *
-!*                                                                      *
+!> \page energy energy.F90
+!! **FieldStat**
+!! *calculate potential and field from charges and static dipoles*
 !************************************************************************
 
-! ... calculate potential and field from charges and static dipoles
 
 subroutine FieldStat
 
@@ -2674,12 +2660,11 @@ end subroutine TestFieldStat
 end subroutine FieldStat
 
 !************************************************************************
-!*                                                                      *
-!*     FieldStatEwald                                                   *
-!*                                                                      *
+!> \page energy energy.F90
+!! **FieldStatEwald**
+!! *calculate potential and field from charges and static dipoles; k-space*
 !************************************************************************
 
-! ... calculate potential and field from charges and static dipoles; k-space
 
 subroutine FieldStatEwald
 
@@ -3049,12 +3034,11 @@ end subroutine TestFieldStatEwald
 end subroutine FieldStatEwald
 
 !************************************************************************
-!*                                                                      *
-!*     IterIdm                                                          *
-!*                                                                      *
+!> \page energy energy.F90
+!! **IterIdm**
+!! *iterate induced dipole moments self-consistently*
 !************************************************************************
 
-! ... iterate induced dipole moments self-consistently
 !     include reciprocal contribution if lewald = .true.
 !     include reaction field contribution if lrf = .true.
 
@@ -3170,12 +3154,11 @@ end subroutine TestIterIdm2
 end subroutine IterIdm
 
 !************************************************************************
-!*                                                                      *
-!*     FieldIdm                                                         *
-!*                                                                      *
+!> \page energy energy.F90
+!! **FieldIdm**
+!! *calculate field from induced dipoles*
 !************************************************************************
 
-! ... calculate field from induced dipoles
 
 subroutine FieldIdm
 
@@ -3301,12 +3284,11 @@ end subroutine TestFieldIdm
 end subroutine FieldIdm
 
 !************************************************************************
-!*                                                                      *
-!*     FieldIdmEwald                                                    *
-!*                                                                      *
+!> \page energy energy.F90
+!! **FieldIdmEwald**
+!! *calculate field from induced dipoles; k-space*
 !************************************************************************
 
-! ... calculate field from induced dipoles; k-space
 !     eikx, eiky, and eikz are presumed calculated already
 
 subroutine FieldIdmEwald
@@ -3648,12 +3630,11 @@ end subroutine TestFieldIdmEwald
 end subroutine FieldIdmEwald
 
 !************************************************************************
-!*                                                                      *
-!*     FieldTot                                                         *
-!*                                                                      *
+!> \page energy energy.F90
+!! **FieldTot**
+!! *calculate field, field gradient, and virial from charges and total dipoles*
 !************************************************************************
 
-! ... calculate field, field gradient, and virial from charges and total dipoles
 
 subroutine FieldTot
 
@@ -3862,12 +3843,11 @@ end subroutine TestFieldTot
 end subroutine FieldTot
 
 !************************************************************************
-!*                                                                      *
-!*     FieldTotEwald                                                    *
-!*                                                                      *
+!> \page energy energy.F90
+!! **FieldTotEwald**
+!! *calculate field, field gradient, and virial from charges and total dipoles; k-space*
 !************************************************************************
 
-! ... calculate field, field gradient, and virial from charges and total dipoles; k-space
 !     this routine assumes that the eikx, eiky, and eikz arrays are generated
 
 subroutine FieldTotEwald
@@ -4343,12 +4323,11 @@ end subroutine TestFieldTotEwald
 end subroutine FieldTotEwald
 
 !************************************************************************
-!*                                                                      *
-!*     UIntraReac                                                       *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UIntraReac**
+!! *calculate intramolecular contribution to energy and force in rf*
 !************************************************************************
 
-! ... calculate intramolecular contribution to energy and force in rf
 
 subroutine UIntraReac
 
@@ -4391,12 +4370,11 @@ end subroutine UIntraReac
 
 #if defined (_PAR_)
 !************************************************************************
-!*                                                                      *
-!*     PackReduceU                                                      *
-!*                                                                      *
+!> \page energy energy.F90
+!! **PackReduceU**
+!! *pack the different energy contributions and perform all_reduce*
 !************************************************************************
 
-! ... pack the different energy contributions and perform all_reduce
 
 subroutine PackReduceU(n1, n2, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, uaux)
 
@@ -4435,12 +4413,11 @@ end subroutine PackReduceU
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     UDipoleSph                                                       *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UDipoleSph**
+!! *calculate charge and dipole potential energy using image charge approximation*
 !************************************************************************
 
-! ... calculate charge and dipole potential energy using image charge approximation
 
 subroutine UDipoleSph
 
@@ -4729,12 +4706,11 @@ end subroutine UDipoleSph
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     UDielDis                                                         *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UDielDis**
+!! *calculate energy for charge and in a system with dielectric discontinuities*
 !************************************************************************
 
-! ... calculate energy for charge and in a system with dielectric discontinuities
 
 subroutine UDielDis
 
@@ -4750,12 +4726,11 @@ subroutine UDielDis
 end subroutine UDielDis
 
 !************************************************************************
-!*                                                                      *
-!*     UDielDisPlane                                                    *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UDielDisPlane**
+!! *calculate coulomb energy in a system with dielectric discontinuity at z = 0*
 !************************************************************************
 
-! ... calculate coulomb energy in a system with dielectric discontinuity at z = 0
 
 subroutine UDielDisPlane
 
@@ -4851,12 +4826,11 @@ end subroutine TestUDielDisPlane
 end subroutine UDielDisPlane
 
 !************************************************************************
-!*                                                                      *
-!*     UDielDisSph                                                      *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UDielDisSph**
+!! *calculate coulomb energy in a system with spherical dielectric discontinuity*
 !************************************************************************
 
-! ... calculate coulomb energy in a system with spherical dielectric discontinuity
 
 subroutine UDielDisSph
 
@@ -4957,12 +4931,11 @@ end subroutine TestUDielDisSph
 end subroutine UDielDisSph
 
 !************************************************************************
-!*                                                                      *
-!*     ImageIntSph                                                      *
-!*                                                                      *
+!> \page energy energy.F90
+!! **ImageIntSph**
+!! *get the image interaction for spherical geometry*
 !************************************************************************
 
-! ... get the image interaction for spherical geometry
 
 real(8) function ImageIntSph(lmaxdiel, boundaryrad, eta, r1, r2, cosa)
 
@@ -5047,12 +5020,11 @@ real(8) function ImageIntSph(lmaxdiel, boundaryrad, eta, r1, r2, cosa)
 end function ImageIntSph
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyPair                                                     *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UTwoBodyPair**
+!! *calculate two-body potential energy and force between two particles*
 !************************************************************************
 
-! ... calculate two-body potential energy and force between two particles
 
 subroutine UTwoBodyPair(ip, jp, uuu, fforce)
 
@@ -5354,12 +5326,11 @@ end subroutine UTwoBodyPair
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     UBond                                                            *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UBond**
+!! *calculate bond potential energy, forces, and virial*
 !************************************************************************
 
-! ... calculate bond potential energy, forces, and virial
 
 subroutine UBond
 
@@ -5429,12 +5400,11 @@ end subroutine TestUBond
 end subroutine UBond
 
 !************************************************************************
-!*                                                                      *
-!*     UAngle                                                           *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UAngle**
+!! *calculate angle potential energy, forces, and virial*
 !************************************************************************
 
-! ... calculate angle potential energy, forces, and virial
 
 subroutine UAngle
 
@@ -5536,12 +5506,11 @@ end subroutine TestUAngle
 end subroutine UAngle
 
 !************************************************************************
-!*                                                                      *
-!*     UCrossLink                                                       *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UCrossLink**
+!! *calculate crosslink potential energy, forces, and virial*
 !************************************************************************
 
-! ... calculate crosslink potential energy, forces, and virial
 
 subroutine UCrossLink
 
@@ -5611,12 +5580,11 @@ end subroutine UCrossLink
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     UExternal                                                        *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UExternal**
+!! *calculate external potential energy*
 !************************************************************************
 
-! ... calculate external potential energy
 
 subroutine UExternal
 
@@ -6334,12 +6302,11 @@ end subroutine TestUExternal
 end subroutine UExternal
 
 !************************************************************************
-!*                                                                      *
-!*     UreactionSphere                                                  *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UreactionSphere**
+!! *calculate the reaction energy of an ion and a dielectric sphere*
 !************************************************************************
 
-! ... calculate the reaction energy of an ion and a dielectric sphere
 
 real(8) function UreactionSphere(fac, e1, e2, r, rad, tol,itest,unit)
 
@@ -6378,12 +6345,11 @@ real(8) function UreactionSphere(fac, e1, e2, r, rad, tol,itest,unit)
 end function UreactionSphere
 
 !************************************************************************
-!*                                                                      *
-!*     UExternalUpdate                                                  *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UExternalUpdate**
+!! *update arrays for external energy*
 !************************************************************************
 
-! ... update arrays for external energy
 
 subroutine UExternalUpdate(iptmove)
 
@@ -6407,12 +6373,11 @@ end subroutine  DUExternalSphDielBoundaryUpdate
 end subroutine UExternalUpdate
 
 !************************************************************************
-!*                                                                      *
-!*     xCCLM                                                            *
-!*                                                                      *
+!> \page energy energy.F90
+!! **xCCLM**
+!! *return the spherical harmonics*
 !************************************************************************
 
-! ... return the spherical harmonics
 !             norm = 0,  modified spherical harmonics c(l,m)(theta,phi)
 !             nrom = 1,  spherical harmonics y(l,m)(theta,phi)
 
@@ -6451,12 +6416,11 @@ complex(8) function xCCLM(l,m,theta,phi,norm)
 end function xCCLM
 
 !************************************************************************
-!*                                                                      *
-!*     xPLM                                                             *
-!*                                                                      *
+!> \page energy energy.F90
+!! **xPLM**
+!! *return the associate legendre polynomial p(l,m) at x*
 !************************************************************************
 
-! ... return the associate legendre polynomial p(l,m) at x.
 !     p(m,m)(x) = (2m-1)!!(1-x*x)*(m/2) and the recurrence relation
 !     (l-m+1)*p(l+1,m)(x)=(2*l+1)*x*p(l,m)(x)-(l+m)*p(l-1,m)(x)
 
@@ -6499,12 +6463,11 @@ real(8) function xPLM(l,m,x)
 end function xPLM
 
 !************************************************************************
-!*                                                                      *
-!*     Longrangecontr                                                   *
-!*                                                                      *
+!> \page energy energy.F90
+!! **Longrangecontr**
+!! *calculate long-range contribution of the electrostatic energy*
 !************************************************************************
 
-! ... calculate long-range contribution of the electrostatic energy
 !     (eq. 17 of Jonsson et al, JPC, 84, 2179, 1980)
 
 real(8) function Longrangecontr(a, z, scd, n, zdist, chden)
@@ -6552,12 +6515,11 @@ real(8) function Longrangecontr(a, z, scd, n, zdist, chden)
 end function Longrangecontr
 
 !************************************************************************
-!*                                                                      *
-!*     SPMFFTRec                                                        *
-!*                                                                      *
+!> \page energy energy.F90
+!! **SPMFFTRec**
+!! *make Fourier transformation, reciprocal space operations, and back FFT*
 !************************************************************************
 
-! ... make Fourier transformation, reciprocal space operations, and back FFT
 
 # ifdef F03_CBIND
 subroutine SPMFFTRec(lsave, linit, lenergy, txFFT, txRec, level, uloc, virloc)
@@ -6626,12 +6588,11 @@ end subroutine SPMFFTRec
 # endif
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldSetup                                                       *
-!*                                                                      *
+!> \page energy energy.F90
+!! **EwaldSetup**
+!! *setup for ewald summation*
 !************************************************************************
 
-! ... setup for ewald summation
 
 ! includes self-energy for molecules with partial charges
 ! surface term can optionally be included
@@ -7165,12 +7126,11 @@ end subroutine NcutToAlpha
 end subroutine EwaldSetup
 
 !************************************************************************
-!*                                                                      *
-!*     Getnkvec                                                         *
-!*                                                                      *
+!> \page energy energy.F90
+!! **Getnkvec**
+!! *return the value of nkvec*
 !************************************************************************
 
-! ... return the value of nkvec
 
 function Getnkvec()
    use EnergyModule
@@ -7180,12 +7140,11 @@ function Getnkvec()
 end function Getnkvec
 
 !************************************************************************
-!*                                                                      *
-!*     Getnkvec2d                                                       *
-!*                                                                      *
+!> \page energy energy.F90
+!! **Getnkvec2d**
+!! *return the value of nkvec2d*
 !************************************************************************
 
-! ... return the value of nkvec2d
 
 function Getnkvec2d()
    use EnergyModule
@@ -7195,12 +7154,11 @@ function Getnkvec2d()
 end function Getnkvec2d
 
 !************************************************************************
-!*                                                                      *
-!*     Gettime_ewald                                                    *
-!*                                                                      *
+!> \page energy energy.F90
+!! **Gettime_ewald**
+!! *return the value of ncut2d*
 !************************************************************************
 
-! ... return the value of ncut2d
 
 function Gettime_ewald()
    use EnergyModule
@@ -7212,12 +7170,11 @@ end function Gettime_ewald
 ! ........................... Under Development ...............................
 
 !************************************************************************
-!*                                                                      *
-!*     UWeakChargeA                                                     *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UWeakChargeA**
+!! *calculate two-body potential energy; only monoatomic particles*
 !************************************************************************
 
-! ... calculate two-body potential energy; only monoatomic particles
 !     weak charges, limited to charged hard spheres
 
 subroutine UWeakChargeA
@@ -7319,12 +7276,11 @@ end subroutine StopUWeakChargeA
 end subroutine UWeakChargeA
 
 !************************************************************************
-!*                                                                      *
-!*     UWeakChargeP                                                     *
-!*                                                                      *
+!> \page energy energy.F90
+!! **UWeakChargeP**
+!! *calculate two-body potential energy; general particles*
 !************************************************************************
 
-! ... calculate two-body potential energy; general particles
 !     weak charges, limited to charged hard spheres
 
 subroutine UWeakChargeP

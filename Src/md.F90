@@ -20,26 +20,80 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     MDModule                                                         *
-!*                                                                      *
+!> \page md md.F90
+!! **MDModule**
+!! *module for md*
 !************************************************************************
 
-! ... module for md
-
+!> \page nmlMD
+!! The namelist \ref nmlMD contains variables that control the MD simulation.
+!! * Variables:
+!!  * \subpage integ
+!!  * \subpage nmlMDtstep
+!!  * \subpage tvvite
+!!  * \subpage nvvite
+!!  * \subpage lsetvel
+!!  * \subpage lzeromom
+!!  * \subpage tvscl
+!!  * \subpage tlscl
+!!  * \subpage compre
 module MDModule
 
    use MolModule
+!> \page integ
+!! `character(6)`
+!! * `verlver` Integration according to the velocity form of the Verlet algorithm.
+!! * `gear3` Integration according to a third-order Gear algorithm.
+!! * `gear4` Integration according to a fourth-order Gear algorithm.
+   character(6)  :: integ
+!> \page nmlMDtstep
+!! `real`
+!! * Time step of the MD integration.
 
-   character(6)  :: integ                  ! selection of integration method
-   real(8)       :: tstep                  ! md time step
-   real(8)       :: tvvite                 ! factor in iteration (velocity verlet)
-   integer(4)    :: nvvite                 ! number of iterations (velocity verlet)
-   logical       :: lsetvel                ! flag for setting initial velocities
-   logical       :: lzeromom               ! flag for zeroing moments (if possible)
-   real(8)       :: tvscl                  ! velocity scaling time constant
-   real(8)       :: tlscl                  ! pressure scaling time constant
-   real(8)       :: compre                 ! assumed isothermal compressibility
+!> \page nmlBDtstep
+!! `real`
+!! * Time step of the BD integration.
+   real(8)       :: tstep
+!> \page tvvite
+!! `real`
+!! **default:** `0.0`
+!! * Factor that determines the initial quaternion velocity for the iteration of the quaternion velocity (only \ref integ='velver'; 0.0 is fine).
+   real(8)       :: tvvite
+!> \page nvvite
+!! `integer`
+!! **default:** 2
+!! * Number of iterations for the quaternion velocities (only \ref integ='velver'; 2 is preferred).
+   integer(4)    :: nvvite
+!> \page lsetvel
+!! `logical`
+!! **default:** `.true.` (only \ref txstart = 'setconf' .or. 'zero'); `.false.`  (only \ref txstart = 'continue')
+!! * `.true.`: Linear and angular velocities are set according to a Maxwell distribution using the temperature \ref temp.
+!! * `.false.`: No set of linear and angular velocities.
+   logical       :: lsetvel
+!> \page lzeromom
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Modify linear and angular velocities (only possible) to get zero linear and angular moments while preserving the translational and rotational temperature (only \ref lsetvel=.true.).
+!! * `.false.`: Nothing.
+   logical       :: lzeromom
+!> \page tvscl
+!! `real`
+!! **default:** `0.0`
+!! * Time constant for the velocity scaling. The scaling is applied if \ref tvscl>0.0 and is then performed every time step according to
+!!  velocity(new)=velocity(old)* sqrt(1+(tstep/\ref tvscl)*(\ref temp /t-1)), where t is the instantaneous temperature (Berendsen et al., 1984).
+!!  \ref tvscl=tstep scales the velocities to give t=\ref temp.
+   real(8)       :: tvscl
+!> \page tlscl
+!! `real`
+!! **default:** `0.0`
+!! * Time constant for the length scaling. The scaling is applied if \ref tlscl >0.0 and is then performed every time step according to
+!!  length(new) = length(old)*(1+x)**(-1/3), x=(tstep/\ref tlscl)*\ref compre*(p-\ref prsr), where p is the instantaneously pressure (Berendsen et
+!!  al., 1984).
+   real(8)       :: tlscl
+!> \page compre
+!! `real`
+!! * Compressibility used for the length scaling.
+   real(8)       :: compre
 
    real(8)       :: linmom(3)              ! total linear moment
    real(8)       :: angmom(3)              ! total angular moment
@@ -50,16 +104,14 @@ module MDModule
    real(8), allocatable :: quadd(:,:)      ! quaterion accleration
    real(8), allocatable :: quaddo(:,:)     ! quaterion acceleration, old
    real(8), allocatable :: quaddd(:,:)     ! time derivative of quadd
-
 end module MDModule
 
 !************************************************************************
-!*                                                                      *
-!*     MDDriver                                                         *
-!*                                                                      *
+!> \page md md.F90
+!! **MDDriver**
+!! *molecular dynamics driver*
 !************************************************************************
 
-! ... molecular dynamics driver
 
 subroutine MDDriver(iStage)
 
@@ -131,12 +183,11 @@ subroutine MDDriver(iStage)
 end subroutine MDDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IOMD                                                             *
-!*                                                                      *
+!> \page md md.F90
+!! **IOMD**
+!! *perform i/o on molecular dynamics variables*
 !************************************************************************
 
-! ... perform i/o on molecular dynamics variables
 
 subroutine IOMD(iStage)
 
@@ -189,12 +240,11 @@ subroutine IOMD(iStage)
 end subroutine IOMD
 
 !************************************************************************
-!*                                                                      *
-!*     VelVer                                                           *
-!*                                                                      *
+!> \page md md.F90
+!! **VelVer**
+!! *perform one step according to the velocity form of the Verlet algorithm*
 !************************************************************************
 
-! ... perform one step according to the velocity form of the Verlet algorithm
 
 !     ref: swope et al. JCP 76, 637 (1982)
 !     the combination of the velocity form of the Verlet algorithm and quaterions is new
@@ -360,12 +410,11 @@ subroutine VelVer(iStage)
 end subroutine VelVer
 
 !************************************************************************
-!*                                                                      *
-!*     Gear                                                             *
-!*                                                                      *
+!> \page md md.F90
+!! **Gear**
+!! *perform one step according to the Gear algorithm*
 !************************************************************************
 
-! ... perform one step according to the Gear algorithm
 
 !     ref: Gear "numerical initial value problems in ordinary differential equations"
 !     prentice-hall, englewood cliffs, n.j. 1971 and sonnenschein, j. comp. phys. 59, 347 (1985)
@@ -541,12 +590,11 @@ subroutine Gear(iStage)
 end subroutine Gear
 
 !************************************************************************
-!*                                                                      *
-!*     GetLinAcc                                                        *
-!*                                                                      *
+!> \page md md.F90
+!! **GetLinAcc**
+!! *calculate new linear acceleration*
 !************************************************************************
 
-! ... calculate new linear acceleration
 
 !     uses forces(lab)
 
@@ -569,12 +617,11 @@ subroutine GetLinAcc(iplow, ipupp)
 end subroutine GetLinAcc
 
 !************************************************************************
-!*                                                                      *
-!*     GetAngAcc                                                        *
-!*                                                                      *
+!> \page md md.F90
+!! **GetAngAcc**
+!! *calculate new quaternion accelerations*
 !************************************************************************
 
-! ... calculate new quaternion accelerations
 
 !     uses torques(lab), orientation, angular velocity, quaternion, and quaternion velocities
 
@@ -616,12 +663,11 @@ subroutine GetAngAcc(iplow, ipupp)
 end subroutine GetAngAcc
 
 !************************************************************************
-!*                                                                      *
-!*     ScaleLength                                                      *
-!*                                                                      *
+!> \page md md.F90
+!! **ScaleLength**
+!! *scale lengths through a pressure coupling to an external bath*
 !************************************************************************
 
-! ... scale lengths through a pressure coupling to an external bath
 
 !     ref. Berendsen, JCP 81, 3684 (1984)
 
@@ -662,12 +708,11 @@ subroutine ScaleLength
 end subroutine ScaleLength
 
 !************************************************************************
-!*                                                                      *
-!*     ScaleVel                                                         *
-!*                                                                      *
+!> \page md md.F90
+!! **ScaleVel**
+!! *scale velocities and calculate new kinetic energies*
 !************************************************************************
 
-! ... scale velocities and calculate new kinetic energies
 
 subroutine ScaleVel
    call ScaleLinVel
@@ -676,12 +721,11 @@ subroutine ScaleVel
 end subroutine ScaleVel
 
 !************************************************************************
-!*                                                                      *
-!*     ScaleLinVel                                                      *
-!*                                                                      *
+!> \page md md.F90
+!! **ScaleLinVel**
+!! *scale linear velocities through a thermal coupling to an external bath*
 !************************************************************************
 
-! ... scale linear velocities through a thermal coupling to an external bath
 
 !     ref: Berendsen, JCP 81, 3684 (1984).
 
@@ -704,12 +748,11 @@ subroutine ScaleLinVel
 end subroutine ScaleLinVel
 
 !************************************************************************
-!*                                                                      *
-!*     ScaleAngVel                                                      *
-!*                                                                      *
+!> \page md md.F90
+!! **ScaleAngVel**
+!! *scale angular velocities through a thermal coupling to an external bath*
 !************************************************************************
 
-! ... scale angular velocities through a thermal coupling to an external bath
 
 !     ref: Berendsen, JCP 81, 3684 (1984).
 
@@ -733,12 +776,11 @@ subroutine ScaleAngVel
 end subroutine ScaleAngVel
 
 !************************************************************************
-!*                                                                      *
-!*     SetVel                                                           *
-!*                                                                      *
+!> \page md md.F90
+!! **SetVel**
+!! *set linear and angular velocities*
 !************************************************************************
 
-! ... set linear and angular velocities
 
 subroutine SetVel
 
@@ -751,12 +793,11 @@ subroutine SetVel
 end subroutine SetVel
 
 !************************************************************************
-!*                                                                      *
-!*     SetLinVel                                                        *
-!*                                                                      *
+!> \page md md.F90
+!! **SetLinVel**
+!! *set linear velocities according to the maxwell distribution*
 !************************************************************************
 
-! ... set linear velocities according to the maxwell distribution
 
 subroutine SetLinVel
 
@@ -779,12 +820,11 @@ subroutine SetLinVel
 end subroutine SetLinVel
 
 !************************************************************************
-!*                                                                      *
-!*     SetAngVel                                                        *
-!*                                                                      *
+!> \page md md.F90
+!! **SetAngVel**
+!! *set angular velocities according to the maxwell distribution*
 !************************************************************************
 
-! ... set angular velocities according to the maxwell distribution
 
 subroutine SetAngVel
 
@@ -808,12 +848,11 @@ subroutine SetAngVel
 end subroutine SetAngVel
 
 !************************************************************************
-!*                                                                      *
-!*     SetZeroMom                                                       *
-!*                                                                      *
+!> \page md md.F90
+!! **SetZeroMom**
+!! *set zero linear and angular moments*
 !************************************************************************
 
-! ... set zero linear and angular moments
 
 subroutine SetZeroMom
 
@@ -826,12 +865,11 @@ subroutine SetZeroMom
 end subroutine SetZeroMom
 
 !************************************************************************
-!*                                                                      *
-!*     SetZeroLinMom                                                    *
-!*                                                                      *
+!> \page md md.F90
+!! **SetZeroLinMom**
+!! *set zero linear moments*
 !************************************************************************
 
-! ... set zero linear moments
 !     if possible keep the linear moments consistent with temperature = tempst
 
 subroutine SetZeroLinMom
@@ -895,12 +933,11 @@ subroutine SetZeroLinMom
 end subroutine SetZeroLinMom
 
 !************************************************************************
-!*                                                                      *
-!*     SetZeroAngMom                                                    *
-!*                                                                      *
+!> \page md md.F90
+!! **SetZeroAngMom**
+!! *set zero angular moments*
 !************************************************************************
 
-! ... set zero angular moments
 !      if possible, keep the angular moments consistent with temperature = tempst
 
 subroutine SetZeroAngMom
@@ -978,12 +1015,11 @@ subroutine SetZeroAngMom
 end subroutine SetZeroAngMom
 
 !************************************************************************
-!*                                                                      *
-!*     GetLinMom                                                        *
-!*                                                                      *
+!> \page md md.F90
+!! **GetLinMom**
+!! *calculate total linear moment*
 !************************************************************************
 
-! ... calculate total linear moment
 
 subroutine GetLinMom
    use MDModule
@@ -994,12 +1030,11 @@ subroutine GetLinMom
 end subroutine GetLinMom
 
 !************************************************************************
-!*                                                                      *
-!*     GetAngMom                                                        *
-!*                                                                      *
+!> \page md md.F90
+!! **GetAngMom**
+!! *calculate total angular moment*
 !************************************************************************
 
-! ... calculate total angular moment
 
 subroutine GetAngMom
    use MDModule
@@ -1019,12 +1054,11 @@ subroutine GetAngMom
 end subroutine GetAngMom
 
 !************************************************************************
-!*                                                                      *
-!*     WriteLinMom                                                      *
-!*                                                                      *
+!> \page md md.F90
+!! **WriteLinMom**
+!! *write total linear moment*
 !************************************************************************
 
-! ... write total linear moment
 
 subroutine WriteLinMom
    use MDModule
@@ -1033,12 +1067,11 @@ subroutine WriteLinMom
 end subroutine WriteLinMom
 
 !************************************************************************
-!*                                                                      *
-!*     WriteAngMom                                                      *
-!*                                                                      *
+!> \page md md.F90
+!! **WriteAngMom**
+!! *write total angular moment*
 !************************************************************************
 
-! ... write total angular moment
 
 subroutine WriteAngMom
    use MDModule
@@ -1047,12 +1080,11 @@ subroutine WriteAngMom
 end subroutine WriteAngMom
 
 !************************************************************************
-!*                                                                      *
-!*     GetKinEnergy                                                     *
-!*                                                                      *
+!> \page md md.F90
+!! **GetKinEnergy**
+!! *calculate total kinetic energies and temperatures*
 !************************************************************************
 
-! ... calculate total kinetic energies and temperatures
 
 subroutine GetKinEnergy
 
@@ -1080,12 +1112,11 @@ subroutine GetKinEnergy
 end subroutine GetKinEnergy
 
 !************************************************************************
-!*                                                                      *
-!*     GetTStep                                                         *
-!*                                                                      *
+!> \page md md.F90
+!! **GetTStep**
+!! *return the time step*
 !************************************************************************
 
-! ... return the time step
 
 function GetTStep()
    use MDModule
@@ -1095,12 +1126,11 @@ function GetTStep()
 end function GetTStep
 
 !************************************************************************
-!*                                                                      *
-!*     GetTime                                                          *
-!*                                                                      *
+!> \page md md.F90
+!! **GetTime**
+!! *return the time*
 !************************************************************************
 
-! ... return the time
 
 function GetTime()
    use MDModule
@@ -1111,12 +1141,11 @@ function GetTime()
 end function GetTime
 
 !************************************************************************
-!*                                                                      *
-!*     GetlSetVel                                                       *
-!*                                                                      *
+!> \page md md.F90
+!! **GetlSetVel**
+!! *return the value of \ref lsetvel*
 !************************************************************************
 
-! ... return the value of lsetvel
 
 function GetlSetVel()
    use MDModule
@@ -1126,12 +1155,11 @@ function GetlSetVel()
 end function GetlSetVel
 
 !************************************************************************
-!*                                                                      *
-!*     GetlZeroMom                                                      *
-!*                                                                      *
+!> \page md md.F90
+!! **GetlZeroMom**
+!! *return the value of \ref lzeromom*
 !************************************************************************
 
-! ... return the value of lzeromom
 
 function GetlZeroMom()
    use MDModule
@@ -1141,12 +1169,11 @@ function GetlZeroMom()
 end function GetlZeroMom
 
 !************************************************************************
-!*                                                                      *
-!*     TestSimulationMD                                                 *
-!*                                                                      *
+!> \page md md.F90
+!! **TestSimulationMD**
+!! *write MD test output*
 !************************************************************************
 
-! ... write MD test output
 
 subroutine TestSimulationMD(unit)
 

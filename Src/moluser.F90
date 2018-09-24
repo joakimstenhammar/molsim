@@ -1,10 +1,9 @@
 !************************************************************************
-!*                                                                      *
-!*     PotentialUser                                                    *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **PotentialUser**
+!! *driver of user-provided routines for potentials*
 !************************************************************************
 
-! ... driver of user-provided routines for potentials
 
 subroutine PotentialUser(ipt, jpt, ibuf, lsetatat2, lsetconf)
 
@@ -40,12 +39,11 @@ subroutine PotentialUser(ipt, jpt, ibuf, lsetatat2, lsetconf)
 end subroutine PotentialUser
 
 !************************************************************************
-!*                                                                      *
-!*     SodiumChloride                                                   *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SodiumChloride**
+!! *na-na, na-cl, and cl-cl potentials*
 !************************************************************************
 
-! ... na-na, na-cl, and cl-cl potentials
 
 !     ref: JCP 84, 867 (1986)
 
@@ -132,12 +130,11 @@ subroutine SodiumChloride(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine SodiumChloride
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldSquareWell                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **EwaldSquareWell**
+!! *real space ewald plus square-well potential (with a soft rise)*
 !************************************************************************
 
-! ... real space ewald plus square-well potential (with a soft rise)
 
 subroutine EwaldSquareWell(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
@@ -325,12 +322,11 @@ end subroutine SquareWell
 end subroutine EwaldSquareWell
 
 !************************************************************************
-!*                                                                      *
-!*     ElstatScreen                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ElstatScreen**
+!! *potential where the first term is screened if it is a 1/r term*
 !************************************************************************
 
-! ... potential where the first term is screened if it is a 1/r term
 !     other terms may also be present
 !     notice that epsilonr has to be set in this routine
 !     ucoff for the 1/r term is not used instead zat is used
@@ -402,12 +398,11 @@ end subroutine ElstatScreen
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
-!*                                                                      *
-!*     SetConfigurationUser                                             *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetConfigurationUser**
+!! *driver of user-provided routines for generating a start configuration*
 !************************************************************************
 
-! ... driver of user-provided routines for generating a start configuration
 
 subroutine SetConfigurationUser(ipt, lsetconf)
 
@@ -460,12 +455,11 @@ subroutine SetConfigurationUser(ipt, lsetconf)
 end subroutine SetConfigurationUser
 
 !************************************************************************
-!*                                                                      *
-!*     SetCNF                                                           *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetCNF**
+!! *generate a configuration by reading ro and ori from the begining of fcnf*
 !************************************************************************
 
-! ... generate a configuration by reading ro and ori from the begining of fcnf
 
 subroutine SetCNF(ipt)
 
@@ -498,12 +492,11 @@ subroutine SetCNF(ipt)
 end subroutine SetCNF
 
 !************************************************************************
-!*                                                                      *
-!*     SetOneHelix                                                      *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetOneHelix**
+!! *generate a helical conformation*
 !************************************************************************
 
-! ... generate a helical conformation
 
 subroutine SetOneHelix(ipt)
 
@@ -546,12 +539,11 @@ subroutine SetOneHelix(ipt)
 end subroutine SetOneHelix
 
 !************************************************************************
-!*                                                                      *
-!*     SetCubic2D1Surf                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetCubic2D1Surf**
+!! *generate a cubic configuration with particles at z = -(boxlenz/2 + delta)*
 !************************************************************************
 
-! ... generate a cubic configuration with particles at z = -(boxlenz/2 + delta)
 
 subroutine SetCubic2D1Surf(ipt)
 
@@ -591,12 +583,11 @@ subroutine SetCubic2D1Surf(ipt)
 end subroutine SetCubic2D1Surf
 
 !************************************************************************
-!*                                                                      *
-!*     SetCubic2D2Surf                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetCubic2D2Surf**
+!! *generate a cubic configuration with particles at z = +-(boxlenz/2 + delta)*
 !************************************************************************
 
-! ... generate a cubic configuration with particles at z = +-(boxlenz/2 + delta)
 
 subroutine SetCubic2D2Surf(ipt)
 
@@ -636,12 +627,11 @@ subroutine SetCubic2D2Surf(ipt)
 end subroutine SetCubic2D2Surf
 
 !************************************************************************
-!*                                                                      *
-!*     SetChainRandomTrans                                              *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetChainRandomTrans**
+!! *generate a random start configurations for chain particles + chain translation*
 !************************************************************************
 
-! ... generate a random start configurations for chain particles + chain translation
 !     for Niklas
 
 subroutine SetChainRandomTrans!(iptset) iptset is not needed
@@ -702,12 +692,11 @@ subroutine SetChainRandomTrans!(iptset) iptset is not needed
 end subroutine SetChainRandomTrans
 
 !************************************************************************
-!*                                                                      *
-!*     SetCapsid                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetCapsid**
+!! *generate a uniform distribution on the surface of a sphere of rcap+2*
 !************************************************************************
 
-! ... generate a uniform distribution on the surface of a sphere of rcap+2
 !     radius for particles of type ipt
 
 subroutine SetCapsid(ipt)
@@ -751,12 +740,11 @@ subroutine SetCapsid(ipt)
  end subroutine SetCapsid
 
 !************************************************************************
-!*                                                                      *
-!*     SetCapsid_250                                                    *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetCapsid_250**
+!! *generate a random configuration with 250 particles on a spherical surface*
 !************************************************************************
 
-! ... generate a random configuration with 250 particles on a spherical surface
 
 subroutine SetCapsid_250(ipt)
 
@@ -805,12 +793,11 @@ subroutine SetCapsid_250(ipt)
   end subroutine  SetCapsid_250
 
 !************************************************************************
-!*                                                                      *
-!*     SetCapsidRandom                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetCapsidRandom**
+!! *generate a random start configurations for paticles of type ipt*
 !************************************************************************
 
-! ... generate a random start configurations for paticles of type ipt
 !     in a spherical cell containing the capsid
 
 subroutine SetCapsidRandom(ipt)
@@ -870,12 +857,11 @@ if (itry > ntry) then                            ! number of trial attempts exce
 end subroutine SetCapsidRandom
 
 !************************************************************************
-!*                                                                      *
-!*     SetInsideCapsid                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetInsideCapsid**
+!! *generate a random configuration inside a capsid*
 !************************************************************************
 
-! ... generate a random configuration inside a capsid
 
 subroutine SetInsideCapsid(ipt)
 
@@ -927,12 +913,11 @@ if (itry > ntry) then                     ! number of trial attempts exceeds the
 end subroutine SetInsideCapsid
 
 !************************************************************************
-!*                                                                      *
-!*     SetChainInsideCapsid                                             *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetChainInsideCapsid**
+!! *generate a random chain configuration inside a capsid*
 !************************************************************************
 
-! ... generate a random chain configuration inside a capsid
 
 subroutine SetChainInsideCapsid!(iptset) iptset is not needed
 
@@ -999,13 +984,12 @@ subroutine SetChainInsideCapsid!(iptset) iptset is not needed
 end subroutine SetChainInsideCapsid
 
 !************************************************************************
-!*                                                                      *
-!*     SetSpool                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetSpool**
+!! *generate a spool-like structure inside a capsid*
 !************************************************************************
 
 
-! ... generate a spool-like structure inside a capsid
 !     The distance between the projections of two adjacent circles on Oz axisis constant and is 6.4
 
 subroutine SetSpool(ipt)
@@ -1067,12 +1051,11 @@ subroutine SetSpool(ipt)
 end subroutine SetSpool
 
 !************************************************************************
-!*                                                                      *
-!*     SetSpoolm                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetSpoolm**
+!! *generate a multilayered spool-like structure inside a capsid*
 !************************************************************************
 
-! ... generate a multilayered spool-like structure inside a capsid
 
 subroutine SetSpoolm(ipt)
 
@@ -1150,12 +1133,11 @@ subroutine SetSpoolm(ipt)
   end subroutine SetSpoolm
 
 !************************************************************************
-!*                                                                      *
-!*     SetSpoolm1                                                       *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetSpoolm1**
+!! *generate a multilayered spool-like structure inside a capsid*
 !************************************************************************
 
-! ... generate a multilayered spool-like structure inside a capsid
 
 subroutine SetSpoolm1(ipt)
 
@@ -1237,12 +1219,11 @@ subroutine SetSpoolm1(ipt)
 end subroutine SetSpoolm1
 
 !************************************************************************
-!*                                                                      *
-!*     setsheet                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **setsheet**
+!! *set bcc 'sheet' or 'tube'*
 !************************************************************************
 
-! ... set bcc 'sheet' or 'tube'
 
 subroutine setsheet(ipt,scfac1,scfac2,first)
 
@@ -1385,12 +1366,11 @@ subroutine setsheet(ipt,scfac1,scfac2,first)
 end subroutine setsheet
 
 !************************************************************************
-!*                                                                      *
-!*     SetRandomCylinderShell                                           *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetRandomCylinderShell**
+!! *generate a random configuration inside a cylinder with a hard cylinder within*
 !************************************************************************
 
-! ... generate a random configuration inside a cylinder with a hard cylinder within
 
 subroutine SetRandomCylinderShell(ipt)
 
@@ -1430,12 +1410,11 @@ subroutine SetRandomCylinderShell(ipt)
 end subroutine SetRandomCylinderShell
 
 !************************************************************************
-!*                                                                      *
-!*     SetChainLinePMA                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SetChainLinePMA**
+!! *generate a line configuration for PMA chain particles*
 !************************************************************************
 
-! ... generate a line configuration for PMA chain particles
 
 subroutine SetChainLinePMA!(iptset) iptset is not used
 
@@ -1526,12 +1505,11 @@ end subroutine SetChainLinePMA
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
-!*                                                                      *
-!*     DumpUser                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **DumpUser**
+!! *driver of user-provided routines for dumping*
 !************************************************************************
 
-! ... driver of user-provided routines for dumping
 
 subroutine DumpUser(iStage)
 
@@ -1549,12 +1527,11 @@ subroutine DumpUser(iStage)
 end subroutine DumpUser
 
 !************************************************************************
-!*                                                                      *
-!*     BBDump                                                           *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **BBDump**
+!! *dumps three angles and two energies*
 !************************************************************************
 
-! ... dumps three angles and two energies
 
 !     adapted for two benzene moleucules in water
 
@@ -1623,12 +1600,11 @@ subroutine BBDump(iStage)
 end subroutine BBDump
 
 !************************************************************************
-!*                                                                      *
-!*     ChainCOMDump                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ChainCOMDump**
+!! *dump center of mass of chains*
 !************************************************************************
 
-! ... dump center of mass of chains
 
 subroutine ChainCOMDump(iStage)
 
@@ -1706,12 +1682,11 @@ end subroutine GetChainData
 end subroutine ChainCOMDump
 
 !************************************************************************
-!*                                                                      *
-!*     ChainReeDump                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ChainReeDump**
+!! *dump end-to-end separations of chains*
 !************************************************************************
 
-! ... dump end-to-end separations of chains
 
 subroutine ChainReeDump(iStage)
 
@@ -1786,12 +1761,11 @@ end subroutine GetChainData
 end subroutine ChainReeDump
 
 !************************************************************************
-!*                                                                      *
-!*     DipMomTotDump                                                    *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **DipMomTotDump**
+!! *dump the total dipole moment*
 !************************************************************************
 
-! ... dump the total dipole moment
 
 subroutine DipMomTotDump(iStage)
 
@@ -1850,12 +1824,11 @@ end subroutine DipMomTotDumpSub
 end subroutine DipMomTotDump
 
 !************************************************************************
-!*                                                                      *
-!*     xy_coordinates_Jasper                                            *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **xy_coordinates_Jasper**
+!! *read x,y coordinates*
 !************************************************************************
 
-! ... read x,y coordinates
 
 subroutine xy_coordinates_Jasper(iStage)
 
@@ -1919,12 +1892,11 @@ end subroutine xy_coordinates_Jasper
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
-!*                                                                      *
-!*     GroupUser                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupUser**
+!! *driver of user-provided routines for particle group division*
 !************************************************************************
 
-! ... driver of user-provided routines for particle group division
 
 subroutine GroupUser(iStage, m, txtype, lsetconf)
 
@@ -1978,12 +1950,11 @@ subroutine GroupUser(iStage, m, txtype, lsetconf)
 end subroutine GroupUser
 
 !************************************************************************
-!*                                                                      *
-!*     GroupBW1                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupBW1**
+!! *group division for one benzene molecule in water*
 !************************************************************************
 
-! ... group division for one benzene molecule in water
 
 subroutine GroupBW1(iStage, m)
 
@@ -2031,12 +2002,11 @@ subroutine GroupBW1(iStage, m)
 end subroutine GroupBW1
 
 !************************************************************************
-!*                                                                      *
-!*     GroupBW2                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupBW2**
+!! *group division for one benzene molecule in water*
 !************************************************************************
 
-! ... group division for one benzene molecule in water
 
 subroutine GroupBW2(iStage, m)
 
@@ -2081,12 +2051,11 @@ subroutine GroupBW2(iStage, m)
 end subroutine GroupBW2
 
 !************************************************************************
-!*                                                                      *
-!*     GroupBW3                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupBW3**
+!! *group division for one benzene molecule in water*
 !************************************************************************
 
-! ... group division for one benzene molecule in water
 
 subroutine GroupBW3(iStage, m)
 
@@ -2145,12 +2114,11 @@ subroutine GroupBW3(iStage, m)
 end subroutine GroupBW3
 
 !************************************************************************
-!*                                                                      *
-!*     GroupBBW1                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupBBW1**
+!! *group division for two benzene molecules in water*
 !************************************************************************
 
-! ... group division for two benzene molecules in water
 
 subroutine GroupBBW1(iStage, m)
 
@@ -2198,12 +2166,11 @@ subroutine GroupBBW1(iStage, m)
 end subroutine GroupBBW1
 
 !************************************************************************
-!*                                                                      *
-!*     GroupBBW2                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupBBW2**
+!! *group division for two benzene molecules in water*
 !************************************************************************
 
-! ... group division for two benzene molecules in water
 
 subroutine GroupBBW2(iStage, m)
 
@@ -2253,12 +2220,11 @@ subroutine GroupBBW2(iStage, m)
 end subroutine GroupBBW2
 
 !************************************************************************
-!*                                                                      *
-!*     GroupBBW3                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupBBW3**
+!! *group division for two benzene molecules in water*
 !************************************************************************
 
-! ... group division for two benzene molecules in water
 
 subroutine GroupBBW3(iStage, m)
 
@@ -2295,12 +2261,11 @@ subroutine GroupBBW3(iStage, m)
 end subroutine GroupBBW3
 
 !************************************************************************
-!*                                                                      *
-!*     GroupBBW4                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupBBW4**
+!! *group division for two benzene molecules in water*
 !************************************************************************
 
-! ... group division for two benzene molecules in water
 
 subroutine GroupBBW4(iStage, m)
 
@@ -2337,12 +2302,11 @@ subroutine GroupBBW4(iStage, m)
 end subroutine GroupBBW4
 
 !************************************************************************
-!*                                                                      *
-!*     GroupSurface                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupSurface**
+!! *group division for particles of type ipt = 2  at surface and in bulk*
 !************************************************************************
 
-! ... group division for particles of type ipt = 2  at surface and in bulk
 
 subroutine GroupSurface(iStage, m)
 
@@ -2380,12 +2344,11 @@ subroutine GroupSurface(iStage, m)
 end subroutine GroupSurface
 
 !************************************************************************
-!*                                                                      *
-!*     groupsurface2                                                    *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **groupsurface2**
+!! *group division for particles only at surface*
 !************************************************************************
 
-! ... group division for particles only at surface
 
 subroutine GroupSurface2(iStage, m)
 
@@ -2419,12 +2382,11 @@ subroutine GroupSurface2(iStage, m)
 end subroutine GroupSurface2
 
 !************************************************************************
-!*                                                                      *
-!*     GroupAds1                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupAds1**
+!! *group division for particles belonging to adsorbed chains*
 !************************************************************************
 
-! ... group division for particles belonging to adsorbed chains
 
 subroutine GroupAds1(iStage, m)
 
@@ -2470,12 +2432,11 @@ subroutine GroupAds1(iStage, m)
 end subroutine GroupAds1
 
 !************************************************************************
-!*                                                                      *
-!*     GroupAds_layer1_ramp                                             *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupAds_layer1_ramp**
+!! *group division for adsorbed (layer 1) particles*
 !************************************************************************
 
-! ... group division for adsorbed (layer 1) particles
 
 subroutine GroupAds_layer1_ramp(iStage, m)
 
@@ -2510,12 +2471,11 @@ subroutine GroupAds_layer1_ramp(iStage, m)
 end subroutine GroupAds_layer1_ramp
 
 !************************************************************************
-!*                                                                      *
-!*     GroupNetworkGenerations                                          *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupNetworkGenerations**
+!! *group division according to generations of non-periodic network*
 !************************************************************************
 
-! ... group division according to generations of non-periodic network
 
 subroutine GroupNetworkGenerations(iStage,m)
 
@@ -2675,12 +2635,11 @@ end subroutine SetNetworkGenerationPointer
 end subroutine GroupNetworkGenerations
 
 !************************************************************************
-!*                                                                      *
-!*     GroupWeakCharge                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **GroupWeakCharge**
+!! *group division according to titratable species - respective division in*
 !************************************************************************
 
-! ... group division according to titratable species - respective division in
 ! ... charged and uncharged state
 ! ...
 ! ... currently works for monoatomic systems only
@@ -2759,12 +2718,11 @@ end subroutine GroupWeakCharge
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
-!*                                                                      *
-!*     StaticUser                                                       *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **StaticUser**
+!! *driver of user-provided routines for static analysis*
 !************************************************************************
 
-! ... driver of user-provided routines for static analysis
 
 subroutine StaticUser(iStage)
 
@@ -2846,12 +2804,11 @@ subroutine StaticUser(iStage)
 end subroutine StaticUser
 
 !************************************************************************
-!*                                                                      *
-!*     ScalarDemo1                                                      *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ScalarDemo1**
+!! *calculate an average of a scalar quantity*
 !************************************************************************
 
-! ... calculate an average of a scalar quantity
 
 subroutine ScalarDemo1(iStage, value, unit)
 
@@ -2895,12 +2852,11 @@ subroutine ScalarDemo1(iStage, value, unit)
 end subroutine ScalarDemo1
 
 !************************************************************************
-!*                                                                      *
-!*     ScalarDemo2                                                      *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ScalarDemo2**
+!! *calculate average of scalar quantities*
 !************************************************************************
 
-! ... calculate average of scalar quantities
 
 subroutine ScalarDemo2(iStage,unit)
 
@@ -2956,12 +2912,11 @@ subroutine ScalarDemo2(iStage,unit)
 end subroutine ScalarDemo2
 
 !************************************************************************
-!*                                                                      *
-!*     BondOrder                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **BondOrder**
+!! *calculate an average of a scalar quantity*
 !************************************************************************
 
-! ... calculate an average of a scalar quantity
 
 subroutine BondOrder(iStage)
 
@@ -3074,12 +3029,11 @@ subroutine BondOrder(iStage)
 end subroutine BondOrder
 
 !************************************************************************
-!*                                                                      *
-!*     TabulationQl                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **TabulationQl**
+!! *calculate an average of a scalar quantity*
 !************************************************************************
 
-! ... calculate an average of a scalar quantity
 
 subroutine TabulationQl(lmax,qlsum,op)
 
@@ -3108,12 +3062,11 @@ subroutine TabulationQl(lmax,qlsum,op)
 end subroutine TabulationQl
 
 !************************************************************************
-!*                                                                      *
-!*     ChainBeadCylContact                                              *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ChainBeadCylContact**
+!! *calculate probability of chain bead-cylinder contact*
 !************************************************************************
 
-! ... calculate probability of chain bead-cylinder contact
 
    subroutine ChainBeadCylContact(iStage)
 
@@ -3230,12 +3183,11 @@ end subroutine TabulationQl
 end subroutine ChainBeadCylContact
 
 !************************************************************************
-!*                                                                      *
-!*     Min                                                              *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **Min**
+!! *calculate minimum energy configuration of a bcc "sheet" or "tube"*
 !************************************************************************
 
-! ... calculate minimum energy configuration of a bcc "sheet" or "tube".
 
 subroutine Min(iStage)
 
@@ -3285,12 +3237,11 @@ subroutine Min(iStage)
 end subroutine Min
 
 !************************************************************************
-!*                                                                      *
-!*     S1                                                               *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **S1**
+!! *calculate orientational order parameter S1 in all dimensions*
 !************************************************************************
 
-! ... calculate orientational order parameter S1 in all dimensions
 ! ... with respect to particle x-axis.
 
 subroutine S1(iStage)
@@ -3372,12 +3323,11 @@ subroutine S1(iStage)
 end subroutine S1
 
 !************************************************************************
-!*                                                                      *
-!*     S2                                                               *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **S2**
+!! *calculate orientational order parameter S2 in all dimensions*
 !************************************************************************
 
-! ... calculate orientational order parameter S2 in all dimensions
 ! ... with respect to particle z-axis.
 
 subroutine S2(iStage)
@@ -3459,12 +3409,11 @@ subroutine S2(iStage)
 end subroutine S2
 
 !************************************************************************
-!*                                                                      *
-!*     C2                                                               *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **C2**
+!! *calculate C2 nematic order parameter of projection on xy-plane*
 !************************************************************************
 
-! ... calculate C2 nematic order parameter of projection on xy-plane.
 
 subroutine C2(iStage)
 
@@ -3543,12 +3492,11 @@ subroutine C2(iStage)
 end subroutine C2
 
 !************************************************************************
-!*                                                                      *
-!*     Q                                                                *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **Q**
+!! *calculate nematic order parameter of projection on xy-plane with x*
 !************************************************************************
 
-! ... calculate nematic order parameter of projection on xy-plane with x
 ! as reference direction.
 
 subroutine Q(iStage)
@@ -3851,9 +3799,9 @@ subroutine CylDistFunc(iStage)
 end subroutine CylDistFunc
 
 !************************************************************************
-!*                                                                      *
-!*     SFPBC2D                                                          *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SFPBC2D**
+!! *documentation_missing*
 !************************************************************************
 
 subroutine SFPBC2D(iStage)
@@ -4088,12 +4036,11 @@ subroutine SFPBC2D(iStage)
 end subroutine SFPBC2D
 
 !************************************************************************
-!*                                                                      *
-!*     SFPBC2DNoAv                                                      *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SFPBC2DNoAv**
+!! *Does not average over x and y, compatible with boxlength in x \= y*
 !************************************************************************
 
-! ... Does not average over x and y, compatible with boxlength in x \= y
 
 subroutine SFPBC2DNoAv(iStage)
 
@@ -4337,12 +4284,11 @@ subroutine SFPBC2DNoAv(iStage)
 end subroutine SFPBC2DNoAv
 
 !************************************************************************
-!*                                                                      *
-!*     PosMeanSph                                                       *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **PosMeanSph**
+!! *calculate means of positions*
 !************************************************************************
 
-! ... calculate means of positions
 
 subroutine PosMeanSph(iStage)
 
@@ -4428,12 +4374,11 @@ subroutine PosMeanSph(iStage)
 end subroutine PosMeanSph
 
 !************************************************************************
-!*                                                                      *
-!*     MacroionOneSph                                                   *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **MacroionOneSph**
+!! *calculate various df for system of one macroion + ions, sph geometry*
 !************************************************************************
 
-! ... calculate various df for system of one macroion + ions, sph geometry
 
 !     type  label  quantity
 !     ----  -----  --------
@@ -4593,12 +4538,11 @@ subroutine MacroionOneSph(iStage)
 end subroutine MacroionOneSph
 
 !************************************************************************
-!*                                                                      *
-!*     MacroionTwoCyl                                                   *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **MacroionTwoCyl**
+!! *calculate various df for system of two macroions + ions, cyl geometry*
 !************************************************************************
 
-! ... calculate various df for system of two macroions + ions, cyl geometry
 
 !     type  label        quantity
 !     ----  -----        --------
@@ -4795,12 +4739,11 @@ subroutine MacroionTwoCyl(iStage)
 end subroutine MacroionTwoCyl
 
 !************************************************************************
-!*                                                                      *
-!*     MeanElFieldZCyl                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **MeanElFieldZCyl**
+!! *calculate mean electrostatic field in the z-direction*
 !************************************************************************
 
-! ... calculate mean electrostatic field in the z-direction
 
 !     system: cylinder with particles 1 and 2 fixed, z(1) < z(2) is needed
 
@@ -4961,12 +4904,11 @@ end subroutine MeanElFieldZCyl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
-!*                                                                      *
-!*     DomainModule                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **DomainModule**
+!! *module for domain analysis*
 !************************************************************************
 
-! ... module for domain analysis
 
 module DomainModule
    use MolModule
@@ -5055,12 +4997,11 @@ subroutine DomainDriver(iStage)
 end subroutine DomainDriver
 
 !************************************************************************
-!*                                                                      *
-!*     DomainIO                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **DomainIO**
+!! *domain analyse based on Kirkwood gk-factor*
 !************************************************************************
 
-! ... domain analyse based on Kirkwood gk-factor
 
 subroutine DomainIO(iStage)
 
@@ -5168,12 +5109,11 @@ subroutine DomainIO(iStage)
 end subroutine DomainIO
 
 !************************************************************************
-!*                                                                      *
-!*     CalcDomain                                                       *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **CalcDomain**
+!! *calculate dipole domains based on Kirkwoods gk-factor (G Karlstrom)*
 !************************************************************************
 
-! ... calculate dipole domains based on Kirkwoods gk-factor (G Karlstrom)
 
 subroutine CalcDomain
 
@@ -5298,12 +5238,11 @@ subroutine CalcDomain
  end subroutine CalcDomain
 
 !************************************************************************
-!*                                                                      *
-!*     DomainDominating                                                 *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **DomainDominating**
+!! *sample gk for the dominating domain of each configuration*
 !************************************************************************
 
-! ... sample gk for the dominating domain of each configuration
 
 subroutine DomainDominating(iStage)
 
@@ -5382,12 +5321,11 @@ subroutine DomainDominating(iStage)
 end subroutine DomainDominating
 
 !************************************************************************
-!*                                                                      *
-!*     DomainDistFunc                                                   *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **DomainDistFunc**
+!! *Domain distribution functions*
 !************************************************************************
 
-! ... Domain distribution functions
 
 subroutine DomainDistFunc(iStage)
 
@@ -5520,12 +5458,11 @@ end function GetG_hig
 end subroutine DomainDistFunc
 
 !************************************************************************
-!*                                                                      *
-!*     UDomain                                                          *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **UDomain**
+!! *domain-domain dipole-dipole interaction energy*
 !************************************************************************
 
-! ... domain-domain dipole-dipole interaction energy
 
 subroutine UDomain(iStage)
 
@@ -5604,12 +5541,11 @@ subroutine UDomain(iStage)
 end subroutine UDomain
 
 !************************************************************************
-!*                                                                      *
-!*     TCFDipDomain                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **TCFDipDomain**
+!! *sample gk for the dominating domain of each configuration*
 !************************************************************************
 
-! ... sample gk for the dominating domain of each configuration
 
 subroutine TCFDipDomain(iStage)
 
@@ -5787,12 +5723,11 @@ end subroutine TCFDipDomain
 
 
 !************************************************************************
-!*                                                                      *
-!*     SCDF       niklas 070221  per 090123                             *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SCDF**
+!! *calculate single chain distribution functions as a function of z coordinate*
 !************************************************************************
 
-! ... calculate single chain distribution functions as a function of z coordinate
 
 !     type  label  quantity
 !     ----  -----  --------
@@ -5989,12 +5924,11 @@ subroutine SCDF(iStage)
 end subroutine SCDF
 
 !************************************************************************
-!*                                                                      *
-!*    AdsRadGyr                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsRadGyr**
+!! *calculate radius of gyration distribution functions of adsorbed and adsorbing chains*
 !************************************************************************
 
-! ... calculate radius of gyration distribution functions of adsorbed and adsorbing chains
 !
 !     type  label  quantity
 !     ----  -----  --------
@@ -6170,12 +6104,11 @@ subroutine AdsRadGyr(iStage)
 end subroutine AdsRadGyr
 
 !************************************************************************
-!*                                                                      *
-!*     AdsBondOrder                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsBondOrder**
+!! *calculate bond order distribution function for adsorbed chains*
 !************************************************************************
 
-! ... calculate bond order distribution function for adsorbed chains
 
 subroutine AdsBondOrder(iStage)
 
@@ -6345,12 +6278,11 @@ subroutine AdsBondOrder(iStage)
 end subroutine AdsBondOrder
 
 !************************************************************************
-!*                                                                      *
-!*     AdsPropDyn                                                       *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsPropDyn**
+!! *write chain adsorption dynamic data on external unit*
 !************************************************************************
 
-! ... write chain adsorption dynamic data on external unit
 
 subroutine AdsPropDyn(iStage)
 
@@ -6510,12 +6442,11 @@ subroutine AdsPropDyn(iStage)
 end subroutine AdsPropDyn
 
 !************************************************************************
-!*                                                                      *
-!*     CalcAvBondOrder                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **CalcAvBondOrder**
+!! *calculation of the average bond order among provided chains*
 !************************************************************************
 
-! ... calculation of the average bond order among provided chains
 
 subroutine CalcAvBondOrder(ictbond, ladschain, radius, avbondorder)
 
@@ -6558,12 +6489,11 @@ subroutine CalcAvBondOrder(ictbond, ladschain, radius, avbondorder)
 end subroutine CalcAvBondOrder
 
 !************************************************************************
-!*                                                                      *
-!*     CalcBondOrder                                                    *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **CalcBondOrder**
+!! *calculation of the bond order among bonds in chains of type ict*
 !************************************************************************
 
-! ... calculation of the bond order among bonds in chains of type ict
 
 subroutine CalcBondOrder(ictbond, ladschain, radius, nbond, mnbond, bondorder, bondlist, nq, rdir, rc, q)
 
@@ -6688,12 +6618,11 @@ subroutine CalcBondOrder(ictbond, ladschain, radius, nbond, mnbond, bondorder, b
 end subroutine CalcBondOrder
 
 !************************************************************************
-!*                                                                      *
-!*     AdsEventDyn                                                      *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsEventDyn**
+!! *write time and occurrence of adsorption events on FUSER*
 !************************************************************************
 
-! ... write time and occurrence of adsorption events on FUSER
 
 subroutine AdsEventDyn(iStage)
 
@@ -6885,12 +6814,11 @@ subroutine AdsEventDyn(iStage)
 end subroutine AdsEventDyn
 
 !************************************************************************
-!*                                                                      *
-!*     AdsModule                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsModule**
+!! *module for adsorption module*
 !************************************************************************
 
-! ... module for adsorption module
 
 module AdsModule
 
@@ -6912,12 +6840,11 @@ module AdsModule
 end module AdsModule
 
 !************************************************************************
-!*                                                                      *
-!*     AdsExam                                                          *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsExam**
+!! *call of AdsExam routines*
 !************************************************************************
 
-! ... call of AdsExam routines
 
 subroutine AdsExam
 
@@ -6939,12 +6866,11 @@ subroutine AdsExam
 end subroutine AdsExam
 
 !************************************************************************
-!*                                                                      *
-!*     AdsExam1                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsExam1**
+!! *generate curvz file using the primary adsorption data*
 !************************************************************************
 
-! ... generate curvz file using the primary adsorption data
 
 subroutine AdsExam1
 
@@ -7044,12 +6970,11 @@ end subroutine PrepCurvz
 end subroutine AdsExam1
 
 !************************************************************************
-!*                                                                      *
-!*     AdsExam2                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsExam2**
+!! *analysis of primary adsorption data; adsorption events*
 !************************************************************************
 
-! ... analysis of primary adsorption data; adsorption events
 
 subroutine AdsExam2
 
@@ -7160,12 +7085,11 @@ subroutine AdsExam2
 end subroutine AdsExam2
 
 !************************************************************************
-!*                                                                      *
-!*     AdsExam3                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsExam3**
+!! *analysis of primary adsorption data; adsorption length*
 !************************************************************************
 
-! ... analysis of primary adsorption data; adsorption length
 
 subroutine AdsExam3
 
@@ -7305,12 +7229,11 @@ subroutine AdsExam3
 end subroutine AdsExam3
 
 !************************************************************************
-!*                                                                      *
-!*     AdsExam4                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **AdsExam4**
+!! *analysis of primary adsorption data; adsorption length*
 !************************************************************************
 
-! ... analysis of primary adsorption data; adsorption length
 
 subroutine AdsExam4
 
@@ -7399,12 +7322,11 @@ subroutine AdsExam4
 end subroutine AdsExam4
 
 !************************************************************************
-!*                                                                      *
-!*     ReadPrimAdsData                                                  *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ReadPrimAdsData**
+!! *read user-provided primary adsorption data*
 !************************************************************************
 
-! ... read user-provided primary adsorption data
 
 subroutine ReadPrimAdsData
 
@@ -7447,12 +7369,11 @@ subroutine ReadPrimAdsData
 end subroutine ReadPrimAdsData
 
 !************************************************************************
-!*                                                                      *
-!*     WritePrimAdsData                                                 *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **WritePrimAdsData**
+!! *write user-provided primary adsorption data*
 !************************************************************************
 
-! ... write user-provided primary adsorption data
 
 subroutine WritePrimAdsData(txheading)
 
@@ -7475,12 +7396,11 @@ subroutine WritePrimAdsData(txheading)
 end subroutine WritePrimAdsData
 
 !************************************************************************
-!*                                                                      *
-!*     Z_DF_Slit                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **Z_DF_Slit**
+!! *distribution function based on z-coordinates, planar geometry*
 !************************************************************************
 
-! ... distribution function based on z-coordinates, planar geometry (Jurij)
 
 subroutine Z_DF_Slit(iStage)
 
@@ -7613,12 +7533,11 @@ subroutine Z_DF_Slit(iStage)
 end subroutine Z_DF_Slit
 
 !************************************************************************
-!*                                                                      *
-!*     ElMom                                                            *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ElMom**
+!! *electrostatic moment of a particle*
 !************************************************************************
 
-! ... electrostatic moment of a particle
 
 subroutine ElMom(iStage)
 
@@ -7726,12 +7645,11 @@ end subroutine ElMom
 
 
 !************************************************************************
-!*                                                                      *
-!*     XYProjectDF                                                      *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **XYProjectDF**
+!! *calculate on 'z' = 0 projected normalized density df*
 !************************************************************************
 
-! ... calculate on 'z' = 0 projected normalized density df
 !     here adapted for pure benezene fluid (cf skipper JACS 132, 5735, 2010, fig7)
 
 subroutine XYProjectDF(iStage)
@@ -7877,12 +7795,11 @@ subroutine XYProjectDF(iStage)
 end subroutine XYProjectDF
 
 !************************************************************************
-!*                                                                      *
-!*     SPDF_COMB                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SPDF_COMB**
+!! *calculate single particle distribution functions for comb polymers (coarse_grained)*
 !************************************************************************
 
-! ... calculate single particle distribution functions for comb polymers (coarse_grained)
 !     parallel version (master only) By Daniel A.
 !     works for PBC
 
@@ -8203,12 +8120,11 @@ end subroutine SPDF_COMB
 
 
 !************************************************************************
-!*                                                                      *
-!*     COMB_DF                                                          *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **COMB_DF**
+!! *calculate  type distribution functions of comb polymer type (coarse model)*
 !************************************************************************
 
-! ... calculate  type distribution functions of comb polymer type (coarse model)
 !     works for PBC
 !     By Daniel A
 
@@ -8478,12 +8394,11 @@ subroutine COMB_DF(iStage)
 end subroutine COMB_DF
 
 !***********************************************************************
-!*                                                                      *
-!*     COMBAver                                                         *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **COMBAver**
+!! *calculate averages of comb chain quantities*
 !************************************************************************
 
-! ... calculate averages of comb chain quantities
 !     By Daniel A.
 
 !     type  label          quantity
@@ -8719,12 +8634,11 @@ subroutine COMBAver(iStage)
 end subroutine COMBAver
 
 !************************************************************************
-!*                                                                      *
-!*      SFPBC_COMB                                                     *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **SFPBC_COMB**
+!! *calculate partial structure factors*
 !************************************************************************
 
-! ... calculate partial structure factors
 !     calculate actually the form factor as it works only for nh =1
 !     form factor for backbone stored in ipt = 1
 !     evaluated by summing over hierarchy and stored in ipt = 2
@@ -9054,13 +8968,11 @@ end subroutine sortsub
 end subroutine SFPBC_COMB
 
 !************************************************************************
-!*                                                                      *
-!*     OCF                                                              *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **OCF**
+!! *calculate bond-bond orientational correlation function and where particle i belongs to group igr*
 !************************************************************************
 
-! ... calculate bond-bond orientational correlation function
-!     and where particle i belongs to group igr
 !     By Daniel A.
 
 subroutine OCF(iStage)
@@ -9277,12 +9189,11 @@ subroutine OCF(iStage)
 end subroutine OCF
 
 !************************************************************************
-!*                                                                      *
-!*     OCF_DF                                                           *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **OCF_DF**
+!! *calculate  type distribution functions of comb polymer type (coarse model)*
 !************************************************************************
 
-! ... calculate  type distribution functions of comb polymer type (coarse model)
 !     calculate distribution functions for bond-bond orientational correlations cos(theta_i,i+n)
 !     for nine given values of n: 5, 10, 15, 20, 25, 30, 40, 50, 60
 !     By Daniel A.
@@ -9511,9 +9422,9 @@ end subroutine OCF_DF
 
 
 !***********************************************************************
-!*                                                                     *
-!*     ChainBeadBeadContact                                            *
-!*                                                                     *
+!> \page moluser moluser.F90
+!! **ChainBeadBeadContact**
+!! *documentation_missing*
 !************************************************************************
 
 !     By Daniel A.
@@ -9663,12 +9574,11 @@ subroutine ChainBeadBeadContact(iStage)
 end subroutine ChainBeadBeadContact
 
 !************************************************************************
-!*                                                                      *
-!*     ElPot                                                            *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ElPot**
+!! *calculate electrostatic potential as a function of distance from the center of lab frame*
 !************************************************************************
 
-! ... calculate electrostatic potential as a function of distance from the center of lab frame
 !     by Stefanie Schneider
 
 subroutine ElPot(iStage)
@@ -9812,12 +9722,11 @@ end subroutine ElPot
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
-!*                                                                      *
-!*     ImageUser                                                        *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ImageUser**
+!! *driver of user-provided routines for generating image input files*
 !************************************************************************
 
-! ... driver of user-provided routines for generating image input files
 
 subroutine ImageUser(iStage)
 
@@ -9837,12 +9746,11 @@ end subroutine ImageUser
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !************************************************************************
-!*                                                                      *
-!*     JosUser                                                          *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **JosUser**
+!! *auxillary routine for syncronizing input data for Jos' project*
 !************************************************************************
 
-! ... auxillary routine for syncronizing input data for Jos' project
 
 subroutine JosUser(iMode)
 
@@ -9878,18 +9786,52 @@ subroutine JosUser(iMode)
 end subroutine JosUser
 
 !************************************************************************
-!*                                                                      *
-!*     ComplexationModule                                               *
-!*                                                                      *
+!> \page moluser moluser.F90
+!! **ComplexationModule**
+!! *Module for analysing the Complexation*
 !************************************************************************
 
-! ... Module for analysing the Complexation
+
+!> \page nmlComplexation
+!! The namelist \ref nmlComplexation contains variables that can be used for the analysis of interparticle complexation.
+!! * Variables:
+!!  * \subpage rcut_complexation
+!!  * \subpage lClusterDF
+!!  * \subpage lComplexFraction
+!!  * \subpage lComplexDist
+!!  * \subpage lSegmentComplex
+
+!> \page lClusterDF
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: The cluster size distribution  will be calculated.
+!! * `.false.`: Nothing.
+
+!> \page lComplexFraction
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: The fraction of complexation will be calculated.
+!! * `.false.`: Nothing.
+
+!> \page lComplexDist
+!! `logical`
+!! **default:** `.false.`
+!! * _documentation missing_
+
+!> \page lSegmentComplex
+!! `logical`
+!! **default:** `.false.`
+!! * _documentation missing_
+
 module ComplexationModule
    implicit none
    private
    public  ComplexationDriver
 
-
+!> \page rcut_complexation
+!! `real`
+!! **default:** `0.0`
+!! * Cut-off distance for complexation.
    real(8)  :: rcut_complexation
    real(8)  :: r2cut_cmplx
 
@@ -10036,7 +9978,7 @@ module ComplexationModule
          implicit none
 
          integer(4), intent(in) :: iStage
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
          type cluster_var
             integer(4), allocatable :: ip
             integer(4), allocatable :: np
@@ -10135,9 +10077,22 @@ module ComplexationModule
 
       ! ... calculate the distribution functions of the complexation
 
-      !     type  label  quantity
-      !     ----  -----  --------
-      !     1     w      fraction of complexation
+!> \page nmlComplexDist
+!! The namelist  \ref nmlComplexDist contains variables that control the calculation of complexation distribution functions.
+!! Any combination of the types of distribution functions listed below may be selected
+!! through vtype\%l.
+!!
+!!    | type | label | quantity                 |
+!!    | ---- | ----- | -----------------------  |
+!!    | 1    | w     | fraction of complexation |
+!!
+!! * Variables:
+!!  * \subpage nmlComplexDist_vtype
+
+!> \page nmlComplexDist_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`
+!! * Flag for engagement, lower end, upper end, number of bins. Other flags are not used.
+!! * Min: /-0.005,-0.005,-0.005/ Max: /1,005,1.005,1.005/
 
       subroutine ComplexDistribution(iStage)
 
@@ -10551,6 +10506,12 @@ module ComplexationModule
    end subroutine ClusterDF
 
 end module ComplexationModule
+
+!*******************************************************************
+!> \page moluser moluser.F90
+!! **DoComplexation**
+!! *documentation_missing*
+!*******************************************************************
 
 subroutine DoComplexation(iStage)
    use ComplexationModule, only: ComplexationDriver

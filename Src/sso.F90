@@ -1,16 +1,64 @@
 !************************************************************************
-!*                                                                      *
-!*     SSOModule                                                        *
-!*                                                                      *
+!> \page sso sso.F90
+!! **SSOModule**
+!! *Module for the SSO simulation*
 !************************************************************************
 
-! ... Module for the SSO simulation
+
+!> \page nmlSPartSSO
+!! The namelist \ref nmlSPartSSO contains variables that handle the sso-functionality. The SSO algorithm allows for on the fly
+!! optimization of the displacement parameter of the single particle move during the equilibration run.
+!! * Variables:
+!!  * \subpage dtransso
+!!  * \subpage maxtransso
+!!  * \subpage nstepzero
+!!  * \subpage nstepend
+!!  * \subpage dtranfac
+!!  * \subpage nssobin
+!!  * \subpage ltestsso
+
+!> \page dtransso
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!! * Initial displacement parameter to be used during the sso move. The displacement is in a spherical volume with diameter \ref dtransso
+
+!> \page maxtransso
+!! `real`(1:\ref npt)
+!! * Maximal allowed displacement parameter the SSO can use. The default value is set according to half the system size, depending on the geometry.
+
+!> \page nstepzero
+!! `integer`
+!! **default:** `ceiling(sqrt(real(nstep)))`
+!! * number of MC-Passes when the displacement parameter is adapted the first time. See Phys. Procedia 2011, 15, 81-86.
+
+!> \page nstepend
+!! `integer`
+!! **default:** `max(`\ref nstepzero `, int(0.1*nstep))`
+!! * duration (in MC-Passes) of the last part of the SSO. This, and only this, part will be used to give the final value for the
+!! optimal displacement parameter. Do not set it shorter than \ref nstepzero.
+
+!> \page dtranfac
+!! `real`
+!! **default:** `2`
+!! * Factor by which the displacement parameter is increased if no optimal displacement parameter is found.
+
+!> \page nssobin
+!! `integer`
+!! **default:** `20`
+!! * number of bins used by the sso move. The more bins the more accurately the displacement parameter can be determined.
+
+!> \page ltestsso
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Print out intermediate values after each SSO-Part.
+!! * `.false.`: Nothing.
+
 
  module SSOModule
    implicit none
    private
    public SSOSetup, DoSSOUpdate
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type :: step
       integer(8)  :: n  !number of steps
       real(8)     :: d2  !squared displacement
@@ -76,7 +124,7 @@
          real(8), allocatable, save :: maxdtransso(:)! maximal allowed displacement parameters
          real(8), save :: dtranfac   !increase in displacement parameter
          !-----------------------------------------------------------------------------------------
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
          type  :: ssopart_var
             real(8)     :: fac      !increment of part length
             integer(4)  :: nextstep !step at which next part starts
@@ -84,14 +132,14 @@
             integer(4)  :: n        !number of parts
          end type ssopart_var
          type(ssopart_var), save  :: SSOPart
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
          type  :: ssoparam_var
             real(8)     :: used     ! used dtran
             real(8)     :: opt      ! dtran with the highest mobility
             real(8)     :: err   ! accuracy of opt
          end type ssoparam_var
          type(ssoparam_var), save, allocatable  :: SSOParameters(:,:)
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
          type  :: mobility_var
             real(8)     :: val         !value
             real(8)     :: error       !error

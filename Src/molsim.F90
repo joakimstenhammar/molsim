@@ -1,5 +1,4 @@
 ! ... 'version 6.4.7, Sep 18, 2015',
-
 !************************************************************************
 !************************************************************************
 !**                                                                    **
@@ -19,14 +18,15 @@
 !************************************************************************
 !************************************************************************
 
-!************************************************************************
-!*                                                                      *
-!*     MolsimDriver                                                     *
-!*                                                                      *
-!************************************************************************
 
-! ... driver of the molsim program
 
+
+
+!************************************************************************
+!> \page molsim molsim.90
+!!  **Molsimdriver**
+!! *driver of the Molsim program*
+!************************************************************************
 program MolsimDriver
 
    use MolModule
@@ -167,13 +167,10 @@ end subroutine MolsimDriverSub
 end program MolsimDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IOMolsim                                                         *
-!*                                                                      *
+!> \page molsim molsim.F90
+!!  **IOMolsim(iStage)**
+!! *perform mixed tasks, mainly i/o*
 !************************************************************************
-
-! ... perform mixed tasks, mainly i/o
-
 subroutine IOMolsim(iStage)
 
    use MolModule
@@ -331,21 +328,82 @@ subroutine IOMolsim(iStage)
 
 end subroutine IOMolsim
 
-!************************************************************************
-!*                                                                      *
-!*     IOSystem                                                         *
-!*                                                                      *
-!************************************************************************
 
-! ... perform i/o on general system variables
 
+!> \page nmlSystem nmlSystem
+!! The  namelist nmlSystem contains  variables  that  describe  the  main  features of  the  simulation  and flags that controls
+!! optionally calls of routines as well as output
+!! * Variables
+!!  * \subpage txtitle
+!!  * \subpage txmethod
+!!  * \subpage txmode
+!!  * \subpage txensemb
+!!  * \subpage txbc
+!!  * \subpage txstart
+!!  * \subpage txuser
+!!  * \subpage boxlen
+!!  * \subpage cellside
+!!  * \subpage sphrad
+!!  * \subpage ellrad
+!!  * \subpage cylrad
+!!  * \subpage cyllen
+!!  * \subpage lenscl
+!!  * \subpage temp
+!!  * \subpage prsr
+!!  * \subpage nstep1
+!!  * \subpage nstep2
+!!  * \subpage iseed
+!!  * \subpage luseXYseed
+!!  * \subpage ixseed
+!!  * \subpage iyseed
+!!  * \subpage maxcpu
+!!  * \subpage lcont
+!!  * \subpage laver
+!!  * \subpage lti
+!!  * \subpage ldist
+!!  * \subpage ldump
+!!  * \subpage lgroup
+!!  * \subpage lstatic
+!!  * \subpage ldynamic
+!!  * \subpage limage
+!!  * \subpage ltime
+!!  * \subpage nmlSystem_itest
+!!  * \subpage ipart
+!!  * \subpage iatom
+!!  * \subpage iaver
+!!  * \subpage ishow
+!!  * \subpage iplot
+!!  * \subpage ilist
+!!  * \subpage ltrace
+!!  * \subpage lblockaver
+
+!> \page ixseed
+!! `integer`
+!! * Initial ix used for the random number generator.
+
+!> \page iyseed
+!! `integer`
+!! * Initial iy used for the random number generator.
+
+!> \page luseXYseed
+!! `logical`
+!! **default:** `false`
+!! * `.true.`: \ref ixseed and \ref iyseed from the input file are used.
+!! * `.false.`: Nothing.
+
+
+!************************************************************************
+!> \page molsim molsim.F90
+!!  **IOSystem**
+!! *perform i/o on general system variables*
+!************************************************************************
 subroutine IOSystem(iStage)
-
    use MolModule
    use Random_Module, only: ix, iy, k4b
    implicit none
 
    integer(4), intent(in) :: iStage
+
 
    character(40), parameter :: txroutine ='IOSystem'
    real(8) :: SecondsSinceStart
@@ -364,7 +422,6 @@ subroutine IOSystem(iStage)
                         itest, ipart, iatom, iaver, ishow, iplot,  ilist,                      &
                         ltrace, lblockaver,                                                    &
                         ltime
-
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
 
@@ -683,13 +740,30 @@ subroutine IOSystem(iStage)
 
 end subroutine IOSystem
 
-!************************************************************************
-!*                                                                      *
-!*     IOScale                                                          *
-!*                                                                      *
-!************************************************************************
 
-! ... perform i/o on scaling variables
+!> \page nmlScale
+!! The namelist  \ref nmlScale contains scaling variables that describe the relation between SI units and units used. The relation
+!! between the numerical value of quantity Q in SI units and units used is Q(SI) = S*Q, where S is the scaling factor. Below, the SI
+!! units are given in parentheses after the default scaling factors. The output list gives the scaling factor for some other derived
+!! units presented in the output. By a suitable choice of assignments, input variables could be interpreted as reduced variable.  In
+!! particular,  \ref sclene = RT (ca. 2500 at ambient temperature), where R is the gas constant and T the provided temperature, energies
+!! are given units of kT.
+!! * Variables:
+!!  * \subpage scllen
+!!  * \subpage sclmas
+!!  * \subpage scltem
+!!  * \subpage scltim
+!!  * \subpage sclene
+!!  * \subpage sclhca
+!!  * \subpage sclpre
+!!  * \subpage scldif
+!!  * \subpage sclang
+
+!************************************************************************
+!> \page molsim molsim.F90
+!! **IOScale**
+!! *perform i/o on scaling variables*
+!************************************************************************
 
 !     q(si) = q(internal)*(scaling factor)
 
@@ -757,12 +831,11 @@ subroutine IOScale(iStage)
 end subroutine IOScale
 
 !************************************************************************
-!*                                                                      *
-!*     IOCnf                                                            *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **IOCnf**
+!! *perform i/o on the configuration file*
 !************************************************************************
 
-! ... perform i/o on the configuration file
 
 subroutine IOCnf(str)
 
@@ -885,12 +958,11 @@ subroutine IOCnf(str)
 end subroutine IOCnf
 
 !************************************************************************
-!*                                                                      *
-!*     ControlAver                                                      *
-!*                                                                      *
+!> \page molsim molsim.F90
+!!  **ControlAver**
+!! *caluclate control quantities*
 !************************************************************************
 
-! ... calculate control quantities
 
 subroutine ControlAver(iStage)
 
@@ -925,12 +997,11 @@ subroutine ControlAver(iStage)
 end subroutine ControlAver
 
 !************************************************************************
-!*                                                                      *
-!*     MDAver                                                           *
-!*                                                                      *
+!> \page molsim molsim.F90
+!!  **MDAver**
+!! *calculate averages of md scific variables*
 !************************************************************************
 
-! ... calculate averages of md specific variables
 
 subroutine MDAver(iStage)
 
@@ -1078,9 +1149,9 @@ end subroutine MDAverWrite
 end subroutine MDAver
 
 !************************************************************************
-!*                                                                      *
-!*     DispAver                                                         *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **DispAver**
+!! *calculate averages of displacements*
 !************************************************************************
 
 ! ... calculate averages of displacements
@@ -1216,9 +1287,9 @@ end subroutine DispPartData
 end subroutine DispAver
 
 !************************************************************************
-!*                                                                      *
-!*     OriOrderAver                                                     *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **OriOrderAver**
+!! *calculate averages of orientational order*
 !************************************************************************
 
 ! ... calculate averages of orientational order
@@ -1306,12 +1377,10 @@ end subroutine OriOrderAverWrite
 end subroutine OriOrderAver
 
 !************************************************************************
-!*                                                                      *
-!*     PosOriAver                                                       *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **PosOriAver**
+!! *calculate averages of positions and orientation*
 !************************************************************************
-
-! ... calculate averages of positions and orientations
 
 subroutine PosOriAver(iStage)
 
@@ -1411,9 +1480,9 @@ end subroutine PosOriAverWrite
 end subroutine PosOriAver
 
 !************************************************************************
-!*                                                                      *
-!*     MainAver                                                         *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **MainAver**
+!! *calculate various quantities*
 !************************************************************************
 
 ! ... calculate various quantities
@@ -1441,12 +1510,11 @@ subroutine MainAver(iStage)
 end subroutine MainAver
 
 !************************************************************************
-!*                                                                      *
-!*     ThermoAver                                                       *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **ThermoAver**
+!! *calculate averages of thermodynamic quantities*
 !************************************************************************
 
-! ... calculate averages of thermodynamic quantities
 
 !          no            quantity
 !          --            ---------------------
@@ -1878,12 +1946,10 @@ end subroutine TestThermoAver
 end subroutine ThermoAver
 
 !************************************************************************
-!*                                                                      *
-!*     ChargeAver                                                       *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **ChargeAver**
+!! *calculate averages of related to weak charges*
 !************************************************************************
-
-! ... calculate averages of related to weak charges
 
 !          no            quantity
 !          --            ---------------------
@@ -1967,9 +2033,9 @@ subroutine ChargeAver(iStage)
 end subroutine ChargeAver
 
 !************************************************************************
-!*                                                                      *
-!*     IndDipMomAver                                                    *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **IndDipMomAver**
+!! *calculate averages of induced dipole moment*
 !************************************************************************
 
 ! ... calculate averages of induced dipole moment
@@ -2062,12 +2128,10 @@ subroutine IndDipMomAver(iStage)
 end subroutine IndDipMomAver
 
 !************************************************************************
-!*                                                                      *
-!*     ChainAver                                                        *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **ChainAver**
+!! *calculate averages of chain quantities*
 !************************************************************************
-
-! ... calculate averages of chain quantities
 
 subroutine ChainAver(iStage)
 
@@ -2230,12 +2294,10 @@ subroutine ChainAver(iStage)
 end subroutine ChainAver
 
 !************************************************************************
-!*                                                                      *
-!*     NetworkAver                                                      *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **NetworkAver**
+!! *calculate averages of network quantities*
 !************************************************************************
-
-! ... calculate averages of network quantities
 
 subroutine NetworkAver(iStage)
 
@@ -2361,12 +2423,11 @@ subroutine NetworkAver(iStage)
 end subroutine NetworkAver
 
 !***********************************************************************
-!*                                                                      *
-!*     HierarchicalAver                                                 *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **HierarchicalAver**
+!! *calculate averages of chain quantities*
 !************************************************************************
 
-! ... calculate averages of chain quantities
 
 subroutine HierarchicalAver(iStage)
 
@@ -2485,14 +2546,39 @@ end subroutine HierarchicalRg2
 
 end subroutine HierarchicalAver
 
-!************************************************************************
-!*                                                                      *
-!*     ThermoInteg                                                      *
-!*                                                                      *
-!************************************************************************
 
-! ... handle themodynamic integration
+!> \page nmlThermoInteg
+!! The namelist  \ref nmlThermoInteg  contains variables that control thermodynamic integration. Presently, (i) hard-sphere, (ii) Coulomb, (iii) bond, and/or (iv) angular potentials can be changed through the coupling parameter.
+!! * Variables:
+!!  * \subpage lambda
+!!  * \subpage powercharge
+!!  * \subpage powerkbond
+!!  * \subpage powerkangle
 
+!> \page lambda
+!! `real`
+!! * Coupling parameter.
+
+!> \page powercharge
+!! `real`
+!! **default:** `1.0`
+!! * Power of the coupling parameter scaling the charge.
+
+!> \page powerkbond
+!! `real`
+!! **default:** `9.0`
+!! * Power of the coupling parameter scaling kbond.
+
+!> \page powerkangle
+!! `real`
+!! **default:** `6.0`
+!! * Power of the coupling parameter scaling kangle.
+
+!************************************************************************
+!> \page molsim molsim.F90
+!!  **ThermoInteg**
+!! *handle thermodynamic integration*
+!************************************************************************
 subroutine ThermoInteg(iStage)
 
    use MolModule
@@ -2509,7 +2595,6 @@ subroutine ThermoInteg(iStage)
    integer(4),       save :: nvar
    type(scalar_var), allocatable, save :: var(:)
    real(8) :: data(9)
-
    namelist /nmlThermoInteg/ lambda, powercharge, powerkbond, powerkangle
 
    if (slave) return    ! master only
@@ -2602,14 +2687,6 @@ subroutine ThermoInteg(iStage)
 
 end subroutine ThermoInteg
 
-!************************************************************************
-!*                                                                      *
-!*     DistFunc                                                         *
-!*                                                                      *
-!************************************************************************
-
-! ... calculate distribution functions
-
 !     type  label  distribution functions
 !     ----  -----  ----------------------
 !     1     totu   total potential energy, u%tot
@@ -2623,6 +2700,68 @@ end subroutine ThermoInteg
 !     9     idm    induced dipole moment: atom (polarization > pollim)
 !    10     zdens  z-density distribution function: particle
 
+!> \page nmlDist
+!! The namelist \ref nmlDist  contains variables that control the calculation of distribution functions during the simulation. Any
+!! combination of the nine types of distribution functions listed below may be selected through vtype\%l.
+!!
+!!    | type | label   | distribution functions                                 |
+!!    | :--: | :-----: | :----------------------------------------------------: |
+!!    | 1    | totu    | total potential energy                                 |
+!!    | 2    | paru    | partial potential energy (only two-body contributions) |
+!!    | 3    | bindu   | binding energy (only two-body contributions)           |
+!!    | 4    | pairu   | pair energy (only two-body contributions)              |
+!!    | 5    | rdf     | radial d.f., particle-particle (center of mass)        |
+!!    | 6    | rdf     | radial d.f., atom(mass > \ref maslim)-atom(mass > \ref maslim)   |
+!!    | 7    | idm     | induced dipole moment: total                           |
+!!    | 8    | idm     | induced dipole moment: particle                        |
+!!    | 9    | idm     | induced dipole moment: atom (polarization > \ref pollim)    |
+!!    | 10   |  zdens  | z-density distribution function: particle              |
+!!
+!! The uncertainty of a given value of the distribution functions is given as one standard deviation, and it is evaluated by block averaging where one macrostep constitutes one block.
+!! * Variables:
+!!  * \subpage nmlDist_vtype
+!!  * \subpage idist
+!!  * \subpage rcutdist
+!!  * \subpage maslim
+!!  * \subpage pollim
+!!  * \subpage itestdist
+
+!> \page nmlDist_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`(1:10)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+
+!> \page maslim
+!! `real`
+!! **default:** `1d-4`
+!! * Lower mass limit for calculating atom-atom rdf.
+
+!> \page pollim
+!! `real`
+!! **default:** `1d-4`
+!! * Lower polarizability limit for calculating induced dipole moment distribution functions for atoms.
+
+!> \page rcutdist
+!! `real`
+!! **default:** \ref rcut+racom(ipt)+racom(jpt)
+!! * Cutoff distance for evaluating the distribution functions based on the center-ofmass of the particle. The value could be smaller but should not exceed the default one.
+
+!> \page idist
+!! `integer`
+!! **default:** `10`
+!! * Interval of sampling the distribution functions.
+
+!> \page itestdist
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`: Nothing. The normal option.
+!! * `1`: Forces and virial (routine DistFunc).
+
+!************************************************************************
+!> \page molsim molsim.F90
+!! **DistFunc**
+!! *calculate distribution functions*
+!************************************************************************
 subroutine DistFunc(iStage)
 
    use MolModule
@@ -3301,12 +3440,11 @@ end subroutine TestDistFunc2
 end subroutine DistFunc
 
 !************************************************************************
-!*                                                                      *
-!*     PressureContact                                                  *
-!*                                                                      *
+!> \page molsim molsim.F90
+!!  **PressureContact**
+!! *calculate contract contribution to the reduced pressure*
 !************************************************************************
 
-! ... calculate contract contribution to the reduced pressure
 
 subroutine PressureContact(ipnt, var, vols2, prsrhs)
 
@@ -3342,12 +3480,10 @@ subroutine PressureContact(ipnt, var, vols2, prsrhs)
 end subroutine PressureContact
 
 !************************************************************************
-!*                                                                      *
-!*     GContact                                                         *
-!*                                                                      *
+!> \page molsim molsim.F90
+!!  **GContact**
+!! *calculate rdf contract value*
 !************************************************************************
-
-! ... calculate rdf contact value
 
 subroutine GContact(vlow, bin, vs2, rcont, gcont)
 
@@ -3388,12 +3524,10 @@ subroutine GContact(vlow, bin, vs2, rcont, gcont)
 end subroutine GContact
 
 !************************************************************************
-!*                                                                      *
-!*     TestSimulation                                                   *
-!*                                                                      *
+!> \page molsim molsim.F90
+!! **TestSimulation**
+!! *write test output*
 !************************************************************************
-
-! ... write test output
 
 subroutine TestSimulation
 

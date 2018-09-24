@@ -1,10 +1,9 @@
 !************************************************************************
-!*                                                                      *
-!*     NPartChange                                                      *
-!*                                                                      *
+!> \page gc_f90 gc.f90
+!! **NPartChange**
+!! *perform one number of particle change trial move*
 !************************************************************************
 
-! ... perform one number of particle change trial move
 
 !     note, not check to work with weak charges
 

@@ -4,11 +4,12 @@ This contributing guide describes the working procedure of the further developme
 
   1. [Generate a new branch](#1-how-to-generate-a-new-branch)
   2. [Commit features/changes](#2-how-to-commit-featureschanges)
-  3. [Request a merge into Master](#3-how-to-request-a-merge-into-master)
-  4. [Review a merge request](#4-how-to-review-a-merge-request)
-  5. [Resolve all discussions](#5-how-to-resolve-all-discussions)
-  6. [Merge it!](#6-how-to-merge-it)
-  7. [Finalize your merge](#7-how-to-finalize-your-merge)
+  3. [Coding Guidelines](#3-coding-guidelines)
+  4. [Request a merge into Master](#4-how-to-request-a-merge-into-master)
+  5. [Review a merge request](#5-how-to-review-a-merge-request)
+  6. [Resolve all discussions](#6-how-to-resolve-all-discussions)
+  7. [Merge it!](#7-how-to-merge-it)
+  8. [Finalize your merge](#8-how-to-finalize-your-merge)
 
 Most of the tasks may either be done using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/) or by using the command line. In this contributing guide the respective way is described, of which the authors think it is most convenient.
 
@@ -42,10 +43,26 @@ git pull
 ```
 When you're done with your modifications, you may request to merge your branch into the `master`. Before doing so, please confer [this checklist](#appendix-checklist) and make sure, that all requirements have been satisfied.
 
-## 3. How to request to merge into Master
+## 3. Coding Guidelines
+
+The Molsim code is not very well standardized and does not adhere to any standard. Just some best practices:
+* When adding new subroutines, try keep them similar to existing subroutines.
+* Indent blocks by 3 characters.
+* Use genuine spaces rather than tabs.
+* Try to confine your line width to 80 characters.
+* Avoid putting multiple statements on the same line. It is not good for readability..
+* If you add substantial parts, consider creating a new module for your changes. Place this module in a separate file.
+* Use `END SUBROUTINE <name>` or `END FUNCTION <name>` instead of just `END`.
+* Use IMPLICIT NONE in all program units.
+* Avoid the GOTO statement.
+* Avoid the use of ‘magic numbers’. A ‘magic number’ is a numeric constant that is hard wired into the code.
+* Insert meaningful comments frequently.
+* **Describe the Changes in the Manual**: A documentation on how to write the manual is given [here](WRITING_MANUAL.md).
+
+## 4. How to request to merge into Master
 In order to request a merge of your branch into the `master` browse the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests) to create a new merge request. Note to request the merge with a WIP-prefix. The merge is then designated as "work in progress".
 
-## 4. How to review a merge request
+## 5. How to review a merge request
 When you are assigned to a merge request you are supposed to read the changes in the code and check for possible mistakes. Besides of possible mistakes the code should be straight forward to understand. If parts of the code are difficult to understand, request more comments! When reviewing the code differences using git (or the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests)) hide whitespace changes. Whenever you find something to be wrong or incomprehensible, add a comment to the respective line of code. This will start a discussion to be resolved by the author of the modification.
 
 Some general rules when commenting the changes of the code:
@@ -53,27 +70,27 @@ Some general rules when commenting the changes of the code:
 
 Besides of the reviewing of the detailed code modifications, please check whether all requirements in [this checklist](#appendix-checklist) have been met. When you are finished reviewing all modifications and all discussions have been resolved, remove the WIP-prefix from the merge request. This signals the author of the modifications, that his branch may be merged.
 
-## 5. How to resolve all discussions
+## 6. How to resolve all discussions
 When the assignee of your merge request has fully reviewed your modifications, it is your responsibility to resolve all discussions by marking them as resolved.
 
 Discussions with a :sparkles: in it are only of cosmetic nature. You are not obliged to resolve this kind of discussions. Still, it is better to resolve it or discuss with the assignee, why for example it should not be changed.
 
-## 6. How to merge it
+## 7. How to merge it
 When finally all discussions have been resolved and the WIP-prefix has been removed  by the assignee of the merge request, you may merge your branch into the `master`. But first you need to perform some housekeeping:
 
-### 6.1 Update the Changelog
+### 7.1 Update the Changelog
 Update the [changelog](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/blob/master/CHANGELOG.md) according to [this description](http://keepachangelog.com/en/0.3.0/). If you created backwards incompatible changes in the input, please describe your changes in the changelog.
 
-### 6.2 Declare Stable
+### 7.2 Declare Stable
 Declare your version as the current stable version. Do this by running `make declarestable` in the `Testin` directory and commit/push the new `stable.md5sum` file.
 
-### 6.3 Merge Branch
+### 7.3 Merge Branch
 Merge your branch by using the [gitlab interface](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/merge_requests).
 
-## 7. How to finalize your merge
+## 8. How to finalize your merge
 After the merge has been done, there are still a few things in order to finalize your merge request:
 
-### 7.1 Generate a tag
+### 8.1 Generate a tag
 Generating a tag means to mark this specific point of the version history. First checkout the `master` branch, and pull it:
 ```sh
 git checkout master
@@ -91,7 +108,7 @@ git push --tags
 ```
 in order to synchronize your new tag.
 
-### 7.2 Inform everyone about the new version
+### 8.2 Inform everyone about the new version
 Inform everyone about the new available version by adding a comment to [this issue](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/issues/20).
 
 ## Appendix: Checklist

@@ -20,22 +20,22 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     MeshModule                                                       *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **MeshModule**
+!! *module for mesh*
 !************************************************************************
 
-! ... module for mesh
 
 module MeshModule
     implicit none
+    ! These are documented in the manual in Chapter 7 (file datastructures.md)
     type Node                             ! node in the DOP-tree
         !private
         real(8) :: dop(6)                 ! bounding box in object coordinate system
         integer(4) :: c(2)                ! id:s of children
         logical :: leaf                   ! leaf node: children is triangles
     end type
-
+    ! These are documented in the manual in Chapter 7 (file datastructures.md)
     type TriMesh  ! triangle mesh, with DOP-tree
         !private
         real(8), allocatable :: c(:,:)    ! c(3,np) coordinates of triangle verticies
@@ -43,7 +43,7 @@ module MeshModule
         type(node), allocatable :: n(:)   ! nodes in tree
         integer(4) :: levels              ! levels of subdivisions of triangles
     end type
-
+    ! These are documented in the manual in Chapter 7 (file datastructures.md)
     type AffineTrans                      ! affine transformation
         real(8) :: trans(3)               ! location of object origin in lab system
         real(8) :: rot(3,3)               ! rotation matrix applied to object
@@ -81,12 +81,11 @@ contains
 !      OverlapDop
 
 !************************************************************************
-!*                                                                      *
-!*     BuildSuperball                                                   *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **BuildSuperball**
+!! *mesh a superball*
 !************************************************************************
 
-! ... mesh a superball
 
 function BuildSuperBall(radius, m, nlevels, max_err, rms_err) result(mesh)
     real(8), intent(in)    :: radius          ! r in x^m + y^m + z^m = r^m
@@ -191,12 +190,11 @@ function BuildSuperBall(radius, m, nlevels, max_err, rms_err) result(mesh)
 end function BuildSuperball
 
 !************************************************************************
-!*                                                                      *
-!*     BuildDopTree                                                     *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **BuildDopTree**
+!! *build a DOP tree*
 !************************************************************************
 
-! ... build a DOP tree
 
 subroutine BuildDopTree(m)
     type(TriMesh), intent(inout) :: m          ! mesh, for which DOP-tree will be built
@@ -223,12 +221,11 @@ subroutine BuildDopTree(m)
 end subroutine BuildDopTree
 
 !************************************************************************
-!*                                                                      *
-!*     BuildNode                                                        *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **BuildNode**
+!! *build a node*
 !************************************************************************
 
-! ... build a node
 
 recursive function BuildNode(m, ndop, bary, dop, ids, nn, lvl) result(nid)
     type(TriMesh), intent(inout) :: m  ! mesh/dop-tree
@@ -301,12 +298,11 @@ recursive function BuildNode(m, ndop, bary, dop, ids, nn, lvl) result(nid)
 end function BuildNode
 
 !************************************************************************
-!*                                                                      *
-!*     TriTri                                                           *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **TriTri**
+!! *check if two triangles intersect*
 !************************************************************************
 
-! ... check if two triangles intersect
 !     Tomas Moller, Journal of Graphics Tools, 25, 2(2), 1997.
 
 function TriTri(v, u) result(overlap)
@@ -353,12 +349,11 @@ function TriTri(v, u) result(overlap)
 end function TriTri
 
 !************************************************************************
-!*                                                                      *
-!*     Cint                                                             *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **Cint**
+!! *tries to find interval on the line intersection between the triangle planes*
 !************************************************************************
 
-! ... tries to find interval on the line intersection between the triangle planes
 
 function cint(v, d, is)
     real(8), intent(in) :: v(3)         ! coordinates of vertices of triangle a in some axis
@@ -389,12 +384,11 @@ function cint(v, d, is)
 end function cint
 
 !************************************************************************
-!*                                                                      *
-!*     Coplanar                                                         *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **Coplanar**
+!! *check for overlap in coplanar triangles*
 !************************************************************************
 
-! ... check for overlap in coplanar triangles
 
 function coplanar(ut, vt, n) result(overlap)
     real(8), intent(in) :: ut(3,3)     ! vertex coordinates of first triangle
@@ -432,12 +426,11 @@ function coplanar(ut, vt, n) result(overlap)
 end function coplanar
 
 !************************************************************************
-!*                                                                      *
-!*     PointInTriangle                                                  *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **PointInTriangle**
+!! *check if point in a triangle*
 !************************************************************************
 
-! ... check if point in a triangle
 
 function PointInTriangle(p, u) result(overlap)
     real(8), intent(in) :: p(2)    ! 2d coordinate of point
@@ -455,12 +448,11 @@ function PointInTriangle(p, u) result(overlap)
 end function PointInTriangle
 
 !************************************************************************
-!*                                                                      *
-!*     Cross2                                                           *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **Cross2**
+!! *cross product of two 2d vectors*
 !************************************************************************
 
-! ... cross product of two 2d vectors
 
 function Cross2(a, b) result(c)
     real(8), intent(in) :: a(2)
@@ -470,12 +462,11 @@ function Cross2(a, b) result(c)
 end function Cross2
 
 !************************************************************************
-!*                                                                      *
-!*     Cross                                                            *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **Cross**
+!! *Cross product of two 3d vectors*
 !************************************************************************
 
-! ... Cross product of two 3d vectors
 
 function Cross(a, b)
     real(8), intent(in) :: a(3)
@@ -487,12 +478,11 @@ function Cross(a, b)
 end function Cross
 
 !************************************************************************
-!*                                                                      *
-!*     Sort2                                                            *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **Sort2**
+!! *sort two elements in ascending order*
 !************************************************************************
 
-! ... sort two elements in ascending order
 
 subroutine Sort2(v)
     real(8), intent(inout) :: v(2)
@@ -505,12 +495,11 @@ subroutine Sort2(v)
 end subroutine Sort2
 
 !************************************************************************
-!*                                                                      *
-!*     MidPoint                                                         *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **MidPoint**
+!! *find midpoint of two 3d arrays, midpoint may be modified*
 !************************************************************************
 
-! ... find midpoint of two 3d arrays, midpoint may be modified
 
 function MidPoint(a, b, m, rad)
     real(8), intent(in) :: a(3), b(3)
@@ -522,12 +511,11 @@ function MidPoint(a, b, m, rad)
 end function MidPoint
 
 !************************************************************************
-!*                                                                      *
-!*     l2i                                                              *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **l2i**
+!! *change a logic variable to an integer*
 !************************************************************************
 
-! ... change a logic variable to an integer
 
 function l2i(l) result(i)
     logical, intent(in) :: l   ! logical
@@ -537,12 +525,11 @@ function l2i(l) result(i)
 end function
 
 !************************************************************************
-!*                                                                      *
-!*     findExtrema                                                      *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **findExtrema**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 function findExtrema(c, ids) result(eval)
     real(8),    intent(in) :: c(:,:)  ! all coordnates
@@ -561,12 +548,11 @@ function findExtrema(c, ids) result(eval)
 end function
 
 !************************************************************************
-!*                                                                      *
-!*     union                                                            *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **union**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 function union(a, b) result(u)
     real(8), intent(in) :: a(6)    ! box a
@@ -576,12 +562,11 @@ function union(a, b) result(u)
 end function
 
 !************************************************************************
-!*                                                                      *
-!*     volume                                                           *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **volume**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 function volume(dop) result(vol)
     real(8), intent(in) :: dop(:,:)  ! two dops
@@ -594,12 +579,11 @@ function volume(dop) result(vol)
 end function
 
 !************************************************************************
-!*                                                                      *
-!*     idSort                                                           *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **idSort**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 subroutine idSort(vec,ind)
    real(8),    intent(in)  :: vec(:)   ! unsorted array
@@ -648,12 +632,11 @@ subroutine idSort(vec,ind)
 end subroutine idSort
 
 !************************************************************************
-!*                                                                      *
-!*     swap                                                             *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **swap**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 subroutine swap(a, b)
    integer(4), intent (inout)   :: a, b    ! a and b are swapped
@@ -662,12 +645,11 @@ subroutine swap(a, b)
 end subroutine swap
 
 !************************************************************************
-!*                                                                      *
-!*     transformation                                                   *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **transformation**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 function transformation(rot, trans) result(tf)
     real(8), intent(in) :: rot(3,3) ! rotation matrix
@@ -688,12 +670,11 @@ function transformation(rot, trans) result(tf)
 end function transformation
 
 !************************************************************************
-!*                                                                      *
-!*     rotation                                                         *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **rotation**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 function rotation(ang) result(rot)
     real(8), intent(in) :: ang(3)    ! rotational angles
@@ -712,12 +693,11 @@ function rotation(ang) result(rot)
 end function rotation
 
 !************************************************************************
-!*                                                                      *
-!*     TestOverlap                                                      *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **TestOverlap**
+!! *documentation_missing*
 !************************************************************************
 
-! ...
 
 function TestOverlap(m, ang, tr) result(overlap)
     type(TriMesh), intent(in) :: m     ! mesh
@@ -730,12 +710,11 @@ function TestOverlap(m, ang, tr) result(overlap)
 end function TestOverlap
 
 !************************************************************************
-!*                                                                      *
-!*     OverlapMesh                                                      *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **OverlapMesh**
+!! *translate and rotate a mesh and check overlap of two trees*
 !************************************************************************
 
-! ... translate and rotate a mesh and check overlap of two trees
 
 function OverlapMesh(m, trans, rot) result(overlap)
     type(TriMesh), intent(in) :: m    ! the mesh describing both particles
@@ -748,12 +727,11 @@ function OverlapMesh(m, trans, rot) result(overlap)
 end function OverlapMesh
 
 !************************************************************************
-!*                                                                      *
-!*     OverlapTree                                                      *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **OverlapTree**
+!! *check overlap of two trees*
 !************************************************************************
 
-! ... check overlap of two trees
 
 function OverlapTree(m, tf) result(overlap)
     type(TriMesh) :: m         ! mesh
@@ -800,12 +778,11 @@ function OverlapTree(m, tf) result(overlap)
 end function OverlapTree
 
 !************************************************************************
-!*                                                                      *
-!*     OverlapDop                                                       *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **OverlapDop**
+!! *check overlap between two bounding boxes*
 !************************************************************************
 
-! ... check overlap between two bounding boxes
 
 function OverlapDop(tf, d1, d2) result(overlap)
 
@@ -825,12 +802,11 @@ function OverlapDop(tf, d1, d2) result(overlap)
 end function OverlapDop
 
 !************************************************************************
-!*                                                                      *
-!*     OverlapLeaf                                                      *
-!*                                                                      *
+!> \page mesh mesh.F90
+!! **OverlapLeaf**
+!! *check overlap of two leafs*
 !************************************************************************
 
-! ... check overlap of two leafs
 
 function OverlapLeaf(m, tf, ai, bi) result(overlap)
     type(TriMesh), intent(in) :: m           ! the mesh

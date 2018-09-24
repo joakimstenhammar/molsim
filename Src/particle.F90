@@ -19,44 +19,146 @@
 !************************************************************************
 !************************************************************************
 
-!************************************************************************
-!*                                                                      *
-!*     ParticleModule                                                   *
-!*                                                                      *
-!************************************************************************
 
-! ... module for Particle
+!> \page nmlParticle
+!! The namelist  \ref nmlParticle contains variables that describe the number of particles, their geometries, masses, etc. Examples of
+!! namelist  \ref nmlParticle describing different types of particles are given in Appendix B.
+!! * Variables:
+!!  * \subpage txelec
+!!  * \subpage lclink
+!!  * \subpage lmultigraft
+!!  * \subpage lhierarchical
+!!  * \subpage maxnbondcl
+!!  * \subpage ngen
+!!  * \subpage ictgen
+!!  * \subpage nbranch
+!!  * \subpage ibranchpbeg
+!!  * \subpage ibranchpinc
+!!  * \subpage nnwt
+!!  * \subpage nct
+!!  * \subpage txct
+!!  * \subpage ncct
+!!  * \subpage npptct
+!!  * \subpage txcopolymer
+!!  * \subpage nblockict
+!!  * \subpage npt
+!!  * \subpage txpt
+!!  * \subpage nppt
+!!  * \subpage natpt
+!!  * \subpage txat
+!!  * \subpage massat
+!!  * \subpage radat
+!!  * \subpage zat
+!!  * \subpage zatalpha
+!!  * \subpage sigat
+!!  * \subpage epsat
+!!  * \subpage latweakcharge
+!!  * \subpage jatweakcharge
+!!  * \subpage pK
+!!  * \subpage pH
+!!  * \subpage naatpt
+!!  * \subpage txaat
+!!  * \subpage rain
+!!  * \subpage dipain
+!!  * \subpage polain
+!!  * \subpage lintsite
+!!  * \subpage raintin
+!!  * \subpage lradatbox
+!!  * \subpage itestpart
+
+!************************************************************************
+!> \page particle particle.F90
+!! **ParticleModule**
+!! *module for particle*
+!************************************************************************
 
 module ParticleModule
 
    use MolModule
-
-   character(10) :: txaat(mnapt,mnpt)      !*name of atoms belonging to one particle type
-   real(8)       :: rain(3,mnapt,mnpt)     !*atom coordinates in input frame
-   real(8)       :: dipain(0:3,mnapt,mnpt) !*static dipole moment in input frame (two input modest: (mx, my, mz) or m, (x, y, z))
-   real(8)       :: polain(6,mnapt,mnpt)   !*polarizability in input frame
+!> \page txaat
+!! `character(10)`(1:napt,1:\ref npt )
+!! * \ref txaat (ialoc,ipt) is a text label for atom of no ialoc (local list) on particle of type ipt. ialoc runs from 1 to napt(ipt), the no of atoms of particle type ipt.
+   character(10) :: txaat(mnapt,mnpt)
+!> \page rain
+!! `real`(1:3,1:napt,1:\ref npt )
+!! * \ref rain (1:3,ialoc,ipt) is the x:y:z-coordinate of atom no ialoc (local list) in a particle of type ipt. ialoc runs from 1 to
+!!   napt(ipt), the no of atoms of particle type ipt. \ref rain need not necessarily be given in the principle frame axes.
+   real(8)       :: rain(3,mnapt,mnpt)
+!> \page dipain
+!! `real`(1:3,1:napt,1:\ref npt )
+!! * \ref dipain (1:3,ialoc,ipt) is the x:y:z-component of the dipole moment of atom no ialoc (local list) in a particle of type ipt.
+!!   ialoc runs from 1 to napt(ipt), the no of atoms of particle type ipt. \ref dipain has to be given in the same frame as \ref rain.
+   real(8)       :: dipain(0:3,mnapt,mnpt)
+!> \page polain
+!! `real`(1:napt,1:\ref npt )
+!! * \ref polain (1:6,ialoc,ipt) is the xx:yy:zz:xy:xz:yz-component of the symmetric polarizability of atom no ialoc (local list) in a
+!!   particle of type ipt. ialoc runs from 1 to napt(ipt), the number of atoms of particle type ipt. \ref polain has to be given in the same
+!!   frame as \ref rain.
+   real(8)       :: polain(6,mnapt,mnpt)
+!> \page raintin
+!! `real`(1:3,1:napt,1:\ref npt )
+!! * \ref raintin (1:3,ialoc,ipt) is the x:y:z-coordinate of interaction size no ialoc (local list) in a particle of type ipt. ialoc runs from 1 to napt(ipt), the no of atoms of particle type ipt.
    real(8)       :: raintin(3,mnapt,mnpt)  !*interaction site coordinates in input frame, cf rain
-   integer(4)    :: itestpart              !*=10, call of TestChainPointer
-
+!> \page itestpart
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`: Nothing. The normal option.
+!! * `10`: Chain pointers
+   integer(4)    :: itestpart
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type :: block_type
       integer(4)  :: pt  !particle type
       integer(4)  :: np  !number of particles
    end type block_type
 
+!> \page rep_block_ict
+!! `block_type`(1:pt,1:np)
+!! **default:** pt*np*`0`
+!! * Particle type and number of particles in in each block and chain type.
    type(block_type), allocatable :: rep_iblock_ict(:,:)
+!> \page nblockict
+!! `integer`(1:\ref nct)
+!! **default:** \ref nct*`0`
+!! * Number of blocks in each repeating of a chain of a chain type.
    integer(4)  :: nblockict(mnct)
-
-   integer(4), allocatable :: iptsegct(:,:) ! particle type ipt of segment number iseg of chain type ict
+!> \page iptsegct
+!! `integer`(maxval(npct(1:\ref nct)),1:\ref nct)
+!! **default:** npct*\ref nct*`0`
+!! * Particle type ipt of segments iseg of chain type ict
+   integer(4), allocatable :: iptsegct(:,:)
 
 end module ParticleModule
 
-!************************************************************************
-!*                                                                      *
-!*     Particle                                                         *
-!*                                                                      *
-!************************************************************************
 
-! ... particle variables
+
+!> \page nmlNetworkConfiguration
+!! The namelist \ref nmlNetworkConfiguration contains variables that describe the number of networks the particles and chains, which form the
+!! networks and the the network topology.
+!! * Variables:
+!!  * \subpage nnwnwt
+!!  * \subpage ncctnwt
+!!  * \subpage txnwt
+!!  * \subpage txtoponwt
+!!  * \subpage iptclnwt
+
+!> \page nmlCopolymerSequence
+!! The namelist \ref nmlCopolymerSequence contains variables that describe the sequence of copolymers.
+!! * Variables:
+!!  * \subpage iptsegct
+
+
+!> \page nmlRepeating
+!! The namelist \ref nmlRepeating contains variables that define the repeating block structure of copolymers. The copolymers consist of
+!! repeating units, each consisting of blocks of one particle type.
+!! * Variables:
+!!  * \subpage rep_block_ict
+
+!************************************************************************
+!> \page particle particle.F90
+!!  **Particle(iStage)**
+!! *particle variables*
+!************************************************************************
 
 subroutine Particle(iStage)
 
@@ -620,12 +722,10 @@ end subroutine cube
 end subroutine Particle
 
 !************************************************************************
-!*                                                                      *
-!*     SetObjectParam1                                                  *
-!*                                                                      *
+!> \page particle particle.F90
+!!  **SetObjectParam1**
+!! *setobject parameters*
 !************************************************************************
-
-! ... set object parameters
 
 subroutine SetObjectParam1
 
@@ -1958,12 +2058,10 @@ end subroutine TestCrosslinkPointer
 end subroutine SetObjectParam1
 
 !************************************************************************
-!*                                                                      *
-!*     SetObjectParam2                                                  *
-!*                                                                      *
+!> \page particle particle.F90
+!!  **SetObjectParam2**
+!! *set object parameters*
 !************************************************************************
-
-! ... set object parameters
 
 subroutine SetObjectParam2
 
@@ -2241,12 +2339,11 @@ end subroutine md_dipole
 end subroutine SetObjectParam2
 
 !************************************************************************
-!*                                                                      *
-!*     PAxesSystem                                                      *
-!*                                                                      *
+!> \page particle particle.F90
+!!  **PAxesSystem**
+!! *transform from input to principal axes system*
 !************************************************************************
 
-! ... transform from input to principal axes system
 !     modified for use of expansion centers not situated at atoms/peo
 
 subroutine PAxesSystem(ipt)
@@ -2396,12 +2493,11 @@ subroutine PAxesSystem(ipt)
 end subroutine PAxesSystem
 
 !************************************************************************
-!*                                                                      *
-!*     SetAtomProp                                                      *
-!*                                                                      *
+!> \page particle particle.F90
+!  **SetAtomProp**
+! *set atom properties*
 !************************************************************************
 
-! ... set atom properties
 
 subroutine SetAtomProp(iplow, ipupp, lint)
 

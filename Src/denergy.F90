@@ -85,12 +85,11 @@
 !       !---------- DUExternal
 
 !************************************************************************
-!*                                                                      *
-!*     DUTotal                                                          *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUTotal**
+!! *calculate energy difference between two configurations*
 !************************************************************************
 
-! ... calculate energy difference between two configurations
 
 !     old configuration is given by ro, ori, r for all particles
 !     new configuration is given by ro, ori, r except for moving particles
@@ -238,12 +237,11 @@ end subroutine DUTotal
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     DUTwoBody                                                        *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUTwoBody**
+!! *calculate two-body potential energy difference*
 !************************************************************************
 
-! ... calculate two-body potential energy difference
 
 subroutine DUTwoBody(lhsoverlap, utwobodynew, twobodyold)
 
@@ -281,12 +279,11 @@ subroutine DUTwoBody(lhsoverlap, utwobodynew, twobodyold)
 end subroutine DUTwoBody
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyANew                                                     *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyANew**
+!! *calculate two-body potential energy for new configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for new configuration
 !     only monoatomic particles
 
 subroutine UTwoBodyANew(lhsoverlap,jp)
@@ -395,12 +392,11 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
 end subroutine UTwoBodyANew
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyAOld                                                     *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyAOld**
+!! *calculate two-body potential energy for old configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for old configuration
 !     only monoatomic particles
 
 subroutine UTwoBodyAOld
@@ -499,12 +495,11 @@ subroutine UTwoBodyAOld
 end subroutine UTwoBodyAOld
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyANewLList                                                *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyANewLList**
+!! *calculate two-body potential energy for new configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for new configuration
 !     only monoatomic particles
 !     linked list version
 
@@ -614,12 +609,11 @@ subroutine UTwoBodyANewLList(lhsoverlap,jp)
 end subroutine UTwoBodyANewLList
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyAOldLList                                                *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyAOldLList**
+!! *calculate two-body potential energy for old configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for old configuration
 !     only monoatomic particles
 !     linked list version
 
@@ -723,12 +717,11 @@ subroutine UTwoBodyAOldLList
 end subroutine UTwoBodyAOldLList
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyANewCellList                                             *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyANewCellList**
+!! *calculate two-body potential energy for old configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for old configuration
 !     only monoatomic particles
 !     cell list version
 
@@ -843,12 +836,11 @@ subroutine UTwoBodyANewCellList(lHsOverlap, ipOverlap)
 end subroutine UTwoBodyANewCellList
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyAOldCellList                                             *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyAOldCellList**
+!! *calculate two-body potential energy for old configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for old configuration
 !     only monoatomic particles
 !     cell list version
 
@@ -936,12 +928,11 @@ subroutine UTwoBodyAOldCellList
 end subroutine UTwoBodyAOldCellList
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyPNew                                                     *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyPNew**
+!! *calculate two-body potential energy for new configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for new configuration
 
 subroutine UTwoBodyPNew(lhsoverlap,jp)
 
@@ -1097,12 +1088,11 @@ subroutine UTwoBodyPNew(lhsoverlap,jp)
 end subroutine UTwoBodyPNew
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyPOld                                                     *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UTwoBodyPOld**
+!! *calculate two-body potential energy for old configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for old configuration
 
 subroutine UTwoBodyPOld
 
@@ -1241,12 +1231,11 @@ subroutine UTwoBodyPOld
 end subroutine UTwoBodyPOld
 
 !************************************************************************
-!*                                                                      *
-!*     DUTwoBodyEwald                                                   *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUTwoBodyEwald**
+!! *calculate two-body potential energy difference; k-space*
 !************************************************************************
 
-! ... calculate two-body potential energy difference; k-space
 
 subroutine DUTwoBodyEwald
 
@@ -1554,12 +1543,11 @@ end subroutine DUTwoBodyEwaldSurf
 end subroutine DUTwoBodyEwald
 
 !************************************************************************
-!*                                                                      *
-!*     DUWeakChargeEwald                                                *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUWeakChargeEwald**
+!! *calculate two-body potential energy difference for titrating systems; k-space*
 !************************************************************************
 
-! ... calculate two-body potential energy difference for titrating systems; k-space
 
 subroutine DUWeakChargeEwald
 
@@ -1711,12 +1699,11 @@ end subroutine DUWeakChargeEwaldSurf
 end subroutine DUWeakChargeEwald
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldSetArrayTM                                                  *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **EwaldSetArrayTM**
+!! *calculate eikxtm, eikytm, and eikztm arrays for moving particles*
 !************************************************************************
 
-! ... calculate eikxtm, eikytm, and eikztm arrays for moving particles
 
 subroutine EwaldSetArrayTM
 
@@ -1744,12 +1731,11 @@ subroutine EwaldSetArrayTM
 end subroutine EwaldSetArrayTM
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldSetArray2dTM                                                *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **EwaldSetArray2dTM**
+!! *calculate sinkxtm, coskxtm, sinkytm, and sinkytm arrays for moving particles*
 !************************************************************************
 
-! ... calculate sinkxtm, coskxtm, sinkytm, and sinkytm arrays for moving particles
 
 subroutine EwaldSetArray2dTM
 
@@ -1780,12 +1766,11 @@ subroutine EwaldSetArray2dTM
 end subroutine EwaldSetArray2dTM
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldUpdateArray                                                 *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **EwaldUpdateArray**
+!! *update eikx, eiky, eikz, and sumeikr for moving particles*
 !************************************************************************
 
-! ... update eikx, eiky, eikz, and sumeikr for moving particles
 ! ... update sinkx, coskx, sinky, cosky, and termsss ... for moving particles
 
 subroutine EwaldUpdateArray
@@ -1836,12 +1821,11 @@ end subroutine EwaldUpdateArray
 !***********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     DUDipole                                                         *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDipole**
+!! *calculate potential energy difference from charges and dipoles*
 !************************************************************************
 
-! ... calculate potential energy difference from charges and dipoles
 
 subroutine DUDipole
 
@@ -1868,12 +1852,11 @@ subroutine DUDipole
 end subroutine DUDipole
 
 !************************************************************************
-!*                                                                      *
-!*     DUDipolePNew                                                     *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDipolePNew**
+!! *calculate potential energy from charges and dipoles for new configuration*
 !************************************************************************
 
-! ... calculate potential energy from charges and dipoles for new configuration
 
 subroutine DUDipolePNew
 
@@ -1954,12 +1937,11 @@ subroutine DUDipolePNew
 end subroutine DUDipolePNew
 
 !************************************************************************
-!*                                                                      *
-!*     DUDipolePOld                                                     *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDipolePOld**
+!! *calculate potential energy from charges and dipoles for old configuration*
 !************************************************************************
 
-! ... calculate potential energy from charges and dipoles for old configuration
 
 subroutine DUDipolePOld
 
@@ -2035,12 +2017,11 @@ subroutine DUDipolePOld
 end subroutine DUDipolePOld
 
 !************************************************************************
-!*                                                                      *
-!*     DUDipoleEwald                                                    *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDipoleEwald**
+!! *calculate potential energy change; k-space*
 !************************************************************************
 
-! ... calculate potential energy change; k-space
 
 subroutine DUDipoleEwald
 
@@ -2328,12 +2309,11 @@ end subroutine DUDipoleEwald
 !***********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     DUDipoleSph                                                      *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDipoleSph**
+!! *calculate charge and dipole potential energy difference*
 !************************************************************************
 
-! ... calculate charge and dipole potential energy difference
 
 subroutine DUDipoleSph(lhsoverlap)
 
@@ -2370,12 +2350,11 @@ subroutine DUDipoleSph(lhsoverlap)
 end subroutine DUDipoleSph
 
 !************************************************************************
-!*                                                                      *
-!*     DUDipoleSphNew                                                      *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDipoleSphNew**
+!! *calculate charge and dipole potential energy for new configuration*
 !************************************************************************
 
-! ... calculate charge and dipole potential energy for new configuration
 
 subroutine DUDipoleSphNew(lhsoverlap,jp)
 
@@ -2520,12 +2499,11 @@ subroutine DUDipoleSphNew(lhsoverlap,jp)
 end subroutine DUDipoleSphNew
 
 !************************************************************************
-!*                                                                      *
-!*     DUDipoleSphOld                                                      *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDipoleSphOld**
+!! *calculate charge and dipole potential energy for old configuration*
 !************************************************************************
 
-! ... calculate charge and dipole potential energy for old configuration
 
 subroutine DUDipoleSphOld
 
@@ -2665,12 +2643,11 @@ end subroutine DUDipoleSphOld
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     DUDielDis                                                        *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDielDis**
+!! *calculate coulomb energy in a system with dielectric discontinuities*
 !************************************************************************
 
-! ... calculate coulomb energy in a system with dielectric discontinuities
 
 subroutine DUDielDis(lhsoverlap)
 
@@ -2711,12 +2688,11 @@ subroutine DUDielDis(lhsoverlap)
 end subroutine DUDielDis
 
 !************************************************************************
-!*                                                                      *
-!*     DUDielDisPlane                                                   *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDielDisPlane**
+!! *calculate coulomb energy in a system with dielectric discontinuity at z = 0*
 !************************************************************************
 
-! ... calculate coulomb energy in a system with dielectric discontinuity at z = 0
 !     restricted to single particle trial move and serial computation
 
 subroutine DUDielDisPlane(lhsoverlap)
@@ -2800,12 +2776,11 @@ end subroutine TestDUDielDisPlane
 end subroutine DUDielDisPlane
 
 !************************************************************************
-!*                                                                      *
-!*     DUDielDisSph                                                     *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUDielDisSph**
+!! *calculate coulomb energy in a system with a radial dielectric discontinuity*
 !************************************************************************
 
-! ... calculate coulomb energy in a system with a radial dielectric discontinuity
 !     restricted to single particle trial move and serial computation
 
 subroutine DUDielDisSph(lhsoverlap)
@@ -2909,12 +2884,11 @@ end subroutine DUDielDisSph
 !**********************************************************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     DUBond                                                           *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUBond**
+!! *calculate bond potential energy difference*
 !************************************************************************
 
-! ... calculate bond potential energy difference
 
 subroutine DUBond
 
@@ -2983,12 +2957,11 @@ end subroutine DUBondSub
 end subroutine DUBond
 
 !************************************************************************
-!*                                                                      *
-!*     DUAngle                                                          *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUAngle**
+!! *calculate angle potential energy difference*
 !************************************************************************
 
-! ... calculate angle potential energy difference
 !     adapted to the case where all displaced chain particles form a single string of particles
 
 subroutine DUAngle
@@ -3104,12 +3077,11 @@ end subroutine DUAngleSub
 end subroutine DUAngle
 
 !************************************************************************
-!*                                                                      *
-!*     DUCrossLink                                                      *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUCrossLink**
+!! *calculate crosslink potential energy difference*
 !************************************************************************
 
-! ... calculate crosslink potential energy difference
 
 subroutine DUCrossLink
 
@@ -3165,12 +3137,11 @@ end subroutine DUCrossLinkSub
 end subroutine DUCrossLink
 
 !************************************************************************
-!*                                                                      *
-!*     DUExternal                                                       *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **DUExternal**
+!! *calculate external potential difference*
 !************************************************************************
 
-! ... calculate external potential difference
 
 subroutine DUExternal(lhepoverlap)
 
@@ -3929,12 +3900,11 @@ end subroutine DUExternal
 ! ........................... Under Development ...............................
 
 !************************************************************************
-!*                                                                      *
-!*     UWeakChargeANew                                                  *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UWeakChargeANew**
+!! *calculate two-body potential energy for new configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for new configuration
 !     only monoatomic particles
 !     weak charges, limited to charged hard spheres
 
@@ -4057,12 +4027,11 @@ end if
 end subroutine UWeakChargeANew
 
 !************************************************************************
-!*                                                                      *
-!*     UWeakChargeAOld                                                  *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UWeakChargeAOld**
+!! *calculate two-body potential energy for old configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for old configuration
 !     only monoatomic particles
 !     weak charges, limited to charged hard spheres
 
@@ -4176,12 +4145,11 @@ end if
 end subroutine UWeakChargeAOld
 
 !************************************************************************
-!*                                                                      *
-!*     UWeakChargePNew                                                  *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UWeakChargePNew**
+!! *calculate two-body potential energy for new configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for new configuration
 !     weak charges, limited to charged hard spheres
 
 subroutine UWeakChargePNew(lhsoverlap,jp)
@@ -4426,12 +4394,11 @@ end if
 end subroutine UWeakChargePNew
 
 !************************************************************************
-!*                                                                      *
-!*     UWeakChargePOld                                                  *
-!*                                                                      *
+!> \page denergy denergy.F90
+!! **UWeakChargePOld**
+!! *calculate two-body potential energy for old configuration*
 !************************************************************************
 
-! ... calculate two-body potential energy for old configuration
 !     weak charges, limited to charged hard spheres
 
 subroutine UWeakChargePOld

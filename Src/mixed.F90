@@ -20,12 +20,55 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     MixedDriver                                                      *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **MixedDriver**
+!! *mixed task driver*
 !************************************************************************
 
-! ... mixed task driver
+
+!> \page nmlMixed
+!! The namelist  nmlMolmix contains variables that control the choice of miscellaneous calculations In all cases two particles are involved, and their types are specified by \ref txpt1 and \ref txpt2.
+!! * Variables:
+!!  * \subpage mode
+!!  * \subpage txpt1
+!!  * \subpage txpt2
+!!  * \subpage coord1
+!!  * \subpage coord2
+!!  * \subpage nmlMixed_ip
+
+!> \page mode
+!! `integer`(1:10)
+!! **default:** `0`
+!! * Select type of calculation. Several calculations, at most 10, of either same or different types may be performed by listing the
+!!   corresponding values of mixmode.  The correct number and order of namelists have to follow namelist nmlMolmix.
+!! * `1:`  Potential energy curve is generated. Further specification is given in namelist nmlMolmix1.
+!! * `2`:  Potential energies on a lattice is calculated. Further specification is given in namelist nmlMolmix2.
+!! * `3`:  The global potential energy minimum is calculated. Further specification is given in namelist nmlMolmix3.
+!! * `4`:  Random coordinates are generated, and corresponding potential energies are calculated. Further specification is given in namelist nmlMolmix4.
+!! * `5`:  The second virial coefficient is calculated. Further specification is given in namelist nmlMolmix5.
+!! * `6`:  Orientational averaged potential energy is calculated. Further specification is given in namelist nmlMolmix6.
+
+!> \page txpt1
+!! `character(10)`
+!! * Particle type of particle one.
+
+!> \page txpt2
+!! `character(10)`
+!! * Particle type of particle two.
+
+!> \page coord1
+!! `real`(1:12)
+!! * Initial coordinate of particle of type \ref txpt1 in the sequence ro(1), ro(2), ro(3) ori(1,1), ori(1,2), ..., ori(3,3). ro is the
+!! center-of-mass location. ori(1,1:3) is projection of the particle frame axis z' on the x, y, and z-lab axes, and similarly with
+!! ori(2,1:3) and ori(3,1:3).
+
+!> \page coord2
+!! `real`(1:12)
+!! * As for \ref coord1 but for particle of type \ref txpt2.
+
+!> \page nmlMixed_ip ip
+!! `integer`
+!! * Particle to be moved or which coordinates should be integrated, either 1 or 2.
 
 subroutine MixedDriver(iStage)
 
@@ -125,12 +168,52 @@ subroutine MixedDriver(iStage)
 end subroutine MixedDriver
 
 !************************************************************************
-!*                                                                      *
-!*     Mixed1                                                           *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **Mixed1**
+!! *generate a potential energy curve*
 !************************************************************************
 
-! ... generate a potential energy curve
+
+!> \page nmlMixed1
+!! The namelist  \ref nmlMixed1 contains variables that control the generation of the potential energy curve.
+!! * Variables:
+!!  * \subpage nmlMixed1_dxx
+!!  * \subpage nmlMixed1_dyy
+!!  * \subpage nmlMixed1_dzz
+!!  * \subpage nmlMixed1_iaxis
+!!  * \subpage nmlMixed1_dr
+!!  * \subpage nmlMixed1_mstep
+!!  * \subpage nmlMixed1_umax
+
+!> \page nmlMixed1_dxx dxx
+!! `real`
+!! * Translational step in x-direction.
+
+!> \page nmlMixed1_dyy dyy
+!! `real`
+!! * Translational step in y-direction.
+
+!> \page nmlMixed1_dzz dzz
+!! `real`
+!! * Translational step in z-direction.
+
+!> \page nmlMixed1_iaxis iaxis
+!! `integer`
+!! * `1`:  Rotation about the x-axis.
+!! * `2`:  Rotation about the y-axis.
+!! * `3`:  Rotation about the z-axis.
+
+!> \page nmlMixed1_dr dr
+!! `real`
+!! * Rotational step (in degrees).
+
+!> \page nmlMixed1_mstep mstep
+!! `integer`
+!! * Maximum number of steps.
+
+!> \page nmlMixed1_umax umax
+!! `real`
+!! * Upper potential energy limit where the generation of the potential energy curve is stopped.
 
 subroutine Mixed1(ip)
 
@@ -179,12 +262,73 @@ subroutine Mixed1(ip)
 end subroutine Mixed1
 
 !************************************************************************
-!*                                                                      *
-!*     Mixed2                                                           *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **Mixed2**
+!! *calculate potential energies on a 2d lattice*
 !************************************************************************
 
-! ... calculate potential energies on a 2d lattice
+
+!> \page nmlMixed2
+!! The namelist  \ref nmlMixed2 contains variables that control the calculation of potential energies on a lattice. The energies are
+!! calculated on a 2D grid in position space and at each point the potential energy is minimized as a function of the orientation.
+!! * Variables:
+!!  * \subpage nmlMixed2_itmax
+!!  * \subpage nmlMixed2_udel
+!!  * \subpage nmlMixed2_dr
+!!  * \subpage nmlMixed2_iaxis
+!!  * \subpage nmlMixed2_rdist
+!!  * \subpage nmlMixed2_rlow1
+!!  * \subpage nmlMixed2_rupp1
+!!  * \subpage nmlMixed2_nrdiv1
+!!  * \subpage nmlMixed2_rlow2
+!!  * \subpage nmlMixed2_rupp2
+!!  * \subpage nmlMixed2_nrdiv2
+
+!> \page nmlMixed2_itmax itmax
+!! `integer`
+!! * Maximum number of iterations of the orientation optimization.
+
+!> \page nmlMixed2_udel udel
+!! `real`
+!! * Potential energy tolerance for the iteration of the orientation optimization.
+
+!> \page nmlMixed2_dr dr
+!! `real`
+!! * Rotation step angle for the iteration of the orientation optimization.
+
+!> \page nmlMixed2_iaxis iaxis
+!! `integer`
+!! * `1`:  Grid in the yz-plane.
+!! * `2`:  Grid in the zx-plane.
+!! * `3`:  Grid in the xy-plane.
+
+!> \page nmlMixed2_rdist rdist
+!! `real`
+!! * Value of the constant coordinate, either x, y, or z depending on iaxis.
+
+!> \page nmlMixed2_rlow1 rlow1
+!! `real`
+!! * Lower value of either the y, z, or x-coordinate.
+
+!> \page nmlMixed2_rupp1 rupp1
+!! `real`
+!! * Upper value of either the y, z, or x-coordinate.
+
+!> \page nmlMixed2_nrdiv1 nrdiv1
+!! `integer`
+!! * Number of grid points in either the y, z, or x-coordinate.
+
+!> \page nmlMixed2_rlow2 rlow2
+!! `real`
+!! * Lower value of either the y, z, or x-coordinate.
+
+!> \page nmlMixed2_rupp2 rupp2
+!! `real`
+!! * Upper value of either the y, z, or x-coordinate.
+
+!> \page nmlMixed2_nrdiv2 nrdiv2
+!! `integer`
+!! * Number of grid points in either the y, z, or x-coordinate.
 
 subroutine Mixed2(ip)
 
@@ -254,12 +398,45 @@ subroutine Mixed2(ip)
 end subroutine Mixed2
 
 !************************************************************************
-!*                                                                      *
-!*     Mixed3                                                          *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **Mixed3**
+!! *calculate the global potential energy minimum*
 !************************************************************************
 
-! ... calculate the global potential energy minimum
+
+!> \page nmlMixed3
+!! The namelist  \ref nmlMixed3 contains variables that control the calculation of the global potential energy minimum.
+!! * Variables:
+!!  * \subpage nmlMixed3_itmax
+!!  * \subpage nmlMixed3_udel
+!!  * \subpage nmlMixed3_dxx
+!!  * \subpage nmlMixed3_dyy
+!!  * \subpage nmlMixed3_dzz
+!!  * \subpage nmlMixed3_dr
+
+!> \page nmlMixed3_itmax itmax
+!! `integer`
+!! * Maximum number of iterations.
+
+!> \page nmlMixed3_udel udel
+!! `real`
+!! * Potential energy tolerance for the iteration.
+
+!> \page nmlMixed3_dxx dxx
+!! `real`
+!! * Translational step in x-direction.
+
+!> \page nmlMixed3_dyy dyy
+!! `real`
+!! * Translational step in y-direction.
+
+!> \page nmlMixed3_dzz dzz
+!! `real`
+!! * Translational step in z-direction.
+
+!> \page nmlMixed3_dr dr
+!! `real`
+!! * Rotational step (in degrees).
 
 subroutine Mixed3(ip)
 
@@ -312,12 +489,73 @@ subroutine Mixed3(ip)
 end subroutine Mixed3
 
 !************************************************************************
-!*                                                                      *
-!*     Mixed4                                                           *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **Mixed4**
+!! *generate random coordinates*
 !************************************************************************
 
-! ... generate random coordinates
+
+!> \page nmlMixed4
+!! The namelist  \ref nmlMixed4  contains variables that control the calculation of random coordinates. The random coordinates are
+!! restricted to a volume, given in spherical polar coordinates, and to a potential energy range.
+!! * Variables:
+!!  * \subpage nmlMixed4_iwr
+!!  * \subpage nmlMixed4_rlow
+!!  * \subpage nmlMixed4_rupp
+!!  * \subpage nmlMixed4_thlow
+!!  * \subpage nmlMixed4_thupp
+!!  * \subpage nmlMixed4_filow
+!!  * \subpage nmlMixed4_fiupp
+!!  * \subpage nmlMixed4_ulow
+!!  * \subpage nmlMixed4_uupp
+!!  * \subpage nmlMixed4_no
+!!  * \subpage nmlMixed4_ntry
+
+!> \page nmlMixed4_iwr iwr
+!! `integer`
+!! * `0`:  Evenly distributed random numbers in the r direction.
+!! * >0:  Higher probability for larger r coordinates.
+
+!> \page nmlMixed4_rlow rlow
+!! `real`
+!! * Lower limit in the r-direction.
+
+!> \page nmlMixed4_rupp rupp
+!! `real`
+!! * Upper limit in the r-direction.
+
+!> \page nmlMixed4_thlow thlow
+!! `real`
+!! * Lower limit in the theta-direction (in degrees).
+
+
+!> \page nmlMixed4_thupp thupp
+!! `real`
+!! * Upper limit in the theta-direction (in degrees).
+
+!> \page nmlMixed4_filow filow
+!! `real`
+!! * Lower limit in the phi-direction (in degrees).
+
+!> \page nmlMixed4_fiupp fiupp
+!! `real`
+!! * Upper limit in the phi-direction (in degrees).
+
+!> \page nmlMixed4_ulow ulow
+!! `real`
+!! * Lower limit of potential energy.
+
+!> \page nmlMixed4_uupp uupp
+!! `real`
+!! * Upper limit of potential energy.
+
+!> \page nmlMixed4_no no
+!! `integer`
+!! * Number of desired random coordinates.
+
+!> \page nmlMixed4_ntry ntry
+!! `integer`
+!! * Maximum number of attempts.
 
 subroutine Mixed4(ip)
 
@@ -377,12 +615,64 @@ subroutine Mixed4(ip)
 end subroutine Mixed4
 
 !************************************************************************
-!*                                                                      *
-!*     Mixed5                                                           *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **Mixed5**
+!! *calculate the second virial coefficient*
 !************************************************************************
 
-! ... calculate the second virial coefficient
+
+!> \page nmlMixed5
+!! The namelist  \ref nmlMixed5  contains variables that control the calculation of the second virial coefficient. The integration is
+!! done by generation of random coordinates restricted to a specified volume given in spherical polar coordinates. The uncertainty is
+!! given by one standard deviation obtained from ten sets of random coordinates.
+!! * Variables:
+!!  * \subpage nmlMixed5_iwr
+!!  * \subpage nmlMixed5_rlow
+!!  * \subpage nmlMixed5_rupp
+!!  * \subpage nmlMixed5_thlow
+!!  * \subpage nmlMixed5_thupp
+!!  * \subpage nmlMixed5_filow
+!!  * \subpage nmlMixed5_fiupp
+!!  * \subpage nmlMixed5_no
+!!  * \subpage nmlMixed5_nblock
+
+!> \page nmlMixed5_iwr iwr
+!! `integer`
+!! * `0`:  Evenly distributed random numbers in the r direction.
+!! * >0:  Higher probability for larger r coordinates.
+
+!> \page nmlMixed5_rlow rlow
+!! `real`
+!! * Lower limit in the r-direction.
+
+!> \page nmlMixed5_rupp rupp
+!! `real`
+!! * Upper limit in the r-direction.
+
+!> \page nmlMixed5_thlow thlow
+!! `real`
+!! * Lower limit in the theta-direction (in degrees).
+
+
+!> \page nmlMixed5_thupp thupp
+!! `real`
+!! * Upper limit in the theta-direction (in degrees).
+
+!> \page nmlMixed5_filow filow
+!! `real`
+!! * Lower limit in the phi-direction (in degrees).
+
+!> \page nmlMixed5_fiupp fiupp
+!! `real`
+!! * Upper limit in the phi-direction (in degrees).
+
+!> \page nmlMixed5_no no
+!! `integer`
+!! * Number of desired random coordinates in one set.
+
+!> \page nmlMixed5_nblock nblock
+!! `integer`
+!! **default:** `10`
 
 subroutine Mixed5(ip)
 
@@ -457,12 +747,67 @@ subroutine Mixed5(ip)
 end subroutine Mixed5
 
 !************************************************************************
-!*                                                                      *
-!*     Mixed6                                                           *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **Mixed6**
+!! *calculate orientational averaged potential energy*
 !************************************************************************
 
-! ... calculate orientational averaged potential energy
+
+!> \page nmlMixed6
+!! The namelist  \ref nmlMixed6  contains variables that control the calculation of orientation averaged potential energy at a given
+!! separation. The orientational integration is done by generation of random coordinates restricted to a specified domain, given in
+!! spherical polar coordinates. The potential energy distribution of the potential energy is plotted.
+!! * Variables:
+!!  * \subpage nmlMixed6_rlow
+!!  * \subpage nmlMixed6_rupp
+!!  * \subpage nmlMixed6_thlow
+!!  * \subpage nmlMixed6_thupp
+!!  * \subpage nmlMixed6_filow
+!!  * \subpage nmlMixed6_fiupp
+!!  * \subpage nmlMixed6_ulow
+!!  * \subpage nmlMixed6_uupp
+!!  * \subpage nmlMixed6_no
+!!  * \subpage nmlMixed6_nbin
+
+!> \page nmlMixed6_rlow rlow
+!! `real`
+!! * Lower limit in the r-direction.
+
+!> \page nmlMixed6_rupp rupp
+!! `real`
+!! * Upper limit in the r-direction.
+
+!> \page nmlMixed6_thlow thlow
+!! `real`
+!! * Lower limit in the theta-direction (in degrees).
+
+!> \page nmlMixed6_thupp thupp
+!! `real`
+!! * Upper limit in the theta-direction (in degrees).
+
+!> \page nmlMixed6_filow filow
+!! `real`
+!! * Lower limit in the phi-direction (in degrees).
+
+!> \page nmlMixed6_fiupp fiupp
+!! `real`
+!! * Upper limit in the phi-direction (in degrees).
+
+!> \page nmlMixed6_ulow ulow
+!! `real`
+!! * Lower value of the potential energy distribution function.
+
+!> \page nmlMixed6_uupp uupp
+!! `real`
+!! * Upper value of the potential energy distribution function.
+
+!> \page nmlMixed6_no no
+!! `integer`
+!! * Number of random orientations.
+
+!> \page nmlMixed6_nbin nbin
+!! `integer`
+!! * Number of bins used to sample the distribution functions.
 
 subroutine Mixed6(ip)
 
@@ -540,12 +885,11 @@ subroutine Mixed6(ip)
 end subroutine Mixed6
 
 !************************************************************************
-!*                                                                      *
-!*     LineMove                                                         *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **LineMove**
+!! *perform one movement, rotation or translation, to a new minimum*
 !************************************************************************
 
-! ... perform one movement, rotation or translation, to a new minimum
 
 subroutine LineMove(ip, imove, dxx, dyy, dzz, dr, udel, utwob, lmove)
 
@@ -595,12 +939,11 @@ subroutine LineMove(ip, imove, dxx, dyy, dzz, dr, udel, utwob, lmove)
 end subroutine LineMove
 
 !************************************************************************
-!*                                                                      *
-!*     NewCoord                                                         *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **NewCoord**
+!! *translate and rotate a particle and update its atom coordinates*
 !************************************************************************
 
-! ... translate and rotate a particle and update its atom coordinates
 
 subroutine NewCoord(ip, dxx, dyy, dzz, iaxis, dr)
 
@@ -636,12 +979,11 @@ subroutine NewCoord(ip, dxx, dyy, dzz, iaxis, dr)
 end subroutine NewCoord
 
 !************************************************************************
-!*                                                                      *
-!*     RandomPos                                                        *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **RandomPos**
+!! *generate a random position*
 !************************************************************************
 
-! ... generate a random position
 
 subroutine RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, r)
 
@@ -669,12 +1011,11 @@ subroutine RandomPos(iseed, iwr, rlow, rupp, thlow, thupp, filow, fiupp, r)
 end subroutine RandomPos
 
 !************************************************************************
-!*                                                                      *
-!*     CopyCoord                                                        *
-!*                                                                      *
+!> \page mixed mixed.F90
+!! **CopyCoord**
+!! *copy coordinates*
 !************************************************************************
 
-! ... copy coordinates
 
 subroutine CopyCoord(np, coord1, coord2, ro, ori)
    implicit none

@@ -19,33 +19,151 @@
 !************************************************************************
 !************************************************************************
 
-!************************************************************************
-!*                                                                      *
-!*     PotentialModule                                                  *
-!*                                                                      *
-!************************************************************************
 
-! ... module for potential
 
+!> \page nmlPotential
+!! The namelist  \ref nmlPotential contains variables that describe the potentials between the particles.  Tabulated potential energy and
+!! force evaluation, which often gives a fast code by avoiding square root and divisions. Procedure according to Andrea, Swope, and
+!! Andersen, JCP 79, 4576 (1983).
+!! * Variables:
+!!  * \subpage r2uminin
+!!  * \subpage utoltab
+!!  * \subpage ftoltab
+!!  * \subpage umaxtab
+!!  * \subpage fmaxtab
+!!  * \subpage rcut
+!!  * \subpage txpot
+!!  * \subpage npot
+!!  * \subpage ipot
+!!  * \subpage ucoff
+!!  * \subpage relpermitt
+!!  * \subpage lscrc
+!!  * \subpage scrlen
+!!  * \subpage lscrhs
+!!  * \subpage lewald
+!!  * \subpage txewaldrec
+!!  * \subpage iewaldopt
+!!  * \subpage uewaldtol
+!!  * \subpage ualpha
+!!  * \subpage ualphared
+!!  * \subpage ncut
+!!  * \subpage ncutregion
+!!  * \subpage lsurf
+!!  * \subpage lewald2dlc
+!!  * \subpage order
+!!  * \subpage nmesh
+!!  * \subpage lrf
+!!  * \subpage epsrf
+!!  * \subpage epsimg
+!!  * \subpage radimg
+!!  * \subpage epsi1
+!!  * \subpage epsi2
+!!  * \subpage boundaryrad
+!!  * \subpage lmaxdiel
+!!  * \subpage lbg
+!!  * \subpage lljcut
+!!  * \subpage ljrcut
+!!  * \subpage ljushift
+!!  * \subpage lambda_sw
+!!  * \subpage epsilon_sw
+!!  * \subpage alpha_sw
+!!  * \subpage lambda_ramp
+!!  * \subpage epsilon_ramp
+!!  * \subpage alpha_ramp
+!!  * \subpage rad_dep
+!!  * \subpage rho_dep
+!!  * \subpage factor_dep
+!!  * \subpage lellipsoid
+!!  * \subpage radellipsoid
+!!  * \subpage aellipsoid
+!!  * \subpage lsuperball
+!!  * \subpage radsuperball
+!!  * \subpage qsuperball
+!!  * \subpage txmethodsuperball
+!!  * \subpage nitersuperball
+!!  * \subpage tolsuperball
+!!  * \subpage meshdepthsuperball
+!!  * \subpage dl_damp
+!!  * \subpage dl_cut
+!!  * \subpage dr_damp
+!!  * \subpage dr_cut
+!!  * \subpage lstatsuperball
+!!  * \subpage luext
+!!  * \subpage lmonoatom
+!!  * \subpage itestpot
+
+!************************************************************************
+!> \page potential potential.F90
+!! **PotentialModule**
+!! *module for potential*
+!************************************************************************
 module PotentialModule
 
    use MolModule
 
    integer(4), parameter :: mninpot  = 12  ! largest exponent of an 1/r**(-exponent) energy term
-
+!> \page txpot
+!! `character(20)`
+!! * Text label used for selecting potential of each pair of particle type. The potentials may either be already existing in the program or supplied by the user. The available options are:
+!! * '`(1,6,12)`': Charge plus Lennard-Jones interaction \f$ u_{ij}(r) = q_iq_j/4\pi\epsilon_0 r + 4 \epsilon_{ij} ((
+!!    \sigma_{ij}/r)^{12}( \sigma_{ij} /r)^6) \f$. The parameters \f$ q_i \f$, \f$ \sigma_{ii} \f$, and \f$ \epsilon_{ii}\f$ are given in
+!!     namelist \ref nmlParticle. Lorentz-Berthelot mixing rules are applied for cross terms.
+!! * '`setx`': Spherical Ewald potential. As the default potential, but the 1/r term is multiplied with erfc(r*\ref ualphared/\ref rcut).
+!! * '`mcy`': The MCY water potential, ref. JCP 64, 1351 (1976).
+!! * '`nemo:xxx`': The two-body part of the Nemo potential 'xxx'. The potential form and the coefficients are read from file
+!!    molsim.lib. Present installed potentials include nemo:ww (water-water) and nemo:uw(urea-water). Note, the specification of the
+!!    many-body polarization interaction is given in namelist \ref nmlParticle.
+!! * '`sw`': Square-well potential. Parameters: \ref lambda_sw, \ref epsilon_sw and \ref alpha_sw
+!! * '`ramp`': Ramp potential. Parameters
+!! * '`asakura-oosawa`': Asukura-Oosawa potential
+!! * '`xxx`': Search for user-provided potential labeled 'xxx' called from routine PotentialUser in file moluser.F90.
+!! * If there is no match, the default potential form sum[\ref ucoff (1:\ref npot)/r**\ref ipot(1:\ref npot)] and the variables \ref npot, \ref ipot, and \ref ucoff,
+!!   which are read in this namelist, are used. If \ref zat /= 0, the Coulomb term need not to be specified.
    character(20), allocatable :: txpot(:)  ! label of two-body potential
-   integer(4), allocatable :: npot(:)      ! number of terms describing two-body interation iatjat
+!> \page npot
+!! `integer`(1:natat)
+!! * \ref npot (iatjat) denotes the number of terms of atom type pair iatjat.
+   integer(4), allocatable :: npot(:)
    integer(4)    :: npotm                  ! maximum value of npot
-   integer(4), allocatable :: ipot(:,:)    ! exponent of a term
+!> \page ipot
+!! `integer`(1:\ref npot ,1:natat)
+!! * \ref ipot (m,iatjat) denotes the exponent of term m of atom type pair iatjat.
+   integer(4), allocatable :: ipot(:,:)
    integer(4)    :: ipotm                  ! maximum value of ipot
-   real(8), allocatable    :: ucoff(:,:)   ! coefficient of a term
+!> \page ucoff
+!! `real`(1:\ref npot ,1:natat)
+!! * \ref ucoff (m,iatjat) denotes the coefficient of term m of atom type pair iatjat.
+   real(8), allocatable    :: ucoff(:,:)
    real(8), allocatable,save :: ucoffx(:,:)! coefficient of a term
-   real(8)       :: relpermitt             ! relative permittivity
-
-   real(8)       :: r2uminin               ! lower limit squared of potential table
-   real(8)       :: utoltab                ! tolerance in potential
-   real(8)       :: ftoltab                ! tolerance in force
-   real(8)       :: umaxtab                ! maximum value of potential
+!> \page relpermitt
+!! `real`
+!! **default:** `1.0`
+!! * Relative permittivity.
+   real(8)       :: relpermitt
+!> \page r2uminin
+!! `real`
+!! **deault:** `0.1`
+!! * Square of the lower end of the tabulated potential.
+   real(8)       :: r2uminin
+!> \page utoltab
+!! `real`
+!! **default:** `10d-5`
+!! * Energy tolerance of the tabulated potential.
+   real(8)       :: utoltab
+!> \page ftoltab
+!! `real`
+!! **default:** `10d-5`
+!! * Force tolerance of the tabulated potential.
+   real(8)       :: ftoltab
+!> \page umaxtab
+!! `real`
+!! **default:** `2*10d4`
+!! * Energy at which the table is cut off at small separation.
+   real(8)       :: umaxtab
+!> \page fmaxtab
+!! `real`
+!! **default:** `2*10d4`
+!! * Force at which the table is cut off at small separation.
    real(8)       :: fmaxtab                ! maximum value of force
    integer(4),allocatable,save :: nugrid(:)! number of grid points for iatjat
    real(8), allocatable, save :: rumin(:)  ! lower limit of potential table
@@ -54,13 +172,23 @@ module PotentialModule
    real(8)       :: rumaxfac               ! factor for extending rumax to avoid round-off problems
    logical       :: lmorememory            ! flag for increasing memory
    logical, allocatable :: lsetatat(:)     ! for termorary use
-
-   integer(4)    :: itestpot               ! =1, call of TestPotTwoBodyTab2
-                                           ! =2, call of PlotPotTwoBodyTab
-                                           ! =3, call of TestPotTwoBodyTab
-                                           ! =4, call of TestEwaldStd or TestEwaldSPM
-   integer(4)    :: itestpotchain          ! =1, call of TestBondLenghtTab and TestBondAngleTab
-
+!> \page itestpot
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`: Nothing. The normal option.
+!! * '1': Intermediate potential variables are written
+!! * `2`: Examination of accuracy of two-body potentials
+!! * `3`: Plot of two-body potentials
+!! * `4`: Examination of truncation error of Ewald summation (routine PotTwoBodyTab).
+   integer(4)    :: itestpot
+!> \page itestpotchain
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`: Nothing. The normal option.
+!! * `1`: Bond length table and bond angle table (routines BondLengthTab and BondAngleTab).
+   integer(4)    :: itestpotchain
 end module PotentialModule
 
 ! relation among potential routines
@@ -87,12 +215,11 @@ end module PotentialModule
 !       !
 
 !************************************************************************
-!*                                                                      *
-!*     PotentialDriver                                                  *
-!*                                                                      *
+!> \page potential potential.F90
+!! **PotentialDriver**
+!! *driver of potential routines*
 !************************************************************************
 
-! ... driver of potential routines
 
 subroutine PotentialDriver(iStage)
 
@@ -158,12 +285,11 @@ end subroutine SuperballStat
 end subroutine PotentialDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IOPotTwoBody                                                     *
-!*                                                                      *
+!> \page potential potential.F90
+!! **IOPotTwoBody**
+!! *perform i/o on potential variables for two body interactions*
 !************************************************************************
 
-! ... perform i/o on potential variables for two-body interactions
 
 subroutine IOPotTwoBody(iStage)
 
@@ -722,9 +848,9 @@ end subroutine WritePotLekkerkerkerTuinier
 end subroutine IOPotTwoBody
 
 !************************************************************************
-!*                                                                      *
-!*     PotTwoBodyTab1                                                   *
-!*                                                                      *
+!> \page potential potential.F90
+!! **PotTwoBodyTab1**
+!! *set tables for two-body interactions*
 !************************************************************************
 
 ! ... set tables for two-body interactions
@@ -849,12 +975,10 @@ subroutine PotTwoBodyTab1(lwrite)
 end subroutine PotTwoBodyTab1
 
 !************************************************************************
-!*                                                                      *
-!*     PotTwoBodyTab2                                                   *
-!*                                                                      *
+!> \page potential potential.F90
+!! **PotTwoBodyTab2**
+!! *set tables for two-body interactions for particle pair iptjpt*
 !************************************************************************
-
-! ... set tables for two-body interactions for particle pair iptjpt
 
 subroutine PotTwoBodyTab2(ipt, jpt, ibuf, lsetatat2, potsub)
 
@@ -920,12 +1044,10 @@ end subroutine TestPotTwoBodyTab2
 end subroutine PotTwoBodyTab2
 
 !************************************************************************
-!*                                                                      *
-!*     PotTwoBodyTab3                                                   *
-!*                                                                      *
+!> \page potential potential.F90
+!! **PotTwoBodyTab3**
+!! *set table for two-body interaction iatjat*
 !************************************************************************
-
-! ... set table for two-body interaction iatjat
 
 !     interpolation procedure is taken from andrea, swope, and andersen JCP 79, 4576 (1983)
 
@@ -1009,12 +1131,10 @@ subroutine PotTwoBodyTab3(iat, jat, ibuf, potsub)
 end subroutine PotTwoBodyTab3
 
 !************************************************************************
-!*                                                                      *
-!*     SetUBuffer                                                       *
-!*                                                                      *
+!> \page potential potential.F90
+!! **SetUBuffer**
+!! *transform to \f$ r^2 \f$, calculate coefficients, and store them in a table*
 !************************************************************************
-
-! ... transform to r**2, calculate coefficients, and store them in a table
 
 subroutine SetUBuffer(zlow, u0low, u1low, u2low, zupp, u0upp, u1upp, u2upp, ubuft)
 
@@ -1096,12 +1216,10 @@ subroutine SetUBuffer(zlow, u0low, u1low, u2low, zupp, u0upp, u1upp, u2upp, ubuf
 end subroutine SetUBuffer
 
 !************************************************************************
-!*                                                                      *
-!*     CheckUBuffer                                                     *
-!*                                                                      *
+!> \page potential potential.F90
+!! **CheckUBuffer**
+!! *check the accuracy of the tabulation of one interval*
 !************************************************************************
-
-! ... check the accuracy of the tabulation of one interval
 
 subroutine CheckUBuffer(iat, jat, rlow, rupp, ubuft, potsub, ok, repul)
 
@@ -1140,12 +1258,10 @@ subroutine CheckUBuffer(iat, jat, rlow, rupp, ubuft, potsub, ok, repul)
 end subroutine CheckUBuffer
 
 !************************************************************************
-!*                                                                      *
-!*     PotDefault                                                       *
-!*                                                                      *
+!> \page potential potential.F90
+!! **PotDefault**
+!! *default potential*
 !************************************************************************
-
-! ... default potential
 
 subroutine PotDefault(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
@@ -1225,12 +1341,10 @@ subroutine PotDefault(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine PotDefault
 
 !************************************************************************
-!*                                                                      *
-!*     Pot_1_6_12                                                       *
-!*                                                                      *
+!> \page potential potential.F90
+!! **Pot_1_6_12**
+!! *1, 6, 12-potential*
 !************************************************************************
-
-! ... 1, 6, 12-potential
 
 subroutine Pot_1_6_12(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 
@@ -1311,9 +1425,9 @@ subroutine Pot_1_6_12(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine Pot_1_6_12
 
 !************************************************************************
-!*                                                                      *
-!*     MCY                                                              *
-!*                                                                      *
+!> \page potential potential.F90
+!! **MCY**
+!! *MCY water potential*
 !************************************************************************
 
 ! ... MCY water potential
@@ -1411,12 +1525,10 @@ subroutine MCY(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine MCY
 
 !************************************************************************
-!*                                                                      *
-!*     SphEwaldTrunc                                                    *
-!*                                                                      *
+!> \page potential potential.F90
+!! **SphEwaldTrunc**
+!! *spherical ewald truncated potential*
 !************************************************************************
-
-! ... spherical ewald truncated potential
 
 !          txpot  =   'setx'  1/r -> (1-erf(r*ualpha))/r
 !                     'setc'  1/r ->  1/r
@@ -1504,12 +1616,10 @@ subroutine SphEwaldTrunc(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine SphEwaldTrunc
 
 !************************************************************************
-!*                                                                      *
-!*     ramp                                                             *
-!*                                                                      *
+!> \page potential potential.F90
+!! **Ramp**
+!! *ramp potential (with soft slope change)*
 !************************************************************************
-
-! ... ramp potential (with soft slope change)
 
 !     potential: u(r) =  slope*(r-r_ramp)*(0.5 + (1/pi)*atan(alpha*(r-r_ramp))
 !                slope = epsilon_ramp/r1atat*(lambda_ramp-One)
@@ -1567,12 +1677,10 @@ subroutine Ramp(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine Ramp
 
 !************************************************************************
-!*                                                                      *
-!*     SquareWell                                                       *
-!*                                                                      *
+!> \page potential potential.F90
+!! **SquareWell**
+!! *Square-well potential (with a soft rise)*
 !************************************************************************
-
-! ... Square-well potential (with a soft rise)
 
 !     potential: u(r) =  epsilon_sw*(0.5 + (1/pi)*atan(alapha_sw*(r-r_sw))
 !                r_sw = r1atat*(lambda_sw)
@@ -1629,12 +1737,11 @@ subroutine SquareWell(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine SquareWell
 
 !************************************************************************
-!*                                                                      *
-!*     AsakuraOosawa                                                    *
-!*                                                                      *
+!> \page potential potential.F90
+!! **AsakuraOosawa**
+!! *Asakura-Oosawa depletion potential*
 !************************************************************************
 
-! ... Asakura-Oosawa depletion potential
 
 ! depletion potential due to nonadsorbing ideal polymers represented as
 ! penetrable hard spheres with radius of gyration rad_dep and at number density rho_dep
@@ -1690,12 +1797,11 @@ subroutine AsakuraOosawa(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine AsakuraOosawa
 
 !************************************************************************
-!*                                                                      *
-!*     LekkerkerkerTuinier                                              *
-!*                                                                      *
+!> \page potential potential.F90
+!! **LekkerkerkerTuinier**
+!! *Lekkerkerker-Tuinier depletion potential*
 !************************************************************************
 
-! ... Lekkerkerker-Tuinier depletion potential
 
 ! depletion potential due to the nonadsorbing ideal polymer modelled as a
 ! "penetrable hard sphere" with radius of gyration rgyr and density rhophs
@@ -1753,12 +1859,11 @@ subroutine LekkerkerkerTuinier(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine LekkerkerkerTuinier
 
 !************************************************************************
-!*                                                                      *
-!*     calc_LT_depletion                                                *
-!*                                                                      *
+!> \page potential potential.F90
+!! **calc_LT_depletion**
+!! *calculate Lekkerkerker-Tuinier depletion potential (in kT units)*
 !************************************************************************
 
-! ... calculate Lekkerkerker-Tuinier depletion potential (in kT units)
 
 !                   phi1
 ! pot = - int (1/phi * dP * G) dphi
@@ -1862,12 +1967,11 @@ end subroutine integrand_LT_depletion
 end subroutine calc_LT_depletion
 
 !************************************************************************
-!*                                                                      *
-!*     Nemo                                                             *
-!*                                                                      *
+!> \page potential potential.F90
+!! **Nemo**
+!! *nemo potentials*
 !************************************************************************
 
-! ... nemo potentials
 !     modified for new potential tables
 
 !     valid potential types:
@@ -2156,12 +2260,11 @@ subroutine Nemo(str, ipt, jpt, iat, jat, r1, u0, u1, u2)
 end subroutine Nemo
 
 !************************************************************************
-!*                                                                      *
-!*     NemoType1                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **NemoType1**
+!! *nemo potential of type 1*
 !************************************************************************
 
-! ... nemo potential of type 1
 !     unit matters are handled by the calling routine
 
 !     u(r) = qaqb/r + aab*exp(-bab*r) + (cab/r)**20 + dab*s(r)/r**6
@@ -2214,12 +2317,11 @@ subroutine NemoType1(r, qa, qb, aab, bab, cab, dab, asw, nsw, ur, urp, urpp)
 end subroutine NemoType1
 
 !************************************************************************
-!*                                                                      *
-!*     NemoType2                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **NemoType2**
+!! *nemo potential of type 2*
 !************************************************************************
 
-! ... nemo potential of type 2
 !     unit matters are handled by the calling routine
 
 !     u(r) = qaqb/r + aab/r**7 + dab*s(r)/r**6
@@ -2270,12 +2372,11 @@ subroutine NemoType2(r, qa, qb, aab, dab, asw, nsw, ur, urp, urpp)
 end subroutine NemoType2
 
 !************************************************************************
-!*                                                                      *
-!*     NemoType3                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **NemoType3**
+!! *nemo potential of type 3*
 !************************************************************************
 
-! ... nemo potential of type 3
 !     unit matters are handled by the calling routine
 
 !     u(r) = qaqb/(4*pi*eps0*r) + aab*exp(-bab*r) - cab/r**6
@@ -2311,12 +2412,11 @@ subroutine NemoType3(r, qa, qb, aab, bab, cab, dab, nab, ur, urp, urpp)
 end subroutine NemoType3
 
 !************************************************************************
-!*                                                                      *
-!*     NemoType4                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **NemoType4**
+!! *nemo potential of type 4*
 !************************************************************************
 
-! ... nemo potential of type 4
 !     unit matters are handled by the calling routine
 
 !     u(r) = qaqb/(4*pi*eps0*r) + aab*exp(-bab*r) - cab/r**6
@@ -2355,12 +2455,11 @@ subroutine NemoType4(r, qa, qb, aab, bab, cab, dab, eab, fab, nab, ur, urp, urpp
 end subroutine NemoType4
 
 !************************************************************************
-!*                                                                      *
-!*     NemoType5                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **NemoType5**
+!! *nemo potential of type 5*
 !************************************************************************
 
-! ... nemo potential of type 5
 !     unit matters are handled by the calling routine
 
 !     u(r) = qaqb/(4*pi*eps0*r) + aab*'damping'(r)*exp(-bab*r) - cab/r**6
@@ -2416,12 +2515,11 @@ subroutine NemoType5(r, qa, qb, aab, bab, cab, dab, eab, fab, nab, ur, urp, urpp
 end subroutine NemoType5
 
 !************************************************************************
-!*                                                                      *
-!*     NemoType6                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **NemoType6**
+!! *nemo potential of type 6*
 !************************************************************************
 
-! ... nemo potential of type 6
 !     unit matters are handled by the calling routine
 
 !     u(r) = -kcht*exp(-r*acht) + aab*'damping'(r)*exp(-bab*r) - cab/r**6
@@ -2480,12 +2578,11 @@ subroutine NemoType6(r, acht, kcht, aab, bab, cab, dab, eab, fab, nab, ur, urp, 
 end subroutine NemoType6
 
 !************************************************************************
-!*                                                                      *
-!*     NemoType7                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **NemoType7**
+!! *nemo potential of type 7*
 !************************************************************************
 
-! ... nemo potential of type 7
 !     unit matters are handled by the calling routine
 
 !     u(r) = -kcht*exp(-acht*(r-dab)^2) + aab*'damping'(r)*exp(-bab*r) - cab/r**6
@@ -2543,12 +2640,11 @@ subroutine NemoType7(r, acht, kcht, aab, bab, cab, dab, eab, fab, ur, urp, urpp)
 end subroutine NemoType7
 
 !************************************************************************
-!*                                                                      *
-!*     WriteUBuffer                                                     *
-!*                                                                      *
+!> \page potential potential.F90
+!! **WriteUBuffer**
+!! *write the content of ubuf for pair iatjat*
 !************************************************************************
 
-! ... write the content of ubuf for pair iatjat
 
 subroutine WriteUBuffer(iatjat)
 
@@ -2580,12 +2676,11 @@ subroutine WriteUBuffer(iatjat)
 end subroutine WriteUBuffer
 
 !************************************************************************
-!*                                                                      *
-!*     TestUBuffer                                                      *
-!*                                                                      *
+!> \page potential potential.F90
+!! **TestUBuffer**
+!! *calculate the accuracy of the table for pair iatjat*
 !************************************************************************
 
-! ... calculate the accuracy of the table for pair iatjat
 
 subroutine TestUBuffer(iat, jat, rlow, rupp, potsub, unit)
 
@@ -2647,12 +2742,11 @@ subroutine TestUBuffer(iat, jat, rlow, rupp, potsub, unit)
 end subroutine TestUBuffer
 
 !************************************************************************
-!*                                                                      *
-!*     PlotPotTwoBodyTab                                                *
-!*                                                                      *
+!> \page potential potential.F90
+!! **PlotPotTwoBodyTab**
+!! *plot two-body potential*
 !************************************************************************
 
-! ... plot two-body potential
 
 subroutine PlotPotTwoBodyTab
 
@@ -2719,12 +2813,11 @@ subroutine PlotPotTwoBodyTab
 end subroutine PlotPotTwoBodyTab
 
 !************************************************************************
-!*                                                                      *
-!*     TestPotTwoBodyTab                                                *
-!*                                                                      *
+!> \page potential potential.F90
+!! **TestPotTwoBodyTab**
+!! *test of utwobodytab and utwobody*
 !************************************************************************
 
-! ... test of utwobodytab and utwobody
 
 subroutine TestPotTwoBodyTab(iStage, unit)
 
@@ -2771,12 +2864,11 @@ subroutine TestPotTwoBodyTab(iStage, unit)
 end subroutine TestPotTwoBodyTab
 
 !************************************************************************
-!*                                                                      *
-!*     CalcScrCUfac                                                     *
-!*                                                                      *
+!> \page potential potential.F90
+!! **CalcScrCUfac**
+!! *calculate exp(r1/\ref scrlen) and two related derivatives*
 !************************************************************************
 
-! ... calculate exp(r1/scrlen) and two related derivatives
 
 subroutine CalcScrCUfac(r1, scrlen, c0fac, c1fac, c2fac)
 
@@ -2800,12 +2892,11 @@ subroutine CalcScrCUfac(r1, scrlen, c0fac, c1fac, c2fac)
 end subroutine CalcScrCUfac
 
 !************************************************************************
-!*                                                                      *
-!*     CalcGCDUfac                                                      *
-!*                                                                      *
+!> \page potential potential.F90
+!! **CalcGCDUfac**
+!! *calculate erfc(1/sqrt(1/a1**2+1/a2**2)*r1) and two related derivatives*
 !************************************************************************
 
-! ... calculate erfc(1/sqrt(1/a1**2+1/a2**2)*r1) and two related derivatives
 
 subroutine CalcGCDUfac(r1, a1, a2, c0fac, c1fac, c2fac)
 
@@ -2838,12 +2929,11 @@ subroutine CalcGCDUfac(r1, a1, a2, c0fac, c1fac, c2fac)
 end subroutine CalcGCDUfac
 
 !************************************************************************
-!*                                                                      *
-!*     CalcEwaldUfac                                                    *
-!*                                                                      *
+!> \page potential potential.F90
+!! **CalcEwaldUfac**
+!! *calculate erfc(\ref ualpha*r1) and two related derivatives*
 !************************************************************************
 
-! ... calculate erfc(ualpha*r1) and two related derivatives
 
 subroutine CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
 
@@ -2870,12 +2960,11 @@ subroutine CalcEwaldUfac(r1, ualpha, c0fac, c1fac, c2fac)
 end subroutine CalcEwaldUfac
 
 !************************************************************************
-!*                                                                      *
-!*     CalcRFUfac                                                       *
-!*                                                                      *
+!> \page potential potential.F90
+!! **CalcRFUfac**
+!! *calculate modified interactions according to nymand and linse, eqs(55)*
 !************************************************************************
 
-! ... calculate modified interactions according to nymand and linse, eqs.(55)
 
 subroutine CalcRFUfac(r1, rffac, c0fac, c1fac, c2fac)
 
@@ -2897,12 +2986,11 @@ subroutine CalcRFUfac(r1, rffac, c0fac, c1fac, c2fac)
 end subroutine CalcRFUfac
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldErrorUReal                                                  *
-!*                                                                      *
+!> \page potential potential.F90
+!! **EwaldErrorUReal**
+!! *estimate error of real space potential energy*
 !************************************************************************
 
-! ... estimate error of real space potential energy
 
 real(8) function EwaldErrorUReal(lq2sum, q2sum, l, alpha, rcut, unit)
 
@@ -2930,12 +3018,11 @@ real(8) function EwaldErrorUReal(lq2sum, q2sum, l, alpha, rcut, unit)
 end function EwaldErrorUReal
 
 !************************************************************************
-!*                                                                      *
-!*     EwaldErrorURec                                                   *
-!*                                                                      *
+!> \page potential potential.F90
+!! **EwaldErrorURec**
+!! *estimate error of reciprocal space potential energy*
 !************************************************************************
 
-! ... estimate error of reciprocal space potential energy
 
 real(8) function EwaldErrorURec(lq2sum, q2sum, l, alpha, ncut, unit)
 
@@ -2958,12 +3045,11 @@ real(8) function EwaldErrorURec(lq2sum, q2sum, l, alpha, ncut, unit)
 end function EwaldErrorURec
 
 !************************************************************************
-!*                                                                      *
-!*     TestEwald                                                        *
-!*                                                                      *
+!> \page potential potential.F90
+!! **TestEwald**
+!! *examine truncation error of ewald summation (energies in kT)*
 !************************************************************************
 
-! ... examine truncation error of ewald summation (energies in kT)
 
 subroutine TestEwald(iStage)
 
@@ -2975,12 +3061,11 @@ subroutine TestEwald(iStage)
 end subroutine TestEwald
 
 !************************************************************************
-!*                                                                      *
-!*     TestEwaldStd                                                     *
-!*                                                                      *
+!> \page potential potential.F90
+!! **TestEwaldStd**
+!! *examine truncation error of standard ewald summation*
 !************************************************************************
 
-! ... examine truncation error of standard ewald summation
 
 subroutine TestEwaldStd(iStage)
 
@@ -3117,12 +3202,11 @@ end subroutine WriteBodySub
 end subroutine TestEwaldStd
 
 !************************************************************************
-!*                                                                      *
-!*     TestEwaldSPM                                                     *
-!*                                                                      *
+!> \page potential potential.F90
+!! **TestEwaldSPM**
+!! *examine truncation error of the reciprocal space; smooth particle mesh ewald summation*
 !************************************************************************
 
-! ... examine truncation error of the reciprocal space; smooth particle mesh ewald summation
 
 subroutine TestEwaldSPM(iStage)
 
@@ -3295,12 +3379,11 @@ end subroutine TestEwaldSPM
 
 
 !************************************************************************
-!*                                                                      *
-!*     SetImageSph                                                      *
-!*                                                                      *
+!> \page potential potential.F90
+!! **SetImageSph**
+!! *Setup of image charges and dipoles according to Friedman*
 !************************************************************************
 
-! ... Setup of image charges and dipoles according to Friedman
 !     Mol. Phys. 1975
 
 subroutine SetImageSph(iplow, ipupp, mode)
@@ -3393,12 +3476,21 @@ end subroutine SetImageSphSub
 end subroutine SetImageSph
 
 !************************************************************************
-!*                                                                      *
-!*     IOPotChain                                                       *
-!*                                                                      *
+!> \page potential potential.F90
+!! **IOPotChain**
+!! *perform i/o on bond and angle interaction variables*
 !************************************************************************
 
-! ... perform i/o on bond and angle interaction variables
+
+!> \page nmlPotentialChain
+!! The namelist  \ref nmlPotentialChain contains variables that describe the potentials involving particles belonging to the same chain.
+!! There is a bond potential between two consecutive particles in a chain and an angular potential between three consecutive particles
+!! in a chain. The potentials are of the type (k/p)(x-x0)**p.
+!! * Variables:
+!!  * \subpage bond
+!!  * \subpage angle
+!!  * \subpage clink
+!!  * \subpage itestpotchain
 
 subroutine IOPotChain(iStage)
 
@@ -3475,12 +3567,11 @@ subroutine IOPotChain(iStage)
 end subroutine IOPotChain
 
 !************************************************************************
-!*                                                                      *
-!*     ChainTab                                                         *
-!*                                                                      *
+!> \page potential potential.F90
+!! **ChainTab**
+!! *call routines setting up potential tables for chains*
 !************************************************************************
 
-! ... call routines setting up potential tables for chains
 
 subroutine ChainTab
 
@@ -3549,12 +3640,11 @@ end subroutine TestChainTab
 end subroutine ChainTab
 
 !************************************************************************
-!*                                                                      *
-!*     BondLengthTab                                                    *
-!*                                                                      *
+!> \page potential potential.F90
+!! **BondLengthTab**
+!! *make and use of lookup table to get random bond lengths*
 !************************************************************************
 
-! ... make and use of lookup table to get random bond lengths
 
 !     p(b) = const * exp(-bond_k*(b-bond_eq)**2)*b**bond_p
 !     ptab(b) = integ(0_to_b) p(b') db'
@@ -3647,12 +3737,11 @@ end subroutine TestBondLengthTab
 end subroutine BondLengthTab
 
 !************************************************************************
-!*                                                                      *
-!*     BondAngleTab                                                     *
-!*                                                                      *
+!> \page potential potential.F90
+!! **BondAngleTab**
+!! *make and use of lookup table to get random bond angles*
 !************************************************************************
 
-! ... make and use of lookup table to get random bond angles
 
 !     p(t) = const * exp(-angle_k*(t-angle_eq)**2)*sin(t)
 !     ptab(t) = integ(0_to_t) p(t') dt'
@@ -3745,13 +3834,15 @@ end subroutine TestBondAngleTab
 end subroutine BondAngleTab
 
 !************************************************************************
-!*                                                                      *
-!*     IOPotExternal                                                    *
-!*                                                                      *
+!> \page potential potential.F90
+!! **IOPotExternal**
+!! *perform i/o on external potential variables*
 !************************************************************************
 
-! ... perform i/o on external potential variables
-
+!> \page nmlPotentialExternal
+!! The namelist  \ref nmlPotentialExternal contains variables that describe the potentials involving atoms and an external potential.
+!! * Variables:
+!!  * \subpage txuext
 subroutine IOPotExternal(iStage)
 
    use PotentialModule
@@ -4072,12 +4163,19 @@ subroutine IOPotExternal(iStage)
 end subroutine IOPotExternal
 
 !************************************************************************
-!*                                                                      *
-!*     IOPolarizationIter                                               *
-!*                                                                      *
+!> \page potential potential.F90
+!! **IOPolarizationIter**
+!! *perform i/o on polarization iteration variables*
 !************************************************************************
 
-! ... perform i/o on polarization iteration variables
+
+!> \page nmlPolarizationIter
+!! The namelist  \ref nmlPolarizationIter contains variables that control the calculation of the many-body polarization contribution to the potential energy and forces, ref. JPC 94, 1649 (1990).
+!! * Variables:
+!!  * \subpage tpolit
+!!  * \subpage mpolit
+!!  * \subpage npolit
+!!  * \subpage ldamping
 
 subroutine IOPolarizationIter(iStage)
 

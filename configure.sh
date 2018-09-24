@@ -220,5 +220,6 @@ case ${doconf:0:1} in
       ;;
    * )
       echo "not changing $conffile"
+      touch $conffile
       ;;
 esac

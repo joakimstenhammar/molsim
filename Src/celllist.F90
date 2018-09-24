@@ -1,10 +1,9 @@
 !************************************************************************
-!*                                                                      *
-!*     CellList                                                         *
-!*                                                                      *
+!> \page celllist celllist.F90
+!! **CellListModule**
+!! *a new improved implementation of the linked list*
 !************************************************************************
 
-! ... a new improved implementation of the linked list
 
 ! In each cell we store the particles in a linked list. The first in that cell is the head of the cell (given by iphead). Each
 ! particle is linked to its next and previous particle in the list by ipnext and ipprev. The last particle in the list is the tail.
@@ -47,11 +46,11 @@ public UpdateCellIp, InitCellList, SetCellList, CellListAver, TestCellList
 public pcellro, cell_type, cellip, ipnext
 
 integer(4)                               :: maxneighcell ! maximum number of neighbouring cells
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
 type cell_pointer_array
    type(cell_type), pointer              :: p => null()        ! pointer to a cell, usefull to create an array of pointers
 end type cell_pointer_array
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
 type cell_type
    integer(4)                            :: id                 ! for easy recognition
    integer(4)                            :: npart              ! number of particles per cell

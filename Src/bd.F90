@@ -20,13 +20,16 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     BDDriver                                                         *
-!*                                                                      *
+!> \page bd bd.F90
+!! **BDDriver**
+!! *Brownian dynamics driver*
 !************************************************************************
 
-! ... Brownian dynamics driver
-
+!> \page nmlBD
+!! The namelist \ref nmlBD contains variables that control the BD simulation. The simulation is performed in the configurational space according to Ermark, 1975.
+!! * Variables:
+!!  * \subpage nmlBDtstep
+!!  * \subpage dcoeff
 subroutine BDDriver(iStage)
 
    use MDModule
@@ -60,12 +63,11 @@ subroutine BDDriver(iStage)
 end subroutine BDDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IOBD                                                             *
-!*                                                                      *
+!> \page bd bd.F90
+!! **IOBD**
+!! *perform i/o on Brownian dynamics variables*
 !************************************************************************
 
-! ... perform i/o on Brownian dynamics variables
 
 subroutine IOBD(iStage)
 
@@ -109,12 +111,11 @@ subroutine IOBD(iStage)
 end subroutine IOBD
 
 !************************************************************************
-!*                                                                      *
-!*     BDStep                                                           *
-!*                                                                      *
+!> \page bd bd.F90
+!! **BDStep**
+!! *perform one bd step (configuration space)*
 !************************************************************************
 
-! ... perform one bd step (configuration space)
 
 subroutine BDStep
 

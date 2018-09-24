@@ -29,17 +29,15 @@ cd Molsim
 ```
 The configure script tries to locate the FFTW libary. If you want to customize the path of the libary, modify the `Src/make.fftwpath` file. Additionally it will select which compiler to use. To costumize the compiler which is to be used change the `Src/make.arch` file.
 
-Now go to the Src directory and make Molsim:
+Now make Molsim:
 ```shell
-cd Molsim/Src
-make all mode=normal
-make install
+make all
 ```
-For more details confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem1.lu.se/Molsim/Molsim.htm).
+For more details confer the [MOLSIM manual](documentation.pdf).
 
 Usage
 -----
-Confer the [MOLSIM manual](http://www.polyelectrolytes2002.fkem1.lu.se/Molsim/Molsim.htm) for the standard commands. Confer the [wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/home) for additional changes and features.
+Confer the [MOLSIM manual](documentation.pdf) for the standard commands.
 
 Additional Notes
 ----------------

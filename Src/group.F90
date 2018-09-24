@@ -20,15 +20,42 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     Group                                                            *
-!*                                                                      *
+!> \page group group.F90
+!! **Group**
+!! *classify reference and field particles into groups and make average*
 !************************************************************************
 
-! ... classify reference and field particles into groups and make averages
+!> \page nmlGroup
+!! The namelist  \ref nmlGroup contains variables that control the division of particles into reference and field groups. Most single
+!! particle quantities calculated in  static.F90 are averaged over particles belonging to same reference group. In case of two
+!! particle quantities, the field group specifies the particles with which the reference particle interacts or is close to. More
+!! details are given below.
+!! * Variables:
+!!  * \subpage nmlref
+!!  * \subpage field
+!!  * \subpage lwref
 
+!> \page nmlref ref
+!! `character(20)`
+!! **default:** `'type=all`'
+!! * Text label used for selecting procedure of how to divide particles into reference groups. The procedure may either be already existing in the program or supplied by the user. The available options are:
+!! * '`type=all`': Each particle type constitute one group.
+!! * '`networkgenerations`': The different chain generations of networks will be assigned to different reference groups. Requires particle type of the strand particles to be ipt = 2.
+!! * '`type=xxx`': Particles of type xxx (\ref txpt (ipt)='xxx') constitute the only group.
+!! * `xxx`: Search for user-provided section labeled 'xxx' called from routine GroupUser in file moluser.F90.
+!! * If there is no match, the program stops.
+
+!> \page field
+!! `character(20)`
+!! **default:** '`type=all`'
+!! * Describes the field groups. Same options as for ref.
+
+!> \page lwref
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Reference group data are written on file FGROUP.
+!! * `.false.`: No writing.
 subroutine Group(iStage)
-
    use MolModule
    implicit none
 
@@ -45,7 +72,6 @@ subroutine Group(iStage)
    character(80) :: str
    logical       :: ok
    save
-
    namelist /nmlGroup/ ref, field, lwref
 
    if (ltrace) call WriteTrace(1, txroutine, iStage)
@@ -54,7 +80,8 @@ subroutine Group(iStage)
 
    select case (iStage)
    case (iReadInput)
-
+!> @class default_ref
+!> **default:** '`type=all`'
       ref   = 'type=all'
       field = 'type=all'
       lwref =.false.
@@ -250,12 +277,11 @@ subroutine Group(iStage)
 end subroutine Group
 
 !************************************************************************
-!*                                                                      *
-!*     GroupAll                                                         *
-!*                                                                      *
+!> \page group group.F90
+!! **GroupAll**
+!! *group division: each particle type forms one group*
 !************************************************************************
 
-! ... group division: each particle type forms one group
 
 subroutine GroupAll(iStage, m)
 
@@ -286,12 +312,11 @@ subroutine GroupAll(iStage, m)
 end subroutine GroupAll
 
 !************************************************************************
-!*                                                                      *
-!*     GroupType                                                        *
-!*                                                                      *
+!> \page group group.F90
+!! **GroupType**
+!! *group division: select particle type forms one group*
 !************************************************************************
 
-! ... group division: select particle type forms one group
 
 subroutine GroupType(iStage, m, txtype)
 
