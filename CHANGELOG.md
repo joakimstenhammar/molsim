@@ -137,10 +137,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.1.0] - 2016-11-29 - Tangoloss
 ### Changed
 - new network properties are being calculated: theta, rg2x, rg2y and rg2z
-- please confer the [Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/networks) for further information
+- please confer the [old Wiki](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/networks) for further information
 
 ## [2.0.0] - 2016-11-11 - Tangela
-- Changes described in [Netzwerke](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/networks)
+- Changes described in [Netzwerke (old wiki)](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/networks)
 
 ## [1.3.4] - 2016-11-04 Porygon
 ### Fixed
@@ -159,21 +159,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - added support for `gfortran`
 
 ## [1.3.0] - 2016-10-17 - Porygon
-- Changes described in [complexation-analysis](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/complexation-analysis)
+- Changes described in [complexation-analysis (old wiki)](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/complexation-analysis)
 
 ## [1.2.1] - 2016-10-17 - Ditto
 ### Changed
 - `molsim_par` also passes on exit code of Molsim
 
 ## [1.2.0] - 2016-10-12 - Ditto
-- Changes described in [SSO](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/sso)
+- Changes described in [SSO (old wiki)](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/sso)
 
 ## [1.1.3] - 2016-09-07 - Smettbo
 ### Fixed
 - Added requirement for group devision of `SubstructureDF`
 
 ## [1.1.2] - 2016-09-06 - Smettbo
-- Changes described in [Bugfixes](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/bugfixes)
+- Changes described in [Bugfixes (old wiki)](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/bugfixes)
 
 
 ## [1.0.0] - 2016-08-15 - Raupy
@@ -198,4 +198,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 # Changed Input
  -  [4.0.0] in `nmlVtfImage` the second argument was removed from `tximage`, and the forner third and fourth argument are moved to position 2 and 3. See [
-Image generation for VMD](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/imagevtf)
+Image generation for VMD (old wiki)](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/wikis/imagevtf)
