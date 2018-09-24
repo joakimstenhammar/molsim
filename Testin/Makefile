@@ -14,7 +14,8 @@ molsim = scripts/molsim_stable.sh
 
 #mechanism to get the correctly named MOLSIM script
 versionfile = ../version.conf
-molsim_bin = ../Bin/molsim_ser.exe
+molsim_bin_dir = ../Bin/
+molsim_bin = $(molsim_bin_dir)molsim_ser.exe
 
 #commands to make directories and delete stuff
 rm = rm -rf
@@ -123,6 +124,7 @@ $(outfiles) $(stablefiles): $(current)
 
 # when the source files are newer than the molsim_ser script (or the script is absent), than mark the script as new, which triggers the $(compiled) target.
 $(molsim_bin): $(sourcefiles)
+	@mkdir -p $(molsim_bin_dir)
 	@touch $(molsim_bin)
 
 # when $(current) does not exist, it is assumed that a recompilation is needed. From then on, molsim_bin is older than $(current) except for the case where the source files are newer than the script (which triggers a touch of the script) or MOLSIM was recompiled. Under these circumstances, the current state of the compilation is unknown, and therefore we need to recompile.
