@@ -855,7 +855,7 @@ end subroutine Set_npct
 subroutine Set_nphn  ! number of particles of the hierarchical structure
    nphn = 0
    do igen = 0, ngen
-      nphn = nphn + npct(ictgen(igen))*ncct(ictgen(igen))
+      nphn = nphn + npct(ictgen(igen))*(ncct(ictgen(igen))/nh) ! normalize by nh to get the numbers in one hierarchical structure
    end do
 end subroutine Set_nphn
 
