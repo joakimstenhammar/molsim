@@ -20,12 +20,105 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     MCModule                                                         *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCModule**
+!! *module for mc*
 !************************************************************************
 
-! ... module for mc
+!> \page nmlMC
+!! The namelist  \ref nmlMC contains variables that control the MC simulation. Each trial move involves an attempt to move one or severalparticles. \n \n
+!! After each macrostep the relative difference of the total potential energy calculated from scratch and that from the updated
+!! energy is calculated and written below the heading 'check'. Normally the relative difference is less than \f$ 10^(-10)\f$. This
+!! might not hold if 'the linear displacement' \f$\le\f$ \ref drnlist (see IONList).
+!! * Variables:
+!!  * \subpage isamp
+!!  * \subpage pspart
+!!  * \subpage dtran
+!!  * \subpage drot
+!!  * \subpage lcl1spart
+!!  * \subpage lfixzcoord
+!!  * \subpage lfixxycoord
+!!  * \subpage lshiftzcom
+!!  * \subpage lfixchainstartspart
+!!  * \subpage ispart
+!!  * \subpage pspartcl2
+!!  * \subpage txmembcl2
+!!  * \subpage radcl2
+!!  * \subpage dtrancl2
+!!  * \subpage ppivot
+!!  * \subpage txpivot
+!!  * \subpage drotpivot
+!!  * \subpage drotminpivot
+!!  * \subpage ipivotrotmode
+!!  * \subpage lcl1pivot
+!!  * \subpage pchain
+!!  * \subpage dtranchain
+!!  * \subpage drotchain
+!!  * \subpage lcl1chain
+!!  * \subpage pslither
+!!  * \subpage pbrush
+!!  * \subpage dtranbrush
+!!  * \subpage drotbrush
+!!  * \subpage lcl1brush
+!!  * \subpage pbrushcl2
+!!  * \subpage dtranbrushcl2
+!!  * \subpage drotbrushcl2
+!!  * \subpage phierarchical
+!!  * \subpage dtranhierarchical
+!!  * \subpage pnetwork
+!!  * \subpage dtrannetwork
+!!  * \subpage pvol
+!!  * \subpage dvol
+!!  * \subpage pnpart
+!!  * \subpage chempot
+!!  * \subpage pcharge
+!!  * \subpage radcl1
+!!  * \subpage pselectcl1
+!!  * \subpage pspartsso
+!!  * \subpage lmcweight
+!!  * \subpage nmlMClautumb
+!!  * \subpage lmcpmf
+!!  * \subpage lmcsep
+!!  * \subpage itestmc
+
+!> \page nmlMCAll
+!! The namelist  \ref nmlMCAll contains variables that control the MCALL simulation. Each trial move involves an attempt to move all particles simultaneously.
+!! * Variables:
+!!  * \subpage dtranall
+!!  * \subpage drotall
+!!  * \subpage nmlMCAlllautumb
+
+!> \page nmlMCWeight
+!! The namelist  \ref nmlMCWeight contains variables that control the application of a weighting function for potential of mean force MC
+!! simulations between two particles. Presently, only results from routine PotMeanForce are reweighted.
+!! * Variables:
+!!  * \subpage ipmcw1
+!!  * \subpage ipmcw2
+!!  * \subpage txpotmcw
+!!  * \subpage npolmcw
+!!  * \subpage acoeffmcw
+
+!> \page nmlUmbrella
+!! The namelist  \ref nmlUmbrella contains variables that control the automatic umbrella sampling.
+!! * Variables:
+!!  * \subpage typeumb
+!!  * \subpage ipumb1
+!!  * \subpage ipumb2
+!!  * \subpage rminumbrella
+!!  * \subpage delumb
+!!  * \subpage numbgrid
+!!  * \subpage cupdate
+!!  * \subpage umbcoord
+!!  * \subpage lreadumb
+
+!> \page nmlMCPmf
+!! The namelist \ref nmlMCPmf contains variables that control the calculation of potential of mean force by updating weights.
+!! * Variables:
+!!  * \subpage iptmcpmf
+!!  * \subpage nbinmcpmf
+!!  * \subpage rlowmcpmf
+!!  * \subpage ruppmcpmf
+!!  * \subpage termmcpmf
 
 module MCModule
 
@@ -34,7 +127,7 @@ module MCModule
    real(8), parameter :: ddelta = 1.0d-10  ! to ensure correct roundoff
 
 ! ... to be used in later developments
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type cluster2_tm_var
       logical      :: l                    ! flag for cluster1 tm
       real(8)      :: p                    ! relative probability of cluster2 move
@@ -43,7 +136,7 @@ module MCModule
       integer(4)   :: mode                 ! =0 : search members only of type iptmove
                                            ! =1 : search members across all particle types
    end type cluster2_tm_var
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type cluster1_tm_var
       logical      :: l                    ! flag for cluster1 tm
       real(8)      :: p                    ! relative probability of cluster1 move
@@ -52,7 +145,7 @@ module MCModule
       real(8)      :: dtran                ! maximal translational trial displacement
       real(8)      :: drot                 ! maximal rotational trial displacement
    end type cluster1_tm_var
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type trialmove_var
       logical      :: l                    ! flag for type of trial move
       real(8)      :: p                    ! relative probability of type of trial move
@@ -69,89 +162,291 @@ module MCModule
    logical, allocatable       :: lptmove(:)          ! flag of moving particle of given type
    integer(4)                 :: ipmove              ! particle to be moved
    integer(4)                 :: iptmove             ! type of particle to be moved
-   integer(4)                 :: isamp               ! = 0 sequential selection of particles
-                                                     ! = 1 random selection of particles
-
+!> \page isamp
+!! `integer`
+!! **default:** `1`
+!! * `0`: Uniform sampling of particles, sequential selection.
+!! * `1`: Uniform sampling of particles, random selection.
+   integer(4)                 :: isamp
    logical                    :: lpspart             ! flag of single-particle move
-   real(8), allocatable       :: pspart(:)           ! probability of single-particle move
-   real(8), allocatable       :: dtran(:)            ! translation parameter of single-particle move
-   real(8), allocatable       :: drot(:)             ! rotational parameter of single-particle move
-   logical, allocatable       :: lcl1spart(:)        ! cluster1 move
-   logical, allocatable       :: lfixzcoord(:)       ! no displacement in z-direction (applicable to spart and spartcl2 trial moves)
-   logical, allocatable       :: lfixxycoord(:)      ! no displacement in xy-plane (applicable to spart and spartcl2 trial moves)
-   logical, allocatable       :: lshiftzcom(:)       ! shift to get com at z = 0 if possible
-   logical                    :: lfixchainstartspart ! if first particle of a chain, no move
-   integer(4)                 :: ispart              ! =0 normal, >0 for development/special use
-   logical                    :: lpspartcl2          ! flag of single-particle + cluster2 move
-   real(8), allocatable       :: pspartcl2(:)        ! probability of single-particle + cluster2 move
-   character(3), allocatable  :: txmembcl2(:)        ! = 'ipt' seach members only of same particle type as that displaced
-                                                     ! = 'all' seach members among all partciles
-   real(8), allocatable       :: radcl2(:)           ! max separation between clusters of type 1 for belonging to same cluster of type 2
-   real(8), allocatable       :: dtrancl2(:)         ! translation parameter of single-particle + cluster2 move
-
+!> \page pspart
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!! * Relative weight of a single-particle move. Further control is given by \ref dtran and \ref drot.
+   real(8), allocatable       :: pspart(:)
+!> \page dtran
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * 0.5*\ref dtran is the maximal translational displacement of a particle along one box axis. Displacements are made along all box axes. If \ref dtran>0, square region, or if \ref dtran<0, spherical displacement region.
+   real(8), allocatable       :: dtran(:)
+!> \page drot
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * 0.5*\ref drot is the maximal rotational displacement (in degrees) of one axis. If \ref drot>0, rotation around one randomly selected box axis, or if \ref drot<0, rotation around one randomly selected particle frame axis.
+   real(8), allocatable       :: drot(:)
+!> \page lcl1spart
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Engage a single particle + cluster1 move involving a simultaneous trial move of (i) the selected particle (primary
+!!   particle) and (ii) some or all particles located within the distance \ref radcl1 from the selected one (secondary particles). The latter
+!!   particles are selected with the probability \ref pselectcl1.
+!! * `.false.`: No single particle + cluster1 move.
+   logical, allocatable       :: lcl1spart(:)
+!> \page lfixzcoord
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Fixed z-coordinate (restrict the trial move in the xy-plane) of particle. Applicable to spart and spart trial moves.
+!! * `.false.`: No.
+   logical, allocatable       :: lfixzcoord(:)
+!> \page lfixxycoord
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Fixed xy-coordinate (restrict the trial move to the z-coordiante) of particle. Applicable to spart and spartcl2 trial moves.
+!! * `.false.`: No.
+   logical, allocatable       :: lfixxycoord(:)
+!> \page lshiftzcom
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Shift the z-coordinate of all particles such that the center-of-mass of particles 1 and 2 is as close as possible to z = 0 (only \ref txbc = 'cyl').
+!! * `.false.`: No.
+   logical, allocatable       :: lshiftzcom(:)
+!> \page lfixchainstartspart
+!! `logical`(1:\ref npt)
+!! **default:** `.false.`
+!! * `.true.`: No trail-displacement of first particle in a chain (for grafted chains).
+!! * `.false.` No such restriction.
+   logical                    :: lfixchainstartspart
+!> \page ispart
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing, the normal use.
+!! * \f$\neq\f$`0`: For development/special use
+   integer(4)                 :: ispart
+   logical                    :: lpspartcl2
+!> \page pspartcl2
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of a single particle + cluster2 move involving a simultaneous trial move of (i) the (original) cluster of type 1
+!! as specified above and (ii) other similar clusters connected to the original one. The other clusters of type 1 consist of a central
+!! particle of the same type as the selected one and its neighboring particles in analogy with the original cluster. Clusters of type
+!! 1 are connected if their center-tocenter separation is directly or indirectly at most \ref radcl2. Connected clusters of type 1 are
+!! called clusters of type 2. Further control is given by \ref txmembcl2,\ref dtrancl2 and \ref radcl2.
+   real(8), allocatable       :: pspartcl2(:)
+!> \page txmembcl2
+!! `character(3)`(1:\ref npt)
+!! * Selection of particle type of members belonging to clusters of type 2.
+!! * =`ipt`: Search for members only of same particle type as that displaced.
+!! * =`all`: Search for members among all particles.
+   character(3), allocatable  :: txmembcl2(:)
+!> \page radcl2
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Largest separation between clusters of type 1 for belonging to same cluster of type 2.
+   real(8), allocatable       :: radcl2(:)
+!> \page dtrancl2
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * 0.5*\ref dtrancl2 is the maximal translational displacement of a particle along one box axis. Displacements are made along all box
+!!   axes. If \ref dtrancl2>0, square region, or if \ref dtrancl2<0, spherical displacement region.
+   real(8), allocatable       :: dtrancl2(:)
    logical                    :: lppivot             ! flag of pivot rotation move
-   real(8), allocatable       :: ppivot(:)           ! probability of pivot rotation move
-   character(5), allocatable  :: txpivot(:)          ! = 'short' rotation of the shorter subchain
-                                                     ! = 'lower' rotation of the lower subchain
-                                                     ! = 'upper' rotation of the upper subchain
+!> \page ppivot
+!! `real`(1:\ref nct)
+!! **default:** \ref nct*`0.0`
+!! * Relative weight of end-pivot rotation. The shorter end of the chain is rotated. Further control is given by \ref drotpivot.
+   real(8), allocatable       :: ppivot(:)
+!> \page txpivot
+!! `character(5)`(1:\ref nct)
+!! **default:** \ref nct*`short`
+!! * `short`: Rotation of the shorter subchain.
+!! * `lower`: Rotation of the subchain containing particles with low numbers.
+!! * `upper`: Rotation of the subchain containing particles with high numbers.
+   character(5), allocatable  :: txpivot(:)
    character(6)               :: txdualpivot         ! = 'nodual' individual pivot  move
                                                      ! = 'linear' linear chain ict = 3 as reference (dual pivot = linear chain + branched diblock copolymer)
                                                      ! = 'combed' combed chain ict = 1 as reference (dual pivot = branched diblock +  copolymerlinear chain)
                                                      ! = 'mullin' idem as 'combed' and additionally works for icnct(ict) > 1
-   real(8), allocatable       :: drotpivot(:)        ! rotation parameter of pivot rotation move
-   real(8), allocatable       :: drotminpivot(:)     ! rotation parameter of pivot rotation move
-   integer(4)                 :: ipivotrotmode       ! = 1 rotation around bond vector
-                                                     ! = 2 rotation around a normal to a plane
-                                                     ! = 3 rotation around a random direction
-   logical, allocatable       :: lcl1pivot(:)        ! cluster1 move
+!> \page drotpivot
+!! `real`(1:\ref nct)
+!! **default:** \ref nct*`360`
+!! * Rotational displacement parameter of the end-pivot rotation.
+   real(8), allocatable       :: drotpivot(:)
+!> \page drotminpivot
+!! `real`(1:\ref nct)
+!! **default:** \ref nct*`0.0`
+!! * Smallest rotational displacement of the end-pivot rotation.
+   real(8), allocatable       :: drotminpivot(:)
+!> \page ipivotrotmode
+!! `integer`
+!! **default:** `1`
+!! * `1`: Rotation around the bond joining pivot segment and the previous one. Bond angle is preserved.
+!! * `2`: Rotation round the normal to the plane formed by the pivot segments and its two neighbors.
+!! * `3`: Rotation around a random direction.
+   integer(4)                 :: ipivotrotmode
+!> \page lcl1pivot
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Engage an end-pivot + cluster1 rotation involving a simultaneous trial move of (i) the selected particle(s) (primary
+!!  particle(s)) and (ii) some or all particles located within the distance \ref radcl1 from the selected one (secondary particles). The
+!!  latter particles are selected with the probability \ref pselectcl1.
+!! * `.false.`: No end-pivot + cluser1 move.
+   logical, allocatable       :: lcl1pivot(:)
 
    logical                    :: lpchain             ! flag of chain move
-   real(8), allocatable       :: pchain(:)           ! probability of chain move
-   real(8), allocatable       :: dtranchain(:)       ! translation parameter of chain move
-   real(8), allocatable       :: drotchain(:)        ! rotational parameter of chain move
-   logical, allocatable       :: lcl1chain(:)        ! cluster1 move
+!> \page pchain
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of chain move. Further control is given by \ref dtranchain.
+   real(8), allocatable       :: pchain(:)
+!> \page dtranchain
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Translational displacement parameter of the chain move.
+   real(8), allocatable       :: dtranchain(:)
+!> \page drotchain
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Rotational displacement parameter of the chain move.
+   real(8), allocatable       :: drotchain(:)
+!> \page lcl1chain
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Engage a chain + cluster1 move involving a simultaneous trial move of (i) the selected particles (primary particles)
+!!    and (ii) some or all particles located within the distance \ref radcl1 from the selected ones (secondary particles). The latter
+!!    particles are selected with the probability \ref pselectcl1.
+!! * `.false.`: No chain + cluster1 move.
+   logical, allocatable       :: lcl1chain(:)
 
    logical                    :: lpslither           ! flag of chain slithering  move
-   real(8), allocatable       :: pslither(:)         ! probability of chain slithering move
+!> \page pslither
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of slithering move. All particles of a selected chain are subjected to a trial displacement (even for a homopolymer).
+   real(8), allocatable       :: pslither(:)
 
    logical                    :: lpbrush             ! flag of brush move
-   real(8), allocatable       :: pbrush(:)           ! probability of brush move
-   real(8), allocatable       :: dtranbrush(:)       ! translation parameter of brush move
-   real(8), allocatable       :: drotbrush(:)        ! rotational parameter of brush move
-   logical, allocatable       :: lcl1brush(:)        ! cluster1 move
+!> \page pbrush
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!! * Relative weight of a brush move. Simultaneous move of a particle and its grafted chains. Requires some assumption of chain and bead labeling.
+   real(8), allocatable       :: pbrush(:)
+!> \page dtranbrush
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!! * Translational parameter for brush move.
+   real(8), allocatable       :: dtranbrush(:)
+!> \page drotbrush
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!! * Rotational parameter for brush move.
+   real(8), allocatable       :: drotbrush(:)
+!> \page lcl1brush
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Engage brush + cluster1 move involving a simultaneous trial move of (i) the selected particles (primary particles)
+!!   and (ii) some or all particles located within the distance \ref radcl1 from the selected ones (secondary particles). The latter
+!!   particles are selected with the probability \ref pselectcl1.
+!! * `.false.`: No brush + cluster1 move.
+   logical, allocatable       :: lcl1brush(:)
    logical                    :: lpbrushcl2          ! flag of brush + cluster2 move
-   real(8), allocatable       :: pbrushcl2(:)        ! probability of brush + cluster2 move
-   real(8), allocatable       :: dtranbrushcl2(:)    ! translation parameter of brush + cluster2 move
-   real(8), allocatable       :: drotbrushcl2(:)     ! rotational parameter of brush + cluster2 move
+!> \page pbrushcl2
+!! `real`(1.\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of a brush + cluster2 move.
+   real(8), allocatable       :: pbrushcl2(:)
+!> \page dtranbrushcl2
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!> Translational parameter for brush + cluster2 move.
+   real(8), allocatable       :: dtranbrushcl2(:)
+!> \page drotbrushcl2
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!! * Rotational parameter for brush + cluster2 move.
+   real(8), allocatable       :: drotbrushcl2(:)
 
    logical                    :: lphierarchical      ! flag of hierarchical move
-   real(8), allocatable       :: phierarchical(:)    ! probability of hierarchical move
-   real(8), allocatable       :: dtranhierarchical(:)! translation parameter of hierarchical move
+!> \page phierarchical
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of a hierarchical move.
+   real(8), allocatable       :: phierarchical(:)
+!> \page dtranhierarchical
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`1.0`
+!! * Translational parameter for a hierarchical move.
+   real(8), allocatable       :: dtranhierarchical(:)
 
    logical                    :: lpnetwork           ! flag of network move
-   real(8), allocatable       :: pnetwork(:)         ! probability of network move
-   real(8), allocatable       :: dtrannetwork(:)     ! translation parameter of network move
+!> \page pnetwork
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of a network move.
+   real(8), allocatable       :: pnetwork(:)
+!> \page dtrannetwork
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Translational parameter for network move.
+   real(8), allocatable       :: dtrannetwork(:)
 
    logical                    :: lpvol               ! flag of chain volume move
-   real(8), allocatable       :: pvol(:)             ! probability of volume move
-   real(8)                    :: dvol                ! volume change parameter
+!> \page pvol
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of volume-change move (only \ref txensemb='\ref npt' or 'ntp').
+   real(8), allocatable       :: pvol(:)
+!> \page dvol
+!! `real`
+!! **default** `0.0`
+!! * Volume change parameter (only \ref txensemb='\ref npt' or 'ntp').
+   real(8)                    :: dvol
 
    logical                    :: lpnpart             ! flag of number of particle move
-   real(8), allocatable       :: pnpart(:)           ! probability of number of particle move
-   real(8), allocatable       :: chempot(:)          ! chemical potential
-
-   real(8), allocatable       :: radcl1(:)           ! radius of cluster of type 1
+!> \page pnpart
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of 'change of number of particle' move (only \ref txensemb='mvt' or 'mtv').
+   real(8), allocatable       :: pnpart(:)
+!> \page chempot
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Chemical potential (only \ref txensemb='mvt' or 'mtv').
+   real(8), allocatable       :: chempot(:)
+!> \page radcl1
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Largest separation between a primary and secondary particle for which the secondary particle can belong to the cluster.
+   real(8), allocatable       :: radcl1(:)
+!> \page pselectcl1
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Probability that a particle with the separation at most \ref radcl1 from the primary particle is selected as a secondary particle of the cluster. \f$ 0 \le pselectcl1 \le 1 \f$.
    real(8), allocatable       :: pselectcl1(:)       ! probability of selecting a particle to belong to a cluster of type 1
    integer(4)                 :: npclnew             ! number of cluster particles of new conf
    integer(4)                 :: npclold             ! number of cluster particles of old conf
    integer(4)                 :: nprimpartcl         ! number of primary cluster particles of new & old conf
 
    logical                    :: lpcharge            ! flag of charge-change move
+!> \page pcharge
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of charge-change move.
    real(8), allocatable       :: pcharge(:)          ! probability of charge-change move
 
    logical                    :: lpspartsso          ! flag for single particle move sso  ! Pascal Hebbeker
    logical, allocatable       :: lssopt(:)           ! flag for single particle move sso of particle types  ! Pascal Hebbeker
-   logical                    :: lmcsep              ! flag for separating local from non-local moves
+!> \page lmcsep
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Either local or non-local moves are carried out during one MC-Pass, not both. When only local moves are used the
+!!    neighbour list is build using \ref drnlist as set in nmlIntlist, if non-local moves are also used \ref drnlist is set to four times the
+!!    contour length.
+!! * `.false.`: Local and non-local moves are carried out during one MC-Pass.
+   logical                    :: lmcsep
+!> \page pspartsso
+!! `real`(1:\ref npt)
+!! **default:** \ref npt*`0.0`
+!! * Relative weight of sso move. Further control is given in \ref nmlSPartSSO.
    real(8), allocatable :: pspartsso(:)              ! probability of single particle move sso
    real(8), allocatable :: plocal(:)
    real(8), allocatable       :: curdtranpt(:)            ! translation parameter of single-particle move
@@ -159,10 +454,16 @@ module MCModule
 
 
 ! ... mcall trial move variables
-
+!> \page dtranall
+!! `real`(1:\ref npt)
+!! * 0.5*\ref dtranall is the maximal translational displacement of a particle along one box axis. Displacements are made along all box
+!!   axes. If \ref dtranall>0, square region, or if \ref dtranall<0, spherical displacement region.
    real(8), allocatable        :: dtranall(:)
+!> \page drotall
+!! `real`(1:\ref npt)
+!! * 0.5*\ref drotall is the maximal rotational displacement (in degrees) of one axis. If \ref drotall>0, rotation around one randomly
+!!   selected box axis, or if \ref drot<0, rotation around one randomly selected particle frame axis.
    real(8), allocatable        :: drotall(:)
-
 ! ... for mc statistics
 
    integer(4)    :: imovetype                        ! type of move
@@ -213,40 +514,130 @@ module MCModule
 ! ... unbrella sampling using a weighting function depending on the separation between two particles
 
    integer(4), parameter :: mnpolmcw = 10  ! maximum number of parameters of the weighting function
-   integer(4)    :: ipmcw1                 ! particle number 1
-   integer(4)    :: ipmcw2                 ! particle number 2
-   character(11) :: txpotmcw               ! 'polynomial': acoeffmcw(0) + acoeffmcw(1)*r + ...
-                                           ! 'exponential': acoeffmcw(0)*exp(-acoeffmcw(1)*(r-acoeffmcw(2)))
-   integer(4)    :: npolmcw                ! degree of the polynomial
+!> \page ipmcw1
+!! `integer`
+!! * Identity of the particle number 1.
+   integer(4)    :: ipmcw1
+!> \page ipmcw2
+!! `integer`
+!! * Identity of the particle number 2.
+   integer(4)    :: ipmcw2
+!> \page txpotmcw
+!! `character(11)`
+!! * `polynomial`: Weighting function: a(0) + a(1)*r + … .
+!! * `exponential`: Weighting function: a(0)*exp(-a(1)*(r-a(2))).
+   character(11) :: txpotmcw
+!> \page npolmcw
+!! `integer`
+!! **default:** `0`
+!! * Degree of the polynomial
+   integer(4)    :: npolmcw
+!> \page acoeffmcw
+!! `real`(1:\ref npolmcw)
+!! **default:** \ref npolmcw*`0.0`
+!! * Coefficients of the weighting function.
    real(8)       :: acoeffmcw(0:mnpolmcw)  ! coefficients of the weighting function
-
 ! ... automatic update of umbrella potential
 
    integer(4), parameter :: mumbgrid = 500 ! maximum grid for umbrella potential
-   logical      :: lautumb                 ! true if automatic update of umbrella potential is used
-   character(6) :: typeumb                 ! type of umbrella potential (e.g. particle-particle, particle-wall ...)
+
+!> \page nmlMCAlllautumb lautumb
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Automatic umbrella sampling according to O. Engkvist and G. Karlström. Further specification is given in namelist \ref nmlUmbrella.
+!! * `.false.`: No umbrella sampling.
+
+!> \page nmlMClautumb lautumb
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Automatic umbrella sampling according to O. Engkvist and G. Karlström. Further specification is given in namelist \ref nmlUmbrella.
+!! * `.false.`: No umbrella sampling.
+   logical      :: lautumb
+
+!> Type of umbrella potential
+!> \page typeumb
+!! `character(6)`
+!! **default:** '      '
+!! * Type of umbrella potential (e.g. particle-particle, particle-wall ...)
+   character(6) :: typeumb
    real(8)      :: xumb(mumbgrid)          ! the potential of mean force
    real(8)      :: xumbmax, xumbmin        ! maximum(minimum) element of xumb
    integer(4)   :: iumb, iumbnew           ! index for bin in xumb
-   integer(4)   :: ipumb1, ipumb2          ! for particle-particle or atom-atom ump: particle identifiers
-   integer(4)   :: iaumb1, iaumb2          ! for atom-atom ump: atom identifiers
-   real(8)      :: rminumbrella            ! for particle-particle or atom-atom ump: minimum particle-particle distance
-   real(8)      :: delumb                  ! distance between two grid points in xumb
-   integer(4)   :: numbgrid                ! number of grid points in xumb
-   character(4) :: cupdate                 ! type of update of the weighting function
-   logical      :: lradumb                 ! true if the umbrella potential is scaled to give g(r)
-   character(1) :: umbcoord                ! if set, particles ipumb1 and ipumb2 can only move along the coordinate
-                                           ! set by umbcoord with fixed orientation
-   logical      :: lreadumb                ! true if the initial umbrella potential is read from file
+!> \page ipumb1
+!! `integer`
+!! **default:** `0`
+!! * Particle dentifier for particle-particle or atom-atom umbrella sampling.
 
+!> \page ipumb2
+!! `integer`
+!! **default:** `0`
+!! * Particle dentifier for particle-particle or atom-atom umbrella sampling.
+   integer(4)   :: ipumb1, ipumb2
+   integer(4)   :: iaumb1, iaumb2          ! for atom-atom ump: atom identifiers
+!> \page rminumbrella
+!! `real`
+!! **default:** `3.0`
+!! * Minimum particle-particle distance for particle-particle or atom-atom umbrella sampling
+   real(8)      :: rminumbrella
+!> \page delumb
+!! `real`
+!! **default:** `1.0`
+!! * Distance between two grid points in xumb
+   real(8)      :: delumb
+!> \page numbgrid
+!! `integer`
+!! **default:** `0.0`
+!! * Number of grid points in xumb
+   integer(4)   :: numbgrid
+!> \page cupdate
+!! `character(4)`
+!! **default:** '    '
+!! * Type of update of the weighting function
+   character(4) :: cupdate
+   logical      :: lradumb                 ! true if the umbrella potential is scaled to give g(r)
+!> \page umbcoord
+!! `character(1)`
+!! **default:** '`r`'
+!! * if set, particles \ref ipumb1 and \ref ipumb2 can only move along the coordinate set by \ref umbcoord with fixed orientation
+   character(1) :: umbcoord
+!> \page lreadumb
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: the initial umbrella potential is read from file.
+!! * `.false.`: the potential is calculated using xumb.
+   logical      :: lreadumb
 ! ... calculation of potential of mean force by updating weights
 
    integer(4), parameter :: mnbinmcpmf = 500 ! maximum number of bins of mc potential of mean force
-   logical      :: lmcpmf                    ! =.true. calculation calculation of potential of mean force by updating weights
+!> \page lmcpmf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true`: Direct pmf calculation using updated weights. Further specification is given in namelist \ref nmlMCPmf.
+!! * `.false.`: No direct pmf calculation calculation.
+   logical      :: lmcpmf
+!> \page iptmcpmf
+!! `integer`
+!! **default:** `1`
+!! * Type of the two particles for which the potential of mean force should be calculated.
    integer(4)   :: iptmcpmf                  ! mc pmf between two particles of type iptmcpmf
+!> \page nbinmcpmf
+!! `integer`
+!! **default:** `100`
+!! * Number of bins of the potential of mean force.
    integer(4)   :: nbinmcpmf                 ! number of grid points of mcpmf
+!> \page rlowmcpmf
+!! `rlow`
+!! **default:** `0.0`
+!! * Lower limit of sampled potential of mean force.
    real(8)      :: rlowmcpmf                 ! lower limit of mcpmf
+!> \page ruppmcpmf
+!! `real`
+!! **default:** `100.0`
+!! * Upper limit of sampled potential of mean force.
    real(8)      :: ruppmcpmf                 ! upper limit of mcpmf
+!> \page termmcpmf
+!! `real`
+!! * Controls the update of weights.
    real(8)      :: termmcpmf                 ! control the update of the mcpmf
    real(8)      :: binmcpmf                  ! bin of mc pmf
    real(8)      :: binimcpmf                 ! 1/binmcpmf
@@ -256,17 +647,16 @@ module MCModule
    integer(4)   :: ibinmcpmf, ibinnewmcpmf   ! index for bin in mcpmf
 
    integer(4)   :: idum
-
 ! ... test output
-
-   integer(4)   :: itestmc                   ! = 1, call of TestIOMCProb
-                                             ! = 2, call of TestMCMove
-                                             ! = 3, call of TestVolChange from VolChange
-                                             ! = 3, call of TestNPartChange1 from VolNParChange
-                                             ! = 3, call of TestNPartChange2 from VolChange
-                                             ! = 3, call of TestChargeChange1 from ChargeChange
-                                             ! = 3, call of TestChargeChange2 from ChargeChange
-
+!> \page itestmc
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`: Nothing. The normal option.
+!! * `1`: Probability data of different moves (routine TestIOMCProb)
+!! * `2`: Data concerning MC trial move (routine TestMCMove)
+!! * `3`: Data concerning volume change (routine TestVolChange, TestNPartCharge1, TestNPartCharge2, TestChargeChange1, TestChargeChange2)
+   integer(4)   :: itestmc
    interface
       subroutine SPartMove(iStage, loptsso)
          integer(4), intent(in) :: iStage
@@ -321,12 +711,11 @@ module MCModule
 end module MCModule
 
 !************************************************************************
-!*                                                                      *
-!*     MCDriver                                                         *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCDriver**
+!! *monte carlo driver*
 !************************************************************************
 
-! ... monte carlo driver
 
 subroutine MCDriver(iStage)
 
@@ -392,12 +781,11 @@ subroutine MCDriver(iStage)
 end subroutine MCDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IOMC                                                             *
-!*                                                                      *
+!> \page mc mc.F90
+!! **IOMC**
+!! *perform i/o on monte carlo variables*
 !************************************************************************
 
-! ... perform i/o on monte carlo variables
 
 subroutine IOMC(iStage)
 
@@ -1073,12 +1461,11 @@ end subroutine TestIOMCProb
 end subroutine IOMC
 
 !************************************************************************
-!*                                                                      *
-!*     MCPass                                                           *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCPass**
+!! *perform one mc pass (np trial moves)*
 !************************************************************************
 
-! ... perform one mc pass (np trial moves)
 
 subroutine MCPass(iStage)
 
@@ -1187,12 +1574,11 @@ subroutine MCPass(iStage)
 end subroutine MCPass
 
 !************************************************************************
-!*                                                                      *
-!*     SPartMove                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **SPartMove**
+!! *perform one single-particle  trial move*
 !************************************************************************
 
-! ... perform one single-particle  trial move
 
 subroutine SPartMove(iStage, loptsso)
 
@@ -1423,12 +1809,11 @@ end subroutine SymmMove
 end subroutine SPartMove
 
 !************************************************************************
-!*                                                                      *
-!*     SPartCl2Move                                                     *
-!*                                                                      *
+!> \page mc mc.F90
+!! **SPartCl2Move**
+!! *perform one single-particle + cluster2 trial move*
 !************************************************************************
 
-! ... perform one single-particle + cluster2 trial move
 
 subroutine SPartCl2Move(iStage)
 
@@ -1573,12 +1958,11 @@ subroutine SPartCl2Move(iStage)
 end subroutine SPartCl2Move
 
 !************************************************************************
-!*                                                                      *
-!*     PivotMove                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **PivotMove**
+!! *perform pivot rotation trial move*
 !************************************************************************
 
-! ... perform pivot rotation trial move
 
 subroutine PivotMove(iStage)
 
@@ -2148,12 +2532,11 @@ end subroutine PivotDual
 end subroutine PivotMove
 
 !************************************************************************
-!*                                                                      *
-!*     ChainMove                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **ChainMove**
+!! *perform one chain trial move*
 !************************************************************************
 
-! ... perform one chain trial move
 
 subroutine ChainMove(iStage)
 
@@ -2244,12 +2627,11 @@ subroutine ChainMove(iStage)
 end subroutine ChainMove
 
 !************************************************************************
-!*                                                                      *
-!*     SlitherMove                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **SlitherMove**
+!! *perform one chain slithering trial move*
 !************************************************************************
 
-! ... perform one chain slithering trial move
 !     biased sampling of bond length and bond angle
 
 subroutine SlitherMove(iStage)
@@ -2459,12 +2841,11 @@ end subroutine SlitherMoveSub
 end subroutine SlitherMove
 
 !************************************************************************
-!*                                                                      *
-!*     BrushMove                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **BrushMove**
+!! *perform one brush trial move*
 !************************************************************************
 
-! ... perform one brush trial move
 
 subroutine BrushMove(iStage)
 
@@ -2638,12 +3019,11 @@ end subroutine RotTranBrush
 end subroutine BrushMove
 
 !************************************************************************
-!*                                                                      *
-!*     BrushCl2Move                                                     *
-!*                                                                      *
+!> \page mc mc.F90
+!! **BrushCl2Move**
+!! *perform one brush + cluster2 trial move*
 !************************************************************************
 
-! ... perform one brush + cluster2 trial move
 
 subroutine BrushCl2Move(iStage)
 
@@ -2778,12 +3158,11 @@ subroutine BrushCl2Move(iStage)
 end subroutine BrushCl2Move
 
 !************************************************************************
-!*                                                                      *
-!*     HierarchicalMove                                                 *
-!*                                                                      *
+!> \page mc mc.F90
+!! **HierarchicalMove**
+!! *perform one hierarchical trial move*
 !************************************************************************
 
-! ... perform one hierarchical trial move
 
 subroutine HierarchicalMove(iStage)
 
@@ -2867,12 +3246,11 @@ subroutine HierarchicalMove(iStage)
 end subroutine HierarchicalMove
 
 !************************************************************************
-!*                                                                      *
-!*     NetworkMove                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **NetworkMove**
+!! *perform one network trial move*
 !************************************************************************
 
-! ... perform one network trial move
 
 subroutine NetworkMove(iStage)
 
@@ -3006,12 +3384,11 @@ subroutine TranNetwork
 end subroutine NetworkMove
 
 !************************************************************************
-!*                                                                      *
-!*     VolChange                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **VolChange**
+!! *perform one volume change trial move*
 !************************************************************************
 
-! ... perform one volume change trial move
 
 subroutine VolChange(iStage)
 
@@ -3120,12 +3497,11 @@ end subroutine TestVolChange
 end subroutine VolChange
 
 !************************************************************************
-!*                                                                      *
-!*     NPartChange                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **NPartChange**
+!! *perform one number of particle change trial move*
 !************************************************************************
 
-! ... perform one number of particle change trial move
 
 !     note, not check to work with weak charges
 
@@ -3289,12 +3665,11 @@ end subroutine TestNPartChange2
 end subroutine NPartChange
 
 !************************************************************************
-!*                                                                      *
-!*     ChargeChange                                                     *
-!*                                                                      *
+!> \page mc mc.F90
+!! **ChargeChange**
+!! *perform a charge-change trial move*
 !************************************************************************
 
-! ... perform a charge-change trial move
 
 !  zat = -1:   HA   <->   A(-) + H(+);        HA weak acid and A(-) weak base
 !  zat = +1:   BH(+)   <->   B + H(+);        BH(+) weak acid and B weak base
@@ -3471,12 +3846,11 @@ end subroutine TestChargeChange2
 end subroutine ChargeChange
 
 !************************************************************************
-!*                                                                      *
-!*     SetPartPosRandomMC                                               *
-!*                                                                      *
+!> \page mc mc.F90
+!! **SetPartPosRandomMC**
+!! *generate a random position*
 !************************************************************************
 
-! ... generate a random position
 
 subroutine SetPartPosRandomMC(ip)
 
@@ -3534,12 +3908,11 @@ subroutine SetPartPosRandomMC(ip)
 end subroutine SetPartPosRandomMC
 
 !************************************************************************
-!*                                                                      *
-!*     MCAllDriver                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCAllDriver**
+!! *mcall driver*
 !************************************************************************
 
-! ... mcall driver
 
 subroutine MCAllDriver(iStage)
 
@@ -3591,12 +3964,11 @@ subroutine MCAllDriver(iStage)
 end subroutine MCAllDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IOMCAll                                                          *
-!*                                                                      *
+!> \page mc mc.F90
+!! **IOMCAll**
+!! *performing i/o on monte carlo all variables*
 !************************************************************************
 
-! ... performing i/o on monte carlo all variables
 
 subroutine IOMCAll(iStage)
 
@@ -3647,12 +4019,11 @@ subroutine IOMCAll(iStage)
 end subroutine IOMCAll
 
 !************************************************************************
-!*                                                                      *
-!*     MCAllPass                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCAllPass**
+!! *perform one mc pass (simultaneous move of all particles)*
 !************************************************************************
 
-! ... perform one mc pass (simultaneous move of all particles)
 
 !     one configuration involves
 
@@ -3809,12 +4180,11 @@ subroutine MCAllPass(iStage)
 end subroutine MCAllPass
 
 !************************************************************************
-!*                                                                      *
-!*     ClusterMember                                                    *
-!*                                                                      *
+!> \page mc mc.F90
+!! **ClusterMember**
+!! *calculate secondary cluster members using Verlet neighbour list*
 !************************************************************************
 
-! ... calculate secondary cluster members using Verlet neighbour list
 
 subroutine ClusterMember(str, lonlyipmove, lnoselftype, radcl, pselectcl)
 
@@ -3973,12 +4343,11 @@ end subroutine all_reduce_nptm_ipnptm_lptm
 end subroutine ClusterMember
 
 !************************************************************************
-!*                                                                      *
-!*     ClusterMemberLList                                               *
-!*                                                                      *
+!> \page mc mc.F90
+!! **ClusterMemberLList**
+!! *calculate secondary cluster members using linked lists*
 !************************************************************************
 
-! ... calculate secondary cluster members using linked lists
 
 subroutine ClusterMemberLList(str, lonlyipmove, lnoselftype, radcl, pselectcl)
 
@@ -4159,12 +4528,11 @@ end subroutine all_reduce_nptm_ipnptm_lptm
 end subroutine ClusterMemberLList
 
 !************************************************************************
-!*                                                                      *
-!*     GetRandomTrialPos                                                *
-!*                                                                      *
+!> \page mc mc.F90
+!! **GetRandomTrialPos**
+!! *calculate translational displacement and trial position*
 !************************************************************************
 
-! ... calculate translational displacement and trial position
 
 subroutine GetRandomTrialPos(dtran, iseed, nptm, ipnptm, ro, rotm, drotm)
 
@@ -4216,12 +4584,11 @@ subroutine GetRandomTrialPos(dtran, iseed, nptm, ipnptm, ro, rotm, drotm)
 end subroutine GetRandomTrialPos
 
 !************************************************************************
-!*                                                                      *
-!*     GetRandomTrialOri                                                *
-!*                                                                      *
+!> \page mc mc.F90
+!! **GetRandomTrialOri**
+!! *calculate a trail orientation*
 !************************************************************************
 
-! ... calculate a trail orientation
 
 subroutine GetRandomTrialOri(drot, iseed, ori, oritm)
 
@@ -4258,12 +4625,11 @@ subroutine GetRandomTrialOri(drot, iseed, ori, oritm)
 end subroutine GetRandomTrialOri
 
 !************************************************************************
-!*                                                                      *
-!*     GetFixedTrialOri                                                 *
-!*                                                                      *
+!> \page mc mc.F90
+!! **GetFixedTrialOri**
+!! *get fixed trial orientation*
 !************************************************************************
 
-! ... get fixed trial orientation
 
 subroutine GetFixedTrialOri(nptm, ipnptm, ori, oritm)
 
@@ -4284,12 +4650,11 @@ subroutine GetFixedTrialOri(nptm, ipnptm, ori, oritm)
 end subroutine GetFixedTrialOri
 
 !************************************************************************
-!*                                                                      *
-!*     GetRotatedTrialOri                                               *
-!*                                                                      *
+!> \page mc mc.F90
+!! **GetRotatedTrialOri**
+!! *get rotated trial orientation*
 !************************************************************************
 
-! ... get rotated trial orientation
 
 subroutine GetRotatedTrialOri(rotaxis, alpha, nptm, ipnptm, ori, oritm)
 
@@ -4323,12 +4688,11 @@ subroutine GetRotatedTrialOri(rotaxis, alpha, nptm, ipnptm, ori, oritm)
 end subroutine GetRotatedTrialOri
 
 !************************************************************************
-!*                                                                      *
-!*     RotateSetPart                                                    *
-!*                                                                      *
+!> \page mc mc.F90
+!! **RotateSetPart**
+!! *rigid-body rotation of a set of particles*
 !************************************************************************
 
-! ... rigid-body rotation of a set of particles
 
 subroutine RotateSetPart(rotaxis, alpha, rotorigin, nptm, ipnptm, ro, rotm, drotm)
 
@@ -4371,12 +4735,11 @@ subroutine RotateSetPart(rotaxis, alpha, rotorigin, nptm, ipnptm, ro, rotm, drot
 end subroutine RotateSetPart
 
 !************************************************************************
-!*                                                                      *
-!*     FizedZCoord                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **FizedZCoord**
+!! *no displacement in z-direction*
 !************************************************************************
 
-! ... no displacement in z-direction
 
 subroutine FixedZCoord
    use MCModule
@@ -4390,12 +4753,11 @@ subroutine FixedZCoord
 end subroutine FixedZCoord
 
 !************************************************************************
-!*                                                                      *
-!*     FizedXYCoord                                                     *
-!*                                                                      *
+!> \page mc mc.F90
+!! **FizedXYCoord**
+!! *no displacement in the xy-plane*
 !************************************************************************
 
-! ... no displacement in the xy-plane
 
 subroutine FixedXYCoord
    use MCModule
@@ -4409,12 +4771,11 @@ subroutine FixedXYCoord
 end subroutine FixedXYCoord
 
 !************************************************************************
-!*                                                                      *
-!*     FixedChainStart                                                  *
-!*                                                                      *
+!> \page mc mc.F90
+!! **FixedChainStart**
+!! *put rotm = ro and drotm to zero if particle is the first segment in a chain*
 !************************************************************************
 
-! ... put rotm = ro and drotm to zero if particle is the first segment in a chain
 
 subroutine FixedChainStart
    use MCModule
@@ -4430,12 +4791,11 @@ subroutine FixedChainStart
 end subroutine FixedChainStart
 
 !************************************************************************
-!*                                                                      *
-!*     ShiftZDirection                                                  *
-!*                                                                      *
+!> \page mc mc.F90
+!! **ShiftZDirection**
+!! *center the system at z = 0 as much as possible (only for lbccyl)*
 !************************************************************************
 
-! ... center the system at z = 0 as much as possible (only for lbccyl)
 
 subroutine ShiftZDirection
    use MCModule
@@ -4451,12 +4811,11 @@ subroutine ShiftZDirection
 end subroutine ShiftZDirection
 
 !************************************************************************
-!*                                                                      *
-!*     CheckPartBCTM                                                    *
-!*                                                                      *
+!> \page mc mc.F90
+!! **CheckPartBCTM**
+!! *check boundary conditions of trial particle coordinate*
 !************************************************************************
 
-! ... check boundary conditions of trial particle coordinate
 
 subroutine CheckPartBCTM(nploc, rr, lboxoverlap)
 
@@ -4504,9 +4863,9 @@ subroutine CheckPartBCTM(nploc, rr, lboxoverlap)
 end subroutine CheckPartBCTM
 
 !************************************************************************
-!*                                                                      *
-!*     AddNeighbours                                                    *
-!*                                                                      *
+!> \page mc mc.F90
+!! **AddNeighbours**
+!! *adding neighbours*
 !************************************************************************
 
 subroutine AddNeighbours()
@@ -4562,12 +4921,11 @@ nptm = nptmadd
 end subroutine AddNeighbours
 
 !************************************************************************
-!*                                                                      *
-!*     UpdateOri                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **UpdateOri**
+!! *get fixed trial orientation*
 !************************************************************************
 
-! ... get fixed trial orientation
 
 subroutine UpdateOri()
    use MCModule
@@ -4669,12 +5027,11 @@ end if
 end subroutine UpdateOriTest
 
 !************************************************************************
-!*                                                                      *
-!*     SetTrialAtomProp                                                 *
-!*                                                                      *
+!> \page mc mc.F90
+!! **SetTrialAtomProp**
+!! *set trial atom properties from trial particles properties*
 !************************************************************************
 
-! ... set trial atom properties from trial particles properties
 
 subroutine SetTrialAtomProp
 
@@ -4725,12 +5082,11 @@ subroutine SetTrialAtomProp
 end subroutine SetTrialAtomProp
 
 !************************************************************************
-!*                                                                      *
-!*     CheckAtomBCTM                                                    *
-!*                                                                      *
+!> \page mc mc.F90
+!! **CheckAtomBCTM**
+!! *check boundary conditions of trial atom coordinate*
 !************************************************************************
 
-! ... check boundary conditions of trial atom coordinate
 
 subroutine CheckAtomBCTM(naloc, rr, lboxoverlap)
 
@@ -4780,12 +5136,11 @@ subroutine CheckAtomBCTM(naloc, rr, lboxoverlap)
 end subroutine CheckAtomBCTM
 
 !************************************************************************
-!*                                                                      *
-!*     Metropolis                                                       *
-!*                                                                      *
+!> \page mc mc.F90
+!! **Metropolis**
+!! *Metropolis test*
 !************************************************************************
 
-! ... Metropolis test
 
 subroutine Metropolis(lboxoverlap, lhsoverlap, lhepoverlap, weight, dured)
 
@@ -4849,12 +5204,11 @@ end subroutine TestMetropolis
 end subroutine Metropolis
 
 !************************************************************************
-!*                                                                      *
-!*     MCUpdate                                                         *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCUpdate**
+!! *update energies and coordinates after accepted mc trial move*
 !************************************************************************
 
-! ... update energies and coordinates after accepted mc trial move
 
 subroutine MCUpdate
 
@@ -4891,12 +5245,11 @@ subroutine MCUpdate
 end subroutine MCUpdate
 
 !************************************************************************
-!*                                                                      *
-!*     Restorelptm                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **Restorelptm**
+!! *restore lptm*
 !************************************************************************
 
-! ... restore lptm
 
 subroutine Restorelptm(nptm, ipnptm, lptm)
 
@@ -4914,12 +5267,11 @@ subroutine Restorelptm(nptm, ipnptm, lptm)
 end subroutine Restorelptm
 
 !************************************************************************
-!*                                                                      *
-!*     MCAver                                                           *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCAver**
+!! *calculate means of mc specific variables*
 !************************************************************************
 
-! ... calculate means of mc specific variables
 
 subroutine MCAver(iStage)
 
@@ -5086,12 +5438,11 @@ end subroutine MCAverData
 end subroutine MCAver
 
 !************************************************************************
-!*                                                                      *
-!*     MCAllAver                                                        *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCAllAver**
+!! *calculate means of mc specific variables for mcall*
 !************************************************************************
 
-! ... calculate means of mc specific variables for mcall
 
 subroutine MCAllAver(iStage)
 
@@ -5162,12 +5513,11 @@ end subroutine MCAllAversub
 end subroutine MCAllAver
 
 !************************************************************************
-!*                                                                      *
-!*     MCWeightIO                                                       *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCWeightIO**
+!! *perform i/o for an umbrella sampling with a distance dependent weight*
 !************************************************************************
 
-! ... perform i/o for an umbrella sampling with a distance dependent weight
 !     umbrella sampling: weighting function dependent on separation between two particles
 
 subroutine MCWeightIO(iStage)
@@ -5222,12 +5572,11 @@ subroutine MCWeightIO(iStage)
 end subroutine MCWeightIO
 
 !************************************************************************
-!*                                                                      *
-!*     MCWeight                                                         *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCWeight**
+!! *calculate weight based on trial and current position for mcweight*
 !************************************************************************
 
-! ... calculate weight based on trial and current position for mcweight
 
 real(8) function MCWeight()
 
@@ -5261,12 +5610,11 @@ end function MCWeight
 
 
 !************************************************************************
-!*                                                                      *
-!*     MCWeightInverse                                                  *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCWeightInverse**
+!! *calculate the inverse weight based on current position for mcweight*
 !************************************************************************
 
-! ... calculate the inverse weight based on current position for mcweight
 
 real(8) function MCWeightInverse()
    use MCModule
@@ -5282,12 +5630,11 @@ real(8) function MCWeightInverse()
 end function MCWeightInverse
 
 !************************************************************************
-!*                                                                      *
-!*     UmbrellaIO                                                       *
-!*                                                                      *
+!> \page mc mc.F90
+!! **UmbrellaIO**
+!! *perform i/o of the umbrella potential sampling*
 !************************************************************************
 
-! ... perform i/o of the umbrella potential sampling
 
 subroutine UmbrellaIO(iStage)
 
@@ -5414,12 +5761,11 @@ subroutine UmbrellaIO(iStage)
 end subroutine UmbrellaIO
 
 !************************************************************************
-!*                                                                      *
-!*     UmbrellaWeight                                                   *
-!*                                                                      *
+!> \page mc mc.F90
+!! **UmbrellaWeight**
+!! *calculate weight for umbrella sampling*
 !************************************************************************
 
-! ... calculate weight for umbrella sampling
 
 real(8) function UmbrellaWeight(npmove)
 
@@ -5445,12 +5791,11 @@ real(8) function UmbrellaWeight(npmove)
 end function UmbrellaWeight
 
 !************************************************************************
-!*                                                                      *
-!*     UmbrellaBin                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **UmbrellaBin**
+!! *calculate bin for umbrella potential*
 !************************************************************************
 
-! ... calculate bin for umbrella potential
 
 integer(4) function UmbrellaBin(npmove)
 
@@ -5504,12 +5849,11 @@ integer(4) function UmbrellaBin(npmove)
 end function UmbrellaBin
 
 !************************************************************************
-!*                                                                      *
-!*     UmbrellaUpdate                                                   *
-!*                                                                      *
+!> \page mc mc.F90
+!! **UmbrellaUpdate**
+!! *update weight function for updated umbrella potential*
 !************************************************************************
 
-! ... update weight function for updated umbrella potential
 
 subroutine UmbrellaUpdate
 
@@ -5533,12 +5877,11 @@ subroutine UmbrellaUpdate
 end subroutine UmbrellaUpdate
 
 !************************************************************************
-!*                                                                      *
-!*     MCPmfIO                                                          *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCPmfIO**
+!! *perform i/o of the mc pmf sampling*
 !************************************************************************
 
-! ... perform i/o of the mc pmf sampling
 
 subroutine MCPmfIO(iStage)
 
@@ -5616,12 +5959,11 @@ subroutine MCPmfIO(iStage)
 end subroutine MCPmfIO
 
 !************************************************************************
-!*                                                                      *
-!*     MCPmfWeight                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCPmfWeight**
+!! *calculate weight for mcpmf*
 !************************************************************************
 
-! ... calculate weight for mcpmf
 
 real(8) function MCPmfWeight(npmove)
 
@@ -5640,12 +5982,11 @@ real(8) function MCPmfWeight(npmove)
 end function MCPmfWeight
 
 !************************************************************************
-!*                                                                      *
-!*     MCPmfBin                                                         *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCPmfBin**
+!! *calculate bin for umbrella potential*
 !************************************************************************
 
-! ... calculate bin for umbrella potential
 
 integer(4) function MCPmfBin(npmove)
 
@@ -5688,12 +6029,11 @@ integer(4) function MCPmfBin(npmove)
 end function MCPmfBin
 
 !************************************************************************
-!*                                                                      *
-!*     MCPmfUpdate                                                      *
-!*                                                                      *
+!> \page mc mc.F90
+!! **MCPmfUpdate**
+!! *update weight function for mc pmf*
 !************************************************************************
 
-! ... update weight function for mc pmf
 
 subroutine MCPmfUpdate
 
@@ -5721,12 +6061,11 @@ subroutine MCPmfUpdate
 end subroutine MCPmfUpdate
 
 !************************************************************************
-!*                                                                      *
-!*     TestMCMove                                                       *
-!*                                                                      *
+!> \page mc mc.F90
+!! **TestMCMove**
+!! *test output for MC move*
 !************************************************************************
 
-! ... test output for MC move
 
 subroutine TestMCMove(unit)
 

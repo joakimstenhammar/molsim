@@ -20,19 +20,37 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     DynamicModule                                                    *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **DynamicModule**
+!! *module for dynamic*
 !************************************************************************
 
-! ... module for dynamic
+
+!> \page nmlDynamic
+!! * The namelist  \ref nmlDynamic contains variables that control the dynamic analyses. The detailed description of the use of
+!!   stochastic data and evaluation of the correlation functions are given by the the data structures sf_var and cf_input_var, see
+!!   chapter 8.
+!! * Variables:
+!!  * \subpage sfnplow
+!!  * \subpage sfnpupp
+!!  * \subpage lmsd
+!!  * \subpage lorix
+!!  * \subpage loriy
+!!  * \subpage loriz
+!!  * \subpage lliv
+!!  * \subpage lanv
+!!  * \subpage lfor
+!!  * \subpage ltor
+!!  * \subpage lidm
+!!  * \subpage lutot
+!!  * \subpage itestdyn
 
 module DynamicModule
 
    use MolModule
 
 ! ... data structure for stochastic data
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type sf_var
       integer(4)     :: nplow                            ! lower particle number
       integer(4)     :: npupp                            ! upper particle number
@@ -60,7 +78,7 @@ module DynamicModule
 !     nolevel   x        x                   x                   x          x
 
 ! ... data structure for correlation data, input
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type cf_input_var
       integer(4)     :: nmean                            ! length (number of values) forming a mean
       integer(4)     :: nlevel                           ! length (number of values) forming a level
@@ -72,7 +90,7 @@ module DynamicModule
    end type cf_input_var
 
 ! ... data structure for correlation data
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type cf_var
       integer(4)     :: nmean                            ! length (number of values) forming a mean
       integer(4)     :: nlevel                           ! length (number of values) forming a level
@@ -92,20 +110,95 @@ module DynamicModule
       integer(4), allocatable :: Ngr(:,:,:)              ! counter of correlation sampling (of group)
       integer(8), allocatable :: Nlev(:,:)               ! counter of level (of particle)
    end type cf_var
-
-   integer(4) :: sfnplow                                 ! lower particle number of stoichastic function to consider
-   integer(4) :: sfnpupp                                 ! upper particle number of stoichastic function to consider
+!> \page sfnplow
+!! `integer`
+!! **default:** `1`
+!! * Lower id of particle to be used in the dynamic analysis.
+   integer(4) :: sfnplow
+!> \page sfnpupp
+!! `integer`
+!! **default:** `np`
+!! * Upper id of particle to be used in the dynamic analysis.
+   integer(4) :: sfnpupp
+!> \page itestdyn
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output.
    integer(4), save :: itestdyn                          ! for test output
 
 end module DynamicModule
 
 !************************************************************************
-!*                                                                      *
-!*     DynamicDriver                                                    *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **DynamicDriver**
+!! *driver of dynamic analysis routines*
 !************************************************************************
 
-! ... driver of dynamic analysis routines
+
+!> \page lmsd
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Mean square displacements are calculated. Further specification is given in namelist  \ref nmlMSD .
+!! * `.false.`:  Nothing.
+
+!> \page lorix
+!! `logical`
+!! **default:** `.false.`
+!! *
+
+!> \page lorix
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Orientational tcf for the molecular x'-axis is calculated. Further specification is given in namelist  nmlOriXTCF .
+!! * `.false.`:  Nothing.
+
+!> \page loriy
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Orientational tcf for the molecular y'-axis is calculated. Further specification is given in namelist  nmlOriYTCF .
+!! * `.false.`:  Nothing.
+
+!> \page loriz
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Orientational tcf for the molecular z'-axis is calculated. Further specification is given in namelist  nmlOriZTCF .
+!! * `.false.`:  Nothing.
+
+!> \page lliv
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Velocity tcfs for each molecular axis (molecular frame) and total velocity tcf are calculated. Further specification is given in namelist  nmlLinVelCF.
+!! * `.false.`: Nothing.
+
+!> \page lanv
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Angular velocity tcfs for each molecular axis are calculated (molecular frame). Further specification is given in namelist  nmlAnvVelCF.
+!! * `.false.`: Nothing.
+
+!> \page lfor
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Force tcfs for each molecular axis and total force tcf are calculated (box frame). Further specification is given in namelist nmlForCF.
+!! * `.false.`: Nothing.
+
+!> \page ltor
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Torque tcfs for each molecular axis and total torque tcf are calculated (box frame). Further specification is given in namelist nmlTorCF.
+!! * `.false.`: Nothing.
+
+!> \page lidm
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Induced dipole moment tcfs for each molecular axis and total induced dipole moment tcf are calculated (molecular frame). Further specification is given in namelist nmlIDPMCF.
+!! * `.false.`: Nothing.
+
+!> \page lutot
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Total energy tcf are calculated. Further specification is given in namelist nmlUtotCF.
+!! * `.false.`: Nothing.
 
 subroutine DynamicDriver(iStage)
 
@@ -217,12 +310,25 @@ end subroutine DynamicDriverSub
 end subroutine DynamicDriver
 
 !************************************************************************
-!*                                                                      *
-!*     MSD                                                              *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **MSD**
+!! *mean square displacement*
 !************************************************************************
 
-! ... mean square displacement
+
+!> \page nmlMSD
+!! The namelist  \ref nmlMSD contains variables that control the calculation of the mean square displacement.
+!! * Variables:
+!!  * \subpage nmlMSD_sf
+!!  * \subpage nmlMSD_cfin
+
+!> \page nmlMSD_sf sf
+!! `sf_var(int, int, int, int, int)`
+!! **default:** \ref sfnplow, \ref sfnpupp, 3, 1, -
+
+!> \page nmlMSD_cfin cfin
+!! `cf_input_var(int, int, int, int, logical, logical, logical)`
+!! **default:** `-, -, -, 1, -, .false., .false.`
 
 subroutine MSD(iStage)
 
@@ -275,13 +381,24 @@ subroutine MSD(iStage)
 end subroutine MSD
 
 !************************************************************************
-!*                                                                      *
-!*     OrixTCF                                                          *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **OrixTCF**
+!! *orientation time correlation function of paricle x'-axis*
 !************************************************************************
 
-! ... orientation time correlation function of paricle x'-axis
+!> \page nmlOriXTCF nmlOriXTCF, nmlOriYTCF and nmlOriZTCF
+!! * The namelists  nmlOriXTCF ,  nmlOriYTCF , and  nmlOriZTCF contain variables which control the calculation of the three orientational tcf:s of the molecular axes.
+!! * Variables:
+!!  * \subpage nmlOriXTCF_sf
+!!  * \subpage nmlOriXTCF_cfin
 
+!> \page nmlOriXTCF_sf sf
+!! `sf_var(int, int, int, int, int)`
+!! **default:** \ref sfnplow, \ref sfnpupp, 3, 3, -
+
+!> \page nmlOriXTCF_cfin cfin
+!! `cf_input_var(int, int, int, int, logical, logical, logical)`
+!! **default:** `-, -, -, 1, -, -, -`
 subroutine OrixTCF(iStage)
 
    use DynamicModule
@@ -324,12 +441,11 @@ subroutine OrixTCF(iStage)
 end subroutine OrixTCF
 
 !************************************************************************
-!*                                                                      *
-!*     OriyTCF                                                          *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **OriyTCF**
+!! *orientation time correlation function of paricle y'-axis*
 !************************************************************************
 
-! ... orientation time correlation function of paricle y'-axis
 
 subroutine OriyTCF(iStage)
 
@@ -373,12 +489,11 @@ subroutine OriyTCF(iStage)
 end subroutine OriyTCF
 
 !************************************************************************
-!*                                                                      *
-!*     OrizTCF                                                          *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **OrizTCF**
+!! *orientation time correlation function of paricle z'-axis*
 !************************************************************************
 
-! ... orientation time correlation function of paricle z'-axis
 
 subroutine OrizTCF(iStage)
 
@@ -422,12 +537,25 @@ subroutine OrizTCF(iStage)
 end subroutine OrizTCF
 
 !************************************************************************
-!*                                                                      *
-!*     LinVelTCF                                                        *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **LinVelTCF**
+!! *linear velocity time correlation function*
 !************************************************************************
 
-! ... linear velocity time correlation function
+
+!> \page nmlLinVelTCF nmlLinVelTCF and nmlAngVelTCF
+!! The namelists  nmlLinVelTCF and  nmlAngVelTCF contain variables that control the calculation of the velocity and angular velocity, respectively, tcf:s for the molecular axes.
+!! * Variables:
+!!  * \subpage nmlLinVelTCF_sf
+!!  * \subpage nmlLinVelTCF_cfin
+
+!> \page nmlLinVelTCF_sf sf
+!! `sf_var(int, int, int, int, int)`
+!! **default:** \ref sfnplow, \ref sfnpupp, 3, 1, -
+
+!> \page nmlLinVelTCF_cfin cfin
+!! `cf_input_var(int, int, int, int, logical, logical, logical)`
+!! **default:** `-, -, -, 1, -, -, -`
 
 subroutine LinVelTCF(iStage)
 
@@ -472,12 +600,11 @@ subroutine LinVelTCF(iStage)
 end subroutine LinVelTCF
 
 !************************************************************************
-!*                                                                      *
-!*     AngVelTCF                                                        *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **AngVelTCF**
+!! *angular velocity time correlation function*
 !************************************************************************
 
-! ... angular velocity time correlation function
 
 subroutine AngVelTCF(iStage)
 
@@ -521,13 +648,26 @@ subroutine AngVelTCF(iStage)
 end subroutine AngVelTCF
 
 !************************************************************************
-!*                                                                      *
-!*     ForTCF                                                           *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **ForTCF**
+!! *force time correlation function*
 !************************************************************************
 
-! ... force time correlation function
 
+
+!> \page nmlForTCF nmlForTCF and nmlTorTCF
+!! The namelists  nmlForTCF and  nmlTorTCF contain variables that control the calculation of the force and torque, respectively, tcf:s about the box axes.
+!! * Variables:
+!!  * \subpage nmlForTCF_sf
+!!  * \subpage nmlForTCF_cfin
+
+!> \page nmlForTCF_sf sf
+!! `sf_var(int, int, int, int, int)`
+!! **default:** \ref sfnplow, \ref sfnpupp, 3, 1, -
+
+!> \page nmlForTCF_cfin cfin
+!! `cf_input_var(int, int, int, int, logical, logical, logical)`
+!! **default:** `-, -, -, 1, -, -, -`
 subroutine ForTCF(iStage)
 
    use DynamicModule
@@ -570,12 +710,11 @@ subroutine ForTCF(iStage)
 end subroutine ForTCF
 
 !************************************************************************
-!*                                                                      *
-!*     TorTCF                                                           *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **TorTCF**
+!! *torque time correlation function*
 !************************************************************************
 
-! ... torque time correlation function
 
 subroutine TorTCF(iStage)
 
@@ -619,12 +758,24 @@ subroutine TorTCF(iStage)
 end subroutine TorTCF
 
 !************************************************************************
-!*                                                                      *
-!*     IDMTCF                                                           *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **IDMTCF**
+!! *induced dipole moment time correlation function*
 !************************************************************************
 
-! ... induced dipole moment time correlation function
+!> \page nmlIDMTCF
+!! The namelist  \ref nmlIDMTCF contains variables that control the calculation of the induced dipole moment tcf for the molecular axes.
+!! * Variables:
+!!  * \subpage nmlIDMTCF_sf
+!!  * \subpage nmlIDMTCF_cfin
+
+!> \page nmlIDMTCF_sf sf
+!! `sf_var(int, int, int, int, int)`
+!! **default:** \ref sfnplow, \ref sfnpupp, 3, 1, -
+
+!> \page nmlIDMTCF_cfin cfin
+!! `cf_input_var(int, int, int, int, logical, logical, logical)`
+!! **default:** `-, -, -, 1, -, -, -`
 
 subroutine IDMTCF(iStage)
 
@@ -668,12 +819,25 @@ subroutine IDMTCF(iStage)
 end subroutine IDMTCF
 
 !************************************************************************
-!*                                                                      *
-!*     UtotTCF                                                          *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **UtotTCF**
+!! *total potential time correlation function*
 !************************************************************************
 
-! ... total potential time correlation function
+
+!> \page nmlUtotTCF
+!! The namelists  \ref nmlUtotTCF contain variables that control the calculation of tcf of the total potential energy.
+!! * Variables:
+!!  * \subpage nmlUtotTCF_sf
+!!  * \subpage nmlUtotTCF_cfin
+
+!> \page nmlUtotTCF_sf sf
+!! `sf_var(int, int, int, int, int)`
+!! **default:** `1, 1, 1, 1, -`
+
+!> \page nmlUtotTCF_cfin cfin
+!! `cf_input_var(int, int, int, int, logical, logical, logical)`
+!! **default:** `-, -, -, 1, -, -, -`
 
 subroutine UtotTCF(iStage)
 
@@ -717,12 +881,11 @@ subroutine UtotTCF(iStage)
 end subroutine UtotTCF
 
 !************************************************************************
-!*                                                                      *
-!*     PrepareDynamic                                                   *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **PrepareDynamic**
+!! *prepare for dynamic analyse*
 !************************************************************************
 
-! ... prepare for dynamic analyse
 
 subroutine PrepareDynamic(sf, cfin, cf)
 
@@ -765,12 +928,11 @@ subroutine PrepareDynamic(sf, cfin, cf)
 end subroutine PrepareDynamic
 
 !************************************************************************
-!*                                                                      *
-!*     MemoryDynamic                                                    *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **MemoryDynamic**
+!! *allocate memory*
 !************************************************************************
 
-! ... allocate memory
 
 subroutine MemoryDynamic(str, sf, cf)
 
@@ -824,12 +986,11 @@ subroutine MemoryDynamic(str, sf, cf)
 end subroutine MemoryDynamic
 
 !************************************************************************
-!*                                                                      *
-!*     CFCalc                                                           *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **CFCalc**
+!! *calculate correlation function*
 !************************************************************************
 
-! ... calculate correlation function
 
 subroutine CFCalc(iStage, txfunc, sfdata, sf, cf)
 
@@ -915,12 +1076,11 @@ end subroutine TestCFCalc
 end subroutine CFCalc
 
 !************************************************************************
-!*                                                                      *
-!*     CFCalcSub                                                        *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **CFCalcSub**
+!! *calculate time correlation function, subroutine*
 !************************************************************************
 
-! ... calculate time correlation function, subroutine
 
 recursive subroutine CFCalcSub(txfunc, ilev, ip, igr, data, sf, cf)
 
@@ -1049,12 +1209,11 @@ end subroutine TestCFCalcSub
 end subroutine CFCalcSub
 
 !************************************************************************
-!*                                                                      *
-!*     CFWrite                                                          *
-!*                                                                      *
+!> \page dynamic dynamic.F90
+!! **CFWrite**
+!! *write time correlation function*
 !************************************************************************
 
-! ... write time correlation function
 
 subroutine CFWrite(txheading, sf, cf)
 

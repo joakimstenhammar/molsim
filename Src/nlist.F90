@@ -65,21 +65,44 @@
 !                      !-------- TestCellList
 
 !************************************************************************
-!*                                                                      *
-!*     NListModule                                                      *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **NListModule**
+!! *module for neighbour (verlet and liked) list*
 !************************************************************************
 
-! ... module for neighbour (verlet and liked) list
+!> \page nmlIntList
+!! The namelist  \ref nmlIntList contains variables that control the calculation of lists of nonbonded pairs to be considered in two-body energy evaluations.
+!! * Variables:
+!!  * \subpage txintlist
+!!  * \subpage lvlistllist
+!!  * \subpage inlist
+!!  * \subpage drnlist
+!!  * \subpage facnneigh
 
 module NListModule
 
    use MolModule
 
+
    logical    :: lnolist      ! flag for no interaction
-   integer(4) :: inlist       ! interval of updating neighbour list
-   real(8)    :: drnlist      ! skin thickness
-   logical    :: lvlistllist  ! flag for using linked lists to make verlet list
+!> \page inlist
+!! `integer`
+!! **default:** `0`
+!! * `0`: Automatic check whether a new neighbour list should be calculated or not. If the sum of the displacements of any two
+!!   molecules, since last calculation, is larger than \ref drnlist a new list is generated. The number of neighbour list calculations is
+!!   written after each macrostep.
+!! * >`0`: Interval of calculating a new neighbour list.
+   integer(4) :: inlist
+!> \page drnlist
+!! `real`
+!! **default:** `0.0`
+!! * Distance added to the potential cutoff for calculating the neighbour list.
+   real(8)    :: drnlist
+!> \page lvlistllist
+!! `logical`
+!! **default:** `.false.`
+!> * `.true.`: Use of liked lists to crease Verlet neighbour lists (only txintlist='nlist').
+   logical    :: lvlistllist
    integer(4) :: ndivllist(3) ! number of liked-list cells in one direction
    integer(4) :: ncellllist   ! number of liked-list cells
    real(8)    :: celli(3)     ! 1 / cell lengths
@@ -92,12 +115,11 @@ module NListModule
 end module NListModule
 
 !************************************************************************
-!*                                                                      *
-!*     NListDriver                                                      *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **NListDriver**
+!! *driver of calls for making lists of interacting particles*
 !************************************************************************
 
-! ... driver of calls for making lists of interacting particles
 
 subroutine NListDriver(iStage)
 
@@ -143,12 +165,21 @@ subroutine NListDriver(iStage)
 end subroutine NListDriver
 
 !************************************************************************
-!*                                                                      *
-!*     IONList                                                          *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **IONList**
+!! *perform i/o on neighbour list variables*
 !************************************************************************
 
-! ... perform i/o on neighbour list variables
+!> \page txintlist
+!! `character(8)`
+!! **default:** '`vlist`'
+!! * '`vlist`': Verlet neighbour lists. Further specification is given by \ref inlist and \ref drnlist.
+!! * '`llist`': Linked lists.
+
+!> \page facnneigh
+!! `real`
+!! **default:** `2.0`
+!! * `0`: Multiplicative constant of radius for calculation number of interacting particles.
 
 subroutine IONList(iStage)
 
@@ -159,6 +190,7 @@ subroutine IONList(iStage)
 
    character(40), parameter :: txroutine ='IONList'
    character(80), parameter :: txheading ='neighbour list'
+
    character(8), save :: txintlist
    real(8)     , save :: facnneigh
    integer(4) :: ierr
@@ -303,12 +335,11 @@ end subroutine IONList
 !いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 !いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい
 !************************************************************************
-!*                                                                      *
-!*     LoadBalance                                                      *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **LoadBalance**
+!! *control the calls of LoadBalanceRealSpace and LoadBalanceRecSpace*
 !************************************************************************
 
-! ... control the calls of LoadBalanceRealSpace and LoadBalanceRecSpace
 
 subroutine LoadBalance !(iStage) iStage is not needed
 
@@ -325,12 +356,11 @@ subroutine LoadBalance !(iStage) iStage is not needed
 end subroutine LoadBalance
 
 !************************************************************************
-!*                                                                      *
-!*     LoadBalanceRealSpace                                             *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **LoadBalanceRealSpace**
+!! *set iobjmyid for load balancing of single loop with equal load*
 !************************************************************************
 
-! ... set iobjmyid for load balancing of single loop with equal load
 
 !     gives nobj/nproc or nobj/nproc+1 objects per process, where nobj = iobjupp - iobjlow + 1
 
@@ -416,12 +446,11 @@ end subroutine TestLoadBalanceRealSpace
 end subroutine LoadBalanceRealSpace
 
 !************************************************************************
-!*                                                                      *
-!*     LoadBalanceRecSpace                                              *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **LoadBalanceRecSpace**
+!! *set vbounds for load balancing of reciprocal space loop over nz and ny*
 !************************************************************************
 
-! ... set vbounds for load balancing of reciprocal space loop over nz and ny
 
 !     use:
 !
@@ -515,12 +544,11 @@ end subroutine TestLoadBalanceRecSpace
 end subroutine LoadBalanceRecSpace
 
 !************************************************************************
-!*                                                                      *
-!*     NList                                                            *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **NList**
+!! *control the calls of SetVList, VListAver, SetLList, and LListAver*
 !************************************************************************
 
-! ... control the calls of SetVList, VListAver, SetLList, and LListAver
 
 subroutine NList(iStage)
 
@@ -641,12 +669,11 @@ end subroutine NListSub
 end subroutine NList
 
 !************************************************************************
-!*                                                                      *
-!*     SetVList                                                         *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **SetVList**
+!! *set neighbour (verlet och liked) lists*
 !************************************************************************
 
-! ... set neighbour (verlet och liked) lists
 
 !     variable                         serial               parallel md         parallel mc
 !     --------                         -------              ----------          -----------
@@ -688,12 +715,11 @@ subroutine SetVList
 end subroutine SetVList
 
 !************************************************************************
-!*                                                                      *
-!*     SetVListMD                                                       *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **SetVListMD**
+!! *set verlet lists for md*
 !************************************************************************
 
-! ... set verlet lists for md
 
 subroutine SetVListMD
 
@@ -733,12 +759,11 @@ subroutine SetVListMD
 end subroutine SetVListMD
 
 !************************************************************************
-!*                                                                      *
-!*     SetVListMDLList                                                  *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **SetVListMDLList**
+!! *set verlet lists for md using linked lists*
 !************************************************************************
 
-! ... set verlet lists for md using linked lists
 !     serial version
 
 subroutine SetVListMDLList
@@ -786,12 +811,11 @@ subroutine SetVListMDLList
 end subroutine SetVListMDLList
 
 !************************************************************************
-!*                                                                      *
-!*     SetVListMC                                                       *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **SetVListMC**
+!! *set verlet lists for mc*
 !************************************************************************
 
-! ... set verlet lists for mc
 
 subroutine SetVListMC
 
@@ -860,12 +884,11 @@ subroutine SetVListMC
 end subroutine SetVListMC
 
 !************************************************************************
-!*                                                                      *
-!*     SetVListMCLList                                                  *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **SetVListMCLList**
+!! *set verlet lists for mc using linked lists*
 !************************************************************************
 
-! ... set verlet lists for mc using linked lists
 
 subroutine SetVListMCLList
 
@@ -913,12 +936,11 @@ subroutine SetVListMCLList
 end subroutine SetVListMCLList
 
 !************************************************************************
-!*                                                                      *
-!*     VListAver                                                        *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **VListAver**
+!! *calculate statistics involving verlet lists and particle partitioning*
 !************************************************************************
 
-! ... calculate statistics involving verlet lists and particle partitioning
 
 subroutine VListAver(iStage)
 
@@ -1052,12 +1074,11 @@ subroutine VListAver(iStage)
 end subroutine VListAver
 
 !************************************************************************
-!*                                                                      *
-!*     TestVList                                                        *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **TestVList**
+!! *write verlet list and node decomposition test output*
 !************************************************************************
 
-! ... write verlet list and node decomposition test output
 
 subroutine TestVList(unit)
 
@@ -1137,12 +1158,11 @@ subroutine TestVList(unit)
 end subroutine TestVList
 
 !************************************************************************
-!*                                                                      *
-!*     SetLList                                                         *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **SetLList**
+!! *set linked lists*
 !************************************************************************
 
-! ... set linked lists
 !     serial version
 
 subroutine SetLList(distance)
@@ -1201,12 +1221,11 @@ subroutine SetLList(distance)
 end subroutine SetLList
 
 !************************************************************************
-!*                                                                      *
-!*     SetNCell                                                         *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **SetNCell**
+!! *set list of cells to be used for a position*
 !************************************************************************
 
-! ... set list of cells to be used for a position
 !     note, sum(lcellllist(1:ncellllist)) < 27 is possible and may apear when distance < cell length
 
 subroutine SetNCell(rr, distance, lcellllistloc)
@@ -1241,12 +1260,11 @@ subroutine SetNCell(rr, distance, lcellllistloc)
 end subroutine SetNCell
 
 !************************************************************************
-!*                                                                      *
-!*     LListAver                                                        *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **LListAver**
+!! *calculate statistics involving linked cell lists and particle partitioning*
 !************************************************************************
 
-! ... calculate statistics involving linked cell lists and particle partitioning
 
 subroutine LListAver(iStage)
 
@@ -1280,12 +1298,11 @@ subroutine LListAver(iStage)
 end subroutine LListAver
 
 !************************************************************************
-!*                                                                      *
-!*     TestLList                                                        *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **TestLList**
+!! *write linked list*
 !************************************************************************
 
-! ... write linked list
 
 subroutine TestLList(unit)
 
@@ -1311,12 +1328,11 @@ subroutine TestLList(unit)
 end subroutine TestLList
 
 !************************************************************************
-!*                                                                      *
-!*     CalcTotNeighbourPair                                             *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **CalcTotNeighbourPair**
+!! *calculate number of neigbouring pairs*
 !************************************************************************
 
-! ... calculate number of neigbouring pairs
 
 subroutine CalcTotNeighbourPair(ntotpppair, ntotaapair)
 
@@ -1349,12 +1365,11 @@ subroutine CalcTotNeighbourPair(ntotpppair, ntotaapair)
 end subroutine CalcTotNeighbourPair
 
 !************************************************************************
-!*                                                                      *
-!*     Getdrnlist                                                       *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **Getdrnlist**
+!! *return the value of \ref drnlist*
 !************************************************************************
 
-! ... return the value of drnlist
 
 function Getdrnlist()
    use NListModule
@@ -1364,12 +1379,11 @@ function Getdrnlist()
 end function Getdrnlist
 
 !************************************************************************
-!*                                                                      *
-!*     Getnpmyid                                                        *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **Getnpmyid**
+!! *return the value of npmyid*
 !************************************************************************
 
-! ... return the value of npmyid
 
 function Getnpmyid()
    use NListModule
@@ -1379,12 +1393,11 @@ function Getnpmyid()
 end function Getnpmyid
 
 !************************************************************************
-!*                                                                      *
-!*     Getdrnlist                                                       *
-!*                                                                      *
+!> \page nlist nlist.F90
+!! **Getdrnlist**
+!! *return the value of ncellllist*
 !************************************************************************
 
-! ... return the value of ncellllist
 
 function Getncellllist()
    use NListModule

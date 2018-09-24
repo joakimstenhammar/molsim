@@ -20,12 +20,48 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     ImageDriver                                                      *
-!*                                                                      *
+!> \page image image.F90
+!! **ImageDriver**
+!! *driver of image preparation routines*
 !************************************************************************
 
-! ... driver of image preparation routines
+!> \page nmlImage
+!! The namelist  \ref nmlImage contains variables that control the interval of the calls and the calls to image date writing routines.
+!! * Variables:
+!!  * \subpage iimage
+!!  * \subpage lvrml
+!!  * \subpage lvtf
+!!  * \subpage limageuser
+!!  * \subpage lgr
+
+!> \page iimage
+!! `integer`
+!! **default::** `1`
+
+!> \page lvrml
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Coordinate data file for VRML images is prepared. Further specification is given in namelist  \ref nmlVRML.
+!! * `.false.`: No preparation.
+
+!> \page lvtf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:oordinate data file for VTF images is prepared. Further specification is given in namelist  \ref nmlVTF.
+!! * `.false.`: No preparation.
+
+!> \page limageuser
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Call of ImageUser, driver for user-provided image data writing routines.
+!! * `.false.`: No such call.
+
+!> \page lgr
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: coloring is following the group assignment.
+!! * `.false.`: coloring is following the atom types.
+
 
 subroutine ImageDriver(iStage)
 
@@ -142,12 +178,66 @@ end subroutine ImageDriverSub
 end subroutine ImageDriver
 
 !************************************************************************
-!*                                                                      *
-!*     ImageVRML                                                        *
-!*                                                                      *
+!> \page image image.F90
+!! **ImageVRML**
+!! *generate input files for vrml 97 viewers*
 !************************************************************************
 
-! ... generate input files for vrml 97 viewers
+!> \page nmlVRML
+!! The namelist  \ref nmlVRML contains variables that control the preparation of coordinate data files for VRML drawing.
+!! * Variables:
+!!  * \subpage nmlVRML_txfile
+!!  * \subpage nmlVRML_txwhen
+!!  * \subpage nmlVRML_atsize
+!!  * \subpage nmlVRML_rgbcolor
+!!  * \subpage nmlVRML_blmax
+!!  * \subpage nmlVRML_bondr
+!!  * \subpage nmlVRML_tximage
+
+!> \page nmlVRML_txfile txfile
+!! `character(9)`
+!! **default:** `'merged'`
+!! * Controls the generation of Vrml files.
+!! * ``'merged'``:  Coordinates for each frame are merged into one Vrml file separated by a wrapper.
+!! * ``'separated'``:  Coordinates are written on separated files.
+
+!> \page nmlVRML_txwhen txwhen
+!! `character(12)`
+!! **default:** `'after_run'`
+!! * Controls the frequency of generation of Vrml files.
+!! * ``'after_run'``:  After the run.
+!! * ``'after_macro'``: After each macrostep.
+!! * ``'after_iimage'``: At an interval of \ref iimage steps (\ref iimage is given in  \ref nmlImage ).
+
+!> \page nmlVRML_atsize atsize
+!! `real`(1:nat)
+!! **default:** \ref radat `(1:nat)`
+!! * Size of the atoms.
+
+!> \page nmlVRML_rgbcolor rgbcolor
+!! `real`(3,1:nat)
+!! **default:** some values
+!! * Each triple defines the RGB-color of the atoms.
+
+!> \page nmlVRML_blmax blmax
+!! `real`
+!! **default:** `1.5`
+!! * Maximal separation between two atoms for drawing a bond between them.
+
+!> \page nmlVRML_bondr bondr
+!! `real`
+!! **default:** `0.3`
+!! * Radius of the bonds.
+
+!> \page nmlVRML_tximage tximage
+!! `character(20)`(1:3)
+!! **default:** ['frame','     ','     ']
+!! * Controls additional aspects and features of the snapshots
+!! * (1)`'frame'`:  Make a frame around the box.
+!! * (2)`'one_plane'`: Draw a plane at -box(3)/2.
+!! * (2)`'two_plane'`: Draw planes at -box(3)/2 and box(3)/2.
+!! * (3)`'undopbc'`: Periodic boundary conditions are not applied when drawing chains.
+!! * (3)`'nopbc'`:  Same as 'undopbc'.
 
 subroutine ImageVRML(iStage, iimage, lgr)
 
@@ -344,12 +434,11 @@ end subroutine ImageVRMLSub
 end subroutine ImageVRML
 
 !************************************************************************
-!*                                                                      *
-!*     VRMLSub                                                          *
-!*                                                                      *
+!> \page image image.F90
+!! **VRMLSub**
+!! *writes a vrml-97 file*
 !************************************************************************
 
-! ... writes a vrml-97 file
 
 subroutine VRMLSub(tximage, txlabel, atsize, rgbcolor, blmax, bondr, lgr, unit)
 
@@ -886,12 +975,11 @@ end subroutine DrawBond
 end subroutine VRMLSub
 
 !************************************************************************
-!*                                                                      *
-!*     ImageVTF                                                         *
-!*                                                                      *
+!> \page image image.F90
+!! **ImageVTF**
+!! *generate vtf file(s) and tcl-script for VMD*
 !************************************************************************
 
-! ... generate vtf file(s) and tcl-script for VMD
 !
 ! ... VMD (Visual Molecular Dynamics) is (after registration) free to use, please see:
 ! ... http://www.ks.uiuc.edu/Research/vmd/
@@ -899,6 +987,80 @@ end subroutine VRMLSub
 ! ... Any published work which utilizes VMD shall include the following reference:
 ! ... "Humphrey, W., Dalke, A. and Schulten, K., `VMD -Visual Molecular
 ! ...  Dynamics', J. Molecular Graphics, 1996, vol. 14, pp. 33-38."
+
+!> \page nmlVTF
+!! The namelist  \ref nmlVTF contains variables that control the preparation of coordinate data files for VTF drawing.
+!! * Variables:
+!!  * \subpage nmlVTF_txfile
+!!  * \subpage nmlVTF_txwhen
+!!  * \subpage nmlVTF_tximage
+!!  * \subpage nmlVTF_atsize
+!!  * \subpage nmlVTF_rgbcolor
+!!  * \subpage nmlVTF_blmax
+!!  * \subpage nmlVTF_bondr
+!!  * \subpage bondres
+!!  * \subpage sphres
+!!  * \subpage lframezero
+
+!> \page nmlVTF_txfile txfile
+!! `character(5)`
+!! **default:** `'merged'`
+!! * Controls the generation of Vtf files. Options are:
+!! * ``'split'``:  Coordinates are written in separated files.
+!! * ``'merge'``:  All frames are written in one single vtf file.
+
+!> \page nmlVTF_txwhen txwhen
+!! `character(12)`
+!! **default:** `'after_run'`
+!! * Controls the frequency of generation of Vrml files.
+!! * ``'after_run'``:  After the run.
+!! * ``'after_macro'``: After each macrostep.
+!! * ``'after_iimage'``: At an interval of \ref iimage steps (\ref iimage is given in  \ref nmlImage ).
+
+!> \page nmlVTF_atsize atsize
+!! `real`(1:nat)
+!! **default:** \ref radat `(1:nat)`
+!! * Size of the atoms.
+
+!> \page nmlVTF_rgbcolor rgbcolor
+!! `real`(3,1:nat)
+!! **default:** some values
+!! * Each triple defines the RGB-color of the atoms.
+
+!> \page nmlVTF_blmax blmax
+!! `real`
+!! **default:** `0.0`
+!! * Maximal separation between two atoms for drawing a bond between them.
+
+!> \page nmlVTF_bondr bondr
+!! `real`
+!! **default:** `0.3`
+!! * Radius of the bonds.
+
+!> \page bondres
+!! `real`
+!! **default:** `12.0`
+!! * Bond resolution: Number of prisms bonds are being drawn of
+
+!> \page sphres
+!! `real`
+!! **default:** `12.0`
+!! * Atom resolution: Number of prisms atoms are being drawn of
+
+!> \page lframezero
+!! `logical`
+!! **default:** `.true.`
+!! * `.true.`: Frame of the initial configuration is being stored.
+!! * `.false.`: Frame of the initial configurations is not stored.
+!! * \ref lframezero `= .true.` does not work with \ref lgr `= .true.`
+
+!> \page nmlVTF_tximage tximage
+!! `character(20)`(1:3)
+!! * Controls additional aspects and features of the snapshot. Options are
+!! * (1) `'frame'`: Make a frame around the box
+!! * (2) `'undopbc'`: Undo periodic boundary conditions for bonded and cross-linked systems
+!! * (3) `'center'`: Move center of mass of all particles to origin of the simulation cell
+!! * (3) `'xycenter'`: Move center of mass of all particles to origin of the simulation cell (consider x- and y-direction only).
 
 subroutine ImageVTF(iStage,iimage,lgr)
 
@@ -1163,12 +1325,11 @@ end subroutine ImageVTFSub
 end subroutine ImageVTF
 
 !************************************************************************
-!*                                                                      *
-!*     UpdateVTFFileName                                                *
-!*                                                                      *
+!> \page image image.F90
+!! **UpdateVTFFileName**
+!! *update vtf file name with respect to a given frame iframe*
 !************************************************************************
 
-! ... update vtf file name with respect to a given frame iframe
 
 subroutine UpdateVTFFileName(iframe,nframe)
 
@@ -1201,12 +1362,11 @@ subroutine UpdateVTFFileName(iframe,nframe)
 end subroutine UpdateVTFFileName
 
 !************************************************************************
-!*                                                                      *
-!*     WriteVTFHeader                                                   *
-!*                                                                      *
+!> \page image image.F90
+!! **WriteVTFHeader**
+!! *write header of the vtf file*
 !************************************************************************
 
-! ... write header of the vtf file
 
 subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 
@@ -1275,12 +1435,11 @@ subroutine WriteVTFHeader(atsize, blmax, vmdname, lgr, itypegr, unit)
 end subroutine WriteVTFHeader
 
 !************************************************************************
-!*                                                                      *
-!*     WriteVTFCoordinates                                              *
-!*                                                                      *
+!> \page image image.F90
+!! **WriteVTFCoordinates**
+!! *writes current atom coordinates to vtf-file*
 !************************************************************************
 
-! ... writes current atom coordinates to vtf-file
 
 subroutine WriteVTFCoordinates(tximage, unit)
 
@@ -1335,12 +1494,11 @@ subroutine WriteVTFCoordinates(tximage, unit)
 end subroutine WriteVTFCoordinates
 
 !************************************************************************
-!*                                                                      *
-!*     WriteTCLScript                                                   *
-!*                                                                      *
+!> \page image image.F90
+!! **WriteTCLScript**
+!! *TCL: "tool command language"*
 !************************************************************************
 
-! ... TCL: "tool command language"
 !
 ! ... write VTF-accompanying TCL-script to be executed in VMD to adjust colors, bond radius,
 ! ... bond and atom resolution, and insert objects such as frames, planes
@@ -1654,12 +1812,11 @@ module UndoPBCModule
 end module UndoPBCModule
 
 !************************************************************************
-!*                                                                      *
-!*     UndoPBC                                                          *
-!*                                                                      *
+!> \page image image.F90
+!! **UndoPBC**
+!! *undo periodic boundary conditions*
 !************************************************************************
 
-! ... undo periodic boundary conditions
 
 subroutine UndoPBC(vhelp)
 
@@ -1692,12 +1849,11 @@ subroutine UndoPBC(vhelp)
 end subroutine UndoPBC
 
 !************************************************************************
-!*                                                                      *
-!*     MakeBondList                                                     *
-!*                                                                      *
+!> \page image image.F90
+!! **MakeBondList**
+!! *make bond list*
 !************************************************************************
 
-! ... make bond list
 
 subroutine MakeBondList(vhelp, mnbond, blmax, nbond, bondlist)
 

@@ -19,6 +19,17 @@
 !************************************************************************
 !************************************************************************
 
+!************************************************************************
+!> \page molaux molaux.F90
+!! **MolauxModule**
+!! *molaux module*
+!************************************************************************
+
+!************************************************************************
+!> \page molaux molaux.F90
+!! **CalcCOM**
+!! *Calculate the center of mass of given coordinates*
+!************************************************************************
 module MolauxModule
 
    implicit none
@@ -84,12 +95,11 @@ module MolauxModule
 end module MolauxModule
 
 !************************************************************************
-!*                                                                      *
-!*     PBC                                                              *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **PBC**
+!! *apply periodic boundary conditions*
 !************************************************************************
 
-! ... apply periodic boundary conditions
 
 subroutine PBC(dx,dy,dz)
 
@@ -130,12 +140,11 @@ subroutine PBC(dx,dy,dz)
 end subroutine PBC
 
 !************************************************************************
-!*                                                                      *
-!*     PBCr2                                                            *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **PBCr2**
+!! *apply periodic boundary conditions and calculate r**2*
 !************************************************************************
 
-! ... apply periodic boundary conditions and calculate r**2
 
 subroutine PBCr2(dx,dy,dz,r2)
 
@@ -175,12 +184,11 @@ subroutine PBCr2(dx,dy,dz,r2)
 end subroutine PBCr2
 
 !************************************************************************
-!*                                                                      *
-!*     PBC2                                                             *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **PBC2**
+!! *calculate periodic boundary condition displacement*
 !************************************************************************
 
-! ... calculate periodic boundary condition displacement
 
 subroutine PBC2(dx,dy,dz,dxpbc,dypbc,dzpbc)
 
@@ -240,12 +248,11 @@ subroutine PBC2(dx,dy,dz,dxpbc,dypbc,dzpbc)
 end subroutine PBC2
 
 !************************************************************************
-!*                                                                      *
-!*     FileOpen                                                         *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **FileOpen**
+!! *open external files*
 !************************************************************************
 
-! ... open external files
 
 subroutine FileOpen(unit, fname, txopt)
 
@@ -281,12 +288,11 @@ subroutine FileOpen(unit, fname, txopt)
 end subroutine FileOpen
 
 !************************************************************************
-!*                                                                      *
-!*     FileFlush                                                        *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **FileFlush**
+!! *flush external files   (contains a system call)*
 !************************************************************************
 
-! ... flush external files   (contains a system call)
 
 subroutine FileFlush(unit)
    implicit none
@@ -295,12 +301,11 @@ subroutine FileFlush(unit)
 end subroutine FileFlush
 
 !************************************************************************
-!*                                                                      *
-!*     SetBoxParam                                                      *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SetBoxParam**
+!! *set box related parameters*
 !************************************************************************
 
-! ... set box related parameters
 
 !     periodical boundary conditions should be applied as
 !     if (abs(dx) > boxlen2(1)) dx = dx - sign(dpbc(1),dx)
@@ -379,12 +384,11 @@ subroutine SetBoxParam
 end subroutine SetBoxParam
 
 !************************************************************************
-!*                                                                      *
-!*     SetPartOriRandom                                                 *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SetPartOriRandom**
+!! *set particle orientation matrix corresponding to a random orientation*
 !************************************************************************
 
-! ... set particle orientation matrix corresponding to a random orientation
 
 subroutine SetPartOriRandom(iseed, ori)
 
@@ -414,12 +418,11 @@ subroutine SetPartOriRandom(iseed, ori)
 end subroutine SetPartOriRandom
 
 !************************************************************************
-!*                                                                      *
-!*     SetPartOriLab                                                    *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SetPartOriLab**
+!! *set particle orientation matrix to match lab frame orientation*
 !************************************************************************
 
-! ... set particle orientation matrix to match lab frame orientation
 
 subroutine SetPartOriLab(ori)
    implicit none
@@ -440,12 +443,11 @@ subroutine SetPartOriLab(ori)
 end subroutine SetPartOriLab
 
 !************************************************************************
-!*                                                                      *
-!*     SetPartOriBond                                                   *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SetPartOriBond**
+!! *set particle orientation matrix to match bond directions of the particle*
 !************************************************************************
 
-! ... set particle orientation matrix to match bond directions of the particle
 
 !     zero angle problem remains
 
@@ -513,12 +515,11 @@ subroutine SetPartOriBond(txloc, r21, r23, ori)
 end subroutine SetPartOriBond
 
 !************************************************************************
-!*                                                                      *
-!*     SetAtomPos                                                       *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SetAtomPos**
+!! *set atom positions in the laboratory frame*
 !************************************************************************
 
-! ... set atom positions in the laboratory frame
 
 !  r = ro + ori . ra
 
@@ -567,12 +568,11 @@ subroutine SetAtomPos(iplow, ipupp, lint)
 end subroutine SetAtomPos
 
 !************************************************************************
-!*                                                                      *
-!*     SetAtomDipMom                                                    *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SetAtomDipMom**
+!! *set atom dipole moments in the laboratory frame*
 !************************************************************************
 
-! ... set atom dipole moments in the laboratory frame
 
 !  dip =  ori . dipa
 
@@ -604,12 +604,11 @@ subroutine SetAtomDipMom(iplow, ipupp)
 end subroutine SetAtomDipMom
 
 !************************************************************************
-!*                                                                      *
-!*     SetAtomPolTens                                                   *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SetAtomPolTens**
+!! *set atom polarization tensors in the laboratory frame*
 !************************************************************************
 
-! ... set atom polarization tensors in the laboratory frame
 
 !                                T
 !  poltens =  ori . poltens . ori
@@ -667,12 +666,11 @@ subroutine SetAtomPolTens(iplow, ipupp)
 end subroutine SetAtomPolTens
 
 !************************************************************************
-!*                                                                      *
-!*     CalcIndDipMom                                                    *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcIndDipMom**
+!! *calculate induced dipole moment: total and particle*
 !************************************************************************
 
-! ... calculate induced dipole moment: total and particle
 
 subroutine CalcIndDipMom
 
@@ -699,12 +697,11 @@ subroutine CalcIndDipMom
 end subroutine CalcIndDipMom
 
 !************************************************************************
-!*                                                                      *
-!*     CalcSysDipMom                                                    *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcSysDipMom**
+!! *calculate system dipole moment from charges, static, and induced dipoles*
 !************************************************************************
 
-! ... calculate system dipole moment from charges, static, and induced dipoles
 
 subroutine CalcSysDipMom(dipsys)
 
@@ -738,12 +735,11 @@ subroutine CalcSysDipMom(dipsys)
 end subroutine CalcSysDipMom
 
 !************************************************************************
-!*                                                                      *
-!*     CalcPartDipMom                                                   *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcPartDipMom**
+!! *calculate particle dipole moment from charges, static, and induced dipoles*
 !************************************************************************
 
-! ... calculate particle dipole moment from charges, static, and induced dipoles
 
 subroutine CalcPartDipMom(dipo)
 
@@ -786,12 +782,11 @@ end subroutine CalcPartDipMom
 !¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
 
 !************************************************************************
-!*                                                                      *
-!*     dvol                                                             *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **\ref dvol**
+!! *return the volume between two concentric shells, 4*pi/3 is not included*
 !************************************************************************
 
-! ... return the volume between two concentric shells, 4*pi/3 is not included
 
 real(8) function dvol(i, rl, dr)
    implicit none
@@ -803,12 +798,11 @@ real(8) function dvol(i, rl, dr)
 end function dvol
 
 !************************************************************************
-!*                                                                      *
-!*     darea                                                            *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **darea**
+!! *return the area between two concentric spheres, pi is not included*
 !************************************************************************
 
-! ... return the area between two concentric spheres, pi is not included
 
 real(8) function darea(i, rl, dr)
    implicit none
@@ -820,12 +814,11 @@ real(8) function darea(i, rl, dr)
 end function darea
 
 !************************************************************************
-!*                                                                      *
-!*     angcos                                                           *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **angcos**
+!! *return the angle cosine between two 3d vectors*
 !************************************************************************
 
-! ... return the angle cosine between two 3d vectors
 
 real(8) function angcos(x1, y1, z1, x2, y2, z2)
    implicit none
@@ -838,12 +831,11 @@ real(8) function angcos(x1, y1, z1, x2, y2, z2)
 end function angcos
 
 !************************************************************************
-!*                                                                      *
-!*     angle_rad                                                        *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **angle_rad**
+!! *return the angle between two 3d vectors*
 !************************************************************************
 
-! ... return the angle between two 3d vectors
 
 real(8) function angle_rad(x1, y1, z1, x2, y2, z2)
    implicit none
@@ -858,12 +850,11 @@ real(8) function angle_rad(x1, y1, z1, x2, y2, z2)
 end function angle_rad
 
 !************************************************************************
-!*                                                                      *
-!*     angle_deg                                                        *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **angle_deg**
+!! *return the angle between two 3d vectors*
 !************************************************************************
 
-! ... return the angle between two 3d vectors
 
 real(8) function angle_deg(x1, y1, z1, x2, y2, z2)
    implicit none
@@ -878,12 +869,11 @@ real(8) function angle_deg(x1, y1, z1, x2, y2, z2)
 end function angle_deg
 
 !************************************************************************
-!*                                                                      *
-!*     WritePartAtomProp                                                *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **WritePartAtomProp**
+!! *write particle and atom properties*
 !************************************************************************
 
-! ... write particle and atom properties
 
 subroutine WritePartAtomProp
 
@@ -973,12 +963,11 @@ subroutine WritePartAtomProp
 end subroutine WritePartAtomProp
 
 !************************************************************************
-!*                                                                      *
-!*     lWarnHCOverlap                                                   *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **lWarnHCOverlap**
+!! *warn if hard-core overlap between particle ip and other particles*
 !************************************************************************
 
-! ... warn if hard-core overlap between particle ip and other particles
 
 logical function lWarnHCOverlap(ip,radaths,lflag)
 
@@ -1030,12 +1019,11 @@ logical function lWarnHCOverlap(ip,radaths,lflag)
 end function lWarnHCOverlap
 
 !************************************************************************
-!*                                                                      *
-!*     WarnHCOverlap                                                    *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **WarnHCOverlap**
+!! *warn if hard-core overlap among atoms*
 !************************************************************************
 
-! ... warn if hard-core overlap among atoms
 
 subroutine WarnHCOverlap(iplow, ipupp)
 
@@ -1102,12 +1090,11 @@ subroutine WarnHCOverlap(iplow, ipupp)
 end subroutine WarnHCOverlap
 
 !************************************************************************
-!*                                                                      *
-!*     WarnAtomOutsideBox                                               *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **WarnAtomOutsideBox**
+!! *warn if atoms are outside box*
 !************************************************************************
 
-! ... warn if atoms are outside box
 
 subroutine WarnAtomOutsideBox(ialow, iaupp)
 
@@ -1190,12 +1177,11 @@ subroutine WarnAtomOutsideBox(ialow, iaupp)
 end subroutine WarnAtomOutsideBox
 
 !************************************************************************
-!*                                                                      *
-!*     WarnPartOutsideBox                                               *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **WarnPartOutsideBox**
+!! *warn if particles are outside box*
 !************************************************************************
 
-! ... warn if particles are outside box
 
 subroutine WarnPartOutsideBox(iplow, ipupp)
 
@@ -1275,12 +1261,11 @@ subroutine WarnPartOutsideBox(iplow, ipupp)
 end subroutine WarnPartOutsideBox
 
 !************************************************************************
-!*                                                                      *
-!*    UndoPBCChain                                                      *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **UndoPBCChain**
+!! *undo the periodical boundary conditions for a chain molecule*
 !************************************************************************
 
-! ... undo the periodical boundary conditions for a chain molecule
 
 subroutine UndoPBCChain(rref, ic, idir, rotemp)
 
@@ -1344,12 +1329,11 @@ subroutine UndoPBCChain(rref, ic, idir, rotemp)
 end subroutine UndoPBCChain
 
 !************************************************************************
-!*                                                                      *
-!*    CalcChainProperty                                                 *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcChainProperty**
+!! *calculate properties of a single chain*
 !************************************************************************
 
-! ... calculate properties of a single chain
 
 subroutine CalcChainProperty(ic, rotemp, ChainProperty)
 
@@ -1547,12 +1531,11 @@ real(8) function PerLengthRg(rg2, l)
 end function PerLengthRg
 
 !************************************************************************
-!*                                                                      *
-!*    CalcNetworkProperty                                               *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcNetworkProperty**
+!! *calculate properties of network number inw*
 !************************************************************************
 
-! ... calculate properties of network number inw
 ! ... no prior undoing of the periodic boundary conditions necessary
 
 subroutine CalcNetworkProperty(inw, NetworkProperty)
@@ -1663,12 +1646,11 @@ subroutine CalcNetworkProperty(inw, NetworkProperty)
 end subroutine CalcNetworkProperty
 
 !************************************************************************
-!*                                                                      *
-!*     Asphericity                                                      *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **Asphericity**
+!! *calculate the asphericity based on the 2:nd moments in the principal frame*
 !************************************************************************
 
-! ... calculate the asphericity based on the 2:nd moments in the principal frame
 ! ... 0 for sphere, 0.526 for gaussian chain, and 1 for a rod
 
 real(8) function Asphericity(l1, l2, l3)
@@ -1679,12 +1661,11 @@ real(8) function Asphericity(l1, l2, l3)
 end function Asphericity
 
 !************************************************************************
-!*                                                                      *
-!*     CalcLTT                                                          *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcLTT**
+!! *calculate loop, tail, and tail characteristics for a single chain*
 !************************************************************************
 
-! ... calculate loop, tail, and tail characteristics for a single chain
 
 subroutine CalcLTT(nseg, ltag, mnobj, nobj, lenobj, nsegobj)
 
@@ -1767,12 +1748,11 @@ end subroutine CalcLTT
 ! ... routines for cluster analyses
 
 !************************************************************************
-!*                                                                      *
-!*     CalcChainPairListGeneral                                         *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcChainPairListGeneral**
+!! *calculate a list of chain pairs based on particle-particle separation*
 !************************************************************************
 
-! ... calculate a list of chain pairs based on particle-particle separation
 
 subroutine CalcChainPairListGeneral(nobj, ichain, rcluster2, mnpair, npair, n1, n2)
 
@@ -1822,12 +1802,11 @@ subroutine CalcChainPairListGeneral(nobj, ichain, rcluster2, mnpair, npair, n1, 
 end subroutine CalcChainPairListGeneral
 
 !************************************************************************
-!*                                                                      *
-!*     CalcChainComPairListGeneral                                      *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcChainComPairListGeneral**
+!! *calculate a list of chain pairs based on com-com separation*
 !************************************************************************
 
-! ... calculate a list of chain pairs based on com-com separation
 
 subroutine CalcChainComPairListGeneral(nobj, ichain, rcluster2, mnpair, npair, n1, n2)
 
@@ -1879,12 +1858,11 @@ subroutine CalcChainComPairListGeneral(nobj, ichain, rcluster2, mnpair, npair, n
 end subroutine CalcChainComPairListGeneral
 
 !************************************************************************
-!*                                                                      *
-!*     CalcPartPairListAll                                              *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcPartPairListAll**
+!! *calculate a list of particle pairs based on their separations*
 !************************************************************************
 
-! ... calculate a list of particle pairs based on their separations
 
 subroutine CalcPartPairListAll(nobj, rcluster2, mnpair, npair, n1, n2)
 
@@ -1923,12 +1901,11 @@ subroutine CalcPartPairListAll(nobj, rcluster2, mnpair, npair, n1, n2)
 end subroutine CalcPartPairListAll
 
 !************************************************************************
-!*                                                                      *
-!*     CalcPartPairListGeneral                                          *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcPartPairListGeneral**
+!! *calculate a list of particle pairs*
 !************************************************************************
 
-! ... calculate a list of particle pairs
 
 subroutine CalcPartPairListGeneral(nobj, iparticle, rcluster2, mnpair, npair, n1, n2)
 
@@ -1968,12 +1945,11 @@ subroutine CalcPartPairListGeneral(nobj, iparticle, rcluster2, mnpair, npair, n1
 end subroutine CalcPartPairListGeneral
 
 !************************************************************************
-!*                                                                      *
-!*     CalcPartPairListIpt                                              *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CalcPartPairListIpt**
+!! *calculate pair list for particles*
 !************************************************************************
 
-! ... calculate pair list for particles
 
 subroutine CalcPartPairListIpt(iptcluster, rcluster2, mnpair, npair, n1, n2)
 
@@ -2012,12 +1988,11 @@ subroutine CalcPartPairListIpt(iptcluster, rcluster2, mnpair, npair, n1, n2)
 end subroutine CalcPartPairListIpt
 
 !************************************************************************
-!*                                                                      *
-!*     Perculation                                                      *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **Perculation**
+!! *determine if a system of bonded objects is perculated*
 !************************************************************************
 
-! ... determine if a system of bonded objects is perculated
 
 logical function Perculation(nobjtot, iclusteriobj, npair, n1, n2,  r, boxlen, ltest, unit)
 
@@ -2243,12 +2218,11 @@ end function Perculation
 !¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
 
 !************************************************************************
-!*                                                                      *
-!*     CorrAnalysis                                                     *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **CorrAnalysis**
+!! *make correlation analysis of a single variable*
 !************************************************************************
 
-! ... make correlation analysis of a single variable
 
 ! use: insert the following alls in the routine calculating the property of interest
 
@@ -2309,12 +2283,11 @@ subroutine CorrAnalysis(whattodo, variable, blmin)
 end subroutine CorrAnalysis
 
 !************************************************************************
-!*                                                                      *
-!*     BlockAverAnalysis                                                *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **BlockAverAnalysis**
+!! *read data and calculate average and precision for different block lengths*
 !************************************************************************
 
-! ... read data and calculate average and precision for different block lengths
 
 subroutine BlockAverAnalysis(ndata, unitin, unitout)
 
@@ -2404,12 +2377,11 @@ subroutine BlockAverAnalysis(ndata, unitin, unitout)
 end subroutine BlockAverAnalysis
 
 !************************************************************************
-!*                                                                      *
-!*     WriteTrace                                                       *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **WriteTrace**
+!! *write trace information*
 !************************************************************************
 
-! ... write trace information
 
 subroutine WriteTrace(ilevel,name , iStage)
 
@@ -2440,12 +2412,11 @@ subroutine WriteTrace(ilevel,name , iStage)
 end subroutine WriteTrace
 
 !************************************************************************
-!*                                                                      *
-!*     WriteVecAppend                                                   *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **WriteVecAppend**
+!! *write real array at the end of an external unit*
 !************************************************************************
 
-! ... write real array at the end of an external unit
 
 subroutine WriteVecAppend(ndata, data, funit)
 
@@ -2472,12 +2443,11 @@ module XModule
 end module XModule
 
 !************************************************************************
-!*                                                                      *
-!*     EllipsoidOverlap                                                 *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **EllipsoidOverlap**
+!! *check overlap between two ellipsoids with equal semi-axes*
 !************************************************************************
 
-! ... check overlap between two ellipsoids with equal semi-axes
 !     Ref. Perram & Wertheim J. Comp. Phys. 58, 409 (1984)
 
 logical function EllipsoidOverlap(r2, r12_, ori1_, ori2_, rad2_, e_)
@@ -2665,12 +2635,11 @@ subroutine MatDiagMatT(ori,diag,mat)
 end subroutine MatDiagMatT
 
 !************************************************************************
-!*                                                                      *
-!*     SuperballOverlap                                                 *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SuperballOverlap**
+!! *superball overlap check*
 !************************************************************************
 
-! ... superball overlap check
 
 logical function SuperballOverlap(r2, r21, ori1, ori2) result(loverlap)
    use MolModule
@@ -2731,12 +2700,11 @@ logical function SuperballOverlap(r2, r21, ori1, ori2) result(loverlap)
 end function SuperballOverlap
 
 !************************************************************************
-!*                                                                      *
-!*     SuperballOverlapOF                                               *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SuperballOverlapOF**
+!! *superball overlap check, return overlap function*
 !************************************************************************
 
-! ... superball overlap check, return overlap function
 
 !real(8) function SuperballOverlapOF(r2, r21, ori1, ori2) result(of) !r2 is not used
 real(8) function SuperballOverlapOF(r21, ori1, ori2) result(of)
@@ -2751,12 +2719,11 @@ real(8) function SuperballOverlapOF(r21, ori1, ori2) result(of)
 end function SuperballOverlapOF
 
 !************************************************************************
-!*                                                                      *
-!*     SuperballOverlap_NR                                              *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SuperballOverlap_NR**
+!! *check for overlap between two superballs*
 !************************************************************************
 
-! ... check for overlap between two superballs
 !     ref: Ni et al., Soft Matter 2012, 8, 8826
 
 logical function SuperballOverlap_NR(r21, ori1, ori2, of) result(loverlap)
@@ -2916,12 +2883,11 @@ end subroutine TestSuperballOverlap_NR
 end function SuperballOverlap_NR
 
 !************************************************************************
-!*                                                                      *
-!*     SuperballStatNR                                                  *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SuperballStatNR**
+!! *superball check statistics, NR overlap method*
 !************************************************************************
 
-! ... superball check statistics, NR overlap method
 
 !subroutine SuperballStatNR(iStage, rr, iter) !rr is not used
 subroutine SuperballStatNR(iStage, iter)
@@ -2987,12 +2953,11 @@ subroutine SuperballStatNR(iStage, iter)
 end subroutine SuperballStatNR
 
 !************************************************************************
-!*                                                                      *
-!*     SuperballStatMesh                                                *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SuperballStatMesh**
+!! *superball check statistics, mesh overlap check*
 !************************************************************************
 
-! ... superball check statistics, mesh overlap check
 
 subroutine SuperballStatMesh(iStage, rr, loverlap, time)
    use MolModule
@@ -3007,12 +2972,11 @@ subroutine SuperballStatMesh(iStage, rr, loverlap, time)
 end subroutine SuperballStatMesh
 
 !************************************************************************
-!*                                                                      *
-!*     SuperballAver                                                    *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SuperballAver**
+!! *superball overlap-check average*
 !************************************************************************
 
-! ... superball overlap-check average
 
 subroutine SuperballAver(iStage, rr, loverlap, time)
    use MolModule
@@ -3089,12 +3053,11 @@ subroutine SuperballAver(iStage, rr, loverlap, time)
 end subroutine SuperballAver
 
 !************************************************************************
-!*                                                                      *
-!*     SuperballDF                                                      *
-!*                                                                      *
+!> \page molaux molaux.F90
+!! **SuperballDF**
+!! *superball overlap-check distribution functions*
 !************************************************************************
 
-! ... superball overlap-check distribution functions
 
 !     type  label    quantity
 !     ----  -----    --------

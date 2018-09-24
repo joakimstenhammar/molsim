@@ -20,12 +20,10 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     MolModule                                                        *
-!*                                                                      *
+!> \page mol mol.F90
+!!  **MolModule**
+!! *main module for the Molsim software*
 !************************************************************************
-
-! ... main module for the Molsim software
 
 module MolModule
 
@@ -90,7 +88,7 @@ module MolModule
    integer(4), parameter :: iAfterSimulation  = 7 ! averaging etc after the simulation
 
 ! ... data structure for potential energy
-
+! These are documented in the manual in Chapter 7 (file datastructures.md)
    type potenergy_var
       real(8), allocatable :: twob(:)       ! two-body contribution (excluding ewald contribution)
       real(8), allocatable :: oneb(:)       ! one-body contribution (dielectric discontinuity)
@@ -98,13 +96,25 @@ module MolModule
       real(8)              :: rec           ! reciprocal electrostatic space contribution (UEwald)
       real(8)              :: stat          ! static electrostatic contribution (umbodyp)
       real(8)              :: pol           ! polarization electrostatic contribution (umbodyp)
-      real(8)              :: bond          ! bond contribution
-      real(8)              :: angle         ! angle contribution
-      real(8)              :: crosslink     ! bond (chains-nodes) contribution in hierarcical structures and networks
+!> \page bond
+!! `bond_var(real, integer, real)`(1:\ref nct )
+!! **default:** \ref nct*`bond_var(0.0, 2, 0.0)`
+!! * Force constant, power, and equilibrium separation of bond potential.
+      real(8)              :: bond
+!> \page angle
+!! `bond_var(real, integer, real)`(1:\ref nct )
+!! **default:** \ref nct `*bond_var(0.0, 2, 0.0)`
+!! * Force constant, power, and equilibrium separation of angular potential.
+      real(8)              :: angle
+!> \page clink
+!! `bond_var(real, integer, real)`
+!! **default:** `bond_var(0.0, 2, 0.0)`
+!! * Force constant, power, and equilibrium separation of crosslinks.
+      real(8)              :: crosslink
       real(8)              :: external      ! external contribution
    end type potenergy_var
 
-! ... data structure for bonds etc
+! ... data structure for bonds etc: These are documented in the manual in Chapter 7 (file datastructures.md)
 
    type bond_var
       real(8)      :: k                     ! force constant
@@ -112,7 +122,7 @@ module MolModule
       real(8)      :: eq                    ! equilibrium value
    end type bond_var
 
-! ... data structure for asorption conditions
+! ... data structure for asorption conditions: These are documented in the manual in Chapter 7 (file datastructures.md)
 
    type adscond_var
       character(8) :: txobject              ! "plane_xy": lower and upper xy-plane of a parallelepiped
@@ -121,7 +131,7 @@ module MolModule
       real(8)      :: dist                  ! threshold distance of adsorption for the com of a particle from plane or center of particle
    end type adscond_var
 
-! ... data structure for chain properties
+! ... data structure for chain properties: These are documented in the manual in Chapter 7 (file datastructures.md)
 
    type chainprop_var
       real(8)    :: ro(3)                   ! center of mass
@@ -143,7 +153,7 @@ module MolModule
       real(8)    :: torp                    ! toroidicity
    end type chainprop_var
 
-! ... data structure for network (finite) properties
+! ... data structure for network (finite) properties: These are documented in the manual in Chapter 7 (file datastructures.md)
 
    type networkprop_var
       real(8)    :: ro(3)                   ! center of mass
@@ -160,14 +170,14 @@ module MolModule
       real(8)    :: alpha                   ! degree of ionization (for titrating systems)
    end type networkprop_var
 
-! ... data structure for simple averaging
+! ... data structure for simple averaging: These are documented in the manual in Chapter 7 (file datastructures.md)
 
    type aver_var
       real(8)      :: s2                    ! summation/averaging over steps
       real(8)      :: s1                    ! summation/averaging over macrosteps
    end type aver_var
 
-! ... data structure for 1D static variables
+! ... data structure for 1D static variables: These are documented in the manual in Chapter 7 (file datastructures.md)
 
    type static1D_var
       logical      :: l                     ! logical flag for engeagement
@@ -179,7 +189,7 @@ module MolModule
       integer(4)   :: nvar                  ! expanded into nvar variables
    end type static1D_var
 
-! ... data structure for 2D static variables
+! ... data structure for 2D static variables: These are documented in the manual in Chapter 7 (file datastructures.md)
 
    type static2D_var
       logical      :: l                     ! logical flag for engeagement
@@ -244,45 +254,219 @@ module MolModule
    integer(4),    parameter :: uutot = 28  ! potential energy data
 
 ! ... terms
+!> \page txtitle
+!! `character(90)`
+!! * User-provided title.
+   character(90) :: txtitle
 
-   character(90) :: txtitle                ! user-provided title
-   character(10) :: txmode                 ! 'simulation' generate configuration/trajectory by simulation
-                                           ! 'analysis', read configuration/trajectory
-                                           ! 'mixed', mixed tasks
-   character(5)  :: txmethod               ! 'md', 'mc', 'mcall', 'bd'
-   character(3)  :: txensemb               ! 'nve', 'nvt', ntp', 'mvt'
-   character(8)  :: txstart                ! 'setconf', 'zero', 'continue', 'readfin'
-   logical       :: lcont                  ! write control data
-   logical       :: laver                  ! write averages
-   logical       :: lti                    ! make thermodynamic integration
-   logical       :: ldist                  ! calculate distribution functions
-   logical       :: ldump                  ! dump data
-   logical       :: lgroup                 ! make group division
-   logical       :: lstatic                ! perform static analysis
-   logical       :: ldynamic               ! perform dynamic analysis
-   logical       :: limage                 ! write coordinates for images
-   integer(4)    :: itest                  ! =1, write various data after each step/trial move
-                                           ! =3, write energies, forces, and virials
-                                           ! =4, write neighbour lists
-                                           ! =5, write detailed superball overlap-check data
-                                           ! =7, examine truncation error of the Ewald summation
-   logical       :: ltrace                 ! write tracing data on trace.master.data and trace.slave.data
-   logical       :: lblockaver             ! write blockavering data on blockaver.data
-   character(80) :: txuser                 ! enable user-provided code in the Molsim core, code is not verified
-   integer(4)    :: ipart                  ! if ipart > 0, write every ipart:th particle
-   integer(4)    :: iatom                  ! if iatom > 0, write every iatom:th atom
-   integer(4)    :: iaver                  ! if iaver > 0, write cumulative averages every iaver:th step/pass
-   integer(4)    :: ishow                  ! if ishow > 0, write every ishow:th value of functions
-   integer(4)    :: iplot                  ! if iplot > 0, plot functions
-   integer(4)    :: ilist                  ! if ilist > 0, write every ilist:th value of functions on unit flist
+!> \page txmode
+!! `character(10)`
+!!  **default:** '`simulation`'
+!!  * '`simulation`': Simulation and analyses. Further specification of method, ensemble, boundary conditions, and initial
+!!  configuration are specified by variables \ref txmethod, \ref txensemb, \ref txbc, and \ref txstart. On a top level, analyses are controlled
+!!  by \ref lgroup , \ref lstatic , and \ref ldynamic.
+!!  * '`analysis`': Reading of dump data from DUMP files and analyses. On a top level, analyses are controlled by \ref lgroup ,
+!!  \ref lstatic , and \ref ldynamic.
+!!  * '`mixed`': Mixed activities controlled by namelist \ref nmlMixed.
+   character(10) :: txmode
+
+!> \page txmethod
+!! `character(5)`
+!! * '`md`': Molecular dynamic simulation. Further specification is given in namelist \ref nmlMD.
+!! * '`mc`': Monte Carlo simulation. Further specification is given in namelist \ref nmlMC.
+!! * '`mcall`': Monte Carlo with simultaneous movement of all particles. Further specification is given in namelist \ref nmlMCAll.
+!! * '`bd`': Brownian dynamic simulation (configuration space). Further specificati on is given in namelist \ref nmlBD.
+   character(5)  :: txmethod
+
+!> \page txensemb
+!! `character(3)`
+!! * `nve`: Microcanonical ensemble (only MD). This option should also be used for MD with temperature and/or volume scaling.
+!! Further specification is given in namelist \ref nmlMD.
+!! * '`ntv`': Canonical ensemble (only MC or BD).
+!! * '`nvt`': Canonical ensemble (only MC or BD).
+!! * '\ref npt': Isothermal-isobaric ensemble (only MC).
+!! * '`ntp`': Isothermal-isobaric ensemble (only MC).
+!! * '`mvt`': Grand canonical ensemble (only MC). Still not fully tested.
+!! * '`mtv`': Grand canonical ensemble (only MC). Still not fully tested.
+   character(3)  :: txensemb
+!> \page txstart
+!! `character(8)`
+!! * '`setconf`' : Generation of a start configuration and accumulation variables are set to zero. This option is used to obtain a
+!!                 start configuration that should be equilibrated. Further specification is given in namelist \ref nmlSetConfiguration.
+!! * '`readfin`' : Read start configuration from file FIN and accumulation variables are set to zero. The format
+!!                 is(ro(1:3,ip),ori(1:3,1:3,ip),ip = 1,np), i.e., the same as the output of particle coordinates on FOUT.
+!! * '`zero`' : Start configuration is read from FCNF and accumulation variables are set to zero. This option is used to start of a production run composed of \ref nstep1*\ref nstep2 steps/passes.
+!! * '`continue`' : Start configuration and accumulated averages are read from FCNF. This option is used to continue an
+!!                  equilibration or production run if the execution was aborted due to exceeded time limit, system malfunction etc. To continue,
+!!                  change start to 'continue' and resubmit the job. This option may also be used to extend a completed production run. Then increase
+!!                  \ref nstep1 to the new total number of macrosteps, change start to 'continue', and resubmit the job. The simulation will continue from
+!!                  the last run to a new total \ref nstep1* \ref nstep2 steps/passes.
+   character(8)  :: txstart
+!> \page lcont
+!! `logical`
+!! **default:** `.false.`
+!! * Quantities which use is primary to check that the simulation is properly advancing may be calculated (by driver ControlAver).
+!! The quantities are averaged over particle types and they are average square force and torque (per particle), linear and angular
+!! moments (per particle), as well as translational and rotational temperatures (only MD). Fraction accepted and rejected attempts to
+!! move (only MC). Mean square displacement per step/pass. Orientational order. Defined as the scalar product of the direction of a
+!! molecular axis and its direction at start. The value is one for a perfect alignment and approximately zero for a fluid. Useful for
+!! monitoring the relaxation of an initial lattice start. Position and orientational means. The position of the center of mass denoted
+!! \f$ \langle r0\rangle \f$, and the projection of the molecular axes on the box axes denoted ``<x'>``, ``<y'>``, and ``<z'>``.
+!! * `.true.`: Control quantities are calculated.
+!! * `.false.`: No calculation of control quantities.
+   logical       :: lcont
+!> \page laver
+!! `logical`
+!! **default:** `.false.`
+!! * Thermodynamic averages and their precision as well as fluctuations and their precision may be calculated (by routine MainAver).
+!! Consider the quantity Q. The precision its average \f$ \langle Q\rangle\f$ and fluctuation \f$ \sqrt{\langle Q^2\rangle -
+!! \langle Q\rangle ^2} \f$, both given as one standard deviation are evaluated by block averaging with variable block length and extrapolation to infinite block length. The quantities considered are:
+!!
+!! 1. Total energy (MD)
+!! 2. Kinetic energy (MD)
+!! 3. Potential energy, total
+!! 4. Potential energy, total two-body contribution (only \ref txelec='dip' or 'pol' the electrostatic interaction is excluded)
+!! Potential energy, partial two-body contributions (only \ref txelec='dip' or 'pol' the electrostatic interaction is excluded)
+!! 5. Potential energy from the reciprocal space (only \ref txelec='charge' .and. \ref lewald)
+!! 6. Electrostatic energy (only \ref txelec='dip' or 'pol'), including the reciprocal space (only \ref lewald)
+!! 7. Polarization energy (only \ref txelec='pol'), including the reciprocal space (only \ref lewald)
+!! 8. Enthalpy
+!! 9. Heat capacity
+!! 10. Temperature
+!! 11. Pressure
+!! 12. Volume
+!! 13. Induced dipole moment: total (only \ref txelec='pol')
+!! 14. Induced dipole moment: particle (only \ref txelec='pol')
+!! 15. Induced dipole moment: atom (only \ref txelec='pol')
+!! * `.true.`: Thermodynamic averages are calculated.
+!! * `.false.`: No calculation of thermodynamic averages.
+   logical       :: laver
+!> \page lti
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Handle thermodynamic integration (by routine ThermoInteg). Further specification is given in namelist \ref nmlThermoInteg.
+!! * `.false.`: No thermodynamic integration.
+   logical       :: lti
+!> \page ldist
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.` Distribution functions are calculated (by routine DistFunc). Further specification is given in namelist \ref nmlDist.
+!! * `.false.` No calculation of distribution functions.
+   logical       :: ldist
+!> \page ldump
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.` Variables are dumped or read. Further specification is given in namelist \ref nmlDump.
+!! * `.false.` No dumping/readiing
+   logical       :: ldump
+!> \page lgroup
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.` Particles are divided into groups. This division is used in routine static and optionally by moldyn. Further specification is given in namelist \ref nmlGroup.
+!! * `.false.` No division into groups
+   logical       :: lgroup
+!> \page lstatic
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.` Makes it possible to call several routines calculating static properties. Further specification is given in namelist \ref nmlStatic (require \ref lgroup=.true.).
+!! * `.false.` No static analysis.
+   logical       :: lstatic
+!> \page ldynamic
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.` Makes it possible to call several routines calculating dynamic properties. Further specification is given in namelist \ref nmlDynamic (require \ref lgroup=.true.).
+!! * `.false.` No dynamic analysis.
+   logical       :: ldynamic
+!> \page limage
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.` Makes it possible to call several routines preparing files for generating images. Further specification is given in
+!! namelist \ref nmlImage.
+!! * `.false.` No image analysis.
+   logical       :: limage
+!> \page nmlSystem_itest itest
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`: Nothing. The normal option.
+!! * '1': Energy, pressure, particle and atom coordinates, forces, torques, dipole moments, polarizability tensor, linear and
+!!        angular accelerations, linear and angular velocities, and particle distance matrix are written after each step/configuration.
+!! * `3`: Intermediate energies (energy.F90).
+!! * `4`: Neighbour list (nlist.F90).
+   integer(4)    :: itest
+!> \page ltrace
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Information upon entering and exiting subroutines on three levels are written on unit 40 for the master and unit 41 for slaves.
+!! * `.false.`: Nothing.
+   logical       :: ltrace
+!> \page lblockaver
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Intermediate data concerning the block averaging and its extrapolation to infinite block length are written on file blockaver.data.
+!! * `.false`: Nothing.
+   logical       :: lblockaver
+!> \page txuser
+!! `character(80)`
+!! * Character string for engaging user-provided code in the MOLSIM core.
+   character(80) :: txuser
+!> \page ipart
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing.
+!! * `>0`: Initial and final particle coordinates and velocities are written for every \ref ipart particle.
+   integer(4)    :: ipart
+!> \page iatom
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing.
+!! * `>0`: Initial atomic coordinates are written for every \ref iatom atom.
+   integer(4)    :: iatom
+!> \page iaver
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing.
+!! * `>0`: Cumulative (for the macrostep) thermodynamic averages are written for every \ref iaver steps/passes.
+   integer(4)    :: iaver
+!> \page ishow
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing.
+!! * `>0`: Calculated functions are listed at every \ref ishow bin. Compact list.
+   integer(4)    :: ishow
+!> \page iplot
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing.
+!! * `>0`: Calculated functions are plotted.
+   integer(4)    :: iplot
+!> \page ilist
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing.
+!! * `>0`: Calculated functions are listed at every \ref ilist bin on file FLIST. Extended list.
+   integer(4)    :: ilist
+!> \page idump
+!! `integer`
+!! **default:** `10`
+!! * Dumping/reading is performed every \ref idump step/pass. The types of quantities dumped are controlled by the remaining variables.
+!! If \ref txstart='continue' the dump files are properly positioned according to the step/configuration saved in file FCNF.
    integer(4)    :: idump                  ! if idump > 0, dump every dump:th step/pass
+!> \page istatic
+!! `integer`
+!! **default:** `1`
+!! * Conformation sampling interval. Holds both for \ref txmode = 'simulation' and 'analysis'.
    integer(4)    :: istatic                ! if istatic > 0, call static analysis routines every istatic step/pass:
 
    logical       :: lsim                   !=.true. simulation
    logical       :: lana                   !=.true. analysis
    logical       :: lmix                   !=.true. mixed tasks
-
-   logical       :: ltime                  !=.true. timing statistics
+!> \page ltime
+!! `logical`
+!! **default:** `.true.`
+!! * `.true.`: Timing statistics are carried out.
+!! * `.false.`: No timing statistics.
+   logical       :: ltime
 
    logical       :: lnve                   !=.true. if NVE ensemble
    logical       :: lnvt                   !=.true. if NVT ensemble
@@ -291,7 +475,16 @@ module MolModule
    real(8)       :: facmvt = 4.0           ! factorial increase of memory allocation, applied on np and na (lmvt)
 
 ! ... cell
-
+!> \page txbc
+!! `character(3)`
+!! * '`xyz`': Periodical boundary condition, x, y, and z-directions.
+!! * '`xy`': Periodical boundary condition, x and y-directions.
+!! * '`z`': Periodical boundary condition, z-direction.
+!! * '`rd`': Periodical boundary condition, rhombic dodecahadral.
+!! * '`to`': Periodical boundary condition, truncated octahedral.
+!! * '`sph`': Hard sphere boundary (only MC).
+!! * '`cyl`': Hard cylinder boundary (only MC).
+!! * '`ell`': Hard ellipsoidal boundary (only MC).
    character(3)  :: txbc                   ! control boundary conditions
    logical       :: lbcbox                 ! box-like cell (rätblock)
    logical       :: lbcrd                  ! rhombic dodecahedral cell
@@ -299,47 +492,116 @@ module MolModule
    logical       :: lbcsph                 ! spherical cell
    logical       :: lbccyl                 ! cylindrical cell
    logical       :: lbcell                 ! ellipsoidal cell
-   real(8)       :: boxlen(3)              ! box lengths
+!> \page boxlen
+!! `real`(1:3)
+!! * Box length in x-, y-, and z-directions.
+   real(8)       :: boxlen(3)
    real(8)       :: boxlen2(3)             ! boxlen/2
    real(8)       :: boxleni(3)             ! 1/boxlen
    real(8)       :: boxlen2i(3)            ! 1/(2*boxlen)
    real(8)       :: boxlenshort            ! minval(boxlen(1:3))
    real(8)       :: TwoPiBoxi(3)           ! 2*pi/boxlen
-   real(8)       :: cellside               ! length of cell side (RD or TO cell)
-   real(8)       :: sphrad                 ! radius of spherical cell
+!> \page cellside
+!! `real`
+!! * Side length of a rhobic dodecaheron (only \ref txbc='rd') and truncated octahedron cell (only \ref txbc='to').
+   real(8)       :: cellside
+!> \page sphrad
+!! `real`
+!! * Spherical cell radius (only \ref txbc='sph').
+   real(8)       :: sphrad
    real(8)       :: sphrad2                ! sphrad**2
-   real(8)       :: ellrad(3)              ! radius of ellipsoidal cell
+!> \page ellrad
+!! `real`(1:3)
+!! * Ellipsoidal cell radii (only \ref txbc='ell').
+   real(8)       :: ellrad(3)
    real(8)       :: ellradi(3)             ! 1/ellrad
-   real(8)       :: cylrad                 ! radius of cylindrical cell
+!> \page cylrad
+!! `real`
+!! * Cylindrical cell radius (only \ref txbc='cyl').
+   real(8)       :: cylrad
    real(8)       :: cylrad2                ! cylrad**2
-   real(8)       :: cyllen = 0.0d0         ! length of cylindrical cell
+!> \page cyllen
+!! `real`
+!! * Cylindrical cell length (only \ref txbc='cyl').
+   real(8)       :: cyllen = 0.0d0
    real(8)       :: cyllen2                ! length of cylindrical cell/2
-   real(8)       :: lenscl                 ! scaling factor of box length and particle positions
+!> \page lenscl
+!! `real`
+!! **default:** `1.0`
+!! * Scaling constant which scales box, and particle coordinates (only \ref txstart='zero'). Useful for creating a system similar to a previous one, but with different box lengths.
+   real(8)       :: lenscl
    logical       :: lPBC                   ! periodic boundary conditions
    real(8)       :: dpbc(3)                ! =boxlen for some pbc, otherwise zero
 
 ! ... scaling
-
-    real(8)      :: scllen                 ! length
-    real(8)      :: sclmas                 ! mass
-    real(8)      :: scltem                 ! temperature
-    real(8)      :: scltim                 ! time
-    real(8)      :: sclene                 ! energy
-    real(8)      :: sclhca                 ! heat capacity
-    real(8)      :: sclpre                 ! pressure
-    real(8)      :: scldif                 ! diffusion coefficient
+!> \page scllen
+!! `real`
+!! **default:** `1.0d-10` m
+!! * Scaling factor for length.
+    real(8)      :: scllen
+!> \page sclmas
+!! `real`
+!! **default:** `1.0d-3` kg/mol
+!! * Scaling factor for mass.
+    real(8)      :: sclmas
+!> \page scltem
+!! `real`
+!! **default:** `1.0` K
+!! * Scaling factor for temperature
+    real(8)      :: scltem
+!> \page scltim
+!! `real`
+!! **default:** `1.0d-12` s
+!! * Scaling factor for time.
+    real(8)      :: scltim
+!> \page sclene
+!! `real`
+!! **default:** `1.0d+3`J/mol
+!! * Scaling factor for energy.
+    real(8)      :: sclene
+!> \page sclhca
+!! `real`
+!! **default:** `1.0` J/(mol*K)
+!! * Scaling factor for heat capacity.
+    real(8)      :: sclhca
+!> \page sclpre
+!! `real`
+!! **default:** `1.0d+6` Pa
+!! * Scaling factor for pressure.
+    real(8)      :: sclpre
+!> \page scldif
+!! `real`
+!! **default:** `1.0d-9` \f$m^2\f$/s
+!! * Scaling factor for diffusion coefficient.
+    real(8)      :: scldif
     real(8)      :: sclvol                 ! volume
     real(8)      :: sclvel                 ! linear velocity
     real(8)      :: sclacc                 ! linear acceleration
     real(8)      :: sclfor                 ! force
     real(8)      :: sclmin                 ! moment of intertia
-    real(8)      :: sclang                 ! angle
+!> \page sclang
+!! `real`
+!! **default:** `PI/180` 1/rad
+!! * Scaling factor for angle.
+    real(8)      :: sclang
     real(8)      :: beta                   ! 1/(kT)
     real(8)      :: Epsi0FourPi            ! ECh**2/(Four*pi*Epsi0*scllen)*AvNo/sclene
     real(8)      :: EpsiFourPi             ! Epsi0FourPi/relpermitt
 
 ! ... particle
-
+!> \page txelec
+!! `character(11)`
+!! **default:** '`charge`'
+!! * Describes the complexity of the electrostatic interactions. Available sources of electrostatic interactions are: (permanent)
+!! charges, weak charges, dipoles, and induced dipoles. Charges, dipole moments, and polarizability tensors employed are specified in
+!! namelist \ref nmlParticle.
+!! * '`charge`': Atoms possessing charges only.
+!! * '`weakcharge`': Atoms possessing charges and weak charges only. Limited to hard-sphere monoatomic particles.
+!! * '`dip`': Atoms possessing charges and static dipoles only. MD for all boundary conditions, and MC for all except Ewald summation.
+!! * '`pol`': Atoms possessing charges, static dipoles, and induced dipoles only. MD or MCALL. Ref. Chem. Phys. 191, 195 (1995).
+!!            Charges, dipole moments, and polarizability tensors employed are specified in namelist \ref nmlParticle.
+!! * '`dipsph`': Atoms possessing charges and/or dipoles in a spherical geometry, no neighbour list; special energy routines.
+!! * '`dieldis`': Atoms possessing charges with the presence of a planar or spherical dielectric discontinuity.
    character(11) :: txelec                 !*"charge", "weakcharge", "dip", "pol", "dipsph", "dipsphimage", "dieldis"
    logical       :: lcharge                ! enable atomic charge interactions
    logical       :: lweakcharge            ! enable atomic charge interactions, weak charges
@@ -354,9 +616,20 @@ module MolModule
                                            ! =1 system contains dipoles and no charges
                                            ! =-1 else
    real(8)                 :: q2sum        ! sum(q**2), where q is either atomic charge or dipole according to lq2sum
+!> \page nnwt
+!! `integer`
+!! **default:** `0`
+!! * Number of network types (only \ref txsetconf = 'network').
    integer(4)              :: nnwt         !*number of network types
-   integer(4)              :: nct          !*number of chain types
-   integer(4)              :: npt          !*number of particle types
+!> \page nct
+!! `integer`
+!! **default:** `0`
+!! * Number of chain types.
+   integer(4)              :: nct
+!> \page npt
+!! `integer`
+!! * Number of particle types.
+   integer(4)              :: npt
    integer(4)              :: nat          ! number of atom types
    integer(4)              :: nnw          ! number of networks
    integer(4)              :: nc           ! number of chains
@@ -364,39 +637,98 @@ module MolModule
    integer(4)              :: na           ! number of atoms
    integer(4)              :: na_alloc     ! number of atoms (for memory allocation)
    integer(4)              :: np_alloc     ! number of particles (for memory allocation)
-   integer(4), allocatable :: nnwnwt(:)    !*number of networks of network type [allocate with nnwt]
-   integer(4)              :: ncct(mnct)   !*number of chains of a chain type
-   integer(4)              :: nppt(mnpt)   !*number of particles of a particle type
+!> \page nnwnwt
+!! `integer`(1:\ref nnwt)
+!! **default:** \ref nnwt*`0`
+!! * Number of networks of network type inwt (only \ref txsetconf = 'network').
+   integer(4), allocatable :: nnwnwt(:)
+!> \page ncct
+!! `integer`(1:\ref nct)
+!! * Number of chains of each chain type.
+   integer(4)              :: ncct(mnct)
+!> \page nppt
+!! `integer`(1:\ref npt)
+!! * Number of particles of each particle type.
+   integer(4)              :: nppt(mnpt)
    integer(4), allocatable :: nctnwt(:)    ! number of chain types belonging to one network type [allocate with nnwt]
    integer(4)              :: nptct(mnct)  ! number of particle types belonging to one chain type
    integer(4), allocatable :: ncnwt(:)     ! number of chains belonging to a network type [allocate with nnwt]
    integer(4), allocatable :: npnwt(:)     ! number of particles belonging to a network type [allocate with nwwt]
    integer(4), allocatable :: nclnwt(:)    ! number of cross-links belonging to a network type [allocate with nnwt]
    integer(4)              :: npct(mnct)   ! number of particles belonging to a chain type
+!> \page natpt
+!! `integer`(1:\ref npt)
+!! * Number of atom types of each particle type.
    integer(4)              :: natpt(mnpt)  !*number of atom types belonging to a particle type
    integer(4), allocatable :: napt(:)      ! number of atoms belonging to a particle type
    integer(4), allocatable :: naat(:)      ! number of atoms of an atom type in one particle
-   integer(4), allocatable :: ncctnwt(:,:) !*number of chains of a chain type of network type [allocate with nct,nnwt]
+!> \page ncctnwt
+!! `integer`(1:\ref nct,1:\ref nnwt)
+!! **default:** \ref nct *\ref nnwt *`0`
+!! * Number of chains of chain type ict of network type inwt (only \ref txsetconf = ‘network’).
+   integer(4), allocatable :: ncctnwt(:,:)
+!> \page npptct
+!! `integer`(1:\ref npt ,1:\ref nct )
+!! * \ref npptct (ipt,ict) is the number of particles of type ipt belonging to chain of type ict.  Note, either non or all particles of a
+!!   given type has to belong to chains, in the latter case sum(\ref ncct (1:\ref nct )*\ref npptct (ipt,1:\ref nct )=\ref nppt (ipt) is required.
    integer(4)    :: npptct(mnpt,mnct)      !*number of particles of a particle type of chain type
-   integer(4)    :: naatpt(mnat,mnpt)      !*number of atoms of an atom type of a particle type
+!> \page naatpt
+!! `integer`(1:nat,1:\ref npt )
+!! * \ref naatpt (ialoc,ipt) denotes the no of atoms of type ialoc (local list) on a particle of type ipt. ialoc runs from 1 to \ref natpt (ipt), the no of atom types of particle type ipt.
+   integer(4)    :: naatpt(mnat,mnpt)
    integer(4)    :: nnwtnwt                ! number of different network type pairs
    integer(4)    :: nctct                  ! number of different chain type pairs
    integer(4)    :: nptpt                  ! number of different particle type pairs
    integer(4)    :: natat                  ! number of different atom type pairs
-   character(30), allocatable :: txtoponwt(:) !*type of network [allocate with nnwt]
-   character(30) :: txcopolymer(mnct)      !*type of copolymer
+!> \page txtoponwt
+!! `character(30)`(1:\ref nnwt)
+!! **default:** \ref nnwt *'`default`'
+!! * Controls the network topology to be set (currently only ‘default’ possible and only \ref txsetconf = ‘network’).
+   character(30), allocatable :: txtoponwt(:)
+!> \page txcopolymer
+!! `character(30)`(1:\ref nct)
+!! **default:** \ref nct *'`block`'
+!! * '`block`': Block copolymer.
+!! * '`regular`': Regular copolymer (alternating as possible).
+!! * '`sequence`': Copolymer with highly specific monomer distribution (the control is given in \ref nmlCopolymerSequence).
+!! * '`repeating`': Copolymers with a defined repeating block structure (the control is given in \ref nmlRepeating).
+!! * '`random`': Random Copolymer.
+   character(30) :: txcopolymer(mnct)
    logical       :: lspma                  !*control tacticity
-   character(10), allocatable :: txnwt(:)     !*name of network type [allocate with nnwt]
-   character(10) :: txct(mnct)             !*name of chain type
-   character(10) :: txpt(mnpt)             !*name of particle type
-   character(10) :: txat(mnat)             !*name of atom type
+!> \page txnwt
+!! `character(10)`(1:\ref nnwt)
+!! **default:** \ref nnwt *`'network'`
+!! * Text label for each network type inwt (only \ref txsetconf = ‘network’).
+   character(10), allocatable :: txnwt(:)
+!> \page txct
+!! `character(10)`(1:\ref nct)
+!! * Text label for each chain type.
+   character(10) :: txct(mnct)
+!> \page txpt
+!! `character(10)`(1:\ref npt)
+!! * Text label for each particle type.
+   character(10) :: txpt(mnpt)
+!> \page txat
+!! `character(10)`(1:nat)
+!! * Text label for each atom type (global atom type list).
+   character(10) :: txat(mnat)
    character(21), allocatable :: txnwtnwt(:) ! name of network type-network type pair
    character(21), allocatable :: txctct(:) ! name of chain type-chain type pair
    character(21), allocatable :: txptpt(:) ! name of particle type-particle type pair
    character(21), allocatable :: txatat(:) ! name of atom type-atom type pair
-   logical                    :: lmonoatom     !
+!> \page lmonoatom
+!! `logical`
+!! **default:** `.true.`
+!! * `.true.`: The program checks to see if all particles have only one atom each. If so, 1) sections involving orientational
+!!            integration, orientational movement, and some orientational output are omitted and 2) simpler and faster potential and force
+!!            routines are used.
+!! * `.false.`: Forces the program to treat the particles as polyatomic. This option, which may make the program slower, is for maintaining and checking purposes.
+   logical                    :: lmonoatom
    logical                    :: lpolyatom     !
-   real(8)                    :: massat(mnat)  !*mass of atom type
+!> \page massat
+!! `real`(1:nat)
+!! * Mass of atom type.
+   real(8)                    :: massat(mnat)
    real(8), allocatable       :: masspt(:)     ! mass of particle type
    real(8), allocatable       :: massnwt(:)    ! mass of network type
    real(8), allocatable       :: massipt(:)    ! inverse mass of particle type
@@ -407,27 +739,72 @@ module MolModule
    real(8), allocatable       :: massip(:)     ! inverse mass of particle
    real(8), allocatable       :: momp(:,:)     ! moments of inertia of particle
    real(8), allocatable       :: momip(:,:)    ! inverse moments of inertia of particle
-   real(8)                    :: radat(mnat)   !*hard-core radius of atom type
+!> \page radat
+!! `real`(1:nat)
+!! * Hard-sphere radius of atom type. It is used to avoid an unreasonable start configuration (see namelist \ref nmlSetConfiguration
+!!  ) and to check that atoms do not come too close to each other due to potential or program error. The check is performed after each
+!!  macrostep by routine  CheckHSOverlap . The value of \ref radat should be smaller than the van der Waals radius, approximately 75% of it.
+!!  In the case of a hard-core potential and MC, \ref radat should be equal to the hard-core radius of the atom.
+   real(8)                    :: radat(mnat)
    integer(4), allocatable    :: itradegfree(:)! number of translational degrees of freedom of a particle type
    integer(4), allocatable    :: irotdegfree(:)! number of rotational degrees of freedom of a particle type
    real(8), allocatable       :: racom(:)      !
    real(8), allocatable       :: r1atat(:)     !
    real(8), allocatable       :: r2atat(:)     !
-   real(8)                    :: zat(mnat)     !*charge of atoms of a given type
-   real(8)                    :: zatalpha(mnat)!*1/(sqrt(2) times the width of Gaussian charge distribution)
-   real(8)                    :: sigat(mnat)   !*LJ sigma parpameter for atomes of a given type
+!> \page zat
+!! `real`(1:nat)
+!! **default:** nat*`0.0`
+!! * Charge of atom type. The charge should be given in number of elementary charges.
+   real(8)                    :: zat(mnat)
+!> \page zatalpha
+!! `real`(1:nat)
+!! **default:** `0.0`
+!! * >`0.0`: Gaussian charge distribution with width 1/(sqrt(2)*\ref zatalpha)
+!! * =`0.0`: Point charge
+   real(8)                    :: zatalpha(mnat)
+!> \page sigat
+!! `real`(1:nat)
+!! **default:** nat*`0.0`
+!! * Lennard-Jones \f$ \sigma \f$ parameter of atom type;\f$ u(r) = 4\epsilon [(\sigma/r)^{12}-(\sigma/r)^6] \f$.
+   real(8)                    :: sigat(mnat)
+!> \page epsat
+!! `real`(1:nat)
+!! **default:** (1:nat)
+!! * Lennard-Jones \f$ \epsilon \f$ parameter of atom type;\f$ u(r) = 4\epsilon [(\sigma/r)^{12}-(\sigma/r)^6] \f$.
    real(8)                    :: epsat(mnat)   !*LJ epsilon parameter for atomes of a given type
    real(8), allocatable       :: az(:)         ! atom charge
    real(8), allocatable       :: aztm(:)       ! atom charge (trial move)
-   logical                    :: latweakcharge(mnat) !*.true. if weak charge among atoms of a given type
-   integer(4)                 :: jatweakcharge(mnat) !*type of atom carrying counter charge to weak charge iat (0 means no counter charge)
-   real(8)                    :: pH            ! pH
-   real(8)                    :: pK(mnat)      !*pKa
+!> \page latweakcharge
+!! `logical`(1:nat)
+!! **default:** nat*`.false.`
+!! * `.true.`: Weak (titrating) charge of atom type (only \ref txelec ='weakcharge').
+!! * `.false.`: No weak charge.
+   logical                    :: latweakcharge(mnat)
+!> \page jatweakcharge
+!! `integer`(1:nat)
+!! **default:** nat*`0`
+!! * type of atom carrying counter charge to weak charge iat (0 means no counter charge)
+   integer(4)                 :: jatweakcharge(mnat)
+!> \page pH
+!! `real`
+!! **default:** `0.0`
+!! * pH of the solution.
+   real(8)                    :: pH
+!> \page pK
+!! `real`(1:nat)
+!! **default:** nat*`0.0`
+!! * \ref pK value of the weak charge.
+   real(8)                    :: pK(mnat)
    real(8)                    :: pHmpK(mnat)   ! pH - pKa
    integer(4), allocatable    :: iananweakcharge(:) ! atom carrying weak charge -> its atom carrying its couterion charge
    logical, allocatable       :: laz(:)        ! .true. if atom is charged
    logical, allocatable       :: laztm(:)      ! .true. if atom is charged (trial move)
    logical, allocatable       :: lpset(:)      ! logical valiable being .true. for setted paricles
+!> \page lradatbox
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Check that atoms including their hard-sphere radii are inside the box.
+!! * `.false.`: No such check.
    logical                    :: lradatbox     ! use atom and atom radius when checking if particle inside box
 
                                            ! equivalences:
@@ -450,28 +827,64 @@ module MolModule
    integer(4), allocatable :: bondnn(:,:)  ! bond and particle             -> bonded particle
 
 ! ... crosslinks between chains
-
-   logical       :: lclink                 ! flag for enabeling crosslinks between particles of diff. chains
-   integer(4)    :: maxnbondcl(mnpt)       !*maximum number of crosslink to/from a particle allowed
+!> \page lclink
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Enabling cross-links between particles and chains or between chains. Diamond- like network and bottle-brushes are currently supported.
+!! * `.false.`: No cross-links.
+   logical       :: lclink
+!> \page maxnbondcl
+!! `integer`(1:\ref npt)
+!! **default:** \ref npt*`4`
+!! * Maximum number of cross-links of a particle (only \ref txsetconf='hierarchical').
+   integer(4)    :: maxnbondcl(mnpt)
    integer(4)    :: ncl                    ! number of crosslinks
    integer(4), allocatable :: nbondcl(:)   ! actual number of crosslinks to/from particle ip
    integer(4)    :: maxvalnbondcl          ! maxval(nbondcl(:))
    integer(4), allocatable :: bondcl(:,:)  ! crosslink and particle        -> crosslinked particle
-
-   logical       :: lmultigraft            ! flag for multigrafted chains
+!> \page lmultigraft
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Enabling multigrafted polymers made of chains.
+!! * `.false.`: No multigrafting.
+   logical       :: lmultigraft
 
 ! ... hierarchical structure
-
-   logical       :: lhierarchical          ! flag for hierarchical structures
-   integer(4)    :: ngen                   !*number of generations
+!> \page lhierarchical
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Enabling hierarchical structures made of chains.
+!! * `.false.`: No hierarchical structures.
+   logical       :: lhierarchical
+!> \page ngen
+!! `integer`
+!! **default:** `1`
+!! * Number of generations of hierarchical structure (only \ref lhierarchical=.true. and \ref txsetconf ='hierarchical').
+   integer(4)    :: ngen
    integer(4)    :: nh                     ! number of hierarchical structures
    integer(4)    :: nch(0:mngen)           ! number of chains of a generation in a hierarchial structure
    integer(4)    :: nphn                   ! number of particles of a hierarchical structure
+!> \page ictgen
+!! `integer`(1:\ref ngen)
+!! **default:** `1`
+!! * Generation number -> chain type (only \ref txsetconf='hierarchical').
    integer(4)    :: ictgen(0:mngen)        !*generation number             -> chain type
    integer(4), allocatable :: genic(:)     ! chain number                  -> generation number
-   integer(4)    :: nbranch(0:mngen-1)     !*number of branches
-   integer(4)    :: ibranchpbeg(0:mngen-1) !*particle number of the chain for first branch point
-   integer(4)    :: ibranchpinc(0:mngen-1) !*particle increment of the chain between branch points
+!> \page nbranch
+!! `integer`(0:\ref ngen -1)
+!! **default:** `0`
+!! * Number of branches of a branching point of generation igen (only \ref lhierarchical=.true. and \ref txsetconf = 'hierarchical').
+   integer(4)    :: nbranch(0:mngen-1)
+!> \page ibranchpbeg
+!! `integer`(0:\ref ngen -1)
+!! **default:** `0`
+!! * Chain segment of first branching point of generation igen (only \ref lhierarchical=.true.  and \ref txsetconf = 'hierarchical').
+   integer(4)    :: ibranchpbeg(0:mngen-1)
+!> \page ibranchpinc
+!! `integer`(0:\ref ngen -1)
+!! **default:** `1`
+!! * Segment increment between branching point of generation igen (only \ref lhierarchical=.true. and \ref txsetconf = 'hierarchical').
+   integer(4)    :: ibranchpinc(0:mngen-1)
 
 !  note: all chains of a given generation have to be of same type &
 !        chains of a given type may appear in more than one generation
@@ -520,7 +933,11 @@ module MolModule
    logical   , allocatable :: lptnwt(:,:)        ! true, if particle type ipt is part of network type inwt [allocate with npt,nnwt]
    logical   , allocatable :: lpnnwn(:,:)        ! true if particle number ip is part of network number inw
    integer(4), allocatable :: npweakchargenwt(:) ! number of titratable beads in network type inwt [allocate with nnwt]
-   integer(4), allocatable :: iptclnwt(:)        !*particle type of nodes of different network types [allocate with nnwt]
+!> \page iptclnwt
+!! `integer`(1:\ref nnwt)
+!! **default:** \ref nnwt*`0`
+!! * Type of particles forming cross-links of networks of network type inwt (only \ref txsetconf = 'network').
+   integer(4), allocatable :: iptclnwt(:)
 
 ! ... pointers
 
@@ -572,21 +989,36 @@ module MolModule
    integer(4), allocatable :: ipnptm(:)    ! particle (local) (1:np)       -> particle (1:np)
    integer(4), allocatable :: iptmpn(:)    ! particle (1:np)               -> particle (local) (1:np)
    integer(4), allocatable :: ianatm(:)    ! atom (local) (1:na)           -> atom (1:na)
+!> \page lmcweight
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Applying a weighting function for potential of mean force MC simulations. Further specification is given in namelist \ref nmlMCWeight .
+!! * `.false.`:  No weighting function applied.
    logical       :: lmcweight              ! flag for using weighting function
 
 ! ... bd
 
    logical       :: lbd                    ! flag for Brownian dynamics simulation
-   real(8), allocatable :: dcoeff(:)       !*self-diffusion coefficient
+!> \page dcoeff
+!! `real`
+!! * Isotropic particle self-diffusion coefficient.
+   real(8), allocatable :: dcoeff(:)
 
 ! ... averages
 
    real(8)       :: tempst                 ! temperature, start
-   real(8)       :: temp                   ! temperature
+!> \page temp
+!! `real`
+!! * System temperature (only \ref txensemb='\ref npt' or 'nvt'). Desired temperature (only \ref txensemb='nve' ensemble and temperature scaling).
+!!   Temp is also used if the velocities are set according to a Maxwell distribution.
+   real(8)       :: temp
    real(8)       :: temptra                ! temperature, translational
    real(8)       :: temprot                ! temperature, rotational
    real(8)       :: prsrst                 ! pressure, start
-   real(8)       :: prsr                   ! pressure
+!> \page prsr
+!! `real`
+!! * Desired pressure (only \ref txensemb='\ref npt' or 'nve' and with volume scaling).
+   real(8)       :: prsr
    real(8)       :: prsrreds3              ! pressure, final reduced pressure
    real(8)       :: prsrredsd              ! pressure, sd of final reduced pressure
    real(8)       :: virial                 ! virial
@@ -599,15 +1031,35 @@ module MolModule
    real(8)       :: npartaver              ! average numer of particles (after a macrostep and simulation)
 
 ! ... random number
-
-   integer(k4b)  :: iseed                  ! seed of random number generator
+!> \page iseed
+!! `integer`
+!! * Seed of random number generator. \ref iseed > 0 is required.
+   integer(k4b)  :: iseed
+!> \page maxcpu
+!! `integer`
+!! **default:** `0`
+!! * `0`: Nothing.
+!! * `<0`: The program stops before starting next macrostep if the total cpu time including the next one exceeds \ref maxcpu (in
+!!         seconds). The cpu time for the last macrostep is used as the estimate of the cpu time for the next macrostep. This is handy if
+!!         batch queue installation is used. In such cases, if the job exceeds the maximum cpu time for the batch job, the job might stop
+!!         abruptly (depending on system installation) without executing the remaining commands in the flink command file and possibly
+!!         corrupting the file FCNF. If so, the entirely job is lost. The variable \ref maxcpu allows the program to stop itself and promptly send
+!!         the FCNF file which then can be used to continue the simulation by using the option \ref txstart='continue'.
    integer(4)    :: maxcpu                 ! maximum number of cpu time (seconds)
 
 ! ... configuration
 
    integer(4)    :: nstep                  ! nstep1*nstep2
-   integer(4)    :: nstep1                 ! number of macrosteps
-   integer(4)    :: nstep2                 ! number of steps/passes per macrostep
+!> \page nstep1
+!! `integer`
+!! * Number of macrosteps. The total number of steps/passes are \ref nstep1*\ref nstep2. After the simulation grand averages are calculated and written for the \ref nstep1*\ref nstep2 steps/passes.
+   integer(4)    :: nstep1
+!> \page nstep2
+!! `integer`
+!! * Number of steps (only MD or BD), or number of passes (only MC or MCALL) per macrostep. One pass is one attempt to move each
+!!   particle in average (only MC) or one attempt to simultaneously move all particles (only MCALL). Averages are calculated and written
+!!   for each set of \ref nstep2 steps/passes. After each set the FCNF file is updated with new coordinates and accumulated averages.
+   integer(4)    :: nstep2
    integer(4)    :: istep                  ! present step/pass
    integer(4)    :: istep1                 ! present macrostep
    integer(4)    :: istep2                 ! present step/pass of one macrostep
@@ -616,8 +1068,12 @@ module MolModule
    integer(4)    :: nstep1done             ! number of macrosteps performed
 
 ! ... coordinate, etc
-
-   logical              :: lintsite        ! true if special interaction sites are used instead of atomic sites
+!> \page lintsite
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Positions of interaction sites are given by \ref raintin.
+!! * `.false.`: Positions of interaction sites are given by \ref rain.
+   logical              :: lintsite
    real(8), allocatable :: rasite(:,:,:)   ! interaction-site coordinates in molecular frame
    real(8), allocatable :: ra(:,:,:)       ! atom coordinates in molecular frame
    real(8), allocatable :: ro(:,:)         ! particle position
@@ -654,63 +1110,189 @@ module MolModule
 
    integer(4)              :: nbuf         ! length of buffer
    real(8),    allocatable :: ubuf(:)      ! buffer for potential table
-   real(8)                 :: rcut         ! interaction cutoff
+
+!> \page rcut
+!! `real`
+!! **default:** `0.0`
+!!
+!! Cutoff  distance  of  the  potential  and  forces  based  on  the  particle - particle  center  of mass distance. If \ref rcut=0.0, the cutoff distance sets to
+!! * `(boxlen2(1)**2 + boxlen2(2)**2 + boxlen2(3)**2)**1/2` ( only \ref txbc= ' xyz '),
+!! * `(boxlen2(1)**2 + boxlen2(2)**2 + boxlen(3)**2)**1/2` ( only \ref txbc= ' xy '),
+!! * `(boxlen(1)**2 + boxlen(2)**2 + boxlen2(3)**2)**1/2` ( only \ref txbc= ' z '),
+!! * `2*rsph` ( only \ref txbc= ' sph '), or
+!! * `(2*rcyl)**2+lcyl**2)**1/2` ( only \ref txbc= ' cyl'),
+   real(8)                 :: rcut
    real(8)                 :: rcut2        ! rcut**2
    real(8),    allocatable :: r2umin(:)    ! lower limit squared of potential table
    integer(4), allocatable :: iubuflow(:)  ! points on the first entry for iatjat
 
 ! ... ewald summation
-
-   logical       :: lewald                 ! flag for ewald summation
-   logical       :: lsurf                  ! flag for surface term
-   logical       :: lewald2dlc             ! flag for 2d layer correction for effectively 2d periodic systems
-                                           ! see arnold et al. JCP 117, 2496 (2002), 117, 2503 (2002)
-   integer(4)    :: iewaldopt              ! selection of method to determine alpha, rcut, and ncut
-   character(3)  :: txewaldrec             ! select 'std' (standard ewald) or 'spm' (smooth particle mesh)
-   real(8)       :: uewaldtol              ! potential energy tolerance of ewald summation (kJ/mol particles)
-   real(8)       :: ualpha                 ! damping factor
-   real(8)       :: ualphared              ! damping factor / rcut
-   integer(4)    :: ncut                   ! largerst 1d k-vector
+!> \page lewald
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Ewald summation. Implemented for \ref txpot='(1,6,12)', \ref txpot=nemo... with \ref txelec='pol', and default potential. Periodic boundary conditions are required.
+!! * `.false.`: No Ewald summation.
+   logical       :: lewald
+!> \page lsurf
+!! `logical`
+!! **default:** `.true.`
+!! * `.true.`: Inclusion of the surface term of the Ewald summation (corresponding to \f$ \epsilon\f$ (surrounding) = 1).
+!! * `.false.`: Exclusion of the surface term of the Ewald summation (corresponding to \f$ \epsilon\f$ (surrounding) -> infinity).
+   logical       :: lsurf
+!> \page lewald2dlc
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Correction for making a 3d-periodic system 2d-periodic according to Arnold et al.  JCP 2002. Should only be applied
+!!             with considerable insight on, e.g, the need of making the simulation box longer than the simulated system in the z-direction and
+!!             the convergence.
+!! * `.false.`: No such correction.
+   logical       :: lewald2dlc
+!> \page iewaldopt
+!! `integer`
+!! * Controls the choice of Ewald truncation analysis. \ref ualphared = \ref ualpha*\ref rcut.
+!! \n
+!! * For \ref txewaldrec = 'std':
+!! * `0`: \ref ualphared, \ref rcut, and \ref ncut are used.
+!! * `1`: \ref ualphared and \ref rcut are used to calculate \ref uewaldtol and \ref ncut.\f$^1\f$
+!! * `2`: \ref uewaldtol and \ref ualpha are used to calculate \ref rcut and \ref ncut.\f$^1\f$
+!! * `3`: \ref uewaldtol and \ref rcut are used to calculate \ref ualpha and \ref ncut.\f$^1\f$
+!! * `4`: \ref uewaldtol and \ref ncut are used to calculate \ref ualpha and \ref rcut.\f$^1\f$
+!! \n \f$^1\f$ According to Kolafa and Perram (charges) and Wang and Holm (dipoles).
+!! \n
+!! * For \ref txewaldrec = 'spm':
+!! * `0`: \ref ualphared, \ref rcut, order and \ref nmesh are used.
+!! * `3`: \ref uewaldtol, \ref rcut, order and \ref nmesh are use.
+   integer(4)    :: iewaldopt
+!> \page txewaldrec
+!! `character`
+!! **default:** '`std`'
+!! * '`std`': standard Ewald summation.
+!! * '`spm`': smooth particle mesh Ewald summation (require installation of the FFTW library from [www.fftw.org](http://www.fftw.org/); see
+!!     makefile). If only the standard Ewald summation is used, calls to subroutines fftw… in files energy.F90 and denergy.F90 can be
+!!     comment away.
+   character(3)  :: txewaldrec
+!> \page uewaldtol
+!! `real`
+!! **default:** `0.0`
+!! * Potential energy tolerance in Ewald summation (see \ref iewaldopt).
+   real(8)       :: uewaldtol
+!> \page ualpha
+!! `real`
+!! * Ewald parameter (see \ref iewaldopt).
+   real(8)       :: ualpha
+!> \page ualphared
+!! `real`
+!! **default:** `3.0`
+!! * Reduced Ewald parameter used for the Ewald summation (see \ref iewaldopt) and the Spherical Ewald potential.
+   real(8)       :: ualphared
+!> \page ncut
+!! `integer`
+!! * Largest number of k-vectors in one direction in the reciprocal space (see \ref iewaldopt).
+   integer(4)    :: ncut
    integer(4)    :: ncut2                  ! square of largest k-vector
-   character(6)  :: ncutregion             ! 'cube' or 'sphere'
+!> \page ncutregion
+!! `character(6)`
+!! **default:** '`sphere`'
+!! * '`sphere`': Spherical k-space region.
+!! * '`cube`': Cubic k-space region.
+   character(6)  :: ncutregion
    integer(4)    :: ncut2d                 ! largerst 1d k-vector (2d correction)
    integer(4)    :: ncut2d2                ! square of largest k-vector (2d correction)
+!> \page nmesh
+!! `integer`
+!! **default:** `48`
+!! * Number of meshes used in the reciprocal space (see \ref iewaldopt ).
    integer(4)    :: nmesh                  ! number of meshes (SPME)  TODO: non-cubic
+!> \page order
+!! `integer`
+!! **default:** `5`
+!! * Interpolation order in the reciprocal space (see \ref iewaldopt ).
    integer(4)    :: order                  ! order of cardinal B-splines (SPME)
 
 ! ... reaction field method
-
-   logical       :: lrf                    ! flag for reaction field method
-   real(8)       :: epsrf                  ! static dielectric constant of surroundings
+!> \page lrf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Reaction field method (only \ref txelec = 'pol').
+!! * `.false.`: No reaction field method.
+   logical       :: lrf
+!> \page epsrf
+!! `real`
+!! **default:** `78.0`
+!! * Relative dielectric permittivity of the surrounding beyond \ref rcut for reaction field method. Zero means infinity.
+   real(8)       :: epsrf
    real(8)       :: rffac                  ! 2*(epsstat-1)/((2*epsstat+1)*rcut**3)
    real(8)       :: rffac2                 ! rffac/2
 
 ! ... cutoff and shift of lj potential
-
-   logical       :: lljcut                 ! flag for cutoff and shift of lj potential
-   real(8)       :: ljrcut                 ! cutoff distance in sigma units
+!> \page lljcut
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Apply a cutoff and shift of the Lennard-Jones potential (only \ref txpot (ipt) = '(1,6,12)').
+!! * `.false.`: No cut and shift.
+   logical       :: lljcut
+!> \page ljrcut
+!! `real`
+!! **default:** `2.0**(1.0/6.0)`
+!! * Cutoff distance in LJ-sigma units.
+   real(8)       :: ljrcut
+!> \page ljushift
+!! `real`
+!! **default:** `1.0`
+!! * Shift of LJ potential in LJ-epsilon units.
    real(8)       :: ljushift               ! shift in epsilon units
 
 ! ... screened coloumb interaction
-
-   logical       :: lscrc                  ! flag for screened coloumb interaction
-   real(8)       :: scrlen                 ! screening length
-   logical       :: lscrhs                 ! flag for engaging incomplete screening due to excluded volume
+!> \page lscrc
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Screened Coulomb potential. See also \ref lscrhs.
+!! * `.false.`: No screened Coulomb potential.
+   logical       :: lscrc
+!> \page scrlen
+!! `real`
+!! * Screening length for the screened Coulomb potential.
+   real(8)       :: scrlen
+!> \page lscrhs
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: U(r) = \ref zat (iat) * jat)/r*exp(-r/\ref scrlen )*FAC(iat)*FAC(jat) with FAC(iat) = exp(-r*\ref radat (iat))/(1+\ref radat (iat)/\ref scrlen )
+!! * `.false.`: U(r) = \ref zat (iat)*\ref zat (jat)/r*exp(-r/\ref scrlen ). If \ref zat all are zero \ref ucoff (1,iatjat) is used.
+   logical       :: lscrhs
 
 ! ... image charge interaction
-
-   real(8)       :: epsimg                 ! dielectric constant of surrounding
-   real(8)       :: radimg                 ! location of dielectric discontinuity
+!> \page epsimg
+!! `real`
+!! * Relative dielectric permittivity of the surrounding medium (only \ref txelec = 'dipsphimage').
+   real(8)       :: epsimg
+!> \page radimg
+!! `real`
+!! * Radius of the surrounding medium (only \ref txelec = 'dipsphimage').
+   real(8)       :: radimg
    real(8), allocatable :: zimg(:)         ! charge of image atom
    real(8), allocatable :: rimg(:,:)       ! position of image atom
    real(8), allocatable :: dipimg(:,:)     ! image dipole moment vector
 
 ! ... dielectric discontinuities (for box or sphere)
-
-   real(8)       :: epsi1                  ! dielectric permittivity of left/inner region
-   real(8)       :: epsi2                  ! dielectric permittivity of right/outer region
-   real(8)       :: boundaryrad            ! radius of dielectric discontinuity (spherical bc)
-   integer(4)    :: lmaxdiel               ! maximal number of terms (spherical bc)
+!> \page epsi1
+!! `real`
+!! * Dielectric constant of the sphere (only \ref txelec = 'dipdiel').
+   real(8)       :: epsi1
+!> \page epsi2
+!! `real`
+!! * Dielectric constant outside the sphere (only \ref txelec = 'dipdiel').
+   real(8)       :: epsi2
+!> \page boundaryrad
+!! `real`
+!! * Radius of dielectric boundary (only \ref txelec = 'dipdiel').
+   real(8)       :: boundaryrad
+!> \page lmaxdiel
+!! `integer`
+!! * Truncation of l-sum (only \ref txelec = 'dipdiel').
+   integer(4)    :: lmaxdiel
+!> \page lbg
+!! `logical`
+!! * `true.`: Volume charge density of inside the sphere neutralizing the system (only \ref txelec = 'dipdiel').
    logical       :: lbg                    ! flag for neutralizing background of atome type 1 inside the dielectric sphere
    real(8)       :: ubgfac                 ! for neutralizing background of atom type 1 inside the dielectric sphere
 
@@ -719,22 +1301,57 @@ module MolModule
    real(8)       :: gravitation_force      ! gravitation force
 
 ! ... ramp potential
-
-   real(8)       :: lambda_ramp            ! r1atat*(lambda_ramp-One) distance where ramp potential becomes zero
-   real(8)       :: epsilon_ramp           ! energy at the hards-sphere contact
-   real(8)       :: alpha_ramp             ! parameter dermining the smoothness of the potential at lambda_ramp
+!> \page lambda_ramp
+!! `real`
+!! **default:** `1.1`
+!! * End of the ramp potential in units of hard-sphere diameter.
+   real(8)       :: lambda_ramp
+!> \page epsilon_ramp
+!! `real`
+!! **default:** `1.0`
+!! * Depth of the ramp potential.
+   real(8)       :: epsilon_ramp
+!> \page alpha_ramp
+!! `real`
+!! **default:** `1.0d-3`
+!! * Regulate the soft slope change at \ref lambda_ramp. Higher alpha implies softer change. u(r) =
+!! slope(r-r_ramp)(0.5+(1/Pi)*tan(\ref alpha_ramp(r-r_ramp), slope = -\ref epsilon_ramp /r1atat(\ref lambda_ramp -1), r_ramp = r1atat*\ref lambda_ramp for
+!! r1atat < r1atat(\ref lambda_ramp -1).
+   real(8)       :: alpha_ramp
 
 ! ... square_well potential
-
-   real(8)       :: lambda_sw              ! r1atat*(lambda_sw-One) distance where sw potential becomes zero
-   real(8)       :: epsilon_sw             ! energy at the hard-core contact
+!> \page lambda_sw
+!! `real`
+!! **default:** `1.1`
+!! * End of the square-well potential in units of hard-sphere diameter.
+   real(8)       :: lambda_sw
+!> \page epsilon_sw
+!! `real`
+!! **default:** `1.0`
+!! * Depth of the square-well potential.
+   real(8)       :: epsilon_sw
+!> \page alpha_sw
+!! `real`
+!! **default:** `1.0d-3`
+!! * Regulate the soft slope change at \ref lambda_sw . Higher alpha implies softer change.  u(r) =
+!! slope(r-r_sw)(0.5+(1/Pi)*tan(\ref alpha_sw (r-r_sw), slope = -\ref epsilon_sw /r1atat(\ref lambda_sw -1), r_sw = r1atat*\ref lambda_sw for r1atat <
+!! r1atat(\ref lambda_sw -1).
    real(8)       :: alpha_sw               ! parameter dermining the smoothness of the potential at lambda_sw
 
 ! ... depletion potentials (asakura_oosawa and lekkerkerker_tuinier)
-
+!> \page rad_dep
+!! `real`
+!! * Radius of penetrable hard sphere (Asakura-Oosawa model)
    real(8)       :: rad_dep                ! radius of penetrable hard sphere (asakura-oosawa model)
-   real(8)       :: rho_dep                ! number density of penetrable hard sphere (asakura-oosawa model)
-   real(8)       :: factor_dep             ! depletion-thickess factor
+!> \page rho_dep
+!! `real`
+!! * number density of penetrable hard sphere (asakura-oosawa model)
+   real(8)       :: rho_dep
+!> \page factor_dep
+!! `real`
+!! **default:** `1.0`
+!! * depletion-thickness factor
+   real(8)       :: factor_dep
 
 ! ... external field
 
@@ -748,9 +1365,39 @@ module MolModule
    type(bond_var):: clink                  ! atom-atom crosslink
 
 ! ... external potential
-
-   logical       :: luext                  ! flag for external potential
-   character(20), allocatable :: txuext(:) !*selecting type of external potential
+!> \page luext
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Application of external potentials on the particles.
+!! * `.false.`: No external potential.
+   logical       :: luext
+!> \page txuext
+!! `character(20)`(1:\ref npt)
+!! **default:** \ref npt*' '
+!! * Text label used for selecting external potential. The number of external potential is growing and a number of parameters specifying these parameters are available. See routine  IOPotExternal for details.
+!! * '`wall_z`': hard walls at abs(z) = wall_z-ext
+!! * '`sw_wall_zlow`': square-well wall at z = -wall_z-ext
+!! * '`ramp_wall_z`': ramp walls at abs(z) = wall_z-ext
+!! * '`lj_wall_z`': LJ walls at abs(z) = wall_z-ext
+!! * '`lj_wall_z_ts`': truncated and shifted LJ walls at abs(z) = wall_z-ext
+!! * '`lj_wall_z_mod`': heterogeneous LJ walls at abs(z) = wall_z-ext
+!! * '`lj_wall_zlow`': LJ + ramp wall at z = -wall_z-ext
+!! * '`lj_wall_desorb`': truncated LJ + ramp wall at z = -wall_z-ext (Niklas)
+!! * '`estat_field_z`': homogeneous electrical field in z-direction
+!! * '`hom_charged_walls`': interaction with a charged surface
+!! * '`i_soft_sphere`': external, soft, and spherical wall
+!! * '`Gunnar_soft_sphere`': external, soft, and spherical wall (Gunnar)
+!! * '`out_hard_ellipsoid`': hard ellipsoidal wall
+!! * '`capsid_shell`'; hard spherical capsid shell
+!! * '`uniform_shell`': hard spherical capsid shell with a uniform surface charge density
+!! * '`sphdielboundary_q`': dielectric sphere (multipole expansion)
+!! * '`sphdielboundary_p`': dielectric sphere (pairwise interaction)
+!! * '`sphdielboundary`': spherical dielectric boundary (pairwise interaction)
+!! * '`core_shell`': hard inner and outer spherical walls (Steffi)
+!! * '`insulating_sphere`': penetrable uniformly charged sphere (Steffi)
+!! * '`hollow_sphere' hollow and charged sphere (Steffi)
+!! * See code for further details.
+   character(20), allocatable :: txuext(:)
    real(8)       :: wall_z_ext             !*parameter describing location of external wall
    real(8)       :: lambda_sw_ext          !*parameter describing external square-well potential
    real(8)       :: epsilon_sw_ext         !*parameter describing external square-well potential
@@ -807,9 +1454,21 @@ module MolModule
 ! ... polarization
 
    logical, allocatable :: lapolarization(:)! true if polarization /= 0
-   real(8)              :: tpolit          ! relative tolerance of the idm for convergence
-   integer(4)           :: mpolit          ! max number of iterations
-   integer(4)           :: npolit          ! interval of interation
+!> \page tpolit
+!! `real`
+!! **default:** `10**-4`
+!! * Relative tolerance of the induced dipole moment in the iteration.
+   real(8)              :: tpolit
+!> \page mpolit
+!! `integer`
+!! **default:** `15`
+!! * Maximum number of iterations.
+   integer(4)           :: mpolit
+!> \page npolit
+!! `integer`
+!! **default:** `5`
+!! * Interval of iteration.
+   integer(4)           :: npolit
    logical              :: lidmconv        ! flag indicating convergence of idm iteration
    real(8), allocatable :: poltensa(:,:,:) ! polarisability tensor (xx,yy,zz,xy,xz,yz) in molecular frame
    real(8), allocatable :: poltens(:,:)    ! polarisability tensor (xx,yy,zz,xy,xz,yz)
@@ -819,34 +1478,97 @@ module MolModule
    real(8), allocatable :: idmo(:,:)       ! induced dipole moment, particle
    real(8)              :: idmsys(3)       ! induced dipole moment, system
    real(8), allocatable :: diptot(:,:)     ! static + induced dipole moment vector
-   logical              :: ldamping        ! damping of electrostatics when evaluating the polarization
+!> \page ldamping
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Short-distance damping of electrostatic force when calculating induced dipole moment.
+!! * `.false.`: Nothing.
+   logical              :: ldamping
 
 ! ... ellipsoidal particles
-
-   logical       :: lellipsoid            ! .true.; particles are to be treated as ellipsoids !restrictions apply!
-   real(8)       :: radellipsoid          ! radius of degenerated axes
+!> \page lellipsoid
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Hard-core ellipsoidal (prolate) particles.
+!! * `.false.`: No hard-core ellipoidal particles.
+   logical       :: lellipsoid
+!> \page radellipsoid
+!! `real`
+!! **default:** `1.0`
+!! * Radius of degenerated axes.
+   real(8)       :: radellipsoid
+!> \page aellipsoid
+!! `real`
+!! **default:** `1.0`
+!! * Aspect ratio: >1 prolate and <1 oblate.
    real(8)       :: aellipsoid            ! aspect ratio (>1 prolate, <1 oblate)
    real(8)       :: radellipsoid2         ! radellipsoid**2
 
 ! ... superball particles
 
-   logical       :: lsuperball            ! .true.; particles are superballs
-   real(8)       :: radsuperball          ! radius of superballs
+!> \page lsuperball
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: particles are superballs
+   logical       :: lsuperball
+!> \page radsuperball
+!! `real`
+!! **default:** `One`
+!! radius of superballs
+   real(8)       :: radsuperball
    real(8)       :: radsuperball2         ! radsuperball**2
    real(8)       :: radsuperball2i        ! 1/radsuperball2
-   real(8)       :: qsuperball            ! q parameter of superballs
+!> \page qsuperball
+!! `real`
+!! **default:** `One`
+!! * q parameter of superballs
+   real(8)       :: qsuperball
    real(8)       :: qsuperball2           ! 2q
    real(8)       :: qsuperballi           ! 1/qsuperball
-   character(4)  :: txmethodsuperball     ! 'nr', 'mesh', 'test'
-   integer(4)    :: nitersuperball        ! maximal number of nr iterations
-   real(8)       :: tolsuperball          ! tolerance of nr iterations
+!> \page txmethodsuperball
+!! `character(4)`
+!! **default:** `'nr'`
+!! * 'nr', 'mesh', 'test'
+   character(4)  :: txmethodsuperball
+!> \page nitersuperball
+!! `integer`
+!! **default:** `10`
+!! * maximal number of nr iterations
+   integer(4)    :: nitersuperball
+!> \page tolsuperball
+!! `real`
+!! **default:** `1.0d-4`
+!! * tolerance of nr iterations
+   real(8)       :: tolsuperball
+!> \page dl_damp
+!! `real`
+!! **default:** `One`
+
+!> \page dl_cut
+!! `real`
+!! **default:** `1d10`
    real(8)       :: dl_damp, dl_cut
+!> \page dr_damp
+!! `real`
+!! **default:** `One`
+
+!> \page dr_cut
+!! `real`
+!! **default:** `1d10`
    real(8)       :: dr_damp, dr_cut
-   integer(4)    :: meshdepthsuperball    ! deepth of mesh (4 is normally OK)
+!> \page meshdepthsuperball
+!! `integer`
+!! **default:** `4`
+!! * depth of mesh
+   integer(4)    :: meshdepthsuperball
    logical       :: lsuperballtest        ! for test output
    real(8)       :: rcut2superball(2)     ! separations squared where refined overlap check is made
    type(TriMesh) :: superBallMesh         ! triangle mesh with DOP-tree
-   logical       :: lstatsuperball        ! .true.; engage time statistics
+!> \page lstatsuperball
+!! `logical`
+!! **default:** `.false.`
+!! * `.true`: engage time statistics
+   logical       :: lstatsuperball
    real(8), parameter :: qsuperball_max_nr = 1.7 ! maximal q parameter of superballs for nr algorithm
 
 ! ... group division

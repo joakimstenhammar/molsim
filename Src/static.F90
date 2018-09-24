@@ -19,13 +19,278 @@
 !************************************************************************
 !************************************************************************
 
-!************************************************************************
-!*                                                                      *
-!*     StaticDriver                                                     *
-!*                                                                      *
-!************************************************************************
 
-! ... driver of static analysis routines
+!> \page nmlStatic
+!! The namelist  \ref nmlStatic contains variables that control the interval of the analysis and static analysis
+!! routines used.
+!! * Variables:
+!!  * \subpage istatic
+!!  * \subpage lspdf
+!!  * \subpage lrdf
+!!  * \subpage lrdfchain
+!!  * \subpage lrdfsph
+!!  * \subpage lg3
+!!  * \subpage lrdfcond
+!!  * \subpage lsf
+!!  * \subpage langdf
+!!  * \subpage langextdf
+!!  * \subpage loridipdf
+!!  * \subpage llsphharaver
+!!  * \subpage lradangdf
+!!  * \subpage lkirkwoodgk
+!!  * \subpage loripoldf
+!!  * \subpage lnnhb
+!!  * \subpage lnndf
+!!  * \subpage lchaindf
+!!  * \subpage lchaintypedf
+!!  * \subpage lchaintypeextdf
+!!  * \subpage lcbpc
+!!  * \subpage lltt
+!!  * \subpage lcluster
+!!  * \subpage lzerosecondmoment
+!!  * \subpage lmultipoledf
+!!  * \subpage lenergydf
+!!  * \subpage lwidom1
+!!  * \subpage lwidom2
+!!  * \subpage lmeanforce1
+!!  * \subpage lmeanforce2
+!!  * \subpage lpotmeanforce
+!!  * \subpage lsurfacearea
+!!  * \subpage lcrystalformat
+!!  * \subpage ltrajectory
+!!  * \subpage lsubstructuredf
+!!  * \subpage lnetworkdf
+!!  * \subpage lnetworkradialdf
+!!  * \subpage lstaticuser
+
+!> \page lspdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Single particle distribution functions are calculated. Further specification is given in namelist  \ref nmlSPDF.
+!! * `.false`: No calculation.
+
+!> \page lrdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Radial distribution functions or running coordination numbers or are calculated.  Further specification is given in
+!! namelist  \ref nmlRDF.
+!! * `.false`: No calculation.
+
+!> \page lrdfchain
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Radial distribution functions or running coordination numbers are calculated between center of masses of chains. Further specification is given in namelist \ref nmlRDFChain.
+!! * `.false`: No calculation.
+
+!> \page lrdfsph
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Radial distribution functions or running coordination numbers are calculated for particles which positions are projected on a sphere. Further specification is given in namelist  \ref nmlRDFSph.
+!! * `.false`: No calculation.
+
+!> \page lg3
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Normalized triplet correlation functions are calculated. Further specification is given in namelist  \ref nmlG3Dist.
+!! * `.false`: No calculation.
+
+!> \page lrdfcond
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Conditional radial distribution functions are calculated. Futher specification is given in namelist  \ref nmlRDFCond.
+!! * `.false.`: No calculation.
+
+!> \page lsf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Partial structure factors are calculated. Further specification is given in namelist \ref nmlSF.
+!! * `.false.`: No calculation.
+
+!> \page langdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Angular distribution functions are calculated. Further specification is given in namelist  \ref nmlAngDF.
+!! * `.false.`: No calculation.
+
+!> \page langextdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Angular 2d distribution functions with respect to external frame are calculated. Further specification is given in namelist  \ref nmlAngExtDF.
+!! * `.false.`: No calculation.
+
+!> \page loridipdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Orientation/dipole distribution functions are calculated. Further specification is given in namelist  \ref nmlOriDipDF.
+!! * `.false.`: No calculation.
+
+!> \page llsphharaver
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Averages of unnormalized spherical harmonics are calculated.
+!! * `.false.`: No calculation.
+
+!> \page lradangdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Radial-angular 2d distribution functions are calculated. Further specification is given in namelist  \ref nmlRadAngDF.
+!! * `.false.`: No calculation.
+
+!> \page lkirkwoodgk
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Kirkwood gk-factors are calculated. Further specification is given in namelist \ref nmlKirkwoodgk.
+!! * `.false.`: No calculation.
+
+!> \page loripoldf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Orientation polarization distribution functions are calculated. Further specification is given in namelist  \ref nmlOriPolDF.
+!! * `.false.`: No calculation.
+
+!> \page lnnhb
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Number of nearest neighbours and no of hydrogen bonds are calculated. Further specification is given in namelist  \ref nmlNNHB.
+!! * `.false.`: No calculation.
+
+!> \page lnndf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Nearest neighbour distribution functions are calculated. Further specification is given in namelist  \ref nmlNNDF.
+!! * `.false.`: No calculation.
+
+!> \page lchaindf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Chain distribution functions are calculated. Further specification is given in namelist  \ref nmlChainDF.
+!! * `.false.`: No calculation.
+
+!> \page lchaintypedf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Chain distribution functions are calculated. Further specification is given in namelist  \ref nmlChainTypeDF.
+!! * `.false.`: No calculation.
+
+!> \page lchaintypeextdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Chain type distribution functions with respect to the lab frame are calculated. Further specification is given in namelist  \ref nmlChainTypeExtDF.
+!! * `.false.`: No calculation.
+
+!> \page lcbpc
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Probabilities of chain particles to be near particles of another type are calculated.  Further specification is given in namelist  \ref nmlCBPC.
+!! * `.false.`: No calculation.
+
+!> \page lltt
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Loop, tail, and train statistics are calculated. Further specification is given in namelist  \ref nmlLoopTailTrain.
+!! * `.false.`: No calculation.
+
+!> \page lcluster
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Cluster size distribution functions are calculated. Further specification is given in namelist  \ref nmlCluster.
+!! * `.false.`: No calculation.
+
+!> \page lzerosecondmoment
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Zero and second moment for an ionic, neutral system is calculated.
+!! * `.false.`: No calculation.
+
+!> \page lmultipoledf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Electrostatic multipole moment distribution functions are calculated. Further specification is given in namelists  \ref nmlMultipoleDF.
+!! * `.false.`: No preparation.
+
+!> \page lenergydf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Energy distribution functions are calculated. Further specification is given in namelist  \ref nmlEnergyDF.
+!! * `.false.`: No calculation.
+
+!> \page lwidom1
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Excess chemical potentials are prepared. Further specification is given in namelists \ref nmlWidom1.
+!! * `.false.`: No preparation.
+
+!> \page lwidom2
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Excess chemical potentials are prepared. Further specification is given in namelists \ref nmlWidom2.
+!! * `.false.`: No preparation.
+
+!> \page lmeanforce1
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Mean force between two particles is calculated. Further specification is given in namelist  \ref nmlMeanForce1.
+!! * `.false.`: No calculation.
+
+!> \page lmeanforce2
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Mean force between two particles is calculated. Further specification is given in namelist  \ref nmlMeanForce2.
+!! * `.false.`: No calculation.
+
+!> \page lpotmeanforce
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Potential of mean force between two particles is calculated. Further specification is given in namelist  \ref nmlPotMeanForce.
+!! * `.false.`: No calculation.
+
+!> \page lsurfacearea
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Surface area available around atoms residing in particles of a specified type is calculated. Further specification is given in namelist  \ref nmlSurfaceArea.
+!! * `.false.`: No calculation.
+
+!> \page lcrystalformat
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Write atoms in the crystallographic format stating with atoms belong to molecules closest to the origin. Hard-code limitation of spatial distance and number of particles are in action.
+!! * `.false.`: No calculation.
+
+!> \page ltrajectory
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Write trajectory on FLIST. Further specification is given in namelist \ref nmlTrajectory.
+!! * `.false.`: No calculation.
+
+!> \page lsubstructuredf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Substructures of chains, hierarchical structures and networks are analyses. Further specification is given in namelist  nmlSustructureDF.
+!! * `.false.`: No calculation.
+
+!> \page lnetworkdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Network distribution functions are calculated. Further specification is given in \ref nmlNetworkDF.
+!! * `.false.`: No calculation.
+
+!> \page lnetworkradialdf
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Radial network distribution functions are calculated. Further specification is given in \ref nmlNetworkRadialDF.
+!! * `.false.`: No calculation.
+
+!> \page lstaticuser
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: StaticUser is called and from where user-provided static analysis routines are called in file moluser.F90.
+!! * `.false.`: No call.
+
+!************************************************************************
+!> \page static static.F90
+!! **StaticDriver**
+!! *driver of static analysis routines*
+!************************************************************************
 
 subroutine StaticDriver(iStage)
 
@@ -36,6 +301,7 @@ subroutine StaticDriver(iStage)
 
    character(40), parameter :: txroutine ='StaticDriver'
    character(80), parameter :: txheading ='static analysis: general'
+
    logical,       save :: lspdf, lrdf, lrdfchain, lrdfsph, lg3, lrdfcond, lsf,                  &
                           langdf, langextdf, loridipdf, lsphharaver, lradangdf,                 &
                           lkirkwoodgk, loripoldf, lnnhb, lnndf,                                 &
@@ -268,27 +534,41 @@ end subroutine StaticDriverSub
 end subroutine StaticDriver
 
 !************************************************************************
-!*                                                                      *
-!*     SPDF                                                             *
-!*                                                                      *
+!> \page static static.F90
+!! **SPDF**
+!! *calculate single particle distribution functions*
 !************************************************************************
 
-! ... calculate single particle distribution functions
 
-!     type  label  quantity
-!     ----  -----  --------
-!     1     rrden  reduced radial number density
-!     2     rrdf   reduced running coordination number
-!     3     zden   number density in the z-direction
-!     4     zden2  number density in the z-direction (special)
-!     5     z'*z   projection of z'-axis on the box z-axis
-!     6     z'*x   projection of z'-axis on the box x-axis
-!     7     z'*y   projection of z'-axis on the box y-axis
-!     8     opt_d  radial density projected on the z = 0 plane
-!     9     elpot  radial electrostatic potential evaluated at particle positions
-!    10     m*E    cos(m(ia)*E); m(ia) is the dipole moment of atom ia and E an external field
 
 !     group division of particles is required
+
+!> \page nmlSPDF
+!! The namelist  \ref nmlSPDF contains variables that control the calculation of single particle distribution functions. Any combination
+!! of the types of distribution functions listed below may be selected through vtype\%l.
+!!    | type | label           | Quantity                                                                    |
+!!    | :--: | :-------------: | :-------------------------------------------------------------------------: |
+!!    | 1    | rrden           | Reduced radial number density                                               |
+!!    | 2    | rren            | Reduced running coordination number                                         |
+!!    | 3    | zden            | Number density in the z-direction                                           |
+!!    | 4    | zden2           | Number density in the z-direction (special)                                 |
+!!    | 5    | z'*z            | Projection of molecular z'-axis on the box z-axis                           |
+!!    | 6    | z'*x            | Projection of molecular z'-axis on the box x-axis                           |
+!!    | 7    | z'*y            | Projection of molecular z'-axis on the box y-axis                           |
+!!    | 8    | \format{opt_d}  | Radial density projected on the z = 0 plane                                 |
+!!    | 9    | elpot           | radial electrostaic potential evaluated at particle positions               |
+!!    | 10   | m*E             | cos(m(ia)*E); m(ia) is the dipole moment of atom ia and E an external field |
+!! * Variables:
+!!  * \subpage nmlSPDF_vtype
+
+!> \page nmlSPDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real) (1:10)`
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * min: /0.0,0.0,-X,-X,-1.0,Y/
+!! * X = lcyl/2 (only \ref txbc = 'cyl'), box(3)/2 (else)
+!! * Y = rsph (only \ref txbc = 'sph), rcyl (only \ref txbc = 'cyl')
+!! * max /10.0,10.0,X,X,1.0,0.0/
+
 
 subroutine SPDF(iStage)
 
@@ -646,21 +926,63 @@ end subroutine SPDF_jos
 end subroutine SPDF
 
 !************************************************************************
-!*                                                                      *
-!*     RDF                                                              *
-!*                                                                      *
+!> \page static static.F90
+!! **RDF**
+!! *calculate running coordination number or radial distribution function*
 !************************************************************************
 
-! ... calculate running coordination number or radial distribution function
 
-!     type  label    quantity
-!     ----  -----    --------
-!     1     com-com  particle-particle
-!     2     com-xxx  particle-atom
-!     3     xxx-xxx  atom-atom
+!> \page nmlRDF
+!! The namelist  \ref nmlRDF contains variables that control the calculation of running coordination number or radial distribution
+!! functions. Any combination of the types of distribution functions listed below may be selected through vtype\%l.
+!!    | type | label   |   quantity        |
+!!    | :--: | :-----: | :---------------: |
+!!    | 1    | com-com | particle-particle |
+!!    | 2    | com-xxx | particle-atom     |
+!!    | 3    | xxx-xxx | atom-atom         |
+!! * Variables:
+!!  * \subpage nmlRDF_vtype
+!!  * \subpage nmlRDF_rmax
+!!  * \subpage nmlRDF_ndim
+!!  * \subpage nmlRDF_nbin
+!!  * \subpage nmlRDF_func
+!!  * \subpage l2dtwo
 
 !     xxx is the first three characters of txat
 !     group division of particles is required
+
+!> \page nmlRDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)` (1:3)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Min: /0.0,0.0,0.0/ Max: /10.0,10.0,10.0/
+
+!> \page nmlRDF_rmax rmax
+!! `real`
+!! **default:** `10.0`
+!! * Upper distance for particle separation considered.
+
+!> \page nmlRDF_ndim ndim
+!! `integer`
+!! **default:** `3`
+!! * `2`: Sample distribution function in the xy-plane.
+!! * `3`: Sample distribution function in the xyz-space.
+
+!> \page nmlRDF_nbin nbin
+!! `integer`
+!! **default:** `100`
+!! * Number of bins used to sample the distribution functions.
+
+!> \page nmlRDF_func func
+!! `character(3)`
+!! **default:** `rdf`
+!! * `rdf`: Radial distribution functions are calculated.
+!! * `rcn`: Running coordination numbers are calculated.
+
+!> \page l2dtwo
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Sampling of 2d radial distribution functions separately for z>0 and z<0. Useful for a system with \ref txbc='xy' and two equivalent surfaces at z=±box2(3) (only ndim = 2)
+!! * `.false.`: Nothing.
 
 subroutine RDF(iStage)
 
@@ -1102,17 +1424,39 @@ subroutine RDF(iStage)
 end subroutine RDF
 
 !************************************************************************
-!*                                                                      *
-!*     RDFChain                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **RDFChain**
+!! *calculate running coordination number or radial distribution function*
 !************************************************************************
 
-! ... calculate running coordination number or radial distribution function
 
-!     type  label    quantity
-!     ----  -----    --------
-!     1     com-com  chain-chain
+!> \page nmlRDFChain
+!! The namelist  \ref nmlRDFChain contains variables that control the calculation of running coordination number or radial distribution
+!! functions. Any combination of the types of distribution functions listed below may be selected through vtype\%l.
+!!    | type | label   | quantity                      |
+!!    | :--: | :-----: | :---------------------------: |
+!!    | 1    | com-com | center of mass-center of mass |
+!! Only chains within a separation of rmax are considered.
+!! * Variables:
+!!  * \subpage nmlRDFChain_vtype
+!!  * \subpage nmlRDFChain_rmax
+!!  * \subpage nmlRDFChain_func
 
+!> \page nmlRDFChain_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)` (1:3)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Min: /0.0/ Max: /10.0/
+
+!> \page nmlRDFChain_rmax rmax
+!! `real`
+!! **default:** `10.0`
+!! * Upper distance for particle separation considered.
+
+!> \page nmlRDFChain_func func
+!! `character(3)`
+!! **default:** `rdf`
+!! * `rdf`: Radial distribution functions are calculated.
+!! * `rcn`: Running coordination numbers are calculated.
 subroutine RDFChain(iStage)
 
    use MolModule
@@ -1289,14 +1633,45 @@ subroutine RDFChain(iStage)
 end subroutine RDFChain
 
 !************************************************************************
-!*                                                                      *
-!*     RDFSph                                                           *
-!*                                                                      *
+!> \page static static.F90
+!! **RDFSph**
+!! *calculate rcn or rdf of particles which positions are projected on a sphere*
 !************************************************************************
 
-! ... calculate rcn or rdf of particles which positions are projected on a sphere
 
 ! rcn(r*t') = 2*pi*r**2*sigma*int(0 to t')(g(t)*sin(t)dt), sigma = n/(4*pi*r**2)
+
+!> \page nmlRDFSph
+!! The namelist  \ref nmlRDFSph contains variables that control the calculation of running coordination number or radial distribution functions of particles which positions are projected on a sphere.
+!! * Variables:
+!!  * \subpage ipsph
+!!  * \subpage iptrcnsph
+!!  * \subpage jptrcnsph
+!!  * \subpage nmlRDFSph_nbin
+!!  * \subpage nmlRDFSph_func
+
+!> \page ipsph
+!> `integer`
+!! * The identity of the particle on which surface the projection is made.
+
+!> \page iptrcnsph
+!! `integer`
+!! * Type of particle for which distribution function should be calculated.
+
+!> \page jptrcnsph
+!! `integer`
+!! * Type of particle for which distribution function should be calculated.
+
+!> \page nmlRDFSph_nbin nbin
+!! `integer`
+!! **default:** `100`
+!! * Number of bins used to sample the distribution functions.
+
+!> \page nmlRDFSph_func func
+!! `character(3)`
+!! **default:** `rdf`
+!! * `rdf`: Radial distribution functions are calculated.
+!! * `rcn`: Running coordination numbers are calculated.
 
 subroutine RDFSph(iStage)
 
@@ -1432,13 +1807,28 @@ subroutine RDFSph(iStage)
 end subroutine RDFSph
 
 !************************************************************************
-!*                                                                      *
-!*     RDFCond                                                          *
-!*                                                                      *
+!> \page static static.F90
+!! **RDFCond**
+!! *calculate conditional radial distribution function*
 !************************************************************************
 
-! ... calculate conditional radial distribution function
 
+!> \page nmlRDFCond
+!! The namelist  \ref nmlRDFCond contains variables that control the calculation of conditional radial distribution functions. The
+!! distribution functions are made for five different bins of arccos(theta) making up -1 to 1.
+!! * Variables:
+!!  * \subpage nmlRDFCond_vtype
+!!  * \subpage nmlRDFCond_rmax
+
+!> \page nmlRDFCond_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`
+!! Min: /0.0/ Max: /10.0/
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+
+!>\page nmlRDFCond_rmax rmax
+!! `real`
+!! **default:** `10.0`
+!! * Upper distance for particle separation considered.
 subroutine RDFCond(iStage)
 
    use MolModule
@@ -1582,17 +1972,87 @@ subroutine RDFCond(iStage)
 end subroutine RDFCond
 
 !************************************************************************
-!*                                                                      *
-!*     G3Dist                                                           *
-!*                                                                      *
+!> \page static static.F90
+!! **G3Dist**
+!! *calculate g(r12,r13,r23)/g(r12)*
 !************************************************************************
 
-! ... calculate g(r12,r13,r23)/g(r12)
 
 !     instead of r23, use cos(theta) where theta is the angle between r12 and r13
 !     no n/(n-1) etc correction
 
 !     Note, data are not saved after each macrostep
+
+!> \page nmlG3Dist
+!! The namelist  \ref nmlG3Dist contains variables that control the calculation of normalized triplet correlation functions g(r12, r13,
+!! r23)/g(r12). r23 is represented by the angle theta formed by the vectors r12 and r13.
+!! * Variables:
+!!  * \subpage ipt1
+!!  * \subpage ipt2
+!!  * \subpage ipt3
+!!  * \subpage snbin
+!!  * \subpage slow
+!!  * \subpage supp
+!!  * \subpage tnbin
+!!  * \subpage tlow
+!!  * \subpage tupp
+!!  * \subpage anbin
+!!  * \subpage alow
+!!  * \subpage aupp
+!!  * \subpage nskip
+
+!> \page ipt1
+!! `integer`
+!! * Particle type of the first particle.
+
+!> \page ipt2
+!! `integer`
+!! * Particle type of the second particle.
+
+!> \page ipt3
+!! `integer`
+!! * Particle type of the third particle.
+
+!> \page snbin
+!! `integer`
+!! * Number of bins to sample the distance r12.
+
+!> \page slow
+!! `real`
+!! * Lower end of r12 to be sampled.
+
+!> \page supp
+!! `real`
+!! * Upper end of r12 to be sampled.
+
+!> \page tnbin
+!! `integer`
+!! * Number of bins to sample the distance r13.
+
+!> \page tlow
+!! `real`
+!! * Lower end of r13 to be sampled.
+
+!> \page tupp
+!! `real`
+!! * Upper end of r13 to be sampled.
+
+!> \page anbin
+!! `integer`
+!! * Number of bins to sample the angle theta.
+
+!> \page alow
+!! `real`
+!! * Lower end of theta to be sampled.
+
+!> \page aupp
+!! `real`
+!! * Upper end of theta to be sampled.
+
+!> \page nskip
+!! `integer`
+!! **default:** `1`
+!! * Interval of listing the distance r12.
 
 subroutine G3Dist(iStage)
 
@@ -1797,12 +2257,11 @@ subroutine G3Dist(iStage)
 end subroutine G3Dist
 
 !************************************************************************
-!*                                                                      *
-!*      SFDriver                                                        *
-!*                                                                      *
+!> \page static static.F90
+!! **SFDriver**
+!! *calculate partial structure factors*
 !************************************************************************
 
-! ... calculate partial structure factors
 
 subroutine SFDriver(iStage)
    use MolModule
@@ -1822,12 +2281,11 @@ subroutine SFDriver(iStage)
 end subroutine SFDriver
 
 !************************************************************************
-!*                                                                      *
-!*      SFPBC                                                           *
-!*                                                                      *
+!> \page static static.F90
+!! **SFPBC**
+!! *calculate partial structure factors*
 !************************************************************************
 
-! ... calculate partial structure factors
 
 !     calculate scattering intensities
 
@@ -1836,6 +2294,43 @@ end subroutine SFDriver
 !     1     100      sf in the 100 direction
 !     2     110      sf in the 110 direction
 !     3     111      sf in the 111 direction
+
+!> \page nmlSF
+!! The namelist  \ref nmlSF contains variables that control the calculation of partial structure factors.
+!! * (i.) \ref txbc='sph' or \ref txbc='cyl' Variables:
+!!  * \subpage txkscale
+!!  * \subpage klow
+!!  * \subpage logklow
+!!  * \subpage logkupp
+!!  * \subpage nmlSFnoPBC_nbin
+!! * (ii.) Cubic box and \ref txbc='xyz'. The largest k-vector is 2Pi/box. Variables:
+!!  * \subpage nmlSF_ndim
+!!  * \subpage nmlSF_nbin
+!!  * \subpage lqsorted
+!!  * \subpage lsi
+
+!> \page nmlSF_ndim ndim
+!! `integer`
+!! **default:** `3`
+!! * `2`:  Structure factor in the xy-plane. It is averaged over 2 100 and 2 110 directions.
+!! * `3`:  Structure factor in the xyz-space. It is averaged over 3 100, 6 110 directions, and 4 110 directions.
+
+!> \page nmlSF_nbin nbin
+!! `integer`
+!! **default:** `100`
+!! * Number of bins used to sample the partial structure factors.
+
+!> \page lqsorted
+!! `logical`
+!! **default:** `.true.`
+!! * `.false.`:  List separately the structure factors of the different types directions.
+!! * `.true.`:  Sort the structure factors of the different types of directions and list the sorted structure factor.
+
+!> \page lsi
+!! `logical`
+!! **default:** `.false.`
+!! * `.false.`:  Nothing.
+!! * `.true.`:  Scattering intensities are calculated. Further specification is given in \ref nmlScatIntens.
 
 subroutine SFPBC(iStage)
 
@@ -2119,12 +2614,33 @@ end subroutine sortsub
 end subroutine SFPBC
 
 !************************************************************************
-!*                                                                      *
-!*     ScatIntens                                                       *
-!*                                                                      *
+!> \page static static.F90
+!! **ScatIntens**
+!! *calculate scattering intensity, form factor, and structure factor*
 !************************************************************************
 
-! ... calculate scattering intensity, form factor, and structure factor
+
+!> \page nmlScatIntens
+!! The namelist  \ref nmlScatIntens contains variables that control the calculation of the scattering intensities using a multi shell profile of constant scattering properties of each particle.
+!! * Variables:
+!!  * \subpage nshell
+!!  * \subpage rshell
+!!  * \subpage cshell
+
+!> \page nshell
+!! `integer`(1:\ref npt)
+!! **default:** `nshell(1:`\ref npt `) = 1`
+!! * Number of shells
+
+!> \page rshell
+!! `real`(1:\ref nshell,1:\ref npt)
+!! ** default:** `rshell(1,1:`\ref npt `) = [ (`\ref radat (ipt) `, ipt = 1,`\ref npt `) ]`
+!! * Radius of the shells.
+
+!> \page cshell
+!! `real`(1:\ref nshell ,1:\ref npt )
+!! **default:** `cshell(1,1:`\ref npt `) = One`
+
 
 subroutine ScatIntens(nbin, q, sfpar)
 
@@ -2250,14 +2766,39 @@ subroutine ScatIntens(nbin, q, sfpar)
 end subroutine ScatIntens
 
 !************************************************************************
-!*                                                                      *
-!*      SFNoPBC                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **SFNoPBC**
+!! *calculate partial structure factors*
 !************************************************************************
 
-! ... calculate partial structure factors
 
 !     no periodical boundary conditions; averaged over 3x(100) directions
+
+!> \page txkscale
+!! `character(3)`
+!! **default:** `lin`
+!! * ``'lin'``:  Linear k-scale
+!! * ``'log'``:  Logarithmic k-scale
+
+!> \page klow
+!! `real`
+!! **default:** if \ref sphrad \f$ \neq \f$ 0: `2Pi/(10*`\ref sphrad `)`, else `0.01`
+!! * Lower k-vector (linear scale)
+
+!> \page logklow
+!! `real`
+!! **default:** `-4`
+!! * Lower k-vector (logarithmic scale)
+
+!> \page logkupp
+!! `real`
+!! **default:** `1`
+!! * Upper k-vector (logarithmic scale)
+
+!> \page nmlSFnoPBC_nbin nbin
+!! `integer`
+!! **default:** `100`
+!! * Number of bins used to sample the partial structure factors.
 
 subroutine SFNoPBC(iStage)
 
@@ -2433,12 +2974,11 @@ subroutine SFNoPBC(iStage)
 end subroutine SFNoPBC
 
 !************************************************************************
-!*                                                                      *
-!*     AngDF                                                            *
-!*                                                                      *
+!> \page static static.F90
+!! **AngDF**
+!! *calculate angular distribution functions*
 !************************************************************************
 
-! ... calculate angular distribution functions
 
 !     p(a) =< delta(a-a') > where a is the angle cosine given (for particles within [rmin:rmax]) by
 !
@@ -2457,6 +2997,47 @@ end subroutine SFNoPBC
 
 !  and where particle ip belongs to group igr and jp as well as kp to jgr
 
+!> \page nmlAngDF
+!! The namelist  \ref nmlAngDF contains variables that control the calculation of angular distribution functions. Any combination of the
+!! types of distribution functions listed below may be selected through vtype\%l.
+!!
+!!    | type |  label          |  quantity                                                                                      |
+!!    | ---- | --------------  |------------------------------------------------------------------------------------------------|
+!!    | 1    | z'*z'           |cos( z'(ip)*z'(jp)     )                                                                        |
+!!    | 2    | z'*r            |cos( z'(ip)*r(ijp)     )                                                                        |
+!!    | 3    | r*z'            |cos( r(ijp)*z'(jp)     )                                                                        |
+!!    | 4    | oh*r            |cos( oh(ip)*r(ijp)     )   ip has to be water                                                   |
+!!    | 5    | r*oh            |cos( r(ijp)*oh(jp)     )   jp has to be water                                                   |
+!!    | 6    | oh.o            |cos( oh(ip).o(jp)      )   ip and jp have to be water                                           |
+!!    | 7    | \format{o.o.o}  |cos( o(jp).o(ip).o(kp) )                                                                        |
+!!    | 8    | m*m             |cos( m(ia)*m(ja)       )   m(ia) is the dipole vector of atom ia = ianpn(ip) + iashift          |
+!!    | 9    | m*r             |cos( m(ia)*r(ijp)      )                         (the value of iashift is currently hard coded) |
+!!    | 10   | r*m             |cos( r(ijp)*m(ja)      )                                                                        |
+!!
+!! h(ip) denotes the z'-axis of particle ip, r(ijp) the normalized vector between particle ip and jp defined as r(jp)-r(ip), oh(ip)
+!! the direction of a oh-bond in water, oh(ip).o(jp) the largest angle of the four possible formed by the oh(ip) direction and the
+!! h(ip)-o(jp) vector (hydrogen bond angle), and o(jp).o(ip).o(jp) the angle formed by the location of three particles. The sampling
+!! of types 4-6 assumes that the first three sites of water are oxygen, hydrogen, and hydrogen. Generally ip refers to reference
+!! particles and jp to field particles. Only field particles within a separation of rmax from a reference particle are considered.
+!! * Variables:
+!!  * \subpage nmlAngDF_vtype
+!!  * \subpage nmlAngDF_rmin
+!!  * \subpage nmlAngDF_rmax
+
+!> \page nmlAngDF_vtype vtype
+!! `static2D_var(logical, 2*real, 2*real, 2*integer, logical, character, real)`(1:10)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Min: /(-1.0, 0.0)/ Max: /(1.0, 2Pi)/
+
+!> \page nmlAngDF_rmin rmin
+!! `real`
+!! **default:** `0.0`
+!! * Lower distance for particle separation considered.
+
+!> \page nmlAngDF_rmax rmax
+!! `real`
+!! **default:** `10.0`
+!! * Upper distance for particle separation considered.
 subroutine AngDF(iStage)
 
    use MolModule
@@ -2757,16 +3338,26 @@ subroutine AngDF(iStage)
 end subroutine AngDF
 
 !************************************************************************
-!*                                                                      *
-!*     AngExtDF                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **AngExtDF**
+!! *calculate angular 2d distribution functions with respect to external frame*
 !************************************************************************
 
-! ... calculate angular 2d distribution functions with respect to external frame
 
-!     type  label    quantity
-!     ----  -----    --------
-!     1     z'-axis  cos(theta)-phi 2d distributin function
+!> \page nmlAngExtDF
+!! The namelist  \ref nmlAngDF contains variables that control the calculation of 2D angular distribution functions with respect to an external frame.
+!!
+!!    | type | label  |  quantity                              |
+!!    | ---- | -------|  --------------------------------------|
+!!    | 1    | z'-axis|  cos(theta)-phi 2d distributin function|
+!!
+!! * Variables:
+!! * \subpage nmlAngExtDF_vtype
+
+!> \page nmlAngExtDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`(1:3)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Min: /7*(-1.0)/ Max: /7*0.0/
 
 subroutine AngExtDF(iStage)
 
@@ -2891,19 +3482,29 @@ subroutine AngExtDF(iStage)
 end subroutine AngExtDF
 
 !************************************************************************
-!*                                                                      *
-!*     OriDipDF                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **OriDipDF**
+!! *calculate orientation/dipole distribution function*
 !************************************************************************
 
-! ... calculate orientation/dipole distribution function
 
-!     type  label    distribution functions
-!     ----  -----    ----------------------
-!     1     dir      orientation df based on ori(1:3,1:3)
-!     2     dir_aver symmetry-averaged orientation df
-!     3     dip      dipole df
-!     4     dip_tot  total dipole df
+!> \page nmlOriDipDF
+!! The namelist  \ref nmlOriDipDF contains variables that control the calculation of orientation/dipole distribution functions.
+!!
+!!    | type | label    | distribution functions               |
+!!    | ---- | -------- | ------------------------------------ |
+!!    | 1    | dir      | orientation df based on ori(1:3,1:3) |
+!!    | 2    | dir_aver | symmetry-averaged orientation df     |
+!!    | 3    | dip      | dipole df                            |
+!!    | 4    | dip_tot  | total dipole df                      |
+!!
+!! * Variables:
+!!  * \subpage nmlOriDipDF_vtype
+
+!> \page nmlOriDipDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`(1:3)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Min: /4*(-1)/ Max: /4*1.0/
 
 subroutine OriDipDF(iStage)
 
@@ -3077,12 +3678,11 @@ subroutine OriDipDF(iStage)
 end subroutine OriDipDF
 
 !************************************************************************
-!*                                                                      *
-!*     SphHarAver                                                       *
-!*                                                                      *
+!> \page static static.F90
+!! **SphHarAver**
+!! *calculate averages of unnormalized spherical harmonics*
 !************************************************************************
 
-! ... calculate averages of unnormalized spherical harmonics
 
 subroutine SphHarAver(iStage)
 
@@ -3189,16 +3789,44 @@ subroutine SphHarAver(iStage)
 end subroutine SphHarAver
 
 !************************************************************************
-!*                                                                      *
-!*     RadAngDF                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **RadAngDF**
+!! *calculate radial-angular 2d distribution functions*
 !************************************************************************
 
-! ... calculate radial-angular 2d distribution functions
 
-!     type  label          quantity
-!     ----  -----          --------
-!     1     x'y'-z'-plane  two particle radial - angular r2d distributin function
+!> \page nmlRadAngDF
+!! The namelist  \ref nmlRadAngDF contains variables that control the calculation of radial-angular 2d distribution functions.
+!!
+!!    | type |  label        |  quantity                                              |
+!!    | ---- | ------------- | ------------------------------------------------------ |
+!!    | 1    | x'y'-z'-plane | two particle radial - angular r2d distributin function |
+!!
+!! * Variables:
+!!  * \subpage nmlRadAngDF_vtype
+!!  * \subpage txCoordSys
+!!  * \subpage txAngle
+
+!> \page nmlRadAngDF_vtype vtype
+!! `static2D_var(logical, 2*real, 2*real, 2*integer, logical, character, real)`
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Default values depend on \ref txCoordSys
+
+!> \page txCoordSys
+!! `character(5)`
+!! **default:** `'polar'`
+!! * Coordinate system of distribution functions.
+!! * ``'polar'``:  r and cos(theta)
+!! * ``'cart'``:  sqrt(x**2+y**2) and z
+
+!> \page txAngle
+!! `character(6)`
+!! **default:** `'theta1'`
+!! * Choice of angle.
+!! * ``'theta1'``:  theta 1
+!! * ``'theta2'``:  tehta 2
+!! * ``'psi'``:  psi
+
 
 subroutine RadAngDF(iStage)
 
@@ -3426,17 +4054,33 @@ subroutine RadAngDF(iStage)
 end subroutine RadAngDF
 
 !************************************************************************
-!*                                                                      *
-!*     Kirkwoodgk                                                       *
-!*                                                                      *
+!> \page static static.F90
+!! **Kirkwoodgk**
+!! *calculate Kirkwood gk-factor*
 !************************************************************************
 
-! ... calculate Kirkwood gk-factor
 
-!
-!     type  label  quantity
-!     ----  -----  --------
-!     1     h*h    sum_jp h(ip)*h(jp)
+!> \page nmlKirkwoodgk
+!! The namelist  \ref nmlKirkwoodgk contains variables that control the calculation of running orientation averages. Any combination of
+!! the types of distribution functions listed below may be selected through vtype\%l.
+!!
+!!    | type | label | quantity           |
+!!    | ---- | ----- | ------------------ |
+!!    | 1    | h*h   | sum_jp h(ip)*h(jp) |
+!!
+!! * Variables:
+!!  * \subpage nmlKirkwoodgk_vtype
+!!  * \subpage nmlKirkwoodgk_rmax
+
+!> \page nmlKirkwoodgk_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization (by radius**3/2), title, and number of variable of vtype.
+!! * Min: /0.0/ Max: /10.0/
+
+!> \page nmlKirkwoodgk_rmax rmax
+!! `real`
+!! **default:** `10.0`
+!! * Upper distance for particle separation considered.
 
 subroutine Kirkwoodgk(iStage)
 
@@ -3591,22 +4235,53 @@ subroutine Kirkwoodgk(iStage)
 end subroutine Kirkwoodgk
 
 !************************************************************************
-!*                                                                      *
-!*     OriPolDF                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **OriPolDF**
+!! *calculate orientation polarization distribution functions*
 !************************************************************************
 
-! ... calculate orientation polarization distribution functions
 
-!     type  label  distribution functions
-!     ----  -----  ----------------------
-!     1     tot    orientation polarization, total
-!     2     par    orientation polarization, parallel to central dipole (related to Kirkwood's Gk factor)
-!     3     per    orientation polarization, perpendicular to central dipole
-!     4     pevpa  orientation polarization, perpendicular versus parallel
 
-!     The analysis is made for a set of different radii
-!     The orientation polarization is normalized by radius**(3/2)*dipole moment
+!> \page nmlOriPolDF
+!! The namelist  \ref nmlOriPolDF contains variables that control the calculation of orientation polarization distribution functions of
+!! molecular dipole moments. Any combination of the types of distribution functions listed below may be selected through vtype\%l.
+!!
+!!    | type | label | distribution functions                                                                 |
+!!    | ---- | ----- | -------------------------------------------------------------------------------------- |
+!!    | 1    | tot   | orientation polarization, total                                                        |
+!!    | 2    | par   | orientation polarization, parallel to central dipole (related to Kirkwood's Gk factor) |
+!!    | 3    | per   | orientation polarization, perpendicular to central dipole                              |
+!!    | 4    | pevpa | orientation polarization, perpendicular versus parallel                                |
+!!
+!! * The analysis is made for a set of different radii
+!! * The orientation polarization is normalized by (dipole moment)**2 or radius**(3/2)*(dipole moment)**2
+!!
+!! * Variables:
+!!  * \subpage nmlOriPolDF_vtype
+!!  * \subpage lnorm
+!!  * \subpage nmlOriPolDF_nrad
+!!  * \subpage nmlOriPolDF_radius
+
+!> \page nmlOriPolDF_vtype vtype
+!! `static2D_var(logical, real, real, integer, logical, character, real)`(1:4)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization (by radius**3/2), title, and number of variable of vtype.
+!! * Min: /0.0, -10.0, 0.0, 0.0/ Max: /4*(10.0)/
+
+!> \page lnorm
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Invoking normalization.
+!! * `.false.`:  No normalization invoked.
+
+!> \page nmlOriPolDF_nrad nrad
+!! `integer`
+!! **default:** `2`
+!! * Number of radii to consider
+
+!> \page nmlOriPolDF_radius radius
+!> `real`(1:nrad)
+!! **default:** `20.0`
+!! * Radii to consider
 
 subroutine OriPolDF(iStage)
 
@@ -3645,6 +4320,8 @@ subroutine OriPolDF(iStage)
       vtype%max = [10.0d0,  10.0d0, 10.0d0, 10.0d0]
       vtype%nbin = 100
       lnorm =.false.
+      nrad = 2
+      radius = 20.0
 
       rewind(uin)
       read(uin,nmlOriPolDF)
@@ -3799,12 +4476,11 @@ subroutine OriPolDF(iStage)
 end subroutine OriPolDF
 
 !************************************************************************
-!*                                                                      *
-!*     NNHB                                                             *
-!*                                                                      *
+!> \page static static.F90
+!! **NNHB**
+!! *calculate number of nearest neighbours and number of hydrogen bonds*
 !************************************************************************
 
-! ... calculate number of nearest neighbours and number of hydrogen bonds
 
 !     local variables
 
@@ -3815,6 +4491,45 @@ end subroutine OriPolDF
 !     ihbs2(n,ith,igr) number of particles belonging to group igr having n nearest neighbours of type jpt
 !                      within rmax interacting with at least thhb(ith)
 
+!> \page nmlNNHB
+!! The namelist  \ref nmlNNHB contains variables that control the calculation of no of nearest neighbours and no of hydrogen bonds. Field particles within \ref thnn are considered as nearest neighbours to a reference particle. Field particles within rmax and with an interaction energy below a threshold value are considered as hydrogen bonded to a reference particle.
+!! * Variables:
+!!  * \subpage nthnn
+!!  * \subpage thnn
+!!  * \subpage nthhb
+!!  * \subpage thhb
+!!  * \subpage nnnhb
+!!  * \subpage nmlNNHB_rmax
+
+!> \page nthnn
+!! `integer`
+!! **default:** `2`
+!! * Number of separations considered.
+
+!> \page thnn
+!! `real`(1:\ref nthnn)
+!! **default:** [  3.3,  3.5]
+!! * Distances considered. The largest \ref thnn should not be larger than rmax given below.
+
+!> \page nthhb
+!! `integer`
+!! **default:** `2`
+!! * Number of energy thresholds.
+
+!> \page thhb
+!! `real`(1:\ref nthhb)
+!! **default:** [-10.0,-16.0]
+!! * Energy thresholds.
+
+!> \page nnnhb
+!! `integer`
+!! **default:** `10`
+!! * Maximal number of nearest neighbours and hydrogen bonds considered in the analysis.
+
+!> \page nmlNNHB_rmax rmax
+!! `real`
+!! **default:** `3.5`
+!! * Upper separation distance for hydrogen bonded particles.
 subroutine NNHB(iStage)
 
    use MolModule
@@ -3996,16 +4711,27 @@ subroutine NNHB(iStage)
 end subroutine NNHB
 
 !************************************************************************
-!*                                                                      *
-!*     NNDF                                                             *
-!*                                                                      *
+!> \page static static.F90
+!! **NNDF**
+!! *calculate the nearest neighbour distribution*
 !************************************************************************
 
-! ... calculate the nearest neighbour distribution
 
 ! ... p(r) =< delta(r-r') > for particles belonging to group igr
 !     where r is the distance between the particle ip and
 !     the nearest particle belonging to group jgr
+
+!> \page nmlNNDF
+!! The namelist  \ref nmlNNDF contains variables that control the calculation of nearest neighbour distribution functions. The R-F
+!! nearest neighbour distribution function gives the distribution of distances between a reference particle R and the nearest field
+!! particle F.
+!! * Variables:
+!!  * \subpage nmlNNDF_vtype
+
+!> \page nmlNNDF_vtype vtype
+!! `static2D_var(logical, real, real, integer, logical, character, real)`
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization title, and number of variable of vtype.
+!! * Min: /0.0/ Max: /10.0/
 
    subroutine NNDF(iStage)
 
@@ -4122,25 +4848,36 @@ end subroutine NNHB
 end subroutine NNDF
 
 !************************************************************************
-!*                                                                      *
-!*     ChainDF                                                          *
-!*                                                                      *
+!> \page static static.F90
+!! **ChainDF**
+!! *calculate chain distribution functions*
 !************************************************************************
 
-! ... calculate chain distribution functions
 
 !     also final average over chains of same type and the spread of their df
 
-!     type  label  quantity
-!     ----  -----  --------
-!     1     rbb    bead-bead separation
-!     2     ree    end-to-end separation
-!     3     rg     radius of gyration
-!     4     angle  angle between consequtive beads
-!     5     cos    cos(180-angle)
-!     6     shape  ree**2/rg**2 ratio
-!     7     asph   asphericity
-!     8     torp   toroidicity
+!> \page nmlChainDF
+!! The namelist  \ref nmlChainDF contains variables that control the calculation of chain distribution functions. Distribution functions
+!! are calculated for each chain. Any combination of the types of distribution functions listed below may be selected through vtype\%l.
+!!
+!!    | type | label | quantity                         |
+!!    | ---- | ------| -------------------------------- |
+!!    | 1    | rbb   | bead-bead separation             |
+!!    | 2    | ree   | end-to-end separation            |
+!!    | 3    | rg    | radius of gyration               |
+!!    | 4    | angle | angle between consequtive beads  |
+!!    | 5    | cos   | cos(180-angle)                   |
+!!    | 6    | shape | ree**2/rg**2 ratio               |
+!!    | 7    | asph  | asphericity                      |
+!!    | 8    | torp  | toroidicity                      |
+!!
+!! * Variables:
+!!  * \subpage nmlChainDF_vtype
+
+!> \page nmlChainDF_vtype vtype
+!! `static2D_var(logical, real, real, integer, logical, character, real)`(1:8)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization title, and number of variable of vtype.
+!! * Min: /0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0/ Max: /12.0, 100.0, 100.0, 180.0, 1.0, 12.0, 1.0, 1.0/
 
 subroutine ChainDF(iStage)
 
@@ -4339,12 +5076,11 @@ subroutine ChainDF(iStage)
 end subroutine ChainDF
 
 !************************************************************************
-!*                                                                      *
-!*     ChainTypeDF                                                      *
-!*                                                                      *
+!> \page static static.F90
+!! **ChainTypeDF**
+!! *calculate chain type distribution functions*
 !************************************************************************
 
-! ... calculate chain type distribution functions
 
 !     type  label  quantity
 !     ----  -----  --------
@@ -4356,6 +5092,11 @@ end subroutine ChainDF
 !     6     shape  ree**2/rg**2 ratio
 !     7     asph   asphericity
 !     8     torp   toroidicity
+
+!> \page nmlChainTypeDF
+!! The namelist  \ref nmlChainTypeDF contains variables that control the calculation of chain distribution functions. Distribution
+!! functions are calculated for each type of chains. Any combination of the types of distribution functions listed below may be
+!! selected through vtype\%l. Same input variables as for \ref nmlChainDF.
 
 subroutine ChainTypeDF(iStage)
 
@@ -4496,20 +5237,33 @@ subroutine ChainTypeDF(iStage)
 end subroutine ChainTypeDF
 
 !************************************************************************
-!*                                                                      *
-!*     ChainTypeExtDF                                                   *
-!*                                                                      *
+!> \page static static.F90
+!! **ChainTypeExtDF**
+!! *calculate chain type distribution function relative external frame*
 !************************************************************************
 
-! ... calculate chain type distribution function relative external frame
 
-!     type  label  quantity
-!     ----  -----  --------
-!     1     com_x  com, x-direction
-!     2     com_y  com, y-direction
-!     3     com_z  com, z-direction
-!     4     rg_z   square of radius of gyration projected on the z-axis
-!     5     rg_xy  square of radius of gyration projected on the xy-plane
+!> \page nmlChainTypeExtDF
+!! The namelist  \ref nmlChainTypeExtDF contains variables that control the calculation of chain distribution functions where the
+!! distribution functions are with respect to the lab frame. Distribution functions are calculated for each type of chains. Any
+!! combination of the types of distribution functions listed below may be selected through vtype\%l.
+!!
+!!    | type | label          | quantity                                                |
+!!    | ---- | -------------- | ------------------------------------------------------- |
+!!    | 1    | \format{com_x} | com, x-direction                                        |
+!!    | 2    | com_y          | com, y-direction                                        |
+!!    | 3    | com_z          | com, z-direction                                        |
+!!    | 4    | rg_z           | square of radius of gyration projected on the z-axis    |
+!!    | 5    | rg_xy          | square of radius of gyration projected on the xy-plane  |
+!!
+!! * Variables:
+!!  * \subpage nmlChainTypeExtDF_vtype
+
+!> \page nmlChainTypeExtDF_vtype vtype
+!! `static2D_var(logical, real, real, integer, logical, character, real)`(1:5)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization title, and number of variable of vtype.
+!! * Min: /-box2(1),-box2(2),-box2(3),0.0,0.0/
+!! * Max: /box2(1),box2(2),box2(3),100.0,100.0/
 
 subroutine ChainTypeExtDF(iStage)
 
@@ -4644,12 +5398,26 @@ subroutine ChainTypeExtDF(iStage)
 end subroutine ChainTypeExtDF
 
 !************************************************************************
-!*                                                                      *
-!*     ChainBeadPartContact                                             *
-!*                                                                      *
+!> \page static static.F90
+!! **ChainBeadPartContact**
+!! *calculate probability of chain bead-particle contact*
 !************************************************************************
 
-! ... calculate probability of chain bead-particle contact
+
+!> \page nmlCBPC
+!! The namelist  \ref nmlCBPC contains variables that control the calculation of probabilities that chain particles are near particles of
+!! other types. Distribution functions are calculated for each pair of chain molecules and particles of type \ref iptpart.
+!! * Variables:
+!!  * \subpage iptpart
+!!  * \subpage rcontact
+
+!> \page iptpart
+!! `integer`
+!! * Type of particle to be considered.
+
+!> \page rcontact
+!! `real`
+!! * Largest separation between chain particles and particles of the other type for considering the chain particle near the other particle.
 
    subroutine ChainBeadPartContact(iStage)
 
@@ -4773,12 +5541,11 @@ end subroutine ChainTypeExtDF
 end subroutine ChainBeadPartContact
 
 !************************************************************************
-!*                                                                      *
-!*     LoopTailTrain                                                    *
-!*                                                                      *
+!> \page static static.F90
+!! **LoopTailTrain**
+!! *calculate loop, tail, and tail characteristics for chains*
 !************************************************************************
 
-! ... calculate loop, tail, and tail characteristics for chains
 
 !     type  label
 !     ----  -----
@@ -4793,6 +5560,15 @@ end subroutine ChainBeadPartContact
 !     9     number of segments in trains
 !     10    number of adsorbed chains
 !     11    number of adsorbed segments
+
+!> \page nmlLoopTailTrain
+!! The namelist  \ref nmlLoopTailTrain contains variables that control the calculation loop, tail, and train characteristics. Properties are calculated for each type of chains separately.
+!! * Variables:
+!!  * \subpage adscond
+
+!> \page adscond
+!! `adscond_var(character, character, real)`
+!! * Adsorption condition('xy-plane'), selection of box ends, threshold distance of adsorption.
 
 subroutine LoopTailTrain(iStage)
 
@@ -4936,12 +5712,11 @@ subroutine LoopTailTrain(iStage)
 end subroutine LoopTailTrain
 
 !************************************************************************
-!*                                                                      *
-!*     CheckAdsChainSeg                                                 *
-!*                                                                      *
+!> \page static static.F90
+!! **CheckAdsChainSeg**
+!! *check if a chain and its segments are adsorbed*
 !************************************************************************
 
-! ... check if a chain and its segments are adsorbed
 
 subroutine CheckAdsChainSeg(ic, adscond, ladschain, ladsseg)
 
@@ -4993,12 +5768,79 @@ subroutine CheckAdsChainSeg(ic, adscond, ladschain, ladsseg)
 end subroutine CheckAdsChainSeg
 
 !************************************************************************
-!*                                                                      *
-!*     ClusterSD                                                        *
-!*                                                                      *
+!> \page static static.F90
+!! **ClusterSD**
+!! *calculate cluster size distribution*
 !************************************************************************
 
-! ... calculate cluster size distribution
+
+!> \page nmlCluster
+!! The namelist  \ref nmlCluster contains variables that control the calculation of cluster size distribution functions. Objects within
+!! the distance \ref rcluster from a given object forms a virtual bond and all objects directly or indirectly bonded form a cluster.
+!! * Variables:
+!!  * \subpage txobj
+!!  * \subpage l1d
+!!  * \subpage l2d
+!!  * \subpage lpercolation
+!!  * \subpage nobjt
+!!  * \subpage iobjt
+!!  * \subpage rcluster
+!!  * \subpage txweight
+!!  * \subpage itestcluster
+
+!> \page txobj
+!! `character(8)`
+!! **default:** `'particle'`
+!! * Object for which cluster analysis should be performed.
+!! * ``'particle'``:  Particles, \ref rcluster applies between particles.
+!! * ``'chain'``:  Chains, \ref rcluster applies between chain particles.
+!! * ``'chaincom'``: Chains, \ref rcluster applies between chain com's.
+
+!> \page l1d
+!! `logical`
+!! **default:** `.true.`
+!! * `.true.`:  Calculation of 1d cluster size distribution functions.
+!! * `.false.`:  No such calculation.
+
+!> \page l2d
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Calculation of 2d cluster size distribution functions.nptcluster=2 is required.
+!! * `.false.`:  No such calculation.
+
+
+!> \page lpercolation
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`:  Percolation analysis is made.
+!! * `.false.`:  No such analysis.
+
+!> \page nobjt
+!! `integer`
+!! **default:** `1`
+!! * Number of object types to be considered.
+
+!> \page iobjt
+!! `integer`(1:\ref npt)
+!! **default:** \ref npt*`0`
+!! * Object types to be considered.
+
+!> \page rcluster
+!! `real`
+!! * Upper separation for bonded objects (particles if \ref txobj='particle' or 'chain' and chain com if \ref txobj='chaincom').
+
+!> \page txweight
+!! `character(6)`
+!! **default:** `'mass'`
+!! * ``'mass'``: Mass-weighted distribution.
+!! * ``'number'``: Number-weighted distribution.
+
+!> \page itestcluster
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`:  Nothing. The normal option.
+!! * `1`:  Intermediate cluster data (several routines in static.F90). Type of particles to be inserted in the different sets.
 
    subroutine ClusterSD(iStage)
 
@@ -5332,12 +6174,11 @@ end subroutine WriteAverage
 end subroutine ClusterSD
 
 !************************************************************************
-!*                                                                      *
-!*     ClusterSD1D                                                      *
-!*                                                                      *
+!> \page static static.F90
+!! **ClusterSD1D**
+!! *calculate cluster size distribution*
 !************************************************************************
 
-! ... calculate cluster size distribution
 
 subroutine ClusterSD1D(mnobj, nobj, iclusteriobj, mnsizemax, ltest, unit, ncluster, nsizemax, nsizedist)
 
@@ -5391,12 +6232,11 @@ subroutine ClusterSD1D(mnobj, nobj, iclusteriobj, mnsizemax, ltest, unit, nclust
 end subroutine ClusterSD1D
 
 !************************************************************************
-!*                                                                      *
-!*     ClusterSD2D                                                      *
-!*                                                                      *
+!> \page static static.F90
+!! **ClusterSD2D**
+!! *calculate 2d cluster size distribution*
 !************************************************************************
 
-! ... calculate 2d cluster size distribution
 
 subroutine ClusterSD2D(mnobj, nobj, iclusteriobj, iobjprop, mnsizemax, ltest, unit, nsizemax2d, nsizedist2d)
 
@@ -5460,12 +6300,11 @@ subroutine ClusterSD2D(mnobj, nobj, iclusteriobj, iobjprop, mnsizemax, ltest, un
 end subroutine ClusterSD2D
 
 !************************************************************************
-!*                                                                      *
-!*     ZeroSecondMoment                                                 *
-!*                                                                      *
+!> \page static static.F90
+!! **ZeroSecondMoment**
+!! *calculate zero and second moment for an ionic, neutral system*
 !************************************************************************
 
-! ... calculate zero and second moment for an ionic, neutral system
 
 subroutine ZeroSecondMoment(iStage)
 
@@ -5684,12 +6523,51 @@ subroutine ZeroSecondMoment(iStage)
 end subroutine ZeroSecondMoment
 
 !************************************************************************
-!*                                                                      *
-!*     MultipoleDF                                                      *
-!*                                                                      *
+!> \page static static.F90
+!! **MultipoleDF**
+!! *calculate multipole moment distribution function and mean square average*
 !************************************************************************
 
-! ... calculate multipole moment distribution function and mean square average
+
+!> \page nmlMultipoleDF
+!! The namelist  \ref nmlMultipoleDF contains variables that control the calculation of electrostatic multipole moment distribution functions.
+!! * Variables:
+!!  * \subpage lmax
+!!  * \subpage vmin
+!!  * \subpage vmax
+!!  * \subpage nmlMultipoleDF_nbin
+!!  * \subpage nmlMultipoleDF_nrad
+!!  * \subpage nmlMultipoleDF_radius
+
+!> \page lmax
+!! `integer`
+!! **default:** `2`
+!! * The largest multipole moment considered is 2**\ref lmax Real and imaginary components are analyzed separately and only for nonnegative m.
+
+!> \page vmin
+!! `real`(1:\ref lmax)
+!! **default:** `0.0`
+!! * Lower end of the sampled distribution function of each type.
+
+!> \page vmax
+!! `real`(1:\ref lmax)
+!! **default:** `10.0`
+!! * Upper end of the sampled distribution function of each type.
+
+!> \page nmlMultipoleDF_nbin nbin
+!! `integer`
+!! **default:** `100`
+!! * Number of bins used to sample the distribution functions.
+
+!> \page nmlMultipoleDF_nrad nrad
+!! `integer`
+!! **default:** `1`
+!! * Number of radii for which multipole moment df are calculated.  If \ref txbc='sph', then nrad=1 and radius=rsph are forced; otherwise multipole moment are calculated over spheres centered on all particles.
+
+!> \page nmlMultipoleDF_radius radius
+!! `real`(1:nrad)
+!! **default:** nrad*`20.0`
+!! * Radii.
 
 subroutine MultipoleDF(iStage)
 
@@ -5922,12 +6800,11 @@ subroutine MultipoleDF(iStage)
 end subroutine MultipoleDF
 
 !************************************************************************
-!*                                                                      *
-!*     CalcMultipole                                                    *
-!*                                                                      *
+!> \page static static.F90
+!! **CalcMultipole**
+!! *calculate multipole moments of spherical volumes arising from dipoles*
 !************************************************************************
 
-! ... calculate multipole moments of spherical volumes arising from dipoles
 
 subroutine CalcMultipole(mlmax, mnrad, lmax, nrad, radius, origin, mpm)
 
@@ -6005,20 +6882,38 @@ subroutine CalcMultipole(mlmax, mnrad, lmax, nrad, radius, origin, mpm)
 end subroutine CalcMultipole
 
 !************************************************************************
-!*                                                                      *
-!*     EnergyDF                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **EnergyDF**
+!! *calculate energy distribution functions*
 !************************************************************************
 
-! ... calculate energy distribution functions
-
-!     type  label  quantity
-!     ----  -----  --------
-!     1     bindu  binding energy, total
-!     2     bindu  binding energy with particles in group jgr
-!     3     pairu  pair energy with particles in group jgr within rmax
 
 !     group division of particles is required
+
+!> \page nmlEnergyDF
+!! The namelist  \ref nmlEnergyDF contains variables that control the calculation of energy distribution functions. Any combination of
+!! the types of distribution functions listed below may be selected through vtype. Only contributions from two-body potential terms
+!! are included.
+!!
+!!    | type | label | quantity                                            |
+!!    | ---- | ----- | --------------------------------------------------- |
+!!    | 1    | bindu | binding energy, total                               |
+!!    | 2    | bindu | binding energy with particles in group jgr          |
+!!    | 3    | pairu | pair energy with particles in group jgr within rmax |
+!! * Variables:
+!!  * \subpage nmlEnergyDF_vtype
+!!  * \subpage nmlEnergyDF_rmax
+
+!> \page nmlEnergyDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`(1:3)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Min: /-150.0,-150.0,-25.0/ Max: /0.0,0.0,0.0/
+
+!> \page nmlEnergyDF_rmax rmax
+!! `real`
+!! **default:** `1.0d10`
+!! * Upper distance for particle separation for pair energy distribution function.
+
 
 subroutine EnergyDF(iStage)
 
@@ -6208,16 +7103,40 @@ subroutine EnergyDF(iStage)
 end subroutine EnergyDF
 
 !************************************************************************
-!*                                                                      *
-!*     Widom1                                                           *
-!*                                                                      *
+!> \page static static.F90
+!! **Widom1**
+!! *calculate excess chemical potential using Widom's method (neutral set)*
 !************************************************************************
 
-! ... calculate excess chemical potential using Widom's method (neutral set)
 !     see JCP 39, 2808 (1963) and Mol. Phys. 64, 247 (1988)
 
 !     System may contain polyatom particles, but routine is only checked for insertion of monoatom particles
 
+!> \page nmlWidom1
+!! The namelist  \ref nmlWidom1 contains variables that control the calculation of excess chemical potentials using Widom's insertion method. Only charge neutral combinations of particles should be inserted.
+!! * Variables:
+!!  * \subpage ntimes
+!!  * \subpage nset
+!!  * \subpage nptset
+!!  * \subpage iptset
+
+!> \page ntimes
+!! `integer`
+!! **default:** `1`
+!! * Number of samplings per occasion.
+
+!> \page nset
+!! `integer`
+!! **default:** `1`
+!! * Number of sets to evaluate.
+
+!> \page nptset
+!! `integer`(1:\ref nset)
+!! * Number of particles to be inserted in a set.
+
+!> \page iptset
+!! `integer`(1:\ref nptset,1:\ref nset)
+!! * Types of particles to be inserted in a sets
    subroutine Widom1(iStage)
 
    use MolModule
@@ -6355,15 +7274,37 @@ end subroutine EnergyDF
 end subroutine Widom1
 
 !************************************************************************
-!*                                                                      *
-!*     Widom2                                                           *
-!*                                                                      *
+!> \page static static.F90
+!! **Widom2**
+!! *calculate excess chemical potential using Widom's method (charge integration)*
 !************************************************************************
 
-! ... calculate excess chemical potential using Widom's method (charge integration)
 !     see JCP 39, 2808 (1963) and Mol. Phys. 64, 247 (1988)
 
 ! ... not generalized to npt ensemble
+
+!> \page nmlWidom2
+!!The namelist  \ref nmlWidom2 contains variables that control the calculation of excess chemical potentials using Widom's insertion.
+!! Single particles are inserted and charge integration according to Svensson and Jönsson.
+!! * Variables:
+!!  * \subpage nmlWidom2_ntimes
+!!  * \subpage nmlWidom2_nset
+!!  * \subpage nmlWidom2_iptset
+
+!> \page nmlWidom2_ntimes ntimes
+!! `integer`
+!! **default:** `1`
+!! * Number of samplings per occasion.
+
+!> \page nmlWidom2_nset nset
+!! `integer`
+!! **default:** `1`
+!! * Number of sets to evaluate.
+
+!> \page nmlWidom2_iptset iptset
+!! `integer`(1:\ref nptset,1:\ref nset)
+!! * Types of particles to be inserted in a sets
+
 
    subroutine Widom2(iStage)
 
@@ -6543,12 +7484,11 @@ end subroutine Widom1
 end subroutine Widom2
 
 !************************************************************************
-!*                                                                      *
-!*     DUWidomx                                                         *
-!*                                                                      *
+!> \page static static.F90
+!! **DUWidomx**
+!! *calculate the change of the potential energy of the insertion*
 !************************************************************************
 
-! ... calculate the change of the potential energy of the insertion
 
 subroutine DUWidomx(nptset, iptset, iseedWidom, duwidom, lhsoverlap)
 
@@ -6665,12 +7605,11 @@ subroutine DUWidomx(nptset, iptset, iseedWidom, duwidom, lhsoverlap)
 end subroutine DUWidomx
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyWidom                                                    *
-!*                                                                      *
+!> \page static static.F90
+!! **UTwoBodyWidom**
+!! *calculate two-body potential between two particles; monoatomic particles*
 !************************************************************************
 
-! ... calculate two-body potential between two particles; monoatomic particles
 
 subroutine UTwoBodyWidom(ipt, roi, jpt, roj, usum, lhsoverlap)
 
@@ -6726,12 +7665,11 @@ subroutine UTwoBodyWidom(ipt, roi, jpt, roj, usum, lhsoverlap)
 end subroutine UTwoBodyWidom
 
 !************************************************************************
-!*                                                                      *
-!*     UTwoBodyWidomP                                                   *
-!*                                                                      *
+!> \page static static.F90
+!! **UTwoBodyWidomP**
+!! *calculate two-body potential between two particles, polyatom particles*
 !************************************************************************
 
-! ... calculate two-body potential between two particles, polyatom particles
 
 subroutine UTwoBodyWidomP(iat, roi, jat, roj, usum, lhsoverlap)
 
@@ -6787,15 +7725,24 @@ subroutine UTwoBodyWidomP(iat, roi, jat, roj, usum, lhsoverlap)
 end subroutine UTwoBodyWidomP
 
 !************************************************************************
-!*                                                                      *
-!*     MeanForce1                                                       *
-!*                                                                      *
+!> \page static static.F90
+!! **MeanForce1**
+!! *calculate mean energies and forces between two particles*
 !************************************************************************
 
-! ... calculate mean energies and forces between two particles
 
 !     f = fmean + fhs
 !     system: cylinder with particles 1 and 2 fixed, z(1) = -z(2) is required
+
+!> \page nmlMeanForce1
+!! The namelist  \ref nmlMeanForce1 contains variables that control the calculation of mean force between two particles (\ref txbc='cyl' is
+!! required) according to F = Fmean + Fhs (the surface approach).
+!! * Variables:
+!!  * \subpage dr
+
+!> \page dr
+!! `real`
+!! * Displacement for evaluation of Fhs
 
 subroutine MeanForce1(iStage)
 
@@ -6978,15 +7925,29 @@ end subroutine hsoverlap_singlemove
 end subroutine MeanForce1
 
 !************************************************************************
-!*                                                                      *
-!*     MeanForce2                                                       *
-!*                                                                      *
+!> \page static static.F90
+!! **MeanForce2**
+!! *calculate mean energies and forces between two particles*
 !************************************************************************
 
-! ... calculate mean energies and forces between two particles
 
 !     f = fcorr + fbond + fhs(midplane) + fideal(midplane and an end)
 !     system: cylinder with particles 1 and 2 fixed, z(1) = -z(2) is required
+
+!> \page nmlMeanForce2
+!! The namelist  \ref nmlMeanForce2 contains variables that control the calculation of mean force between two particles (only \ref txbc='cyl')
+!! according to F = Fcorr + Fideal(midplane and an end) + Fhs(midplane) (midplane approach).
+!! * Variables:
+!!  * \subpage thickness
+!!  * \subpage dz
+
+!> \page thickness
+!! `real`
+!! * Thickness of volume for sampling Fideal
+
+!> \page dz
+!! `real`
+!! * Displacement for evaluation of fhs
 
 subroutine MeanForce2(iStage)
 
@@ -7240,12 +8201,11 @@ end function MFHCOverlapSingleMove
 end subroutine MeanForce2
 
 !************************************************************************
-!*                                                                      *
-!*     UBondAcrossZ                                                     *
-!*                                                                      *
+!> \page static static.F90
+!! **UBondAcrossZ**
+!! *calculate potential energy from bonds across z = 0*
 !************************************************************************
 
-! ... calculate potential energy from bonds across z = 0
 
 subroutine UBondAcrossZ(ubondacross, fbondacross)
 
@@ -7288,16 +8248,33 @@ subroutine UBondAcrossZ(ubondacross, fbondacross)
 end subroutine UBondAcrossZ
 
 !************************************************************************
-!*                                                                      *
-!*     PotMeanForce                                                     *
-!*                                                                      *
+!> \page static static.F90
+!! **PotMeanForce**
+!! *calculate potential of mean force*
 !************************************************************************
 
-! ... calculate potential of mean force
 
 !     system: cylindrical geometry
 !     pmf calculated between two particles of type iptz. they are assumed to be on the z-axis
 !     pmf is set to Zero at cyllen/2
+
+!> \page nmlPotMeanForce
+!! The namelist  \ref nmlPotMeanForce contains variables that control the calculation of the potential mean force between two particles
+!! (only \ref txbc='cyl'). The two particles of type \ref iptpmf are assumed to be located on the z-axis. The pmf is set to zero at the
+!! separation \ref cyllen /2.
+!! * Variables:
+!!  * \subpage iptpmf
+!!  * \subpage rpmfzero
+
+!> \page iptpmf
+!! `integer`
+!! **default:** `1`
+!! * Types of particles for which the potential of mean force is calculated. \ref nppt(\ref iptpmf) = 2 is required.
+
+!> \page rpmfzero
+!! `real`
+!! **default:** \ref cyllen `/2`
+!! * Separation at which pmf is set to zero.
 
 subroutine PotMeanForce(iStage)
 
@@ -7424,12 +8401,38 @@ subroutine PotMeanForce(iStage)
 end subroutine PotMeanForce
 
 !************************************************************************
-!*                                                                      *
-!*     SurfaceArea                                                      *
-!*                                                                      *
+!> \page static static.F90
+!! **SurfaceArea**
+!! *calculate surface area exposed by all particles of one type*
 !************************************************************************
 
-! ... calculate surface area exposed by all particles of one type
+
+!> \page nmlSurfaceArea
+!! The namelist  \ref nmlSurfaceArea contains variables that control the calculation of the surface area available for a spherical prob.
+!! * Variables:
+!!  * \subpage nmlSurfaceArea_ipt
+!!  * \subpage rprobe
+!!  * \subpage wradat
+!!  * \subpage nrandom
+
+!> \page nmlSurfaceArea_ipt ipt
+!! `integer`
+!! * Type of particles of interest for area determination.
+
+!> \page rprobe
+!! `real`
+!! **default:** `1.7`
+!! * Radius of probe particle
+
+!> \page wradat
+!! `real`(1:nat)
+!! **default:** nat*`0.0`
+!! * van der Waal radius of atoms.
+
+!> \page nrandom
+!! `integer`
+!! **default:** `10000`
+!! * Number of random numbers.
 
 subroutine SurfaceArea(iStage)
 
@@ -7568,12 +8571,11 @@ subroutine SurfaceArea(iStage)
 end subroutine SurfaceArea
 
 !************************************************************************
-!*                                                                      *
-!*     Crystalformat                                                    *
-!*                                                                      *
+!> \page static static.F90
+!! **Crystalformat**
+!! *write atoms in the crystalographic format starting with atoms*
 !************************************************************************
 
-! ... write atoms in the crystalographic format starting with atoms
 !     belonging to molecules closest to (xx,yy,zz) first and the other in increasing distance
 
 subroutine Crystalformat(iStage)
@@ -7651,12 +8653,33 @@ subroutine Crystalformat(iStage)
 end subroutine Crystalformat
 
 !************************************************************************
-!*                                                                      *
-!*     Trajectory                                                       *
-!*                                                                      *
+!> \page static static.F90
+!! **Trajectory**
+!! *write the trajectory on flist using every iskip timestep*
 !************************************************************************
 
-! ... write the trajectory on flist using every iskip timestep
+
+!> \page nmlTrajectory
+!! The namelist  \ref nmlTrajectory contains variables that control the output of a trajectory.
+!! * Variables:
+!!  * \subpage nmlTrajectory_iskip
+!!  * \subpage nmlTrajectory_rmin
+!!  * \subpage nmlTrajectory_rmax
+
+!> \page nmlTrajectory_iskip iskip
+!! `integer`
+!! **default:** `10`
+!! * Write every trajectory data for every iskip timestep.
+
+!> \page nmlTrajectory_rmin rmin
+!! `real`(1:3)
+!! **default:** `-boxlen2(1:3)`
+!! * Lower, left, and front corner of box bounding the particles.
+
+!> \page nmlTrajectory_rmax rmax
+!! `real`(1:3)
+!! **default:** `boxlen2(1:3)`
+!! * Upper, right, and back corner of box bounding the particles.
 
    subroutine Trajectory(iStage)
 
@@ -7756,12 +8779,11 @@ end subroutine Crystalformat
 end subroutine Trajectory
 
 !************************************************************************
-!*                                                                      *
-!*     ExcessAmount                                                     *
-!*                                                                      *
+!> \page static static.F90
+!! **ExcessAmount**
+!! *calculate excess amount*
 !************************************************************************
 
-! ... calculate excess amount
 
 subroutine ExcessAmount(nbin, not, txot, ipntot, var, boxlen, uout)
 
@@ -7805,24 +8827,39 @@ subroutine ExcessAmount(nbin, not, txot, ipntot, var, boxlen, uout)
 end subroutine ExcessAmount
 
 !************************************************************************
-!*                                                                      *
-!*     SubStructureDF                                                   *
-!*                                                                      *
+!> \page static static.F90
+!! **SubStructureDF**
+!! *calculate distribution functions of properties of a SubStructure*
 !************************************************************************
 
-! ... calculate distribution functions of properties of a SubStructure
 
-!     type  label     quantity
-!     ----  -----     --------
-!     1     rgsub     radius of gyration of substructure
-!     2     rden      radial number density
-!     3     rrden     reduced radial number density                                                               ! CHZA 07/15
-!     4     com-sub   distance of com of chain to center of mass of substructure
-!     5     rg-sub    average rg of a chain a a function of the distance to the center of mass of substructure
-!     6     z(r)      sum of all charges as a function of the distance to the center of mass of substructure      ! CHZA 06/15
-!     7     zcum(r)   cumulative charge as a function of the distance to the center of mass of substructure       ! CHZA 06/15
-!     8     alpha     global degree of ionization distribution                                                    ! CHZA 07/15
-!     9     a(r)      reduced radial degree of ionization                                                         ! CHZA 07/15
+!> \page nmlSubStructureDF
+!! The namelist  nmlSustructureDF contains variables that control the calculation of substructures.
+!!
+!!    | type | label    | quantity                                                                                |
+!!    | ---- | -----    | ----------------------------------------------------------------------------------------|
+!!    | 1    | rgsub    | radius of gyration of substructure                                                      |
+!!    | 2    | rden     | radial number density                                                                   |
+!!    | 3    | rrden    | reduced radial number density                                                           |
+!!    | 4    | com-sub  | distance of com of chain to center of mass of substructure                              |
+!!    | 5    | rg-sub   | average rg of a chain a a function of the distance to the center of mass of substructure|
+!!    | 6    | z(r)     | sum of all charges as a function of the distance to the center of mass of substructure  |
+!!    | 7    | zcum(r)  | cumulative charge as a function of the distance to the center of mass of substructure   |
+!!    | 8    | alpha    | global degree of ionization distribution                                                |
+!!    | 9    | a(r)     | reduced radial degree of ionization                                                     |
+!!
+!! * Variables:
+!!  * \subpage nmlSubStructureDF_vtype
+!!  * \subpage lptinsub
+
+!> \page nmlSubStructureDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`(1:3)
+!! * Flag for engagement, lower end, upper end, number of bins, flag for normalization, title, and number of variable of vtype.
+!! * Min: /0.0/ Max: /100.0/
+
+!> \page lptinsub
+!! `logical`(1:\ref npt)
+!! * `.true.`:  mass of particles of type ipt are used to evaluate mass center of substructure.
 
 
 subroutine SubStructureDF(iStage)
@@ -7874,6 +8911,7 @@ subroutine SubStructureDF(iStage)
       vtype%min  = Zero
       vtype%max  = 100.0d0
       vtype%nbin = 100
+      lptinsub = .false.
 
       rewind(uin)
       read(uin,nmlSubStructureDF)
@@ -8323,20 +9361,33 @@ subroutine SubStructureDF(iStage)
 end subroutine SubStructureDF
 
 !************************************************************************
-!*                                                                      *
-!*     NetworkDF                                                        *
-!*                                                                      *
+!> \page static static.F90
+!! **NetworkDF**
+!! *calculate network distribution functions*
 !************************************************************************
 
-! ... calculate network distribution functions
 
 !     also final average over networks of same type and the spread of their df
 
-!     type  label    quantity
-!     ----  -----    --------
-!     1     rg       radius of gyration
-!     2     asph     asphericity
-!     3     alpha    degree of ionization
+!> \page nmlNetworkDF
+!! The namelist  \ref nmlNetworkDF contains variables that control the calculation of network distribution functions. Distribution
+!! functions are calculated for each network. Any combination of the types of distribution functions listed below may be selected
+!! through vtype\%l.
+!!
+!!    | type | label |   quantity               |
+!!    | ---- | ----- |   ---------------------- |
+!!    | 1    | rg    |   radius of gyration     |
+!!    | 2    | asph  |   asphericity            |
+!!    | 3    | alpha |   degree of ionization   |
+!!
+!! * Variables:
+!!  * \subpage nmlNetworkDF_vtype
+
+!> \page nmlNetworkDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`(1:3)
+!! * Flag for engagement, lower end, upper end, number of bins. Other flags are not used.
+!! * Min: /0.0,0.0,0.0/ Max: /100.0,1.0,1.0/
+
 
 subroutine NetworkDF(iStage)
 
@@ -8518,22 +9569,34 @@ subroutine NetworkDF(iStage)
 end subroutine NetworkDF
 
 !************************************************************************
-!*                                                                      *
-!*     NetworkRadialDF                                                  *
-!*                                                                      *
+!> \page static static.F90
+!! **NetworkRadialDF**
+!! *calculate radial distribution functions of properties of networks*
 !************************************************************************
 
-! ... calculate radial distribution functions of properties of networks
 
-!     type  label       quantity
-!     ----  -----       --------
-!      1    rpart(r)    radial particle number distribution
-!      2    rdens(r)    radial particle density distribution
-!      3    rgchain(r)  radial chain radius of gyration
-!      4    q(r)        radial sum of all charges
-!      5    qcum(r)     cumulative radial sum of all charges
-!      6    alpha(r)    reduced degree of ionization
-!      7    rchain(r)   radial chain number distribution
+!> \page nmlNetworkRadialDF
+!! The namelist  \ref nmlNetworkRadialDF contains variables that control the calculation of radial network distribution functions. Distribution
+!! functions are calculated for each network. Any combination of the types of radial distribution functions listed below may be selected
+!! through vtype\%l.
+!!
+!!    | type | label     |  quantity                              |
+!!    | ---- | -----     |  ------------------------------------- |
+!!    |  1   | rpart(r)  |  radial particle number distribution   |
+!!    |  2   | rdens(r)  |  radial particle density distribution  |
+!!    |  3   | rgchain(r)|  radial chain radius of gyration       |
+!!    |  4   | q(r)      |  radial sum of all charges             |
+!!    |  5   | qcum(r)   |  cumulative radial sum of all charges  |
+!!    |  6   | alpha(r)  |  reduced degree of ionization          |
+!!    |  7   | rchain(r) |  radial chain number distribution      |
+!!
+!! * Variables:
+!!  * \subpage nmlNetworkRadialDF_vtype
+
+!> \page nmlNetworkRadialDF_vtype vtype
+!! `static1D_var(logical, real, real, integer, logical, character, real)`(1:7)
+!! * Flag for engagement, lower end, upper end, number of bins. Other flags are not used.
+!! * Min: /0.0,0.0,0.0/ Max: /100.0,100.0,100.0/
 
 subroutine NetworkRadialDF(iStage)
 

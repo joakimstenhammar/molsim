@@ -37,6 +37,12 @@
 !                 plot : SignMagn   , Plot
 !               powell : BrentMod
 
+!***********************************************************************
+!> \page mollib mollib.F90
+!! **MollibModule**
+!! *mollib module*
+!***********************************************************************
+
 module MollibModule !Starting to migrate to Module
 
    implicit none
@@ -49,12 +55,11 @@ module MollibModule !Starting to migrate to Module
 
    contains
 !************************************************************************
-!*                                                                      *
-!*     InvInt                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **InvInt**
+!! *return the inverse of an integer*
 !************************************************************************
 
-! ... return the inverse of an integer
 
    pure elemental real(8) function InvInt_single(i)
       implicit none
@@ -71,12 +76,11 @@ module MollibModule !Starting to migrate to Module
    end function InvInt_double
 
 !************************************************************************
-!*                                                                      *
-!*     Center                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Center**
+!! *center a string*
 !************************************************************************
 
-! ... center a string
 
    pure function Center(nw,string)
       implicit none
@@ -91,12 +95,11 @@ module MollibModule !Starting to migrate to Module
    end function Center
 
 !************************************************************************
-!*                                                                      *
-!*     SpaceOut                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **SpaceOut**
+!! *space out a string*
 !************************************************************************
 
-! ... space out a string
 
    pure function SpaceOut(string)
       implicit none
@@ -111,12 +114,11 @@ module MollibModule !Starting to migrate to Module
    end function SpaceOut
 
 !************************************************************************
-!*                                                                      *
-!*     ReplaceText                                                      *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **ReplaceText**
+!! *Replace text in a string*
 !************************************************************************
 
-! ... Replace text in a string
    pure function ReplaceText (string,toReplace,replaceWith)  result(outString)
       character(len=*), intent(in) :: string
       character(len=*), intent(in) :: toReplace
@@ -164,12 +166,11 @@ module MollibModule !Starting to migrate to Module
 end module MollibModule
 
 !************************************************************************
-!*                                                                      *
-!*     ErfLocal                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **ErfLocal**
+!! *return the error function, erf(x)*
 !************************************************************************
 
-! ... return the error function, erf(x)
 
 real(8) function ErfLocal(x)
    implicit none
@@ -183,12 +184,11 @@ real(8) function ErfLocal(x)
 end function ErfLocal
 
 !************************************************************************
-!*                                                                      *
-!*     Erf1                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Erf1**
+!! *return the error function, erf(x)*
 !************************************************************************
 
-! ... return the error function, erf(x)
 !     abs(dev) < 3 e-7
 !     abramowitz and stegun, handbook of mathematical functions
 
@@ -204,12 +204,11 @@ real(8) function Erf1(x)
 end function Erf1
 
 !************************************************************************
-!*                                                                      *
-!*     Erf2                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Erf2**
+!! *return the error function, erf(x)*
 !************************************************************************
 
-! ... return the error function, erf(x)
 !     abs(dev) < (ca) 1e-16
 !     originating from mark 4 release nag 1974, ...
 
@@ -275,12 +274,11 @@ real(8) function Erf2(x)
 end function Erf2
 
 !************************************************************************
-!*                                                                      *
-!*     GammaLn                                                          *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **GammaLn**
+!! *return the logarithm of the gamma function*
 !************************************************************************
 
-! ... return the logarithm of the gamma function
 !     relative error < 2 e-10 for xx > 1
 !     lanczos, j. s.i.a.m. numerical analysis, ser b, vol 1, pg 86, 1964
 
@@ -310,12 +308,11 @@ real(8) function GammaLn(xx)
 end function GammaLn
 
 !************************************************************************
-!*                                                                      *
-!*     PL                                                               *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **PL**
+!! *return the legendre polynomial p(l) at x*
 !************************************************************************
 
-! ... return the legendre polynomial p(l) at x.
 !     recurrence rel: (l+1)*p(l+1)(x) = (2l+1)*x*p(l)(x) - l*p(l-1)(x)
 
 real(8) function PL(l,x)
@@ -345,12 +342,11 @@ real(8) function PL(l,x)
 end function PL
 
 !************************************************************************
-!*                                                                      *
-!*     PLM                                                              *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **PLM**
+!! *return the associate legendre polynomial p(l,m) at x*
 !************************************************************************
 
-! ... return the associate legendre polynomial p(l,m) at x.
 !     p(m,m)(x) = (2m-1)!!(1-x*x)*(m/2) and the recurrence relation
 !     (l-m+1)*p(l+1,m)(x)=(2*l+1)*x*p(l,m)(x)-(l+m)*p(l-1,m)(x)
 
@@ -393,12 +389,11 @@ real(8) function PLM(l,m,x)
 end function PLM
 
 !************************************************************************
-!*                                                                      *
-!*     CCLM                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CCLM**
+!! *return the spherical harmonics*
 !************************************************************************
 
-! ... return the spherical harmonics
 !             norm = 0,  modified spherical harmonics c(l,m)(theta,phi)
 !             nrom = 1,  spherical harmonics y(l,m)(theta,phi)
 
@@ -437,12 +432,11 @@ complex(8) function CCLM(l,m,theta,phi,norm)
 end function CCLM
 
 !************************************************************************
-!*                                                                      *
-!*     DDJKM                                                            *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **DDJKM**
+!! *return one wigner's rotation matrix element*
 !************************************************************************
 
-! ... return one wigner's rotation matrix element
 !      norm = 0, wigner's rotation matrix element d(jkm)(alfa,beta,gamma)
 !      norm = 1, normalized wigner's rotation matrix element d(jkm)(alfa,beta,gamma)
 !     definition according to Edmonds
@@ -564,12 +558,11 @@ end subroutine CalcDel
 end function DDJKM
 
 !************************************************************************
-!*                                                                      *
-!*     SetW3J                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **SetW3J**
+!! *precalculate wigner's 3j-symbols*
 !************************************************************************
 
-! ... precalculate wigner's 3j-symbols
 
 subroutine SetW3J(j1max,j2max,j3max,w3j)
    implicit none
@@ -594,12 +587,11 @@ subroutine SetW3J(j1max,j2max,j3max,w3j)
 end subroutine SetW3J
 
 !************************************************************************
-!*                                                                      *
-!*     WW3J                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WW3J**
+!! *return one wigner 3j-symbol*
 !************************************************************************
 
-! ... return one wigner 3j-symbol
 
 !     OK with (j1,j2,j3) = (45,45,90)
 !     overflow with (j1,j2,j3) = (46,46,92)
@@ -663,12 +655,11 @@ real(8) function WW3J(j1,j2,j3,m1,m2,m3)
 end function WW3J
 
 !************************************************************************
-!*                                                                      *
-!*     Trap                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Trap**
+!! *integration by the trapezoidal rule*
 !************************************************************************
 
-! ... integration by the trapezoidal rule
 
 real(8) function Trap(n,y,h)
    implicit none
@@ -679,12 +670,11 @@ real(8) function Trap(n,y,h)
 end function Trap
 
 !************************************************************************
-!*                                                                      *
-!*     TrapNe                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **TrapNe**
+!! *integration by the trapezoidal rule with varying steplength*
 !************************************************************************
 
-! ... integration by the trapezoidal rule with varying steplength
 
 real(8) function TrapNe(n,x,y)
    implicit none
@@ -695,12 +685,11 @@ real(8) function TrapNe(n,x,y)
 end function TrapNe
 
 !************************************************************************
-!*                                                                      *
-!*     IntegCirPoints                                                   *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **IntegCirPoints**
+!! *get points and weight for numerical integration over a circle*
 !************************************************************************
 
-! ... get points and weight for numerical integration over a circle
 !     ref: abramowitz and stegun
 
 subroutine IntegCirPoints(npoint,radius,x,y,w)
@@ -754,12 +743,11 @@ subroutine IntegCirPoints(npoint,radius,x,y,w)
 end subroutine IntegCirPoints
 
 !************************************************************************
-!*                                                                      *
-!*     PolFit                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **PolFit**
+!! *calculate least square fit to a polynomial*
 !************************************************************************
 
-! ... calculate least square fit to a polynomial
 
 !                        ndata
 !       minimization of  sum (y(i)-(a(0)+a(1)*x(i)+...+a(npol)*x(i)**npol
@@ -888,12 +876,11 @@ subroutine PolFit(npol, ndata, x, y, w, iprint, unit, a, dmax, sd)
 end subroutine PolFit
 
 !************************************************************************
-!*                                                                      *
-!*     PolVal                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **PolVal**
+!! *calculate the value of the polynomial for a given x-value*
 !************************************************************************
 
-! ... calculate the value of the polynomial for a given x-value
 
 real(8) function PolVal(npol,a,x)
    implicit none
@@ -913,12 +900,11 @@ real(8) function PolVal(npol,a,x)
 end function PolVal
 
 !************************************************************************
-!*                                                                      *
-!*     MatVecMul                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **MatVecMul**
+!! *multiply a matrix with a vector, c = a*b*
 !************************************************************************
 
-! ... multiply a matrix with a vector, c = a*b
 
 subroutine MatVecMul(n1,n2,a,b,c)
    implicit none
@@ -932,12 +918,11 @@ subroutine MatVecMul(n1,n2,a,b,c)
 end subroutine MatVecMul
 
 !************************************************************************
-!*                                                                      *
-!*     VecMatMul                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **VecMatMul**
+!! *multiply a vector with a matrix, c = b*a*
 !************************************************************************
 
-! ... multiply a vector with a matrix, c = b*a
 
 subroutine VecMatMul(n1,n2,b,a,c)
    implicit none
@@ -951,12 +936,11 @@ subroutine VecMatMul(n1,n2,b,a,c)
 end subroutine VecMatMul
 
 !************************************************************************
-!*                                                                      *
-!*     MatInv2                                                          *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **MatInv2**
+!! *matrix inversion of a 2x2 matrix*
 !************************************************************************
 
-! ... matrix inversion of a 2x2 matrix
 
 subroutine MatInv2(a,b)
    implicit none
@@ -972,12 +956,11 @@ subroutine MatInv2(a,b)
 end subroutine MatInv2
 
 !************************************************************************
-!*                                                                      *
-!*     MatInv3                                                          *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **MatInv3**
+!! *matrix inversion of a 3x3 matrix*
 !************************************************************************
 
-! ... matrix inversion of a 3x3 matrix
 
 subroutine MatInv3(a,b)
    implicit none
@@ -1000,12 +983,11 @@ subroutine MatInv3(a,b)
 end subroutine MatInv3
 
 !************************************************************************
-!*                                                                      *
-!*     MatInv                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **MatInv**
+!! *matrix inversion with solution of linear equations*
 !************************************************************************
 
-! ... matrix inversion with solution of linear equations
 
 !     routine solves matrix equation a*x = b where
 !         in: a(n,n)
@@ -1118,12 +1100,11 @@ end subroutine SubMatInv
 end subroutine MatInv
 
 !************************************************************************
-!*                                                                      *
-!*     Diag                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Diag**
+!! *diagonalize a real matrix and calculate eigenvectors*
 !************************************************************************
 
-! ... diagonalize a real matrix and calculate eigenvectors
 
 subroutine Diag_old(n,a,eivr)
    implicit none
@@ -1215,12 +1196,11 @@ subroutine Diag_old(n,a,eivr)
 end subroutine Diag_old
 
 !************************************************************************
-!*                                                                      *
-!*     Diag                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Diag**
+!! *diagonalize a real matrix and calculate eigenvectors*
 !************************************************************************
 
-! ... diagonalize a real matrix and calculate eigenvectors
 
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
 !     -> subroutine "jacobi"
@@ -1330,12 +1310,11 @@ subroutine Diag(n,a,d,v,nrot)
 end subroutine Diag
 
 !************************************************************************
-!*                                                                      *
-!*     Eigensort                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Eigensort**
+!! *Given the eigenvalues d and eigenvectors v as output from Diag this*
 !************************************************************************
 
-! ... Given the eigenvalues d and eigenvectors v as output from Diag this
 ! ... routine sorts the eigenvalues into descending order, and rearranges
 ! ... the columns of v correspondingly. The method is straight insertion.
 
@@ -1376,12 +1355,11 @@ subroutine Eigensort(d,v,n)
 end subroutine
 
 !************************************************************************
-!*                                                                      *
-!*     Smooth                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Smooth**
+!! *smooth by using spline functions argonne routine e350s*
 !************************************************************************
 
-! ... smooth by using spline functions. argonne routine e350s
 !     see C. H. Reinsch, Num Math 10, 177 (1967), 16, 451 (1971)
 !     x(i) are strictly increasing or decreasing (see comment below)
 
@@ -1498,12 +1476,11 @@ subroutine Smooth(n,x,y,dy,s,a,b,c,d)
 end subroutine Smooth
 
 !************************************************************************
-!*                                                                      *
-!*     CsEval                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CsEval**
+!! *return the value and the first two derivatives of a spline func*
 !************************************************************************
 
-! ... return the value and the first two derivatives of a spline func.
 
 !       ideriv = 0:  a(i)+b(i)*(u-x(i))+c(i)*(u-x(i))**2+d(i)*(u-x(i))**3
 !       ideriv = 1:  b(i)+2*c(i)*(u-x(i))+3*d(i)*(u-x(i))**2
@@ -1572,12 +1549,11 @@ real(8) function CsEval(n,u,ideriv,x,a,b,c,d)
 end function CsEval
 
 !************************************************************************
-!*                                                                      *
-!*     VInter                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **VInter**
+!! *interpolate in a 1d array*
 !************************************************************************
 
-! ... interpolate in a 1d array
 
 real(8) function VInter(n,x,y,xin)
    implicit none
@@ -1620,12 +1596,11 @@ real(8) function VInter(n,x,y,xin)
 end function VInter
 
 !************************************************************************
-!*                                                                      *
-!*     LinInter                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **LinInter**
+!! *linear interpolation between (x0,y0) and (x1,y1)*
 !************************************************************************
 
-! ... linear interpolation between (x0,y0) and (x1,y1)
 
 real(8) function LinInter(x0,x1,xk,y0,y1)
    implicit none
@@ -1639,12 +1614,11 @@ real(8) function LinInter(x0,x1,xk,y0,y1)
 end function LinInter
 
 !************************************************************************
-!*                                                                      *
-!*     CardinalBSpline                                                  *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CardinalBSpline**
+!! *calculate values and derivatives of the n:th order cardinal B-spline*
 !************************************************************************
 
-! ... calculate values and derivatives of the n:th order cardinal B-spline
 !     ref. Schoenberg, Cardinal Spline Interpolation
 !     (Society for Industrial and Applied Mathematics, Philadelphia, PA, 1973)
 
@@ -1713,12 +1687,11 @@ end subroutine CardinalBSpline
 end module CardinalBSplineModule
 
 !************************************************************************
-!*                                                                      *
-!*     HeapSort                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **HeapSort**
+!! *sort an array into ascending order, Heapsort algorithm*
 !************************************************************************
 
-! ... sort an array into ascending order, Heapsort algorithm
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
 
 subroutine HeapSort(n,vec)
@@ -1766,12 +1739,11 @@ subroutine HeapSort(n,vec)
 end subroutine HeapSort
 
 !************************************************************************
-!*                                                                      *
-!*     HeapSortIndex                                                    *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **HeapSortIndex**
+!! *generate an index array such that vec(index(j)) is ascending, Heapsort algorithm*
 !************************************************************************
 
-! ... generate an index array such that vec(index(j)) is ascending, Heapsort algorithm
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
 
 subroutine HeapSortIndex(n,vec,index)
@@ -1824,12 +1796,11 @@ subroutine HeapSortIndex(n,vec,index)
 end subroutine HeapSortIndex
 
 !************************************************************************
-!*                                                                      *
-!*     MakeCluster                                                      *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **MakeCluster**
+!! *make clusters*
 !************************************************************************
 
-! ... make clusters
 
 subroutine MakeCluster(nobj, npair, n1, n2, icliobj)
 
@@ -1849,12 +1820,11 @@ subroutine MakeCluster(nobj, npair, n1, n2, icliobj)
 end subroutine MakeCluster
 
 !************************************************************************
-!*                                                                      *
-!*     MakeCluster1                                                     *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **MakeCluster1**
+!! *make clusters*
 !************************************************************************
 
-! ... make clusters
 !     nobj >> npair: order(nobj*npair) operations
 !     nobj << npair: order(npair) operations
 
@@ -1881,12 +1851,11 @@ subroutine MakeCluster1(nobj, npair, n1, n2, icliobj)
 end subroutine MakeCluster1
 
 !************************************************************************
-!*                                                                      *
-!*     MakeCluster2                                                     *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **MakeCluster2**
+!! *make clusters*
 !************************************************************************
 
-! ... make clusters
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
 !     npair >> nobj: number of operations increases fast with increasing npair
 
@@ -1935,12 +1904,11 @@ end subroutine MakeClusterSub
 end subroutine MakeCluster2
 
 !************************************************************************
-!*                                                                      *
-!*     CalcClusterMember                                                *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CalcClusterMember**
+!! *get members of the cluster to which object iobj belongs to*
 !************************************************************************
 
-! ... get members of the cluster to which object iobj belongs to
 
 subroutine CalcClusterMember(nobj, icliobj, iobj, nmem, imemlis)
 
@@ -1977,12 +1945,11 @@ end subroutine CalcClusterMember
 !               qua(3)            zet                e(3)
 
 !************************************************************************
-!*                                                                      *
-!*     CarToSph                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CarToSph**
+!! *transform a vector from a cartensian to a spherical polar coordinate system*
 !************************************************************************
 
-! ... transform a vector from a cartensian to a spherical polar coordinate system
 
 subroutine CarToSph(txoptin,x,y,z,r,theta,phi)
    implicit none
@@ -2021,12 +1988,11 @@ subroutine CarToSph(txoptin,x,y,z,r,theta,phi)
 end subroutine CarToSph
 
 !************************************************************************
-!*                                                                      *
-!*     SphToCar                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **SphToCar**
+!! *transform a vector from a spherical polar to a cartesian coordinate system*
 !************************************************************************
 
-! ... transform a vector from a spherical polar to a cartesian coordinate system
 
 subroutine SphToCar(txopt,r,theta,phi,x,y,z)
    implicit none
@@ -2050,12 +2016,11 @@ subroutine SphToCar(txopt,r,theta,phi,x,y,z)
 end subroutine SphToCar
 
 !************************************************************************
-!*                                                                      *
-!*     CarToStd1                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CarToStd1**
+!! *transform a vector from a cartensian coordinate system to standard form*
 !************************************************************************
 
-! ... transform a vector from a cartensian coordinate system to standard form
 
 subroutine CarToStd1(x,y,z,q)
    implicit none
@@ -2071,12 +2036,11 @@ subroutine CarToStd1(x,y,z,q)
 end subroutine CarToStd1
 
 !************************************************************************
-!*                                                                      *
-!*     Std1ToCar                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Std1ToCar**
+!! *transform a vector from standard form to a cartensian coordinate system*
 !************************************************************************
 
-! ... transform a vector from standard form to a cartensian coordinate system
 
 subroutine Std1ToCar(q,x,y,z)
    implicit none
@@ -2092,12 +2056,11 @@ subroutine Std1ToCar(q,x,y,z)
 end subroutine Std1ToCar
 
 !************************************************************************
-!*                                                                      *
-!*     OriToEuler                                                       *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **OriToEuler**
+!! *transforming orientation matrix ori to Euler angles a, b, c*
 !************************************************************************
 
-! ... transforming orientation matrix ori to Euler angles a, b, c
 !     (zxz or zyz convention)
 
 subroutine OriToEuler(txopt, ori, a, b, c)
@@ -2151,12 +2114,11 @@ subroutine OriToEuler(txopt, ori, a, b, c)
 end subroutine OriToEuler
 
 !************************************************************************
-!*                                                                      *
-!*     EulerToQua                                                       *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **EulerToQua**
+!! *transform Euler angles a, b, c to quaternions*
 !************************************************************************
 
-! ... transform Euler angles a, b, c to quaternions
 
 subroutine EulerToQua(txopt, a, b, c, qua)
 
@@ -2193,12 +2155,11 @@ subroutine EulerToQua(txopt, a, b, c, qua)
 end subroutine EulerToQua
 
 !************************************************************************
-!*                                                                      *
-!*     OriToQua                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **OriToQua**
+!! *transform orientation matrix to quaternions*
 !************************************************************************
 
-! ... transform orientation matrix to quaternions
 
 !     note, the routine selects the branch where the largest quaternion is positive
 
@@ -2251,12 +2212,11 @@ subroutine OriToQua(np,iplow, ipupp, ori, qua)
 end subroutine OriToQua
 
 !************************************************************************
-!*                                                                      *
-!*     QuaToOri                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **QuaToOri**
+!! *transform quaternions qua to orientation matrix*
 !************************************************************************
 
-! ... transform quaternions qua to orientation matrix
 
 subroutine QuaToOri(np, iplow, ipupp, qua, ori)
    implicit none
@@ -2295,12 +2255,11 @@ subroutine QuaToOri(np, iplow, ipupp, qua, ori)
 end subroutine QuaToOri
 
 !************************************************************************
-!*                                                                      *
-!*     AxisAngToOri                                                     *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **AxisAngToOri**
+!! *transform rotation axis and rotation angle to a rotation matrix*
 !************************************************************************
 
-! ... transform rotation axis and rotation angle to a rotation matrix
 
 ! see Goldstein "classical mechanics" p 165-166.
 
@@ -2341,12 +2300,11 @@ subroutine AxisAngToOri(rotaxis, alpha, ori)
 end subroutine AxisAngToOri
 
 !************************************************************************
-!*                                                                      *
-!*     LabToPri                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **LabToPri**
+!! *transform a vector from lab to principal frame*
 !************************************************************************
 
-! ... transform a vector from lab to principal frame
 
 !     x(principal) =  x(lab) * ori
 
@@ -2364,12 +2322,11 @@ subroutine LabToPri(x, ori)
 end subroutine LabToPri
 
 !************************************************************************
-!*                                                                      *
-!*     PriToLab                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **PriToLab**
+!! *transform a vector from principal to laboratory frame*
 !************************************************************************
 
-! ... transform a vector from principal to laboratory frame
 
 !     x(lab) =  ori * x(principal)
 
@@ -2387,12 +2344,11 @@ subroutine PriToLab(x, ori)
 end subroutine PriToLab
 
 !************************************************************************
-!*                                                                      *
-!*     EulerRot                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **EulerRot**
+!! *rotation of a column vector (x,y,z) using the Euler angles*
 !************************************************************************
 
-! ... rotation of a column vector (x,y,z) using the Euler angles
 !     positive rotation, right-handed coordinate system, zyz convention
 
 !     rotated object          rotation axes          sequence
@@ -2475,12 +2431,11 @@ subroutine EulerRot(mode1in,mode2in,alpha,beta,gamma,x,y,z)
 end subroutine EulerRot
 
 !************************************************************************
-!*                                                                      *
-!*     EulerRotStd                                                      *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **EulerRotStd**
+!! *rotate tensor of standard form using Euler angles (NOTE CONVENTION NOT CLEAR)*
 !************************************************************************
 
-! ... rotate tensor of standard form using Euler angles (NOTE CONVENTION NOT CLEAR)
 
 subroutine EulerRotStd(mlmax, l, ang, Std)
 
@@ -2511,12 +2466,11 @@ subroutine EulerRotStd(mlmax, l, ang, Std)
 end subroutine EulerRotStd
 
 !************************************************************************
-!*                                                                      *
-!*     OrthoOri                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **OrthoOri**
+!! *orthogonalize particle frame*
 !************************************************************************
 
-! ... orthogonalize particle frame
 
 subroutine OrthoOri(np, iplow, ipupp, ori, tol, unit)
 
@@ -2588,12 +2542,11 @@ subroutine OrthoOri(np, iplow, ipupp, ori, tol, unit)
 end subroutine Orthoori
 
 !************************************************************************
-!*                                                                      *
-!*     CheckOriOrtho                                                    *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CheckOriOrtho**
+!! *check that a matrix is orthogonal*
 !************************************************************************
 
-! ... check that a matrix is orthogonal
 
 subroutine CheckOriOrtho(ori, unit)
    implicit none
@@ -2632,12 +2585,11 @@ subroutine CheckOriOrtho(ori, unit)
 end subroutine CheckOriOrtho
 
 !************************************************************************
-!*                                                                      *
-!*     QuaNorm                                                          *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **QuaNorm**
+!! *normalize quaternions*
 !************************************************************************
 
-! ... normalize quaternions
 
 subroutine QuaNorm(np, iplow, ipupp, qua)
    implicit none
@@ -2660,12 +2612,11 @@ subroutine QuaNorm(np, iplow, ipupp, qua)
 end subroutine QuaNorm
 
 !************************************************************************
-!*                                                                      *
-!*     AngVelToQuaVel                                                   *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **AngVelToQuaVel**
+!! *calculate quaternion velocities from quaternions and angular velocities (principal frame)*
 !************************************************************************
 
-! ... calculate quaternion velocities from quaternions and angular velocities (principal frame)
 
 subroutine AngVelToQuaVel(np, iplow, ipupp, qua, angvelo, quad)
 
@@ -2691,12 +2642,11 @@ subroutine AngVelToQuaVel(np, iplow, ipupp, qua, angvelo, quad)
 end subroutine AngVelToQuaVel
 
 !************************************************************************
-!*                                                                      *
-!*     QuaVelToAngVel                                                   *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **QuaVelToAngVel**
+!! *calculate angular velocities (principal frame) from quaternions and quaternion velocities*
 !************************************************************************
 
-! ... calculate angular velocities (principal frame) from quaternions and quaternion velocities
 
 subroutine QuaVelToAngVel(np, iplow, ipupp, qua, quad, angvelo)
 
@@ -2719,12 +2669,11 @@ subroutine QuaVelToAngVel(np, iplow, ipupp, qua, quad, angvelo)
 end subroutine QuaVelToAngVel
 
 !************************************************************************
-!*                                                                      *
-!*     Random                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Random**
+!! *return a random number in the range of 0 < ran < 1*
 !************************************************************************
 
-! ... return a random number in the range of 0 < ran < 1
 !     iseed should not be equal to zero, and the first seed should be negative
 !     "Numerical recipes in Fortran 90" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1992.
 !     modified from function ran
@@ -2779,12 +2728,11 @@ end function Random
 !end function Random
 
 !************************************************************************
-!*                                                                      *
-!*     GauRandom                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **GauRandom**
+!! *return a normally distributed stochastic variable*
 !************************************************************************
 
-! ... return a normally distributed stochastic variable
 !     zero mean and unit variance. box-muller mehtod
 !     random is explicitly inlined
 
@@ -2818,12 +2766,11 @@ real(8) function GauRandom(iseed)
 end function GauRandom
 
 !************************************************************************
-!*                                                                      *
-!*     CirRandom                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CirRandom**
+!! *return two random numbers x,y on a unit circle*
 !************************************************************************
 
-! ... return two random numbers x,y on a unit circle
 
 subroutine CirRandom(iseed,x,y)
    implicit none
@@ -2837,12 +2784,11 @@ subroutine CirRandom(iseed,x,y)
 end subroutine CirRandom
 
 !************************************************************************
-!*                                                                      *
-!*     SphRandom                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **SphRandom**
+!! *return three random numbers x,y,z on a unit sphere*
 !************************************************************************
 
-! ... return three random numbers x,y,z on a unit sphere
 
 subroutine SphRandom(iseed,x,y,z)
    implicit none
@@ -2859,12 +2805,11 @@ subroutine SphRandom(iseed,x,y,z)
 end subroutine SphRandom
 
 !************************************************************************
-!*                                                                      *
-!*     InvFlt                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **InvFlt**
+!! *return the inverse of a real variable*
 !************************************************************************
 
-! ... return the inverse of a real variable
 
 real(8) function InvFlt(real)
    implicit none
@@ -2874,12 +2819,11 @@ real(8) function InvFlt(real)
 end function InvFlt
 
 !************************************************************************
-!*                                                                      *
-!*     GetRelDiff                                                       *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **GetRelDiff**
+!! *calculate relative differences*
 !************************************************************************
 
-! ... calculate relative differences
 
 real(8) function GetRelDiff(a, b)
    implicit none
@@ -2890,12 +2834,11 @@ real(8) function GetRelDiff(a, b)
 end function GetRelDiff
 
 !************************************************************************
-!*                                                                      *
-!*     CpuAdd                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CpuAdd**
+!! *add and write total cpu time elapsed since start*
 !************************************************************************
 
-! ... add and write total cpu time elapsed since start
 
 subroutine CpuAdd(txwhattodo,label,level,unit)
 
@@ -2985,12 +2928,11 @@ subroutine CpuAdd(txwhattodo,label,level,unit)
 end subroutine CpuAdd
 
 !************************************************************************
-!*                                                                      *
-!*     CpuLeft                                                          *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CpuLeft**
+!! *check to see if the execution should be stopped*
 !************************************************************************
 
-! ... check to see if the execution should be stopped
 
 !     if tcycle > tleft then the program is stopped, where
 !        tcycle is the cpu time between the last two calls of CpuLeft
@@ -3026,12 +2968,11 @@ subroutine CpuLeft(maxcpu,unit)
 end subroutine CpuLeft
 
 !************************************************************************
-!*                                                                      *
-!*     CpuTot                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **CpuTot**
+!! *write total cpu time elapsed since start*
 !************************************************************************
 
-! ... write total cpu time elapsed since start
 
 subroutine CpuTot(unit)
    implicit none
@@ -3047,12 +2988,11 @@ subroutine CpuTot(unit)
 end subroutine CpuTot
 
 !************************************************************************
-!*                                                                      *
-!*     SecondsSinceStart                                                *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **SecondsSinceStart**
+!! *return cpu time used since start in seconds*
 !************************************************************************
 
-! ... return cpu time used since start in seconds
 
 real(8) function SecondsSinceStart()
    implicit none
@@ -3067,12 +3007,11 @@ real(8) function SecondsSinceStart()
 end function SecondsSinceStart
 
 !************************************************************************
-!*                                                                      *
-!*     WriteVec                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WriteVec**
+!! *write a vector*
 !************************************************************************
 
-! ... write a vector
 
 subroutine WriteVec(n,vec,label,ilow,iupp,ifreq,unit)
    implicit none
@@ -3087,12 +3026,11 @@ subroutine WriteVec(n,vec,label,ilow,iupp,ifreq,unit)
 end subroutine WriteVec
 
 !************************************************************************
-!*                                                                      *
-!*     WriteMat                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WriteMat**
+!! *write a matrix*
 !************************************************************************
 
-! ... write a matrix
 
 subroutine WriteMat(nrow,ncol,amat,label,irl,iru,irf,icl,icu,icf,unit)
    implicit none
@@ -3119,12 +3057,11 @@ subroutine WriteMat(nrow,ncol,amat,label,irl,iru,irf,icl,icu,icf,unit)
 end subroutine WriteMat
 
 !************************************************************************
-!*                                                                      *
-!*     WriteStd                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WriteStd**
+!! *write a variable of standard form*
 !************************************************************************
 
-! ... write a variable of standard form
 
 subroutine WriteStd(mlmax,lmax,q,label,iopt,unit)
    implicit none
@@ -3159,12 +3096,11 @@ subroutine WriteStd(mlmax,lmax,q,label,iopt,unit)
 end subroutine WriteStd
 
 !************************************************************************
-!*                                                                      *
-!*     WriteFront                                                       *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WriteFront**
+!! *write a front*
 !************************************************************************
 
-! ... write a front
 
 subroutine WriteFront(txProgName, txShortInfo, txVerDate, txAuthorMain, txAuthorCont, unit)
 
@@ -3232,12 +3168,11 @@ subroutine WriteFront(txProgName, txShortInfo, txVerDate, txAuthorMain, txAuthor
 end subroutine WriteFront
 
 !************************************************************************
-!*                                                                      *
-!*     WriteHead                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WriteHead**
+!! *write a heading*
 !************************************************************************
 
-! ... write a heading
 
 subroutine WriteHead(ilevel,string,unit)
    use MollibModule, only: Center, SpaceOut
@@ -3271,12 +3206,11 @@ subroutine WriteHead(ilevel,string,unit)
 end subroutine WriteHead
 
 !************************************************************************
-!*                                                                      *
-!*     WriteDateTime                                                    *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WriteDateTime**
+!! *write date and time*
 !************************************************************************
 
-! ... write date and time
 
 subroutine WriteDateTime(unit)
    implicit none
@@ -3288,12 +3222,11 @@ subroutine WriteDateTime(unit)
 end subroutine WriteDateTime
 
 !************************************************************************
-!*                                                                      *
-!*     WriteIOStat                                                      *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **WriteIOStat**
+!! *write value of iostat and take appropriate action*
 !************************************************************************
 
-! ... write value of iostat and take appropriate action
 
 subroutine WriteIOStat(name,text,iostat,iopt,unit)
    use MollibModule, only: Center, SpaceOut
@@ -3332,12 +3265,11 @@ subroutine WriteIOStat(name,text,iostat,iopt,unit)
 end subroutine WriteIOStat
 
 !************************************************************************
-!*                                                                      *
-!*     Warn                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Warn**
+!! *write a warning message*
 !************************************************************************
 
-! ... write a warning message
 
 subroutine Warn(name,text,unit)
    use MollibModule, only: Center, SpaceOut
@@ -3364,12 +3296,11 @@ subroutine Warn(name,text,unit)
 end subroutine Warn
 
 !************************************************************************
-!*                                                                      *
-!*     Stop                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Stop**
+!! *write a stop message and stop process*
 !************************************************************************
 
-! ... write a stop message and stop process
 
 subroutine Stop(name,text,unit)
    use, intrinsic :: iso_fortran_env, only : ustdout=>output_unit
@@ -3414,12 +3345,11 @@ end subroutine StopUnit
 end subroutine Stop
 
 !************************************************************************
-!*                                                                      *
-!*     LowerCase                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **LowerCase**
+!! *change a string to lower case*
 !************************************************************************
 
-! ... change a string to lower case
 
 subroutine LowerCase(string)
    implicit none
@@ -3432,12 +3362,11 @@ subroutine LowerCase(string)
 end subroutine LowerCase
 
 !************************************************************************
-!*                                                                      *
-!*     UpperCase                                                        *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **UpperCase**
+!! *change a string to upper case*
 !************************************************************************
 
-! ... change a string to upper case
 
 subroutine UpperCase(string)
    implicit none
@@ -3450,12 +3379,11 @@ subroutine UpperCase(string)
 end subroutine UpperCase
 
 !************************************************************************
-!*                                                                      *
-!*     SubStr                                                           *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **SubStr**
+!! *determine the number of substrings of a string*
 !************************************************************************
 !
-! ... determine the number of substrings of a string
 
 subroutine SubStr(string,sep,no,ilow,iupp)
 
@@ -3487,12 +3415,11 @@ subroutine SubStr(string,sep,no,ilow,iupp)
 end subroutine SubStr
 
 !************************************************************************
-!*                                                                      *
-!*     SignMagn                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **SignMagn**
+!! *get sign and magnitude of a real number*
 !************************************************************************
 
-! ... get sign and magnitude of a real number
 
 subroutine SignMagn(xin, isign, imagn)
    implicit none
@@ -3529,12 +3456,11 @@ subroutine SignMagn(xin, isign, imagn)
 end subroutine SignMagn
 
 !************************************************************************
-!*                                                                      *
-!*     Advance                                                          *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Advance**
+!! *read from an external unit until a string match is found*
 !************************************************************************
 
-! ... read from an external unit until a string match is found
 
 subroutine Advance(targetstring,unit,str,ok)
 
@@ -3558,12 +3484,11 @@ subroutine Advance(targetstring,unit,str,ok)
 end subroutine Advance
 
 !************************************************************************
-!*                                                                      *
-!*     Plot                                                             *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **Plot**
+!! *plot a function*
 !************************************************************************
 
-! ... plot a function
 
 subroutine Plot(txsa,nin,sain,txyscale,x0,x1,y0,y1,unit)
 
@@ -3649,12 +3574,11 @@ subroutine Plot(txsa,nin,sain,txyscale,x0,x1,y0,y1,unit)
 end subroutine Plot
 
 !************************************************************************
-!*                                                                      *
-!*     BrentMod                                                         *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **BrentMod**
+!! *get the minimum of a function*
 !************************************************************************
 
-! ... get the minimum of a function
 !     "Numerical recipes" by Press, Flannery, Teukolsky, and Vetterling, Cambridge, 1986.
 !     modified
 
@@ -3759,12 +3683,11 @@ real(8) function BrentMod(ax,bx,cx,f,tol,xthr,xmin)
 end function BrentMod
 
 !************************************************************************
-!*                                                                      *
-!*     KnuthShuffle                                                     *
-!*                                                                      *
+!> \page mollib mollib.F90
+!! **KnuthShuffle**
+!! *Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker*
 !************************************************************************
 
-! ... Shuffle 1-Dimensional List if Integers   !Pascal Hebbeker
 !     "The Art of Computer Programming" Second Edition Donald E. Knuth 1981
 !     modified from http://rosettacode.org/wiki/Knuth_shuffle#Fortran
 

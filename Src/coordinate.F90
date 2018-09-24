@@ -20,50 +20,162 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     CoordinateModule                                                 *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **CoordinateModule**
+!! *module for coordinate*
 !************************************************************************
 
-! ... module for coordinate
+!> \page nmlSetConfiguration
+!! The namelist  \ref nmlSetConfiguration contains variables that control the generation of the start configuration and is used only \ref txstart='setconf'.
+!! * Variables:
+!!  * \subpage txsetconf
+!!  * \subpage nucell
+!!  * \subpage rclow
+!!  * \subpage rcupp
+!!  * \subpage roshift
+!!  * \subpage radatset
+!!  * \subpage lranori
+!!  * \subpage bondscl
+!!  * \subpage anglemin
+!!  * \subpage iptnode
+!!  * \subpage ictstrand
+!!  * \subpage rnwt
+!!  * \subpage shiftnwt
+!!  * \subpage txoriginnwt
+!!  * \subpage radlimit
+!!  * \subpage ntrydef
+!!  * \subpage itestcoordinate
 
 module CoordinateModule
 
    use MolModule
 
+!> \page ntrydef
+!! `integer`
+!! **default:** 100
+!! * number of trials of setting the configuration per particle
    integer(4)    :: ntrydef                   ! default number of trials per particle
-
-   character(20), allocatable :: txsetconf(:) ! select way of generating start configuration
-   integer(4), allocatable    :: nucell(:,:)  ! number of unit cells in x-, y-, and z-direction
-   real(8), allocatable       :: rclow(:,:)   ! box in which particles are set (one corner)
-   real(8), allocatable       :: rcupp(:,:)   ! box in which particles are set (diagonal corner)
-
-   real(8), allocatable       :: roshift(:,:) ! shift of lattice points in a unit cell in fraction of lattice length
-   real(8), allocatable       :: radatset(:)  ! hard-core radius of atom type used when setting particles
-   logical, allocatable       :: lranori(:)   ! logical flag for random particle orientation (some options of txsetconf)
-   real(8), allocatable       :: bondscl(:)   ! bond length scaling factor for chains
-   real(8), allocatable       :: anglemin(:)  ! minimum angle between consecutive particles in a chain
-
-   integer(4)    :: iptnode                   ! particle type of nodes (for SetPeriodicNetwork)
-   integer(4)    :: ictstrand                 ! chain type of strands
-
-   real(8),      allocatable :: rnwt(:)       ! radius of network type inwt [Allocate with nnwt]
-   character(8), allocatable :: txoriginnwt(:)! network center of network type inwt ("origin" and "random") [Allocate with nnwt]
-   real(8),      allocatable :: shiftnwt(:,:) ! shift of cut-off sphere center center during finite network generation
-
-   real(8)       :: radlimit(2)               ! lower and upper radial limit of particles (for SetCoreCell)
-
+!> \page txsetconf
+!! `character(20)`(1:\ref npt )
+!> * Text label used for selecting start coordinates. Existing routines or user provided routines are used.
+!! * If, \ref nmlSetConfiguration ='…lattice', particles are placed in the corner with the lowest x, y, and z-coordinate and at the
+!! surfaces with the lowest x, y, and zcoordinates, respectively, of a unit cell.
+!! * If \ref nmlSetConfiguration ='…random', hard-core overlap test with already existing particles is made. If coordinates could not be
+!!   generated after 100*\ref nppt (ipt) attempts with particles of type ipt, the program is stopped.
+!! * '`origin`': Set one particle in the center of the box.
+!! * '`pclattice`': Generate a primitive cubic lattice (1 particle in the unit cell).
+!! * '`bcclattice`': Generate a body centered cubic lattice (2 particles in the unit cell).
+!! * '`fcclattice`': Generate a face centered cubic lattice (4 particles in the unit cell).
+!! * '`sm2lattice`': Generate a sm2 lattice (4 particles in the unit cell).
+!! * '`diamondlattice`': Generate a cubic diamond lattice (8 particles in the unit cell).
+!! * '`h2olattice`': Generate a cubic lattice, im3m (ice VIII) (2 particles in the unit cell).
+!! * '`n2lattice`': Generate a cubic lattice, pa3 (solid N2) (4 particles in the unit cell).
+!! * '`benzenelattice`': Generate a cubic lattice, pbca (solid benzene) (4 particles in the unit cell).
+!! * '`random`': Generate random positions and orientations
+!! * '`randomfixori`': Gererate random positions and fixed orientations
+!! * '`chainline`': Generate a straight configuration with chain particles on a line (x-dir)
+!! * '`chaincircle`': Generate a straight configuration with chain particles on a circle (xy-plane)
+!! * '`chainrandom`': Generate random positions and orientations for chain particles.
+!! * '`chainrandomintori`': Generate random positions and int. fixed orientations for chain particles.
+!! * '`sphbrushlattice`': Generate a lattice brush on a spherical surface, first segment placed on a lattice.
+!! * '`sphbrushrandom`': Generate a random brush on a spherical surface, first segment randomly placed.
+!! * '`planbrushrandom`': Generate a random brush on a planar surface.
+!! * '`hierarchicallattice`': Generate a hierarchical polymer, first segment placed on a lattice.
+!! * '`hierarchicalrandom`': Generate a hierarchical polymer, first segment randomly placed.
+!! * '`perodicnetwork`': Generate a periodic network (diamond-like containing 8 nodes in a unit cell).
+!! * '`network`': Generate a nonperiodic network (diamond-like containing 8 nodes in a unit cell).
+!! * '`coreshell`': Generate particle positions in a spherical shell.
+!! * '*xxx*': Search for user-provided routine labeled '*xxx*' called from routine SetParticleUser in file moluser.F90.
+!! * If there is no match, the program stops.
+   character(20), allocatable :: txsetconf(:)
+!> \page nucell
+!! `integer`(1:3,1:\ref npt)
+!! **default:** 3npt*`0`
+!! * Number of unit cells in the x-, y-, and z-direction. The number of particles of type ipt has to be at most
+!!   \ref nucell (1,:)*\ref nucell (2,:)*\ref nucell (3,:)*npl, where npl is the number of particles in the unit cell (1 if PC, 2 if BCC, and 4 if FCC).
+   integer(4), allocatable    :: nucell(:,:)
+!> \page rclow
+!! `real`(1:3,1:\ref npt)
+!! **default:** 3npt*(`-0.5*box(1)`)
+!! * Lower x-, y-, and z-coordinate for the random positions or the set of unit cells. \ref rclow may be unequal for different particle types to allow for a separation of particles of different types.
+   real(8), allocatable       :: rclow(:,:)
+!> \page rcupp
+!! `real`(1:3,1:\ref npt)
+!! **default:** 3npt*(`+0.5*box(1)`)
+!! * Upper x-, y-, and z-coordinate for the random positions or the set of unit cells.
+   real(8), allocatable       :: rcupp(:,:)
+!> \page roshift
+!! `real`(1:3,1:\ref npt)
+!! **default:** 3npt*`0.0`
+!! * Shift of the lattice points in a unit cell in fraction of the unit cell length.
+   real(8), allocatable       :: roshift(:,:)
+!> \page radatset
+!! `real`(1:\ref npt)
+!! **default:** \ref radat
+!! * Hard-sphere radius used to create the start configuration.
+   real(8), allocatable       :: radatset(:)
+!> \page lranori
+!! `logical`(1:\ref npt)
+!! **default:** \ref npt*`.false.`
+!! * `.true.`: Random particle  orientation (only \ref txsetconf='origin' and '…lattice').
+!! * `.false.`:  Equal particle orientation (x' = x, y' = y, and z' = z).
+   logical, allocatable       :: lranori(:)
+!> \page bondscl
+!! `real`(1:\ref nct)
+!! **default:** \ref nct*`1.0`
+!! * Bond length scaling factor for chains.
+   real(8), allocatable       :: bondscl(:)
+!> \page anglemin
+!! `real`(1:\ref nct)
+!! **default:** \ref nct*`0.0`
+!! * Smallest allowed angle between consecutive particles in a chain (only \ref nct>0).
+   real(8), allocatable       :: anglemin(:)
+!> \page iptnode
+!! `integer`
+!! **default:** `0`
+!! * Type of particles of nodes (only \ref txsetconf = 'periodicnetwork').
+   integer(4)    :: iptnode
+!> \page ictstrand
+!! `integer`
+!! **default:** `0`
+!! * Type of chain of strands (only \ref txsetconf = 'periodicnetwork').
+   integer(4)    :: ictstrand
+!> \page rnwt
+!! `real`(1:\ref nnwt)
+!! **default:** \ref nnwt*`10.0`
+!! * Cropping sphere radius of networks of network type inwt (only \ref txsetconf = 'network').
+   real(8),      allocatable :: rnwt(:)
+!> \page txoriginnwt
+!! `character(8)`(1:\ref nnwt)
+!! **default:** \ref nnwt*'`random`'
+!! * Selecting center of networks of different types (only \ref txsetconf='network').
+!! * '`origin`': Set one network in the center of the box.
+!! * '`random`':  Generate random positions of the centers of the networks.
+   character(8), allocatable :: txoriginnwt(:)
+!> \page shiftnwt
+!! `real`(3,1:\ref nnwt)
+!! **default:** 3*\ref nnwt*`0.0`
+!! * x-,y- and z-shift of the center of the cropping sphere of network type inwt in units of the unit cell
+   real(8),      allocatable :: shiftnwt(:,:)
+!> \page radlimit
+!! `real`(2)
+!! * Lower and upper radial limit for placing particles (only \ref txsetconf='coreshell').
+   real(8)       :: radlimit(2)
+!> \page itestcoordinate
+!! `integer`
+!! **default:** `0`
+!! * Flag for test output. This possibility is for maintenance purposes.
+!! * `0`: Nothing. The normal option.
+!! * `1`: Write crosslink data.
    integer(4)    :: itestcoordinate           ! =1, call of TestMakeCrossLink
-
 end module CoordinateModule
 
 !************************************************************************
-!*                                                                      *
-!*     Coordinate                                                       *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **Coordinate**
+!! *handle coordinates and velocities*
 !************************************************************************
 
-! ... handle coordinates and velocities
 
 subroutine Coordinate(iStage)
 
@@ -288,12 +400,11 @@ end subroutine CrossLink_Steffi
 end subroutine Coordinate
 
 !************************************************************************
-!*                                                                      *
-!*     SetChargeWeakChargeCase                                          *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetChargeWeakChargeCase**
+!! *initiate charge of for the weak-charge case*
 !************************************************************************
 
-! ... initiate charge of for the weak-charge case
 
 subroutine SetChargeWeakChargeCase
    use CoordinateModule
@@ -306,12 +417,11 @@ subroutine SetChargeWeakChargeCase
 end subroutine SetChargeWeakChargeCase
 
 !************************************************************************
-!*                                                                      *
-!*     SetConfiguration                                                 *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetConfiguration**
+!! *generate a start configuration*
 !************************************************************************
 
-! ... generate a start configuration
 
 subroutine SetConfiguration
 
@@ -327,7 +437,6 @@ subroutine SetConfiguration
 
    namelist /nmlSetConfiguration/ txsetconf, nucell, rclow, rcupp, roshift,                          &
                                   radatset, lranori,  bondscl, anglemin,                             &
-                                  ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,                   &
                                   iptnode, ictstrand,                                                &
                                   rnwt, txoriginnwt, shiftnwt,                                       &
                                   radlimit, ntrydef,                                                 &
@@ -595,12 +704,11 @@ subroutine SetConfiguration
 end subroutine SetConfiguration
 
 !************************************************************************
-!*                                                                      *
-!*     SetLattice                                                       *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetLattice**
+!! *generate a lattice configuration*
 !************************************************************************
 
-! ... generate a lattice configuration
 
 subroutine SetLattice(ipt, latticesub)
 
@@ -724,12 +832,11 @@ subroutine SetLattice(ipt, latticesub)
 end subroutine SetLattice
 
 !************************************************************************
-!*                                                                      *
-!*     SetOrigin                                                        *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetOrigin**
+!! *generate a point in the center of the unit cell*
 !************************************************************************
 
-! ... generate a point in the center of the unit cell
 
 subroutine SetOrigin(nlp, rol, oril)
    implicit none
@@ -744,12 +851,11 @@ subroutine SetOrigin(nlp, rol, oril)
 end subroutine SetOrigin
 
 !************************************************************************
-!*                                                                      *
-!*     SetSq2D                                                          *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetSq2D**
+!! *generate a 2d square lattice*
 !************************************************************************
 
-! ... generate a 2d square lattice
 
 subroutine SetSq2D(nlp, rol, oril)
    implicit none
@@ -764,12 +870,11 @@ subroutine SetSq2D(nlp, rol, oril)
 end subroutine SetSq2D
 
 !************************************************************************
-!*                                                                      *
-!*     SetHex2D                                                         *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetHex2D**
+!! *generate a 2d hexagonal lattice*
 !************************************************************************
 
-! ... generate a 2d hexagonal lattice
 
 subroutine SetHex2D(nlp, rol, oril)
    implicit none
@@ -791,12 +896,11 @@ subroutine SetHex2D(nlp, rol, oril)
 end subroutine SetHex2D
 
 !************************************************************************
-!*                                                                      *
-!*     SetPC                                                            *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetPC**
+!! *generate a primitive cubic lattice*
 !************************************************************************
 
-! ... generate a primitive cubic lattice
 
 subroutine SetPC(nlp, rol, oril)
    implicit none
@@ -811,12 +915,11 @@ subroutine SetPC(nlp, rol, oril)
 end subroutine SetPC
 
 !************************************************************************
-!*                                                                      *
-!*     SetBCC                                                           *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetBCC**
+!! *generate a body-centered cubic lattice*
 !************************************************************************
 
-! ... generate a body-centered cubic lattice
 
 subroutine SetBCC(nlp, rol, oril)
    implicit none
@@ -835,12 +938,11 @@ subroutine SetBCC(nlp, rol, oril)
 end subroutine SetBCC
 
 !************************************************************************
-!*                                                                      *
-!*     SetFCC                                                           *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetFCC**
+!! *generate a face-centered cubic lattice*
 !************************************************************************
 
-! ... generate a face-centered cubic lattice
 
 subroutine SetFCC(nlp, rol, oril)
    implicit none
@@ -874,12 +976,11 @@ subroutine SetFCC(nlp, rol, oril)
 end subroutine SetFCC
 
 !************************************************************************
-!*                                                                      *
-!*     SetSM2                                                           *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetSM2**
+!! *generate a sm2 lattice*
 !************************************************************************
 
-! ... generate a sm2 lattice
 
 subroutine SetSM2(nlp, rol, oril, cosa, sina, theta)
    implicit none
@@ -932,12 +1033,11 @@ subroutine SetSM2(nlp, rol, oril, cosa, sina, theta)
 end subroutine SetSM2
 
 !************************************************************************
-!*                                                                      *
-!*     SetDiamond                                                       *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetDiamond**
+!! *generate a cubic diamond lattice*
 !************************************************************************
 
-! ... generate a cubic diamond lattice
 
 subroutine SetDiamond(nlp, rol, oril)
 
@@ -998,12 +1098,11 @@ subroutine SetDiamond(nlp, rol, oril)
 end subroutine SetDiamond
 
 !************************************************************************
-!*                                                                      *
-!*     SetH2O                                                           *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetH2O**
+!! *generate a cubic lattice, im3m (ice viii)*
 !************************************************************************
 
-! ... generate a cubic lattice, im3m (ice viii)
 
 subroutine SetH2O(nlp, rol, oril)
 
@@ -1032,12 +1131,11 @@ subroutine SetH2O(nlp, rol, oril)
 end subroutine SetH2O
 
 !************************************************************************
-!*                                                                      *
-!*     SetN2                                                            *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetN2**
+!! *generate a cubic lattice, pa3 (solid n2)*
 !************************************************************************
 
-! ... generate a cubic lattice, pa3 (solid n2)
 
 subroutine SetN2(nlp, rol, oril)
 
@@ -1103,12 +1201,11 @@ subroutine SetN2(nlp, rol, oril)
 end subroutine SetN2
 
 !************************************************************************
-!*                                                                      *
-!*     SetBenzene                                                       *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetBenzene**
+!! *generate a cubic lattice, pbca (solid benzene)*
 !************************************************************************
 
-! ... generate a cubic lattice, pbca (solid benzene)
 
 !     a molecular orthogonal frame is attached to a benzene molecule.
 !     the benzene molecule is orientated in this frame occording to
@@ -1196,12 +1293,11 @@ subroutine SetBenzene(nlp, rol, oril)
 end subroutine SetBenzene
 
 !************************************************************************
-!*                                                                      *
-!*     SetRandom                                                        *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetRandom**
+!! *generate random positions and orientations*
 !************************************************************************
 
-! ... generate random positions and orientations
 
 subroutine SetRandom(ipt)
 
@@ -1264,12 +1360,11 @@ end function CheckHSDielBoundaryOverlap
 end subroutine SetRandom
 
 !************************************************************************
-!*                                                                      *
-!*     SetRandomFixOri                                                  *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetRandomFixOri**
+!! *generate random positions and fixed orientations*
 !************************************************************************
 
-! ... generate random positions and fixed orientations
 
 subroutine SetRandomFixOri(ipt)
 
@@ -1305,12 +1400,11 @@ subroutine SetRandomFixOri(ipt)
 end subroutine SetRandomFixOri
 
 !************************************************************************
-!*                                                                      *
-!*     SetChainLine                                                     *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetChainLine**
+!! *generate a linear configuration for chain particles (only for one chain)*
 !************************************************************************
 
-! ... generate a linear configuration for chain particles (only for one chain)
 !     along the x-axis, lab orientation
 
 subroutine SetChainLine !(iptset) iptset is not needed
@@ -1387,12 +1481,11 @@ end subroutine SetPartOriLoc
 end subroutine SetChainLine
 
 !************************************************************************
-!*                                                                      *
-!*     SetChainCircle                                                   *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetChainCircle**
+!! *generate a circular configuration for chain particles (only for one chain)*
 !************************************************************************
 
-! ... generate a circular configuration for chain particles (only for one chain)
 !     in the xy-plane
 
 subroutine SetChainCircle !(iptset) iptset is not needed
@@ -1507,12 +1600,11 @@ end subroutine SetOriCircle
 end subroutine SetChainCircle
 
 !************************************************************************
-!*                                                                      *
-!*     SetChainRandom                                                   *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetChainRandom**
+!! *generate random positions and orientations for chain particles*
 !************************************************************************
 
-! ... generate random positions and orientations for chain particles
 
 subroutine SetChainRandom !(iptset) iptset is not needed
 
@@ -1577,12 +1669,11 @@ subroutine SetChainRandom !(iptset) iptset is not needed
 end subroutine SetChainRandom
 
 !************************************************************************
-!*                                                                      *
-!*     SetChainRandomIntOri                                             *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetChainRandomIntOri**
+!! *generate random positions and internally fixed orientations for chain particles*
 !************************************************************************
 
-! ... generate random positions and internally fixed orientations for chain particles
 
 subroutine SetChainRandomIntOri  !(iptset) iptset is not needed
 
@@ -1678,12 +1769,11 @@ subroutine SetChainRandomIntOri  !(iptset) iptset is not needed
 end subroutine SetChainRandomIntOri
 
 !************************************************************************
-!*                                                                      *
-!*     SetSphBrush                                                      *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetSphBrush**
+!! *generate a configuration for a spherical brush*
 !************************************************************************
 
-! ... generate a configuration for a spherical brush
 
 !     special considerations:
 !        lattice arrangement of grafted particles
@@ -1803,12 +1893,11 @@ end subroutine SetFirstSegment
 end subroutine SetSphBrush
 
 !************************************************************************
-!*                                                                      *
-!*     SetPlanarBrush                                                   *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetPlanarBrush**
+!! *generate a configuration for a planar brush*
 !************************************************************************
 
-! ... generate a configuration for a planar brush
 
 !     special considerations:
 !        particles belonging to grafted chains should be set first
@@ -1891,12 +1980,11 @@ end subroutine SetFirstSegment
 end subroutine SetPlanarBrush
 
 !************************************************************************
-!*                                                                      *
-!*     SetHierarchical                                                  *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetHierarchical**
+!! *generate a configuration for hierarchical polymers*
 !************************************************************************
 
-! ... generate a configuration for hierarchical polymers
 
 subroutine SetHierarchical(txfirstseg)
 
@@ -2007,12 +2095,11 @@ end subroutine SetFirstSegment
 end subroutine SetHierarchical
 
 !************************************************************************
-!*                                                                      *
-!*     SetPeriodicNetwork                                               *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetPeriodicNetwork**
+!! *generate a periodic network*
 !************************************************************************
 
-! ... generate a periodic network
 
 !  unit cell: diamond-like containing 8 nodes and 16 strands
 !  input variables: nucell, rcupp, rclow, iptnode, ictstrand
@@ -2132,12 +2219,11 @@ subroutine SetPeriodicNetwork(ipt)
 end subroutine SetPeriodicNetwork
 
 !************************************************************************
-!*                                                                      *
-!*     SetNetwork                                                       *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetNetwork**
+!! *generate a nonperiodic network*
 !************************************************************************
 
-! ... generate a nonperiodic network
 
 !  unit cell: diamond-like containing 8 nodes and 16 strands
 !  input variables: nnwt (nmlParticle), nnwnwt (nmlParticle), ncctnwt (nmlParticle), rnwt, iptclnwt (nmlParticle), txoriginnwt
@@ -2471,12 +2557,11 @@ subroutine SetNetworkPos(shiftxyz, radgel, bondlen, npstrand, nnode, ronodeout, 
 end subroutine SetNetworkPos
 
 !***********************************************************************
-!*                                                                     *
-!*    SetCoreShell                                                     *
-!*                                                                     *
+!> \page coordinate coordinate.F90
+!! **SetCoreShell**
+!! *generate a configuration with particles located in a spherical shell*
 !***********************************************************************
 
-! ... generate a configuration with particles located in a spherical shell
 !     bounded radially by radlimit(1:2) (Steffi Schneider)
 
 subroutine SetCoreShell(ipt)
@@ -2523,12 +2608,11 @@ subroutine SetCoreShell(ipt)
  end subroutine SetCoreShell
 
 !************************************************************************
-!*                                                                      *
-!*     SetPartPosRandom                                                 *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetPartPosRandom**
+!! *generate a random particle position*
 !************************************************************************
 
-! ... generate a random particle position
 
 subroutine SetPartPosRandom(ip)
 
@@ -2581,12 +2665,11 @@ subroutine SetPartPosRandom(ip)
 end subroutine SetPartPosRandom
 
 !************************************************************************
-!*                                                                      *
-!*     SetPartPosRandomN                                                *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **SetPartPosRandomN**
+!! *generate a random position at a given distance to a previously set particle*
 !************************************************************************
 
-! ... generate a random position at a given distance to a previously set particle
 
 subroutine SetPartPosRandomN(ip,jp,distance)
 
@@ -2610,12 +2693,11 @@ subroutine SetPartPosRandomN(ip,jp,distance)
 end subroutine SetPartPosRandomN
 
 !************************************************************************
-!*                                                                      *
-!*     CheckPartOutsideBox                                              *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **CheckPartOutsideBox**
+!! *check if a particle is outside the box*
 !************************************************************************
 
-! ... check if a particle is outside the box
 
 logical function CheckPartOutsideBox(ip)
 
@@ -2673,12 +2755,11 @@ logical function CheckPartOutsideBox(ip)
 end function CheckPartOutsideBox
 
 !************************************************************************
-!*                                                                      *
-!*     CheckTooFoldedChain                                              *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **CheckTooFoldedChain**
+!! *check if a too folded chain*
 !************************************************************************
 
-! ... check if a too folded chain
 
 logical function CheckTooFoldedChain(ip,bondeq)
 
@@ -2708,12 +2789,11 @@ logical function CheckTooFoldedChain(ip,bondeq)
 end function CheckTooFoldedChain
 
 !************************************************************************
-!*                                                                      *
-!*     MakeCrossLink                                                    *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **MakeCrossLink**
+!! *make crosslinks between particles labeled clbeg and particles labeled clend*
 !************************************************************************
 
-! ... make crosslinks between particles labeled clbeg and particles labeled clend
 !     on the basis of their separation
 
 !                     npclbeg, ipclbeg
@@ -2793,12 +2873,11 @@ end subroutine TestMakeCrossLink
 end subroutine MakeCrossLink
 
 !************************************************************************
-!*                                                                      *
-!*     TestCoordinate                                                   *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **TestCoordinate**
+!! *write test coordinates*
 !************************************************************************
 
-! ... write test coordinates
 
 subroutine TestCoordinate(unit)
    use CoordinateModule
@@ -2819,12 +2898,11 @@ subroutine TestCoordinate(unit)
 end subroutine TestCoordinate
 
 !************************************************************************
-!*                                                                      *
-!*     StoreInteger                                                     *
-!*                                                                      *
+!> \page coordinate coordinate.F90
+!! **StoreInteger**
+!! *store integer*
 !************************************************************************
 
-! ... store integer
 
 subroutine StoreInteger(mnxxx, ip, nxxx, ipxxx)
 

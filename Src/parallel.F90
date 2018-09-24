@@ -34,12 +34,11 @@
 !************************************************************************
 
 !************************************************************************
-!*                                                                      *
-!*     ParallelModule                                                   *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **ParallelModule**
+!! *module to be used in routines invoking mpi*
 !************************************************************************
 
-! ... module to be used in routines invoking mpi
 
 module ParallelModule
 
@@ -50,12 +49,11 @@ module ParallelModule
 end module ParallelModule
 
 !************************************************************************
-!*                                                                      *
-!*     par_initialize                                                   *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_initialize**
+!! *initialize parallel matter*
 !************************************************************************
 
-! ... initialize parallel matter
 
 subroutine par_initialize
 
@@ -91,12 +89,11 @@ subroutine par_initialize
 end subroutine par_initialize
 
 !************************************************************************
-!*                                                                      *
-!*     par_finalize                                                     *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_finalize**
+!! *finalize parallel matter*
 !************************************************************************
 
-! ... finalize parallel matter
 
 subroutine par_finalize
 
@@ -113,12 +110,11 @@ subroutine par_finalize
 end subroutine par_finalize
 
 !************************************************************************
-!*                                                                      *
-!*     par_comm_size                                                    *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_comm_size**
+!! *get number of processes*
 !************************************************************************
 
-! ... get number of processes
 
 subroutine par_comm_size(nproc)
 
@@ -136,12 +132,11 @@ subroutine par_comm_size(nproc)
 end subroutine par_comm_size
 
 !************************************************************************
-!*                                                                      *
-!*     par_comm_rank                                                    *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_comm_rank**
+!! *get my id and set master and slave*
 !************************************************************************
 
-! ... get my id and set master and slave
 
 subroutine par_comm_rank(myid,master,slave)
 
@@ -167,12 +162,11 @@ subroutine par_comm_rank(myid,master,slave)
 end subroutine par_comm_rank
 
 !************************************************************************
-!*                                                                      *
-!*     par_barrier                                                      *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_barrier**
+!! *barrier synchronisation*
 !************************************************************************
 
-! ... barrier synchronisation
 
 subroutine par_barrier
 
@@ -187,12 +181,11 @@ subroutine par_barrier
 end subroutine par_barrier
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_characters                                                *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_characters**
+!! *broadcast character variables*
 !************************************************************************
 
-! ... broadcast character variables
 
 subroutine par_bc_characters(buff,icount)
 
@@ -209,12 +202,11 @@ subroutine par_bc_characters(buff,icount)
 end subroutine par_bc_characters
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_logicals                                                  *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_logicals**
+!! *broadcast logicals*
 !************************************************************************
 
-! ... broadcast logicals
 
 subroutine par_bc_logicals(buff,icount)
 
@@ -232,12 +224,11 @@ subroutine par_bc_logicals(buff,icount)
 end subroutine par_bc_logicals
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_logical                                                   *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_logical**
+!! *broadcast logical*
 !************************************************************************
 
-! ... broadcast logical
 
 subroutine par_bc_logical(buff)
 
@@ -254,12 +245,11 @@ subroutine par_bc_logical(buff)
 end subroutine par_bc_logical
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_ints                                                      *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_ints**
+!! *broadcast integers*
 !************************************************************************
 
-! ... broadcast integers
 
 subroutine par_bc_ints(buff,icount)
 
@@ -277,12 +267,11 @@ subroutine par_bc_ints(buff,icount)
 end subroutine par_bc_ints
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_int                                                       *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_int**
+!! *broadcast of scalar integer*
 !************************************************************************
 
-! ... broadcast of scalar integer
 
 subroutine par_bc_int(buff)
 
@@ -299,12 +288,11 @@ subroutine par_bc_int(buff)
 end subroutine par_bc_int
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_ints8                                                     *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_ints8**
+!! *broadcast integers of kind 8*
 !************************************************************************
 
-! ... broadcast integers of kind 8
 
 subroutine par_bc_ints8(buff,icount)
 
@@ -322,12 +310,11 @@ subroutine par_bc_ints8(buff,icount)
 end subroutine par_bc_ints8
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_reals                                                     *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_reals**
+!! *broadcast double precision reals*
 !************************************************************************
 
-! ... broadcast double precision reals
 
 subroutine par_bc_reals(buff,icount)
 
@@ -345,12 +332,11 @@ subroutine par_bc_reals(buff,icount)
 end subroutine par_bc_reals
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_real                                                      *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_real**
+!! *broadcast double precision real*
 !************************************************************************
 
-! ... broadcast double precision real
 
 subroutine par_bc_real(buff)
 
@@ -367,12 +353,11 @@ subroutine par_bc_real(buff)
 end subroutine par_bc_real
 
 !************************************************************************
-!*                                                                      *
-!*     par_bc_comps                                                     *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_bc_comps**
+!! *broadcast double precision complex variables*
 !************************************************************************
 
-! ... broadcast double precision complex variables
 
 subroutine par_bc_comps(buff,icount)
 
@@ -391,12 +376,11 @@ end subroutine par_bc_comps
 
 
 !************************************************************************
-!*                                                                      *
-!*     par_allreduce_logicals                                           *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allreduce_logicals**
+!! *perform global logical or and redistribution of logical variables*
 !************************************************************************
 
-! ... perform global logical or and redistribution of logical variables.
 
 subroutine par_allreduce_logicals(buff,temp,icount)
 
@@ -417,12 +401,11 @@ subroutine par_allreduce_logicals(buff,temp,icount)
 end subroutine par_allreduce_logicals
 
 !************************************************************************
-!*                                                                      *
-!*     par_allreduce_logical                                            *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allreduce_logical**
+!! *perform global logical or and redistribution of logical variables*
 !************************************************************************
 
-! ... perform global logical or and redistribution of logical variables.
 
 subroutine par_allreduce_logical(buff,temp)
 
@@ -441,12 +424,11 @@ subroutine par_allreduce_logical(buff,temp)
 end subroutine par_allreduce_logical
 
 !************************************************************************
-!*                                                                      *
-!*     par_allreduce_ints                                               *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allreduce_ints**
+!! *perform global sum and redistribution of integer variables*
 !************************************************************************
 
-! ... perform global sum and redistribution of integer variables
 
 
 subroutine par_allreduce_ints(buff,temp,icount)
@@ -468,12 +450,11 @@ subroutine par_allreduce_ints(buff,temp,icount)
 end subroutine par_allreduce_ints
 
 !************************************************************************
-!*                                                                      *
-!*     par_allreduce_int                                                *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allreduce_int**
+!! *perform global sum and redistribution of integer variable*
 !************************************************************************
 
-! ... perform global sum and redistribution of integer variable
 
 
 subroutine par_allreduce_int(buff,temp)
@@ -493,12 +474,11 @@ subroutine par_allreduce_int(buff,temp)
 end subroutine par_allreduce_int
 
 !************************************************************************
-!*                                                                      *
-!*     par_allreduce_reals                                              *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allreduce_reals**
+!! *perform global sum and redistribution of double precision variables*
 !************************************************************************
 
-! ... perform global sum and redistribution of double precision variables
 
 subroutine par_allreduce_reals(buff,temp,icount)
 
@@ -519,12 +499,11 @@ subroutine par_allreduce_reals(buff,temp,icount)
 end subroutine par_allreduce_reals
 
 !************************************************************************
-!*                                                                      *
-!*     par_allreduce_real                                               *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allreduce_real**
+!! *perform global sum and redistribution of double precision variable*
 !************************************************************************
 
-! ... perform global sum and redistribution of double precision variable
 
 subroutine par_allreduce_real(buff,temp)
 
@@ -543,12 +522,11 @@ subroutine par_allreduce_real(buff,temp)
 end subroutine par_allreduce_real
 
 !************************************************************************
-!*                                                                      *
-!*     par_allreduce_comps                                              *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allreduce_comps**
+!! *perform global sum and redistribution of double precision complex variables*
 !************************************************************************
 
-! ... perform global sum and redistribution of double precision complex variables
 
 subroutine par_allreduce_comps(buff,temp,icount)
 
@@ -569,12 +547,11 @@ subroutine par_allreduce_comps(buff,temp,icount)
 end subroutine par_allreduce_comps
 
 !************************************************************************
-!*                                                                      *
-!*     par_max_ints                                                     *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_max_ints**
+!! *find maximum value and redistribute integer variables*
 !************************************************************************
 
-! ... find maximum value and redistribute integer variables
 
 
 subroutine par_max_ints(buff,temp,icount)
@@ -596,12 +573,11 @@ subroutine par_max_ints(buff,temp,icount)
 end subroutine par_max_ints
 
 !************************************************************************
-!*                                                                      *
-!*     par_min_reals                                                    *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_min_reals**
+!! *find minimum value and redistribute double precision variables*
 !************************************************************************
 
-! ... find minimum value and redistribute double precision variables
 
 subroutine par_min_reals(buff,temp,icount)
 
@@ -623,12 +599,11 @@ subroutine par_min_reals(buff,temp,icount)
 end subroutine par_min_reals
 
 !************************************************************************
-!*                                                                      *
-!*     par_max_reals                                                    *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_max_reals**
+!! *find maximum value and redistribute double precision variables*
 !************************************************************************
 
-! ... find maximum value and redistribute double precision variables
 
 subroutine par_max_reals(buff,temp,icount)
 
@@ -650,12 +625,11 @@ subroutine par_max_reals(buff,temp,icount)
 end subroutine par_max_reals
 
 !************************************************************************
-!*                                                                      *
-!*     par_reduce_reals                                                 *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_reduce_reals**
+!! *perform global sum and redistribution of double precision variables*
 !************************************************************************
 
-! ... perform global sum and redistribution of double precision variables.
 
 subroutine par_reduce_reals(buff,temp,icount)
 
@@ -677,12 +651,11 @@ subroutine par_reduce_reals(buff,temp,icount)
 end subroutine par_reduce_reals
 
 !************************************************************************
-!*                                                                      *
-!*     par_allgather_shortints                                          *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allgather_shortints**
+!! *perform a distribution of array of integer(2)*
 !************************************************************************
 
-! ... perform a distribution of array of integer(2)
 
 subroutine par_allgather_shortints(buff,temp,isendcount,isendoffs,ireceivecounts,iptrs)
 
@@ -705,12 +678,11 @@ subroutine par_allgather_shortints(buff,temp,isendcount,isendoffs,ireceivecounts
 end subroutine par_allgather_shortints
 
 !************************************************************************
-!*                                                                      *
-!*     par_allgather_ints                                               *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_allgather_ints**
+!! *perform a distribution of array of integer(4)*
 !************************************************************************
 
-! ... perform a distribution of array of integer(4)
 
 subroutine par_allgather_ints(buff,temp,isendcount,isendoffs,ireceivecounts,iptrs)
 
@@ -732,12 +704,11 @@ subroutine par_allgather_ints(buff,temp,isendcount,isendoffs,ireceivecounts,iptr
 end subroutine par_allgather_ints
 
 !************************************************************************
-!*                                                                      *
-!*     par_scatter_reals                                                *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_scatter_reals**
+!! *scatter double precision data from root to the other processes*
 !************************************************************************
 
-! ... scatter double precision data from root to the other processes
 
 subroutine par_scatter_reals(sbuff,sicount,rbuff,ricount,temp)
 
@@ -760,12 +731,11 @@ subroutine par_scatter_reals(sbuff,sicount,rbuff,ricount,temp)
 end subroutine par_scatter_reals
 
 !************************************************************************
-!*                                                                      *
-!*     par_gather_reals                                                 *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_gather_reals**
+!! *gather double precision data from all processes except root to root*
 !************************************************************************
 
-! ... gather double precision data from all processes except root to root
 
 subroutine par_gather_reals(sbuff,sicount,rbuff,ricount,temp)
 
@@ -788,12 +758,11 @@ subroutine par_gather_reals(sbuff,sicount,rbuff,ricount,temp)
 end subroutine par_gather_reals
 
 !************************************************************************
-!*                                                                      *
-!*     par_handshake                                                    *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_handshake**
+!! *hand shaking between master and slaves*
 !************************************************************************
 
-! ... hand shaking between master and slaves
 
 subroutine par_handshake(myid,master,slave,nproc,unit)
 
@@ -841,12 +810,11 @@ subroutine par_handshake(myid,master,slave,nproc,unit)
 end subroutine par_handshake
 
 !************************************************************************
-!*                                                                      *
-!*     par_timing                                                       *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_timing**
+!! *parallel timing*
 !************************************************************************
 
-! ... parallel timing
 
 subroutine par_timing(whattodo,master,nproc,unit)
 
@@ -874,12 +842,11 @@ subroutine par_timing(whattodo,master,nproc,unit)
 end subroutine par_timing
 
 !************************************************************************
-!*                                                                      *
-!*     par_error                                                        *
-!*                                                                      *
+!> \page parallel parallel.F90
+!! **par_error**
+!! *error handler for par routines*
 !************************************************************************
 
-! ... error handler for par routines
 
 subroutine par_error(caller,ierr)
 
