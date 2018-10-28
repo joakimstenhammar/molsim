@@ -137,6 +137,11 @@ Note, the environmental variable  PATH has to contain `$HOME/bin ` for the softw
 
 The installation of the software is now completed.
 
+You can check the version of molsim by passing either the `-v`, `-V` or `--version` to molsim, like
+```shell
+molsim_ser --version
+```
+
 # Getting Started {#GettingStarted}
 This chapter describes how to execute the software.
 
