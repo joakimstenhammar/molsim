@@ -83,25 +83,27 @@ Press: Cambridge, 1999.
 
 ## Obtaining the Code {#ObtainingtheCode}
 
-There are two possibilities of how to obtain the code. You can either simply download the tarball of the code, or clone the whole repository (recommended).
-
-### Downloading the tarball
-Download the tarball from [here](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/repository/archive.tar.gz?ref=master) and save it in the directory of your choice. Afterwards, navigate to that directory and exctract the source code with
+There are two possibilities of how to obtain the code. You can either simply download the zip of the code, or clone the whole repository.
+### Downloading the Zip
+Download the zip from [here](https://github.com/joakimstenhammar/molsim/archive/master.zip) and save it in the directory of your choice. Afterwards, navigate to that directory and extract the source code with
 ```
-tar -zxf <name of the tar file>
+unzip <name of the zip file>
 ```
-You might want to rename the directory to some more resonable name.
+You might want to rename the directory to some more reasonable name.
 
 ### Clone the Molsim repository
-
-This requires having [set up your ssh key](https://git.rwth-aachen.de/help/ssh/README) at [git.rwth-aachen.de](https://git.rwth-aachen.de). Simply run
+Just run
 ```shell
-git clone git@git.rwth-aachen.de:pascal.hebbeker/Molsim.git
+git clone https://github.com/joakimstenhammar/molsim.git
+```
+If you [set up your ssh key](https://help.github.com/articles/connecting-to-github-with-ssh/) at [GitHub](https://github.com/) you can run
+```shell
+git clone git@github.com:joakimstenhammar/molsim.git
 ```
 
 ## Installation of Molsim {#InstallationOfMolsim}
 
-Navigate into the Molsim directroy and run the configure script. This will check some dependencies. Molsim requires FFTW 3.3.4. In can be install automatically within the configure script (Note: This might take some time). The configure script will also ask you for a version name. This version name will be appended to the executables of molsim (`molsim_ser.ver` instead of `molsim_ser`). Leave it blank for no special version name.
+Navigate into the Molsim directroy and run the configure script. This will check some dependencies. Molsim requires FFTW 3.3.4. In can be install automatically within the configure script (Note: This might take some time). The configure script will also ask you for a version name. This version name will be appended to the executables of molsim (use `molsim_ser.ver` instead of `molsim_ser`). Leave it blank for no special version name.
 ```shell
 cd Molsim
 ./configure.sh
@@ -133,6 +135,11 @@ copied from the source directory to `$HOME/bin `.
 Note, the environmental variable  PATH has to contain `$HOME/bin ` for the software to function (usually this is handled by the configure script)
 
 The installation of the software is now completed.
+
+You can check the version of molsim by passing either the `-v`, `-V` or `--version` to molsim, like
+```shell
+molsim_ser --version
+```
 
 # Getting Started {#GettingStarted}
 This chapter describes how to execute the software.
