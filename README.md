@@ -14,8 +14,11 @@ tar -zxf <name of the tar file>
 You might want to rename the directory to some more resonable name.
 
 ### Clone the Molsim repository
-
-This requires having [set up your ssh key](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/) at [GitHub](https://github.com/). Simply run
+Just run
+```shell
+git clone https://github.com/joakimstenhammar/molsim.git
+```
+If you [set up your ssh key](https://help.github.com/articles/connecting-to-github-with-ssh/) at [GitHub](https://github.com/) you can run
 ```shell
 git clone git@github.com:joakimstenhammar/molsim.git
 ```

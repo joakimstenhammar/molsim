@@ -67,7 +67,7 @@ make ser mode=test
 to compile Molsim in the test mode. The following modes are supported:
  * `normal`: compile with normal options to achieve high computational efficiency.
  * `test`: compile in such a way, that the results are reproducible. Use this mode when performing tests in the Testin directory.
- * `debug`: During run-time the compiler checks for out-of-bounds arrays and uninitialized variables.
+ * `debug`: During run-time the compiler checks for out-of-bounds arrays and uninitialized variables. Only use for debug purposes.
  * `quick`: Fast compilation without optimization. Use only for testing purposes.
  * `warn`: The compiler gives all warnings during compile time.
  * `gprof`: For profiling the execution with gprof (only for the `gfortran` compiler)

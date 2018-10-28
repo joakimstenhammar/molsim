@@ -506,9 +506,9 @@ particle id
 
 # Suggestion or Problems? {#SuggestionOfProblems}
 
-If you have suggestions or problems with Molsim, open an issue [online](https://git.rwth-aachen.de/pascal.hebbeker/Molsim/issues). Please add the following information to help us help you:
+If you have suggestions or problems with Molsim, open an issue [online](https://github.com/joakimstenhammar/molsim/issues/). Please add the following information to help us help you:
 
-* MOLSIM version number
+* MOLSIM version number (check by running `molsim --version`)
 * Host computer (name and configuration)
 * Suggestion or problem in as much detail as possible
 * Any Input/Cnf files needed to reproduce the error
