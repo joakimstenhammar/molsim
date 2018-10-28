@@ -83,14 +83,13 @@ Press: Cambridge, 1999.
 
 ## Obtaining the Code {#ObtainingtheCode}
 
-There are two possibilities of how to obtain the code. You can either simply download the tarball of the code, or clone the whole repository (recommended).
-
-### Downloading the tarball
-Download the zip from [here](https://github.com/joakimstenhammar/molsim/archive/master.zip) and save it in the directory of your choice. Afterwards, navigate to that directory and exctract the source code with
+There are two possibilities of how to obtain the code. You can either simply download the zip of the code, or clone the whole repository.
+### Downloading the Zip
+Download the zip from [here](https://github.com/joakimstenhammar/molsim/archive/master.zip) and save it in the directory of your choice. Afterwards, navigate to that directory and extract the source code with
 ```
-tar -zxf <name of the tar file>
+unzip <name of the zip file>
 ```
-You might want to rename the directory to some more resonable name.
+You might want to rename the directory to some more reasonable name.
 
 ### Clone the Molsim repository
 Just run
