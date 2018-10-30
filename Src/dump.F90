@@ -37,6 +37,7 @@
 !!  * \subpage ldfor
 !!  * \subpage ldtor
 !!  * \subpage ldidm
+!!  * \subpage ldlaz
 !!  * \subpage ldumpuser
 module DumpModule
 
@@ -82,6 +83,12 @@ module DumpModule
 !! **default:** `.false.`
 !! * `.true.`: Dumping/reading of particle induced dipole moments.
 !! * `.false.`: No dumping/reading of induced dipole moments.
+
+!> \page ldlaz
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle charge state.
+!! * `.false.`: No dumping/reading of particle charge state.
 
 !> \page ldumpuser
 !! `logical`
@@ -231,6 +238,7 @@ subroutine IODump(iStage)
       if (idump <= 0) call Stop(txroutine, 'idump <= 0', uout)
       if (mod(nstep2,idump) /= 0) call Stop(txroutine, 'mod(nstep2,idump) /= 0', uout)
       if (lana .and. (txptdump /= 'all')) call Stop(txroutine, 'lana .and. (txptdump /= ''all'')', uout)
+      if (ldlaz .and. .not.lweakcharge) call Stop(txroutine, 'ldlaz .and. .not.lweakcharge', uout)
 
 ! ... write input data
 

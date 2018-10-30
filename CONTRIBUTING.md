@@ -114,4 +114,4 @@ in order to synchronize your new tag.
 * [ ] ascertain, that running a test input file covering your modifications runs clean after compiling with `mode=debug`
 * [ ] Make sure that your code runs in parallel mode, and if not add an error message which prevents from running your code in parallel.
 * [ ] Describe all changes in the manual ([how to write the manual](WRITING_MANUAL.md))
-* [ ] Change the version number corresponding to [Semantic Versioning](http://semver.org/)!
+* [ ] Change the version number corresponding to [Semantic Versioning](http://semver.org/)!. You have to change the version in the `Src/mol.F90` file as well as in the `doc/header.tex` file.
