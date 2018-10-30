@@ -238,7 +238,7 @@ subroutine IODump(iStage)
       if (idump <= 0) call Stop(txroutine, 'idump <= 0', uout)
       if (mod(nstep2,idump) /= 0) call Stop(txroutine, 'mod(nstep2,idump) /= 0', uout)
       if (lana .and. (txptdump /= 'all')) call Stop(txroutine, 'lana .and. (txptdump /= ''all'')', uout)
-      if (ldlaz .and. .not.lweakcharge) call Stop(txroutine, 'ldlaz .and. .not.lweakcharge')
+      if (ldlaz .and. .not.lweakcharge) call Stop(txroutine, 'ldlaz .and. .not.lweakcharge', uout)
 
 ! ... write input data
 
