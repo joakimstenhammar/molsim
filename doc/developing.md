@@ -6,41 +6,44 @@ When developing Molsim, please adhere to the contributing guide, which is shippe
 In the Molsim directory you will find a directory called `Testin`. The Testin offers an efficient way to check whether changes of the Molsim source code lead to any malfunction of the program.
 
 ### General idea
-The general idea of the Testin-directory is to account for the sustainment of the functionality of Molsim. Whenever the source code of Molsim is changed, one has to ensure that none of the functionalities of Molsim have been broken. Despite of a few aspects (*e.g.* format changes) the program execution should yield consistent results. By comparing the results of test simulations of the current with the previous version it is easy to detect whatever kind of malfunctions.
+The general idea of the Testin-directory is to account for the sustainment of the functionality of Molsim. Whenever the source code of Molsim is changed, one has to ensure that none of the functionalities of Molsim have been broken. Despite of a few aspects (e.g. format changes) the program execution should yield consistent results. By comparing the results of test simulations of the current with the previous version it is easy to detect whatever kind of malfunctions.
 
 The Testin-directory provides a method to compare the output of the current version to the last stable version.
 
 ### Usage
-* **First you need to generate the output from the stable version.** The stable version should be the latest `master` branch from which your branch diverged. If you are unsure, check when the file `Testin/stable.md5sum` was last changed. The repository at this stage is the latest stable version. When you have checked out the stable version you want to compare with, run `make save` in the `Testin` directory. This will compile the current source code with the `mode = test` flag and create the output in the `Testin/save` directory.
+* **First you need to generate the output from the stable version.** The stable version should be the latest `master` branch from which your branch diverged. If you are unsure, check when the file `Testin/stable.md5sum` was last changed. The repository at this stage is the latest stable version. When you have checked out the stable version you want to compare with, run `make stable` in the `Testin` directory. This will compile the current source code with the `mode = test` flag and create the output in the `Testin/out_stable` directory.
 * at any time you can run `make out` to run the same input files and store the output in the `Testin/out`.
-* to compare the output of the `out` and `save` directories, run `make diff`. Note that if the out files are not present, `make diff` will create them accordingly. The differences are written into the file `diff.out`
+* to compare the output of the `out` and `out_stable` directories, run `make diff`. Note that if the out files are not present, `make diff` will create them accordingly. The collected differences are written into the file `diff.out`
 
 The `diff` should, in general, yield no differences. If differences were found, one needs to carefully inspect each of these instances for whether one deals with expected changes or unexpected changes.
-** Unexpected changes: Investigate where the difference is coming from and fix the bug! 
-** Expected changes: When you have only expected changes, add comments to the `diff.out` file, which describe the changes. This commented version of the `diff.out` files should be attached to the merge request when you want to merge into the stable version. Note that the `diff.out` file will be overwritten when running `make` so you might want to add you comments to a copy of `diff.out`
+* *Unexpected changes: Investigate where the difference is coming from and fix the bug!*
+* Expected changes: When you have only expected changes, add comments to the `diff.out` file, which describe the changes. This commented version of the `diff.out` files should be attached to the pull request when you want to merge into the stable version. Note that the `diff.out` file will be overwritten when running `make` so you might want to add you comments to a copy of `diff.out`
 * After your merge request has been positively reviewed, run `make declarestable` to declare your current version of the code as the stable one. The files included in the check for the stable version are all `.F90` files, the `makefile` and the `molsim_ser` file in the `Src` directory. Additionally also the `configure.sh` file in the molsim root is checked.
 
-* to delete all output of the `out` runs (and the `diff.out` file!) run `make clean`, to delete the `save` dir rum `make cleansave`. To delete both run `make cleanall`.
+* to delete all output of the `out` runs (and the `diff.out` file!) run `make clean`, to delete the `out_stable` dir run `make cleanstable`. To delete both run `make cleanall`.
 
 ### Further notes:
 * You can speed up the process, by running make in parallel (e.g. use `make -j 4`, to run on 4 cores).
 * When running `make` all needed files are generated automatically, so you do not need to run `make out` before running `make diff`. A single call of `make` is enough.
-* The `save` files can not be created automatically, when you are in the directory of a modified version of molsim. Checkout the stable version, run `make save`, nd go back to your branch. The `save` dir should stay, and can be used to compare with.
+* The `out_stable` files can not be created automatically, when you are in the directory of a modified version of molsim. Checkout the stable version, run `make stable`, and go back to your branch. The `out_stable` dir should stay, and can be used to compare with.
 
 ### List of elements contained in the Testin-directory
-|element|type|description|
-|---|---|---|
-|`in`|directory|Collection of input files covering all functionalities of Molsim| 
-|`todiff.txt`|text file|List of all output files to diff| 
-|`Makefile`| gnu makefile  |Execution of Molsim with all test input files in `in` in order to generate new output files to diff with those in `save`| 
+| element                    | description                                        |
+|----------------------------|----------------------------------------------------|
+| `in`                       | input files covering all functionalities of Molsim |
+| `todiff.txt`               | all output files to diff                           |
+| `Makefile`                 | Makefile to run all tests                          |
+| `scripts/diff1.sh`         | script to compare the output files                 |
+| `scripts/molsim_stable.sh` | script to generate outputs from the stable version |
+| `stable.md5sum`            | file defining the current stable version           |
 
 After executing `make` you will additionally find:
 
-|element|type|description|
-|---|---|---| 
-|`out`|directory|Collection of output files resulting from the Molsim version under examination|
-|`save`|directory|Collection of output files corresponding to the input file in `in`, created with the latest stable version.| 
-|`diff.out`|text file|Output of the diff between the current and the previous versions|
+| element      | description                                                                                   |
+|--------------|-----------------------------------------------------------------------------------------------|
+| `out`        | output files resulting from the Molsim version under examination                              |
+| `out_stable` | output files corresponding to the input file in `in`, created with the latest stable version. |
+| `diff.out`   | Output of the diff between the current and the stable versions                                |
 
 # Random Numbers {#RandomNumbers}
 
