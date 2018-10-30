@@ -37,6 +37,7 @@
 !!  * \subpage ldfor
 !!  * \subpage ldtor
 !!  * \subpage ldidm
+!!  * \subpage ldlaz
 !!  * \subpage ldumpuser
 module DumpModule
 
@@ -82,6 +83,12 @@ module DumpModule
 !! **default:** `.false.`
 !! * `.true.`: Dumping/reading of particle induced dipole moments.
 !! * `.false.`: No dumping/reading of induced dipole moments.
+
+!> \page ldlaz
+!! `logical`
+!! **default:** `.false.`
+!! * `.true.`: Dumping/reading of particle charge state.
+!! * `.false.`: No dumping/reading of particle charge state.
 
 !> \page ldumpuser
 !! `logical`
