@@ -1296,7 +1296,6 @@ subroutine ImageVTFSub
    if (first .and. .not.lsplitvtf) then
       if (txstart == 'continue') then
          call FileOpen(uvtf, fvtf, 'form/read')
-         backspace(uvtf) ! ... needed to satisfy sensitive gfortran compiler
       else if (txstart == 'setconf' .or. txstart == 'zero' .or. txstart == 'readfin') then
          call FileOpen(uvtf, fvtf, 'form/noread')
          call WriteVTFHeader(atsize,blmax,vmdname,lgr,itypegr,uvtf)
