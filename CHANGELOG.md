@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.5.1] - 2018-10-30
+### Fixed
+- Prevented the dumping of the charged state for systems without weak charges
+
 ## [4.5.0] - 2018-09-24
 ### Added
 - A manual generating by Doxygen was added. For that reason the code was newly commented. Some files concerning the manual were added in the directory doc to the  repository.
