@@ -2782,10 +2782,8 @@ end function CheckTooFoldedChain
 !************************************************************************
 !> \page coordinate coordinate.F90
 !! **MakeCrossLink**
-!! *make crosslinks between particles labeled clbeg and particles labeled clend*
+!! *make crosslinks between particles labeled clbeg and particles labeled clend on the basis of their separation*
 !************************************************************************
-
-!     on the basis of their separation
 
 !                     npclbeg, ipclbeg
 !                     npclend, lpclend                nbondcl, bondcl
