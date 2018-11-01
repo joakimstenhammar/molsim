@@ -2377,18 +2377,10 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
 ! ... make crosslinks
 
-!!!         write(*,*) txroutine
-!!!         write(*,*) 'nnode, npclend',nnode,npclend
-!!!         write(*,*) 'ipclbeg',ipclbeg(nnode)
-!!!         write(*,*) 'ipclend',ipclend(npclend)
-
          call MakeCrossLink(nnode, npclend, ipclbeg, ipclend, (bond(1:nct)%eq)**2, nclmade)
-!!!         write(*,*) txroutine, 'nclmade',nclmade
          ncl = ncl + nclmade
-!!!         write(*,*) txroutine, 'ncl (updated)',ncl
 
          exit
-
       end do try
 
       if (itry > ntry) then                         ! number of  attempts exceeds the maximal one ?
