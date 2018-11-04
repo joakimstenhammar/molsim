@@ -2138,6 +2138,7 @@ end module UndoPBCModule
 
 subroutine UndoPBC(vhelp)
    use UndoPBCModule
+   use MolModule, only: master
    use ParticleModule, only: itestpart
    implicit none
 
@@ -2157,7 +2158,7 @@ subroutine UndoPBC(vhelp)
 ! ... prepare list of bond objects and their particles
       call PrepareBondObj
 
-      if (master .and. itestpart == 10) then call TestBondObj
+      if (master .and. itestpart == 10) call TestBondObj
 
 ! ... determine reference particle of bond object ibobj and undo periodic boundary conditions
       do ibobj = 1, nbobj
