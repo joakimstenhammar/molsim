@@ -1688,7 +1688,13 @@ end subroutine DrawRhombicDodecahedronTCL
 
 end subroutine WriteTCLScript
 
-module UndoPBCModule
+!************************************************************************
+!> \page image image.F90
+!! **UndoPBCRecursiveModule**
+!! *collection of subroutines and functions needed for subroutine UndoPBCRecursive*
+!************************************************************************
+
+module UndoPBCRecursiveModule
 
    use MolModule, only: np, ro, iptpn
    use MolModule, only: lhierarchical, lclink, bondnn, nbondcl, bondcl
@@ -1809,27 +1815,26 @@ module UndoPBCModule
 
    end subroutine UndoClPBC
 
-end module UndoPBCModule
+end module UndoPBCRecursiveModule
 
 !************************************************************************
 !> \page image image.F90
-!! **UndoPBC**
-!! *undo periodic boundary conditions*
+!! **UndoPBCRecursive**
+!! *undo periodic boundary conditions using a recursive strategy*
 !************************************************************************
 
+subroutine UndoPBCRecursive(vhelp)
 
-subroutine UndoPBC(vhelp)
-
-   use UndoPBCModule
+   use UndoPBCRecursiveModule
    implicit none
    real(8),    intent(out)  :: vhelp(1:3,*)       ! undone atom position
    integer :: ip, ipmin
    ! integer :: jp
 
-
    if(.not. allocated(lundo)) then
       allocate(lundo(np), rotmp(3,na))
    end if
+
 
    lundo = .false.
    rotmp = 0.0
