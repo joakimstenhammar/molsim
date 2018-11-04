@@ -1851,6 +1851,327 @@ subroutine UndoPBCRecursive(vhelp)
 
    deallocate(lundo, rotmp)
 
+end subroutine UndoPBCRecursive
+
+!************************************************************************
+!> \page image image.F90
+!! **UndoPBCModule**
+!! *collection of subroutines and functions needed for subroutine UndoPBC*
+!************************************************************************
+
+module UndoPBCModule
+   use MolModule, only: uout
+   use MolModule, only: na, ianpn, napt, r
+   use MolModule, only: np, ro, iptpn
+   use MolModule, only: lchain, nc, nct, ncct, npct, ipnsegcn, icnct
+   use MolModule, only: lhierarchical, nh, nch, ngen, nphn, ictgen, icihigen
+   use MolModule, only: lnetwork, nnwt, nnw, ncnwt, nnwnwt, npnwt, inwtct, inwtnwn, ipnplocnwn
+   implicit none
+
+! ... define scope of subroutines and functions in UndoPBCModule
+
+   public  :: PrepareBondObj, TestBondObj, ReturnIPCenterBObjn, UndoPBCBondObj
+   private :: Set_nbobj, Set_npbobjn, Set_ipnplocbobjn
+
+! ... atom coordinates to work with in the scope of UndoPBC/UndoPBCModule
+
+   real(8) ,   allocatable, public :: rotmp(:,:)
+
+! ... bond object properties
+
+   integer(4),              public :: nbobj             ! number of bond objects to be undone
+   integer(4), allocatable, public :: npbobjn(:)        ! bond object (1:nbobj) -> its number of particles
+   integer(4), allocatable, public :: ipnplocbobjn(:,:) ! local particle (1:npbobjn) and bond object (1:nbobj)
+                                                        ! -> its particle (1:np)
+   contains
+!........................................................................
+!
+!  PrepareBondObj prepares a list of all bond objects and their particles
+!
+   subroutine PrepareBondObj
+      implicit none
+
+      integer(4) :: maxvalnpbobjn ! maximum number of particles of any of the bond objects
+
+! ... determine number of bond objects nbobj
+      call Set_nbobj
+
+! ... allocate and determine number of particles of bond objects
+      if(.not. allocated(npbobjn)) then
+         allocate(npbobjn(nbobj))
+      end if
+      npbobjn = 0
+
+      call Set_npbobjn
+
+! ... determine maximum value of particles any of the bond object comprises (needed to allocate ipnplocbobjn)
+      maxvalnpbobjn = maxval(npbobjn(1:nbobj))
+
+! ... allocate and determine ipnplocbobjn
+      if(.not. allocated(ipnplocbobjn)) then
+         allocate(ipnplocbobjn(maxvalnpbobjn,nbobj))
+      end if
+      ipnplocbobjn = 0
+
+      call Set_ipnplocbobjn
+
+   end subroutine PrepareBondObj
+!........................................................................
+!
+!  Set_nbobj determines the number of bond objects nbobj
+!
+   subroutine Set_nbobj
+      implicit none
+
+      ! ... each chain is considered one bond object
+      nbobj = nc
+
+      ! ... each hierarchical structure is considered one bond object (add hierarchical structures, remove their chains)
+      if (lhierarchical) nbobj = nbobj + nh - sum(nh*nch(0:ngen))
+
+      ! ... each network is considered one bond object (add networks, remove their chains)
+      if (lnetwork) nbobj = nbobj + nnw - sum(ncnwt(1:nnwt)*nnwnwt(1:nnwt))
+
+   end subroutine Set_nbobj
+!........................................................................
+!
+!  Set_npbobjn determines the number of particles npbobjn of bond objects ibobj
+!
+   subroutine Set_npbobjn
+      implicit none
+
+      character(40), parameter :: txroutine ='Set_npbobjn'
+
+      integer(4) :: ibobj, inwt, ict
+
+! ... start with first bond object
+      ibobj = 1
+
+! ... number of particles in bond object: hierarchical structures
+      if (lhierarchical) then
+         npbobjn(ibobj:ibobj-1+nh) = nphn
+         ibobj = ibobj + nh
+      end if
+
+! ... number of particles in bond object: networks
+      if (lnetwork) then
+         do inwt = 1, nnwt
+            npbobjn(ibobj:ibobj-1+nnwnwt(inwt)) = npnwt(inwt)
+            ibobj = ibobj + nnwnwt(inwt)
+         end do
+      end if
+
+! ... number of particles in bond object: chains
+      do ict = 1, nct
+         if (lhierarchical) then
+            if (any(ictgen(0:ngen) == ict)) cycle ! skip chain type ict, if already considered in hierarchical structure
+         end if
+         if (lnetwork) then
+            if (inwtct(ict) > 0) cycle ! skip chain type ict, if already considered in network
+         end if
+
+         npbobjn(ibobj:ibobj-1+ncct(ict)) = npct(ict)
+         ibobj = ibobj + ncct(ict)
+      end do
+
+! ... check consistency of number of bond objects
+      if (.not.((ibobj-1) == nbobj)) call Stop(txroutine,'inconsistency in number of bond objects',uout)
+
+   end subroutine Set_npbobjn
+!........................................................................
+!
+!  Set_ipnplocbobjn determines the list of particles of the different bond objects
+!
+   subroutine Set_ipnplocbobjn
+      implicit none
+
+      character(40), parameter :: txroutine ='Set_ipnplocbobjn'
+
+      integer(4) :: ip
+      integer(4) :: ic, ict, iseg
+      integer(4) :: ih, igen
+      integer(4) :: inw, inwt
+      integer(4) :: ibobj, iploc
+
+! ... start with first bond object
+      ibobj = 1
+
+! ... assign particles to bond object: hierarchical structures
+      if (lhierarchical) then
+         do ih = 1, nh                                                    ! loop over hierarchical structures
+            iploc = 0
+            do igen = 0, ngen                                             ! loop over generations
+               ict = ictgen(igen)
+               do ic = icihigen(ih,igen), icihigen(ih,igen)-1 + nch(igen) ! loop over chains of the structure
+                  do iseg = 1, npct(ict)                                  ! loop over segments of chain
+                     iploc = iploc+1
+                     ip = ipnsegcn(iseg,ic)
+                     ipnplocbobjn(iploc,ibobj) = ip
+                  end do
+               end do
+            end do
+            if (.not.(iploc == npbobjn(ibobj))) call Stop(txroutine,'inconsistency in number of bond object particles',uout)
+            ibobj = ibobj+1
+         end do
+      end if
+
+! ... assign particles to bond object: networks
+      if (lnetwork) then
+         do inw = 1, nnw                      ! loop over networks
+            inwt = inwtnwn(inw)
+            do iploc = 1, npnwt(inwt)         ! loop over particles (local) of network
+               ip = ipnplocnwn(iploc,inw)
+               ipnplocbobjn(iploc,ibobj) = ip
+            end do
+            if (.not.((iploc-1) == npbobjn(ibobj))) call Stop(txroutine,'inconsistency in number of bond object particles',uout)
+            ibobj = ibobj+1
+         end do
+      end if
+
+! ... number of particles in bond object: chains
+      do ict = 1, nct ! loop over chain types
+         if (lhierarchical) then
+            if (any(ictgen(0:ngen) == ict)) cycle ! skip chain type ict, if already considered in hierarchical structure
+         end if
+         if (lnetwork) then
+            if (inwtct(ict) > 0) cycle ! skip chain type ict, if already considered in network
+         end if
+
+         do ic = icnct(ict), icnct(ict)-1 + ncct(ict) ! loop over chains of chain type ict
+            do iploc = 1, npct(ict)                   ! loop over segments
+               ip = ipnsegcn(iploc,ic)
+               ipnplocbobjn(iploc,ibobj) = ip
+            end do
+            if (.not.((iploc-1) == npbobjn(ibobj))) call Stop(txroutine,'inconsistency in number of bond object particles',uout)
+            ibobj = ibobj+1
+         end do
+      end do
+
+   end subroutine Set_ipnplocbobjn
+!........................................................................
+!
+!  TestBondObj writes bond object properties
+!
+   subroutine TestBondObj
+      implicit none
+
+      character(40), parameter :: txroutine ='TestBondObj'
+
+      integer(4) :: ibobj, iploc
+
+      call WriteHead(3, 'Test'//trim(txroutine)//' bond object', uout)
+      write(uout,'(2a10)') adjustr('ibobj'), adjustr('npbobjn')
+      write(uout,'(2i10)') (ibobj, npbobjn(ibobj), ibobj = 1, nbobj)
+      write(uout,'()')
+      write(uout,'(2a10,tr5,a25)') 'ibobj', 'iploc', 'ipnplocbobjn(iploc,ibobj)'
+      write(uout,'(2i10,tr20,i10)') ((ibobj,iploc,ipnplocbobjn(iploc,ibobj),iploc = 1,npbobjn(ibobj)),ibobj = 1,nbobj)
+      write(uout,'()')
+
+   end subroutine TestBondObj
+!........................................................................
+!
+!  ReturnIPCenterBObjn returns particle number ip of bond object ibobj to be found closest to the center of the simulation cell
+!
+   function ReturnIPCenterBObjn(ibobj) result(ipcenter)
+      implicit none
+
+      integer(4), intent(in)  :: ibobj
+      integer(4)              :: ipcenter
+
+      real(8)    :: r2min, r2
+      integer(4) :: ipbobjn, ip
+
+! ... initialize ipcenter and r2min
+      ipcenter = 0
+      r2min    = huge(r2min)
+
+! ... find particle with minimum distance to the center of the simulation cell and store in iptcenter
+      do ipbobjn = 1, npbobjn(ibobj)
+         ip = ipnplocbobjn(ipbobjn,ibobj)
+
+         r2 = sum(ro(1:3,ip)**2.0d0)
+
+         if (r2 < r2min) then
+            r2min = r2
+            ipcenter = ip
+         end if
+      end do
+
+   end function ReturnIPCenterBObjn
+!........................................................................
+!
+!  UndoPBCBondObj undoes periodic boundary conditions of bond object ibobj
+!
+   subroutine UndoPBCBondObj(ibobj,rref)
+      implicit none
+
+      integer(4), intent(in) :: ibobj   ! number of bond object to be undone
+      real(8),    intent(in) :: rref(3) ! reference point for the undo
+
+      real(8) :: rip(3) ! coordinate of undone particle ip
+      real(8) :: dr(3)
+
+      integer(4) :: ipbobj, ip, ia
+
+      do ipbobj = 1, npbobjn(ibobj)
+         ip = ipnplocbobjn(ipbobj,ibobj)
+
+         dr(1:3) = ro(1:3,ip) - rref(1:3)
+         call PBC(dr(1),dr(2),dr(3))
+         rip(1:3) = rref(1:3) + dr(1:3)
+
+         do ia = ianpn(ip), ianpn(ip) + napt(iptpn(ip)) - 1
+            rotmp(1:3,ia) = r(1:3,ia) - ro(1:3,ip) + rip(1:3)
+         end do
+      end do
+
+   end subroutine UndoPBCBondObj
+!........................................................................
+
+end module UndoPBCModule
+
+!************************************************************************
+!> \page image image.F90
+!! **UndoPBC**
+!! *undo periodic boundary conditions using an iterative strategy*
+!************************************************************************
+
+subroutine UndoPBC(vhelp)
+   use UndoPBCModule
+   use ParticleModule, only: itestpart
+   implicit none
+
+   real(8), intent(out) :: vhelp(1:3,*) ! undone coordinates of atoms ia = 1:na
+
+   integer(4) :: ibobj, ipref
+
+! ... allocate rotmp and intitialize with current atom coordinates
+   if(.not. allocated(rotmp)) then
+      allocate(rotmp(3,na))
+   end if
+   rotmp(1:3,1:na) = r(1:3,1:na)
+
+! ... undo PBC only, if any type of bond object exists
+   if (lchain) then
+
+! ... prepare list of bond objects and their particles
+      call PrepareBondObj
+
+      if (master .and. itestpart == 10) then call TestBondObj
+
+! ... determine reference particle of bond object ibobj and undo periodic boundary conditions
+      do ibobj = 1, nbobj
+         ipref = ReturnIPCenterBObjn(ibobj)
+         call UndoPBCBondObj(ibobj,ro(1:3,ipref))
+      end do
+   end if
+
+! ... transfer undone atom coordinates to output parameter vhelp
+   vhelp(1:3,1:na) = rotmp(1:3,1:na)
+
+! ... tidy up
+   deallocate(rotmp,npbobjn,ipnplocbobjn)
+
 end subroutine UndoPBC
 
 !************************************************************************
