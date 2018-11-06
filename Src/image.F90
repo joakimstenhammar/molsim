@@ -1870,13 +1870,15 @@ module UndoPBCModule
    implicit none
 
 ! ... define scope of subroutines and functions in UndoPBCModule
-   public  :: PrepareBondObj, TestBondObj, ReturnIPCenterBObjn, UndoPBCBondObj
+   public  :: PrepareBondObj, TestBondObj, ReturnIPCenterBondObjn, UndoPBCBondObj
    private :: Set_nbobj, Set_npbobjn, Set_ipnplocbobjn, Set_nbondplocbobjn, Set_bondplocbobjn
 
-! ... atom coordinates to work with in the scope of UndoPBC/UndoPBCModule
+! ... atom and particle coordinates to work with in the scope of UndoPBC/UndoPBCModule
+   real(8), public, allocatable :: rtmp(:,:)
    real(8), public, allocatable :: rotmp(:,:)
 
-! ... bond objects
+! ... bond objects: all types of structures connected by bonds and/or cross-links
+
    ! number of bond objects to be undone
    integer(4), save, public              :: nbobj
 
@@ -1885,6 +1887,9 @@ module UndoPBCModule
 
    ! global particle number of local particle (1:npbobjn) of bond object (1:nbobj)
    integer(4), save, public, allocatable :: ipnplocbobjn(:,:)
+
+   ! local particle number of global particle (1:np) of bond object (1:nbobj)
+   integer(4), save, public, allocatable :: iplocpnbobjn(:,:)
 
    ! state of undoing the PBC of local particle (1:npbobjn) of bond object (1:nbobj)
    logical,          public, allocatable :: lundoplocbobjn(:,:)
@@ -1922,9 +1927,10 @@ module UndoPBCModule
 
 ! ... allocate and determine ipnplocbobjn
       if(.not. allocated(ipnplocbobjn)) then
-         allocate(ipnplocbobjn(maxvalnpbobjn,nbobj))
+         allocate(ipnplocbobjn(maxvalnpbobjn,nbobj),iplocpnbobjn(np,nbobj))
       end if
       ipnplocbobjn = 0
+      iplocpnbobjn = 0
 
       call Set_ipnplocbobjn
 
@@ -2045,6 +2051,7 @@ module UndoPBCModule
                      iploc = iploc+1
                      ip = ipnsegcn(iseg,ic)
                      ipnplocbobjn(iploc,ibobj) = ip
+                     iplocpnbobjn(ip,ibobj) = iploc
                   end do
                end do
             end do
@@ -2060,6 +2067,7 @@ module UndoPBCModule
             do iploc = 1, npnwt(inwt)         ! loop over particles (local) of network
                ip = ipnplocnwn(iploc,inw)
                ipnplocbobjn(iploc,ibobj) = ip
+               iplocpnbobjn(ip,ibobj) = iploc
             end do
             if (.not.((iploc-1) == npbobjn(ibobj))) call Stop(txroutine,'inconsistency in number of bond object particles',uout)
             ibobj = ibobj+1
@@ -2079,6 +2087,7 @@ module UndoPBCModule
             do iploc = 1, npct(ict)                   ! loop over segments
                ip = ipnsegcn(iploc,ic)
                ipnplocbobjn(iploc,ibobj) = ip
+               iplocpnbobjn(ip,ibobj) = iploc
             end do
             if (.not.((iploc-1) == npbobjn(ibobj))) call Stop(txroutine,'inconsistency in number of bond object particles',uout)
             ibobj = ibobj+1
@@ -2115,7 +2124,7 @@ module UndoPBCModule
 
       character(40), parameter :: txroutine ='Set_bondplocbobjn'
 
-      integer(4) :: ibobj, iploc, ip, ibond, ibondnn, ibondcl
+      integer(4) :: ibobj, iploc, jploc, ip, jp, ibond, ibondnn, ibondcl
 
       do ibobj = 1, nbobj
          do iploc = 1, npbobjn(ibobj)
@@ -2123,12 +2132,16 @@ module UndoPBCModule
             ibond = 1
             do ibondnn = 1, 2
                if (bondnn(ibondnn,ip) == 0) cycle
-               bondplocbobjn(ibond,iploc,ibobj) = bondnn(ibondnn,ip)
+               jp = bondnn(ibondnn,ip)
+               jploc = iplocpnbobjn(jp,ibobj)
+               bondplocbobjn(ibond,iploc,ibobj) = jploc
                ibond = ibond + 1
             end do
             if (lclink) then
                do ibondcl = 1, nbondcl(ip)
-                  bondplocbobjn(ibond,iploc,ibobj) = bondcl(ibondcl,ip)
+                  jp = bondcl(ibondcl,ip)
+                  jploc = iplocpnbobjn(jp,ibobj)
+                  bondplocbobjn(ibond,iploc,ibobj) = jploc
                   ibond = ibond + 1
                end do
             end if
@@ -2144,7 +2157,7 @@ module UndoPBCModule
    subroutine TestBondObj
       implicit none
 
-      character(40), parameter :: txroutine ='TestBondObj'
+      character(40), parameter :: txroutine ='PrepareBondObj'
 
       integer(4) :: ibobj, iploc
       integer(4) :: maxnbond ! maximum number of bonds and particle of any of the bond objects exhibits
@@ -2161,20 +2174,18 @@ module UndoPBCModule
       write(uout,'(2a10)') adjustr('ibobj'), adjustr('npbobjn')
       write(uout,'(2i10)') (ibobj, npbobjn(ibobj), ibobj = 1, nbobj)
       write(uout,'()')
-      write(uout,'(2a10,tr5,a25)') 'ibobj', 'iploc', 'ipnplocbobjn(iploc,ibobj)'
-      write(uout,'(2i10,tr20,i10)') ((ibobj,iploc,ipnplocbobjn(iploc,ibobj),iploc = 1,npbobjn(ibobj)),ibobj = 1,nbobj)
-      write(uout,'()')
-      write(uout,'(2a10,tr5,a27,tr5,a31)') 'ibobj', 'iploc', 'nbondplocbobjn(iploc,ibobj)', 'bondplocbobjn(1:nbondplocbobjn)'
-      write(uout,'(2i10,tr22,i10,tr10,'//trim(adjustl(txfmt))//'i10)') &
-         ((ibobj,iploc,nbondplocbobjn(iploc,ibobj),bondplocbobjn(1:maxnbond,iploc,ibobj),iploc = 1,npbobjn(ibobj)),ibobj = 1,nbobj)
+      write(uout,'(3a10,tr5,a27,tr5,a31)') 'ibobj', 'iploc', 'ip', 'nbondplocbobjn(iploc,ibobj)', 'bondplocbobjn(1:nbondplocbobjn)'
+      write(uout,'(3i10,tr22,i10,tr10,'//trim(adjustl(txfmt))//'i10)')                                              &
+         ((ibobj,iploc,ipnplocbobjn(iploc,ibobj),nbondplocbobjn(iploc,ibobj),bondplocbobjn(1:maxnbond,iploc,ibobj), &
+           iploc = 1,npbobjn(ibobj)),ibobj = 1,nbobj)
       write(uout,'()')
 
    end subroutine TestBondObj
 !........................................................................
 !
-!  ReturnIPCenterBObjn returns particle number ip of bond object ibobj to be found closest to the center of the simulation cell
+!  ReturnIPCenterBondObjn returns particle number ip of bond object ibobj to be found closest to the center of the simulation cell
 !
-   function ReturnIPCenterBObjn(ibobj) result(ipcenter)
+   function ReturnIPCenterBondObjn(ibobj) result(ipcenter)
       implicit none
 
       integer(4), intent(in)  :: ibobj
@@ -2194,12 +2205,12 @@ module UndoPBCModule
          r2 = sum(ro(1:3,ip)**2.0d0)
 
          if (r2 < r2min) then
-            ipcenter = ip
+            ipcenter = ipbobjn
             r2min = r2
          end if
       end do
 
-   end function ReturnIPCenterBObjn
+   end function ReturnIPCenterBondObjn
 !........................................................................
 !
 !  UndoPBCBondObj undoes periodic boundary conditions of bond object ibobj
@@ -2210,26 +2221,54 @@ module UndoPBCModule
       integer(4), intent(in) :: ibobj ! number of bond object to be undone
       integer(4), intent(in) :: ipcenter ! particle to start the undo from
 
-      real(8) :: rip(3) ! coordinate of undone particle ip
-      real(8) :: dr(3)
+      real(8)    :: dr(3)
 
-      integer(4) :: ipbobj, ip, ia
+      integer(4) :: ipcurr, ipprev
+      integer(4) :: ip, jp, ia, ibond
 
-      ! do while (.not.all(lundoplocbobjn(1:npbobjn(ibobj),ibobj)))
-      ! end do
+! ... except for particle ipcenter, all particles still need to be undone
+      lundoplocbobjn(1:npbobjn(ibobj),ibobj) = .false.
+      lundoplocbobjn(ipcenter,ibobj) = .true.
 
+! ... starting conditions
+      ipprev = ipcenter ! first "previous" particle (already undone - serves as reference point for the "current" particle)
+      ipcurr = bondplocbobjn(1,ipcenter,ibobj) ! first "current" particle (next to be undone, bonded to ipprev)
 
-      ! do ipbobj = 1, npbobjn(ibobj)
-      !    ip = ipnplocbobjn(ipbobj,ibobj)
+! ... undo all remaining particles of bond object ibobj
+      do while (.not.all(lundoplocbobjn(1:npbobjn(ibobj),ibobj)))
+         if (lundoplocbobjn(ipcurr,ibobj)) then                                     ! if ipcurr is aready undone ...
+    search: do ipcurr = 1, npbobjn(ibobj)                                           ! ... we have to search for a new ipcurr ...
+               if (lundoplocbobjn(ipcurr,ibobj)) cycle                              ! ... that has not yet been undone ...
+               do ibond = 1, nbondplocbobjn(ipcurr,ibobj)                           ! ... and is ...
+                  if (lundoplocbobjn(bondplocbobjn(ibond,ipcurr,ibobj),ibobj)) then ! ... bonded to an already done particle ...
+                     ipprev = bondplocbobjn(ibond,ipcurr,ibobj) ! ... which we can define as the new "previous" particle to serve
+                                                                ! as the new reference point for undoing the new "current" particle
+                     exit search ! we stop our search, as soon, as we found a new set of ipcurr and ipprev
+                  end if
+               end do
+            end do search
+         else
+            ip = ipnplocbobjn(ipcurr,ibobj) ! current particle - to be undone
+            jp = ipnplocbobjn(ipprev,ibobj) ! previous particle - already undone
 
-      !    dr(1:3) = ro(1:3,ip) - rref(1:3)
-      !    call PBC(dr(1),dr(2),dr(3))
-      !    rip(1:3) = rref(1:3) + dr(1:3)
+            dr(1:3) = rotmp(1:3,ip) - rotmp(1:3,jp)
+            call PBC(dr(1),dr(2),dr(3))
+            rotmp(1:3,ip) = rotmp(1:3,jp) + dr(1:3)
 
-      !    do ia = ianpn(ip), ianpn(ip) + napt(iptpn(ip)) - 1
-      !       rotmp(1:3,ia) = r(1:3,ia) - ro(1:3,ip) + rip(1:3)
-      !    end do
-      ! end do
+            do ia = ianpn(ip), ianpn(ip) + napt(iptpn(ip)) - 1
+               rtmp(1:3,ia) = r(1:3,ia) - ro(1:3,ip) + rotmp(1:3,ip)
+            end do
+
+            lundoplocbobjn(ipcurr,ibobj) = .true.
+
+            do ibond = 1, nbondplocbobjn(ipcurr,ibobj) ! Search for next "current" particle
+               if (lundoplocbobjn(bondplocbobjn(ibond,ipcurr,ibobj),ibobj)) cycle ! cycle, if bonded particle already undone, ...
+               ipprev = ipcurr                                                    ! otherwise save current as previous and ...
+               ipcurr = bondplocbobjn(ibond,ipcurr,ibobj)                         ! bonded particle as new current
+               exit ! stop searching, if we found a new set of ipcurr and ipprev
+            end do
+         end if
+      end do
 
    end subroutine UndoPBCBondObj
 !........................................................................
@@ -2254,14 +2293,15 @@ subroutine UndoPBC(vhelp)
 
    integer(4) :: ibobj, ipcenter
 
-! ... allocate rotmp and intitialize with current atom coordinates
-   if(.not. allocated(rotmp)) then
-      allocate(rotmp(3,na))
+! ... allocate rtmp and intitialize with current atom coordinates
+   if(.not. allocated(rtmp)) then
+      allocate(rtmp(3,na),rotmp(3,np))
    end if
-   rotmp(1:3,1:na) = r(1:3,1:na)
+   rtmp(1:3,1:na) = r(1:3,1:na)
 
 ! ... undo PBC only, if any type of bond object exists
    if (lchain) then
+      rotmp(1:3,1:np) = ro(1:3,1:np)
 
 ! ... prepare list of bond objects and their particles (do this only once)
       if (first) then
@@ -2272,16 +2312,16 @@ subroutine UndoPBC(vhelp)
 
 ! ... determine reference particle of bond object ibobj and undo periodic boundary conditions
       do ibobj = 1, nbobj
-         ipcenter = ReturnIPCenterBObjn(ibobj)
+         ipcenter = ReturnIPCenterBondObjn(ibobj)
          call UndoPBCBondObj(ibobj,ipcenter)
       end do
    end if
 
 ! ... transfer undone atom coordinates to output parameter vhelp
-   vhelp(1:3,1:na) = rotmp(1:3,1:na)
+   vhelp(1:3,1:na) = rtmp(1:3,1:na)
 
 ! ... tidy up
-   deallocate(rotmp)
+   deallocate(rtmp,rotmp)
 
 end subroutine UndoPBC
 
