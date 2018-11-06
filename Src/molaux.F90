@@ -265,25 +265,21 @@ subroutine FileOpen(unit, fname, txopt)
    integer(4) :: ios
 
    if (txopt == 'unform/noread') then
-      open(unit, file = fname, form = 'unformatted', status = 'unknown', err = 999, iostat = ios)
+      open(unit, file = fname, form = 'unformatted', position = 'rewind', status = 'unknown', iostat = ios)
    else if (txopt == 'unform/read') then
-      open(unit, file = fname, form = 'unformatted', status = 'unknown', err = 999, iostat = ios)
-10    read(unit,end = 900)
-      goto 10
+      open(unit, file = fname, form = 'unformatted', position = 'append', status = 'unknown', iostat = ios)
    else if (txopt == 'form/noread') then
-      open(unit, file = fname, form = 'formatted', status = 'unknown', err = 999, iostat = ios)
+      open(unit, file = fname, form = 'formatted', position = 'rewind', status = 'unknown', iostat = ios)
    else if (txopt == 'form/read') then
-      open(unit, file = fname, form = 'formatted', status = 'unknown', err = 999, iostat = ios)
-20    read(unit,*,end = 900)
-      goto 20
+      open(unit, file = fname, form = 'formatted', position = 'append', status = 'unknown', iostat = ios)
    else
       call Warn('FileOpen', 'unsupported value of txopt', 6)
    end if
-999 if (ios/= 0) then
+
+   if (ios/= 0) then
       call Warn('FileOpen', ' ', 6)
       write(*,*) 'unit = ', unit, '  fname = ', fname, '  ios = ', ios
    end if
-900 continue
 
 end subroutine FileOpen
 
