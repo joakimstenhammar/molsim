@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.5.3] - xxxx.xx.xx
+### Fixed
+- Read -bondcl- for -txstart=zero- if -clink=.true.-
+
 ## [4.5.2] - 2018-11-06
 ### Changed
 - Subroutine `FileOpen` was modernized with regards to its usage of the `open` function
