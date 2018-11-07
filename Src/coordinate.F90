@@ -2251,7 +2251,9 @@ subroutine SetNetwork(ipt)
    integer(4), allocatable :: ipclbeg(:) ! id of particles that begin crosslinks
    integer(4), allocatable :: ipclend(:) ! id of particles that ends crosslinks
 
+   logical, allocatable, save :: lnwset(:)        ! .true., if network (1:nnw) set
    real(8), allocatable, save :: rorigin(:,:)     ! coordinates of origin of networks
+
    integer(4)                 :: inwglob, jnwglob ! global number of networks inw and jnw (1:nnw)
 
 ! ... calculated by SetNetworkPos
@@ -2308,6 +2310,11 @@ subroutine SetNetwork(ipt)
    ipclbeg = 0
    ipclend = 0
 
+   if(.not.allocated(lnwset)) then
+      allocate(lnwset(nnw))
+      lnwset = .false.
+   end if
+
    if(.not.allocated(rorigin)) then
       allocate(rorigin(3,nnw))
       rorigin = 0.0E+00
@@ -2350,7 +2357,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
 ! ... test whether interpenetration with already set networks occurs
 
          do jnwglob = 1, nnw
-            if (inwglob == jnwglob) cycle
+            if ((inwglob == jnwglob) .or. .not.lnwset(jnwglob)) cycle ! cycle, if jnwglob is the same or a not yet set network
             if (sum((rorigin(1:3,inwglob)-rorigin(1:3,jnwglob))**2.0) < (rnwt(inwt)+rnwt(inwtnwn(jnwglob)))**2.0) cycle try
          end do
 
@@ -2413,6 +2420,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
          call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
       end if
 
+      lnwset(inwglob) = .true.
    end do
 
    deallocate(ronode, rostrand)
