@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [4.5.3] - xxxx.xx.xx
 ### Fixed
-- Read -bondcl- for -txstart=zero- if -clink=.true.-
+- The problem that the crosslinks are not set in non-hierarchical structures if -txstart- is-'zero'- is fixed. The informations about crosslinking in the .cnf-file are read in the variable -bondcl-
+- In case of -lhierarchical- is -.true.- and -txstart- is -'zero'- any informations about crosslinking in the .cnf-file are read. The crosslinks are set in the subroutine -SetObjectParam1-.
+
 
 ## [4.5.2] - 2018-11-06
 ### Changed
