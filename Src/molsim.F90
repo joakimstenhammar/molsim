@@ -886,8 +886,13 @@ subroutine IOCnf(str)
          if (lmvt) np = npread
          read(ucnf) (ro(1:3,ip),qua(0:3,ip),ip = 1,np)
          if (txstart == 'zero') then
-            ! do not read in the crosslink values from the cnf file for zero mode
-            if (lclink) read(ucnf) ivaux(1:np,1), (ivaux(1:maxvalnbondcl,1), ip = 1, np)
+            if (lclink) then
+               if (lhierarchical) then ! cross-linking information set in SetObjectParam1 for hierarchical structures
+                  read(ucnf) ivaux(1:np,1), (ivaux(1:maxvalnbondcl,1), ip = 1, np)
+               else
+                  read(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
+               end if
+            end if
          else if (txstart == 'continue') then
             if (lclink) read(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
          end if
