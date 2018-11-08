@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.5.4] - 2018-11-08
+### Fixed
+- Changed the maximum number of cross-links of chain particles in a network to `nbondcl = 2` to allow for the simulation of networks with one particle per chain.
+
 ## [4.5.3] - 2018-11-07
 ### Fixed
 - A check has been implemented in subroutine `SetNetwork` to prevent networks to interpenetrate.
