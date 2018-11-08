@@ -2394,25 +2394,17 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
                   npclend = npclend + 1
                   if (npclend > 2*nstrand) call stop(txroutine, 'npclend > 2*nstrand', uout)
                   ipclend(npclend) = ip
-                  maxnbondcl(iptpn(ip)) = 1
+                  maxnbondcl(iptpn(ip)) = 2
                end if
             end do
          end do
 
 ! ... make crosslinks
 
-!!!         write(*,*) txroutine
-!!!         write(*,*) 'nnode, npclend',nnode,npclend
-!!!         write(*,*) 'ipclbeg',ipclbeg(nnode)
-!!!         write(*,*) 'ipclend',ipclend(npclend)
-
          call MakeCrossLink(nnode, npclend, ipclbeg, ipclend, (bond(1:nct)%eq)**2, nclmade)
-!!!         write(*,*) txroutine, 'nclmade',nclmade
          ncl = ncl + nclmade
-!!!         write(*,*) txroutine, 'ncl (updated)',ncl
 
          exit
-
       end do try
 
       if (itry > ntry) then                         ! number of  attempts exceeds the maximal one ?
@@ -2815,10 +2807,8 @@ end function CheckTooFoldedChain
 !************************************************************************
 !> \page coordinate coordinate.F90
 !! **MakeCrossLink**
-!! *make crosslinks between particles labeled clbeg and particles labeled clend*
+!! *make crosslinks between particles labeled clbeg and particles labeled clend on the basis of their separation*
 !************************************************************************
-
-!     on the basis of their separation
 
 !                     npclbeg, ipclbeg
 !                     npclend, lpclend                nbondcl, bondcl
