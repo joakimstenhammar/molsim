@@ -203,7 +203,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v4.6.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v4.6.1'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
