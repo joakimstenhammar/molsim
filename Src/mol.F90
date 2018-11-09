@@ -842,6 +842,14 @@ module MolModule
    integer(4), allocatable :: nbondcl(:)   ! actual number of crosslinks to/from particle ip
    integer(4)    :: maxvalnbondcl          ! maxval(nbondcl(:))
    integer(4), allocatable :: bondcl(:,:)  ! crosslink and particle        -> crosslinked particle
+
+!> \page lreadbondcl
+!! `logical`
+!! **default:** `.true.`
+!! * `.true.`: Enable reading of cross-linking information from .cnf-file when `txstart=zero`
+!! * `.false.`: No reading of cross-linking information when `txstart=zero`
+   logical       :: lreadbondcl
+
 !> \page lmultigraft
 !! `logical`
 !! **default:** `.false.`
