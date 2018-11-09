@@ -846,8 +846,8 @@ module MolModule
 !> \page lreadbondcl
 !! `logical`
 !! **default:** `.true.`
-!! * `.true.`: Enable reading of cross-linking information from .cnf-file when `txstart=zero`
-!! * `.false.`: No reading of cross-linking information when `txstart=zero`
+!! * `.true.`: Enable reading of cross-linking information from .cnf-file when \ref txstart='zero'
+!! * `.false.`: No reading of cross-linking information when \ref txstart='zero'
    logical       :: lreadbondcl
 
 !> \page lmultigraft
