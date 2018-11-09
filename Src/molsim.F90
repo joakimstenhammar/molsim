@@ -890,7 +890,7 @@ subroutine IOCnf(str)
                if (lreadbondcl) then ! cross-linking information set in SetObjectParam1 for hierarchical structures
                   read(ucnf) nbondcl(1:np), bondcl(1:maxvalnbondcl,1:np)
                else
-                  read(ucnf) ivaux(1:np,1), (ivaux(1:maxvalnbondcl,1), ip = 1, np)
+                  read(ucnf) ivaux(1,1:np), (ivaux(1,1:maxvalnbondcl), ip = 1, np)
                end if
             end if
          else if (txstart == 'continue') then
