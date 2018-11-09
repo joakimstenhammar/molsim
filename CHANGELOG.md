@@ -5,9 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [4.5.5] - xxxx.xx.xx
+### Added
+- The input variable `lreadbondcl` in `nmlParticle` is introduced. It is a flag for reading cross-linking information when `txstart=zero`.
 ### Fixed
-- The problem that the crosslinks are not set in non-hierarchical structures if `txstart='zero'`- is fixed. The informations about crosslinking in the .cnf-file are read in the variable `bondcl`
-- In case of `lhierarchical=.true.` and `txstart='zero'` any informations about crosslinking in the .cnf-file are read. The crosslinks are set in the subroutine `SetObjectParam1`.
+- The problem that the crosslinks are not set in non-hierarchical structures if `txstart='zero'`- is fixed. The informations about crosslinking in the .cnf-file are read in the variable `bondcl` if `lreadbondcl=.true.`.
 
 ## [4.5.4] - 2018-11-08
 ### Fixed
