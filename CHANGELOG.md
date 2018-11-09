@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [4.5.5] - xxxx.xx.xx
+## [4.6.0] - xxxx.xx.xx
 ### Added
 - The input variable `lreadbondcl` in `nmlParticle` is introduced. It is a flag for reading cross-linking information when `txstart=zero`.
 ### Fixed
