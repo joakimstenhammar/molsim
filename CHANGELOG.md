@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.6.0] - 2018-11-09
+### Added
+- The input variable `lreadbondcl` in `nmlParticle` is introduced. It is a flag for reading cross-linking information when `txstart=zero`.
+### Fixed
+- The problem that the crosslinks are not set in non-hierarchical structures if `txstart='zero'`- is fixed. The informations about crosslinking in the .cnf-file are read in the variable `bondcl` if `lreadbondcl=.true.`.
+
 ## [4.5.4] - 2018-11-08
 ### Fixed
 - Changed the maximum number of cross-links of chain particles in a network to `nbondcl = 2` to allow for the simulation of networks with one particle per chain.
