@@ -2009,10 +2009,10 @@ subroutine ChargeAver(iStage)
       var%value = Zero
       do ia = 1, na
          ivar = 1
-         if (laz(ia)) var(ivar)%value = var(ivar)%value + az(ia)
+         var(ivar)%value = var(ivar)%value + az(ia)
          iat = iatan(ia)
          ivar = 1+iat
-         if (laz(ia)) var(ivar)%value = var(ivar)%value + abs(az(ia))
+         var(ivar)%value = var(ivar)%value + abs(az(ia))
       end do
       call ScalarSample(iStage, 1, nvar, var)
 
