@@ -316,7 +316,7 @@ subroutine IOPotTwoBody(iStage)
                            lambda_ramp, epsilon_ramp, alpha_ramp,                   &
                            lambda_sw, epsilon_sw, alpha_sw,                         &
                            rad_dep, rho_dep, factor_dep,                            &
-                           lellipsoid, radellipsoid, aellipsoid,                    &
+                           lellipsoid, radellipsoid, aellipsoid, rad2ellipsoid, a2ellipsoid, epsiellipsoid, &
                            lsuperball, radsuperball, qsuperball, txmethodsuperball, nitersuperball, tolsuperball, meshdepthsuperball, &
                            dl_damp, dl_cut, dr_damp, dr_cut, lstatsuperball,        &
                            luext,                                                   &
@@ -374,7 +374,10 @@ subroutine IOPotTwoBody(iStage)
       factor_dep     = 1.0d0     ! depletion-thickness factor
       lellipsoid     = .false.   !
       radellipsoid   = One       ! radius of degenerated axes
+      rad2ellipsoid  = One       ! radius of degenerated axes
       aellipsoid     = One       ! aspect ratio
+      a2ellipsoid    = One       ! aspect ratio
+      epsiellipsoid  = Zero      ! square-well attraction
       lsuperball     = .false.   !
       radsuperball   = One       ! radius of superball
       qsuperball     = One       ! power (=1 => sphere, =inf => cub)
@@ -529,6 +532,7 @@ subroutine IOPotTwoBody(iStage)
       end if
 
       if (lellipsoid) radellipsoid2 = radellipsoid**2
+      if (lellipsoid) rad2ellipsoid2 = rad2ellipsoid**2
 
 ! ... check that ucoff(1,:) is consistent to zat(:)
 
@@ -760,8 +764,11 @@ subroutine IOPotTwoBody(iStage)
             write(uout,'()')
             write(uout,'(a)') 'particles are ellipsoids'
             write(uout,'(a)') '------------------------'
-            write(uout,'(a,t35,3g15.3)') 'radius of degerated axes       = ', radellipsoid
-            write(uout,'(a,t35,3g15.3)') 'aspect ratio (>1 pro, <1 ob)   = ', aellipsoid
+            write(uout,'(a,t36,3g15.3)') 'radius of degerated axes        = ', radellipsoid
+            write(uout,'(a,t36,3g15.3)') 'aspect ratio (>1 pro, <1 ob)    = ', aellipsoid
+            write(uout,'(a,t36,3g15.3)') 'radius of outer ellipsoid       = ', rad2ellipsoid
+            write(uout,'(a,t36,3g15.3)') 'aspect ratio of outer ellipsoid = ', a2ellipsoid
+            write(uout,'(a,t36,3g15.3)') 'attractive energy               = ', epsiellipsoid
             write(uout,'()')
          end if
 

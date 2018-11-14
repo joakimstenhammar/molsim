@@ -1505,12 +1505,16 @@ module MolModule
 !! **default:** `1.0`
 !! * Radius of degenerated axes.
    real(8)       :: radellipsoid
+   real(8)       :: rad2ellipsoid         ! radius of outer ellipsoid (square well)
 !> \page aellipsoid
 !! `real`
 !! **default:** `1.0`
 !! * Aspect ratio: >1 prolate and <1 oblate.
    real(8)       :: aellipsoid            ! aspect ratio (>1 prolate, <1 oblate)
+   real(8)       :: a2ellipsoid           ! aspect ratio of outer ellipsoid (square well)
    real(8)       :: radellipsoid2         ! radellipsoid**2
+   real(8)       :: rad2ellipsoid2        ! radellipsoid**2
+   real(8)       :: epsiellipsoid         ! attractive energy (square well)
 
 ! ... superball particles
 
