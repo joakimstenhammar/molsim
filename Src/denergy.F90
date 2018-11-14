@@ -325,7 +325,7 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
          call PBCr2(dx,dy,dz,r2)
          if (lellipsoid) Then
             if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),radellipsoid2,aellipsoid)) goto 400
-            if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) usum = usum - epsiellipsoid  ! ... Add square well potential in outer shell
+            if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) usum = usum - epsiellipsoid  ! ... Add square well potential in outer shell
          end if
          if (lsuperball) Then
             if (SuperballOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp))) goto 400
@@ -364,6 +364,7 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
             call PBCr2(dx,dy,dz,r2)
             if (lellipsoid) Then
                 if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),oritm(1,1,jploc),radellipsoid2,aellipsoid)) goto 400
+                if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),oritm(1,1,jploc),rad2ellipsoid2,a2ellipsoid)) usum = usum - epsiellipsoid  ! ... Add square well potential in outer shell
             end if
             if (lsuperball) Then
                if (SuperballOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),oritm(1,1,jploc))) goto 400
@@ -471,6 +472,7 @@ subroutine UTwoBodyAOld
             if (r2 > rcut2) cycle
             if (lellipsoid) Then
                if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),radellipsoid2,aellipsoid)) goto 400
+               if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) usum = usum - epsiellipsoid  ! ... Add square well potential in outer shell
             end if
             if (lsuperball) Then
                if (SuperballOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp))) goto 400
