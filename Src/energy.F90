@@ -5039,8 +5039,10 @@ subroutine UTwoBodyPair(ip, jp, uuu, fforce)
    character(40), parameter :: txroutine ='UTwoBodyPair'
    integer(4) :: ipt, jpt, iptjpt, ibuf
    integer(4) :: ia, ialow, iaupp, iat, ja, jalow, jaupp, jat, iatjat
-   real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r2, d, usum, fsum
+   real(8)    :: dx, dy, dz, dxopbc, dyopbc, dzopbc, r2, d, usum, fsum, epsi
    logical    :: EllipsoidOverlap, SuperballOverlap
+
+   epsi = 2.5d0
 
    uuu = Zero
    fforce(1:3) = Zero
@@ -5059,16 +5061,19 @@ subroutine UTwoBodyPair(ip, jp, uuu, fforce)
    if (r2 > rcut2) return
    if (lellipsoid) then
       if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),radellipsoid2,aellipsoid)) then
-      uuu = 1e10
-      fforce = zero
-      return
+         uuu = 1e10
+         fforce = zero
+         return
+      else if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),1.1d0*radellipsoid2,aellipsoid)) then
+         uuu = uuu - epsi  ! ... Add square well potential in outer shell
+         fforce = zero     ! ... Discontinuous force
       end if
    end if
    if (lsuperball) then
       if (SuperballOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp))) then
-      uuu = 1e10
-      fforce = zero
-      return
+         uuu = 1e10
+         fforce = zero
+         return
       end if
    end if
 
