@@ -1521,7 +1521,8 @@ subroutine DumpUser(iStage)
 !     call ChainCOMDump(iStage)
 !     call ChainReeDump(iStage)
 !     call DipMomTotDump(iStage)
-     if (txuser == 'jasper_xy_coord') call xy_coordinates_Jasper(iStage)
+      call EllipsoidDump(iStage)
+      if (txuser == 'jasper_xy_coord') call xy_coordinates_Jasper(iStage)
    end if
 
 end subroutine DumpUser
@@ -1822,6 +1823,44 @@ end subroutine DipMomTotDumpSub
 !........................................................................
 
 end subroutine DipMomTotDump
+
+
+!........................................................................
+! Dump positions and orientation vectors (z-axis) of ellipsoidal particles
+! Formatted output
+
+subroutine EllipsoidDump(iStage)
+
+   use MolModule
+   implicit none
+
+   integer(4), intent(in) :: iStage
+   integer(4) :: ip
+
+   select case (iStage)
+   case (iReadInput)
+
+      call FileOpen(uuser, fuser, 'form/noread')
+
+   case (iBeforeSimulation)
+
+   case (iSimulationStep)
+     
+      write(uuser,'(a5,i10)') "Step ", istep 
+      do ip = 1, np 
+         write(uuser,'(6f12.6)') ro(1:3,ip), ori(1:3,3,ip) 
+      end do 
+      call FileFlush(uuser)
+
+   case (iAfterMacrostep)
+
+   case (iAfterSimulation)
+
+      close(uuser)
+
+   end select
+
+end subroutine EllipsoidDump
 
 !************************************************************************
 !> \page moluser moluser.F90
