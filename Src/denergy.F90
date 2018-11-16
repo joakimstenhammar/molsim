@@ -304,7 +304,6 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
 
 !   write(uout,*) txroutine
 
-   usum = Zero
 
    utwobnew(0:nptpt) = Zero
    lhsoverlap =.true.
@@ -313,8 +312,8 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
       ip = ipnptm(iploc)
       ipt = iptpn(ip)
 !      write(uout,'(a,i5,3f10.5)') 'ip,rotm(1:3,iploc)',ip, rotm(1:3,iploc)
-
       do jploc = 1, nneighpn(ip)
+         usum = Zero
          jp = jpnlist(jploc,ip)
          if (lptm(jp)) cycle
          jpt = iptpn(jp)
@@ -355,6 +354,7 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
          do jploc = iploc+1, nptm
+            usum = Zero
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
@@ -379,7 +379,7 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
                ibuf = ibuf+12
             end do
             d = r2-ubuf(ibuf)
-            usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
+            usum = usum + ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
                               d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
 
             utwobnew(iptjpt) = utwobnew(iptjpt) + usum
@@ -415,7 +415,6 @@ subroutine UTwoBodyAOld
 
    if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
 
-   usum = Zero
    utwobold(0:nptpt) = Zero
 
    do iploc = 1, nptm
@@ -423,6 +422,7 @@ subroutine UTwoBodyAOld
       ipt = iptpn(ip)
 !      write(uout,'(a,i5,3f10.5)') 'ip,ro(1:3,ip)',ip, ro(1:3,ip)
       do jploc = 1, nneighpn(ip)
+         usum = Zero
          jp = jpnlist(jploc,ip)
          if (lptm(jp)) cycle
          jpt = iptpn(jp)
@@ -462,6 +462,7 @@ subroutine UTwoBodyAOld
          ip = ipnptm(iploc)
          ipt = iptpn(ip)
          do jploc = iploc+1, nptm
+            usum = Zero
             jp = ipnptm(jploc)
             jpt = iptpn(jp)
             iptjpt = iptpt(ipt,jpt)
@@ -486,7 +487,7 @@ subroutine UTwoBodyAOld
                ibuf = ibuf+12
             end do
             d = r2-ubuf(ibuf)
-            usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
+            usum = usum + ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
                               d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
 
             utwobold(iptjpt) = utwobold(iptjpt) + usum
