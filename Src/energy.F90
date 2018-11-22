@@ -450,6 +450,7 @@ subroutine UTwoBodyA
    character(40), parameter :: txroutine ='UTwoBodyA'
    integer(4) :: ip, iploc, ipt, jp, jploc, jpt, iptjpt, ibuf, Getnpmyid
    real(8)    :: dx, dy, dz, r2, d, usum, fsum, virtwob
+   logical    :: EllipsoidOverlap
 
    if (.not.lmonoatom) call Stop(txroutine, '.not.lmonoatom', uout)
 
@@ -462,6 +463,7 @@ subroutine UTwoBodyA
       ip = ipnploc(iploc)
       ipt = iptpn(ip)
       do jploc = 1, nneighpn(iploc)
+         usum = Zero
          jp = jpnlist(jploc,iploc)
          if (lmc) then
             if (jp < ip) cycle
@@ -473,6 +475,15 @@ subroutine UTwoBodyA
          dz = ro(3,ip)-ro(3,jp)
          call PBCr2(dx,dy,dz,r2)
          if (r2 > rcut2) cycle
+         if (lellipsoid) then   ! ... No need to check for hard-ellipsoid overlap (already done before accepting trial config)
+!           if(istep == 414 .and. ip == 4 .and. jp == 6) write(98,'(a15,4f10.5)') "U, dx, dy, dz, r2", dx, dy, dz, r2
+!           if(istep == 414 .and. ip == 4 .and. jp == 6) write(98,'(a15,9f10.5)') "U, ori(ip)", ori(1:3,1:3,ip)
+!           if(istep == 414 .and. ip == 4 .and. jp == 6) write(98,'(a15,9f10.5)') "U, ori(jp)", ori(1:3,1:3,jp)
+!           if(istep == 414 .and. ip == 4 .and. jp == 6) write(98,'(a15,l)') "U, overlap", EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)
+!           if(istep == 414 .and. ip == 4 .and. jp == 6) write(98,'(a15,l)') "U, overlap minus", EllipsoidOverlap(r2,[-dx,-dy,-dz],ori(1,1,jp),ori(1,1,ip),rad2ellipsoid2,a2ellipsoid)
+            if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) usum = usum - epsiellipsoid  ! ... Add square well potential in outer shell
+!           if(istep == 414) write(99,'(a15,2i5,2f10.5)') "UTwoBodyA", ip, jp, usum, u%twob(1)
+         end if
          if (r2 < r2atat(iptjpt)) then
             usum = 1d10                ! emulate hs overlap
          else if (r2 < r2umin(iptjpt)) then
@@ -485,7 +496,7 @@ subroutine UTwoBodyA
                if (ibuf > nbuf) call StopIbuf('txptpt',iptjpt)
             end do
             d = r2-ubuf(ibuf)
-            usum = ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
+            usum = usum + ubuf(ibuf+1)+d*(ubuf(ibuf+2)+d*(ubuf(ibuf+3)+ &
                    d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
             fsum = ubuf(ibuf+7)+d*(ubuf(ibuf+8)+d*(ubuf(ibuf+9)+ &
                    d*(ubuf(ibuf+10)+d*ubuf(ibuf+11))))
@@ -5062,9 +5073,6 @@ subroutine UTwoBodyPair(ip, jp, uuu, fforce)
          uuu = 1e10
          fforce = zero
          return
-      else if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) then
-         uuu = uuu - epsiellipsoid  ! ... Add square well potential in outer shell
-         fforce = zero              ! ... Discontinuous force
       end if
    end if
    if (lsuperball) then
