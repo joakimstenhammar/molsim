@@ -325,12 +325,6 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
          if (lellipsoid) Then
             if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),radellipsoid2,aellipsoid)) goto 400
             if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) usum = usum - epsiellipsoid  ! ... Add square well potential in outer shell
-!              if(istep == 414 .and. ip == 6 .and. jp == 4) write(98,'(a15,4f10.5)') "DU, dx, dy, dz, r2", dx, dy, dz, r2
-!              if(istep == 414 .and. ip == 6 .and. jp == 4) write(98,'(a15,9f10.5)') "DU, ori(jp)", ori(1:3,1:3,jp)
-!              if(istep == 414 .and. ip == 6 .and. jp == 4) write(98,'(a15,9f10.5)') "DU, ori(ip)", oritm(1:3,1:3,iploc)
-!              if(istep == 414 .and. ip == 6 .and. jp == 4) write(98,'(a15,l)') "DU, overlap", EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)
-!              if(istep == 414 .and. ip == 6 .and. jp == 4) write(98,'(a15,l)') "DU, overlap minus", EllipsoidOverlap(r2,[-dx,-dy,-dz],ori(1,1,jp),oritm(1,1,iploc),rad2ellipsoid2,a2ellipsoid)
-!              if(istep == 414) write(99,'(a15,2i5,2f10.5)') "UNew", ip, jp, usum, utwobnew(1)
          end if
          if (lsuperball) Then
             if (SuperballOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp))) goto 400
@@ -350,12 +344,9 @@ subroutine UTwoBodyANew(lhsoverlap,jp)
 
          utwobnew(iptjpt) = utwobnew(iptjpt) + usum
          if (EllipsoidOverlap(r2,[dx,dy,dz],oritm(1,1,iploc),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) then 
-!           if(istep == 414) write(99,'(a15,2i5,2f10.5)') "UNew, after", ip, jp, usum, utwobnew(1)
          end if
-!        write(uout,'(a,i5,6f10.5)') 'jp,ro(1:3,jp), r2, usum, utwobnew(iptjpt)',jp, ro(1:3,jp), r2, usum, utwobnew(iptjpt)
       end do
    end do
-!  if(istep == 414) write(99,'(a15,f10.5)') "UNew Total", utwobnew(1)
 
 ! ... contribution from pairs where both particles are displaced
 
@@ -444,10 +435,7 @@ subroutine UTwoBodyAOld
          if (r2 > rcut2) cycle
          if (lellipsoid) Then
             if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),radellipsoid2,aellipsoid)) goto 400
-            if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) then
-               usum = usum - epsiellipsoid      ! ... Add square well potential in outer shell
-!              if(istep == 414) write(99,'(a15,2i5,2f10.5)') "UOld", ip, jp, usum, utwobold(1)
-            end if
+            if (EllipsoidOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp),rad2ellipsoid2,a2ellipsoid)) usum = usum - epsiellipsoid      ! ... Add square well potential in outer shell
          end if
          if (lsuperball) Then
             if (SuperballOverlap(r2,[dx,dy,dz],ori(1,1,ip),ori(1,1,jp))) goto 400
@@ -464,10 +452,8 @@ subroutine UTwoBodyAOld
                            d*(ubuf(ibuf+4)+d*(ubuf(ibuf+5)+d*ubuf(ibuf+6)))))
 
          utwobold(iptjpt) = utwobold(iptjpt) + usum
-!        write(uout,'(a,i5,6f10.5)') 'jp,ro(1:3,jp), r2, usum, utwobold(iptjpt)',jp, ro(1:3,jp), r2, usum, utwobold(iptjpt)
       end do
    end do
-!  if(istep == 414) write(99,'(a15,f10.5)') "UOld Total", utwobold(1)
 
 ! ... contribution from pairs where both particles are displaced
 
