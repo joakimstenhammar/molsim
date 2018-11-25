@@ -1633,7 +1633,8 @@ subroutine SetChainRandom !(iptset) iptset is not needed
          if ((ipt == iptnode) .or. (ict == ictstrand)) cycle ! exclude chains which are nodes or strands
          if (lhierarchical) then
             if(ihnpn(ip) /= 0) cycle                        ! exclude chains which are in hierarchical structure
-         else if (lnetwork) then
+         end if
+         if (lnetwork) then
             if (sum(ncctnwt(ict,1:nnwt)) > 0) cycle         ! exclude chains which are in finite network structure
          end if
       ! MORE
@@ -2308,7 +2309,6 @@ subroutine SetNetwork(ipt)
    ipclend = 0
 
 ! ... set gels
-
    maxnbondcl(ipt) = nclnode
 
    do inw = 1, nnwnwt(inwt)! loop over all networks of network type inwt
