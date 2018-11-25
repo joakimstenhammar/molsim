@@ -29,6 +29,7 @@
 !!  * \subpage lmultigraft
 !!  * \subpage lhierarchical
 !!  * \subpage maxnbondcl
+!!  * \subpage lreadbondcl
 !!  * \subpage ngen
 !!  * \subpage ictgen
 !!  * \subpage nbranch
@@ -174,7 +175,7 @@ subroutine Particle(iStage)
    character(10)             :: txhelp  ! auxiliary
 
    namelist /nmlParticle/ txelec,                                                 &
-                          lclink, lmultigraft, maxnbondcl,                        &
+                          lclink, lmultigraft, maxnbondcl, lreadbondcl,           &
                           nnwt,                                                   &
                           ngen, ictgen, nbranch, ibranchpbeg, ibranchpinc,        &
                           nct, txct, ncct, npptct, txcopolymer, lspma,            &
@@ -203,6 +204,7 @@ subroutine Particle(iStage)
       lmultigraft           =.false.
       nnwt                  = 0
       maxnbondcl            = 1
+      lreadbondcl           =.true.
       ngen                  =-1
       ictgen(0:mngen)       = 1
       nbranch(0:mngen-1)    = 0

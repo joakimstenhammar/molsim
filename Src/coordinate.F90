@@ -2252,7 +2252,10 @@ subroutine SetNetwork(ipt)
    integer(4), allocatable :: ipclbeg(:) ! id of particles that begin crosslinks
    integer(4), allocatable :: ipclend(:) ! id of particles that ends crosslinks
 
-   real(8)        :: rorigin(3)          ! coordinates of origin of network
+   logical, allocatable, save :: lnwset(:)        ! .true., if network (1:nnw) set
+   real(8), allocatable, save :: rorigin(:,:)     ! coordinates of origin of networks
+
+   integer(4)                 :: inwglob, jnwglob ! global number of networks inw and jnw (1:nnw)
 
 ! ... calculated by SetNetworkPos
 
@@ -2308,29 +2311,42 @@ subroutine SetNetwork(ipt)
    ipclbeg = 0
    ipclend = 0
 
+   if(.not.allocated(lnwset)) then
+      allocate(lnwset(nnw))
+      lnwset = .false.
+   end if
+
+   if(.not.allocated(rorigin)) then
+      allocate(rorigin(3,nnw))
+      rorigin = 0.0E+00
+   end if
+
 ! ... set gels
    maxnbondcl(ipt) = nclnode
+   inwglob = sum(nnwnwt(1:inwt-1))
 
    do inw = 1, nnwnwt(inwt)! loop over all networks of network type inwt
+      inwglob = inwglob + 1
+
 try:  do itry = 1, ntry    ! loop over attempts to set the gel
 
 !  ... set network origin
 
          if (txoriginnwt(inwt) == 'origin') then
-            rorigin = Zero
+            rorigin(1:3,inwglob) = Zero
          else if (txoriginnwt(inwt) == 'random') then
             if (lbcsph) then
                do
-                  rorigin(1) = Two*sphrad*(Random(iseed) - Half)
-                  rorigin(2) = Two*sphrad*(Random(iseed) - Half)
-                  rorigin(3) = Two*sphrad*(Random(iseed) - Half)
-                  if (sum(rorigin(1:3)**2) <= sphrad2) exit
+                  rorigin(1,inwglob) = Two*sphrad*(Random(iseed) - Half)
+                  rorigin(2,inwglob) = Two*sphrad*(Random(iseed) - Half)
+                  rorigin(3,inwglob) = Two*sphrad*(Random(iseed) - Half)
+                  if (sum(rorigin(1:3,inwglob)**2) <= sphrad2) exit
                end do
             else if(lbcbox) then
-               rorigin(1) = boxlen(1)*(Random(iseed) - Half)
-               rorigin(2) = boxlen(2)*(Random(iseed) - Half)
-               rorigin(3) = boxlen(3)*(Random(iseed) - Half)
-               call PBC(rorigin(1), rorigin(2), rorigin(3))
+               rorigin(1,inwglob) = boxlen(1)*(Random(iseed) - Half)
+               rorigin(2,inwglob) = boxlen(2)*(Random(iseed) - Half)
+               rorigin(3,inwglob) = boxlen(3)*(Random(iseed) - Half)
+               call PBC(rorigin(1,inwglob), rorigin(2,inwglob), rorigin(3,inwglob))
             else
                call Stop (txroutine, 'txbc is not compatible with origin position of network', uout)
             end if
@@ -2338,11 +2354,18 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
             call Stop(txroutine,'invalid choice of txoriginnwt',uout)
          end if
 
+! ... test whether interpenetration with already set networks occurs
+
+         do jnwglob = 1, nnw
+            if ((inwglob == jnwglob) .or. .not.lnwset(jnwglob)) cycle ! cycle, if jnwglob is the same or a not yet set network
+            if (sum((rorigin(1:3,inwglob)-rorigin(1:3,jnwglob))**2.0) < (rnwt(inwt)+rnwt(inwtnwn(jnwglob)))**2.0) cycle try
+         end do
+
 ! ... set node particles
 
          do iploc = 1 , nnode
             ip = ipnpt(ipt) + iploc - 1 + (inw - 1)*nnode
-            ro(1:3,ip) = rorigin(1:3) + ronode(1:3,iploc)
+            ro(1:3,ip) = rorigin(1:3,inwglob) + ronode(1:3,iploc)
             call PBC(ro(1,ip),ro(2,ip),ro(3,ip))
             call SetPartOriRandom(iseed,ori(1,1,ip))              ! set random particle orientation
             call SetAtomPos(ip, ip, .false.)                      ! set atom positions
@@ -2360,7 +2383,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
             do iseg = 1, npct(ict)
                jploc = jploc + 1
                ip = ipnsegcn(iseg,ic)
-               ro(1:3,ip) = rorigin(1:3) + rostrand(1:3,jploc)
+               ro(1:3,ip) = rorigin(1:3,inwglob) + rostrand(1:3,jploc)
                call PBC(ro(1,ip),ro(2,ip),ro(3,ip))
                call SetPartOriRandom(iseed,ori(1,1,ip))              ! set random particle orientation
                call SetAtomPos(ip, ip, .false.)                      ! set atom positions
@@ -2371,25 +2394,17 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
                   npclend = npclend + 1
                   if (npclend > 2*nstrand) call stop(txroutine, 'npclend > 2*nstrand', uout)
                   ipclend(npclend) = ip
-                  maxnbondcl(iptpn(ip)) = 1
+                  maxnbondcl(iptpn(ip)) = 2
                end if
             end do
          end do
 
 ! ... make crosslinks
 
-!!!         write(*,*) txroutine
-!!!         write(*,*) 'nnode, npclend',nnode,npclend
-!!!         write(*,*) 'ipclbeg',ipclbeg(nnode)
-!!!         write(*,*) 'ipclend',ipclend(npclend)
-
          call MakeCrossLink(nnode, npclend, ipclbeg, ipclend, (bond(1:nct)%eq)**2, nclmade)
-!!!         write(*,*) txroutine, 'nclmade',nclmade
          ncl = ncl + nclmade
-!!!         write(*,*) txroutine, 'ncl (updated)',ncl
 
          exit
-
       end do try
 
       if (itry > ntry) then                         ! number of  attempts exceeds the maximal one ?
@@ -2397,6 +2412,7 @@ try:  do itry = 1, ntry    ! loop over attempts to set the gel
          call Stop(txroutine, 'random configuration failed, itry > ntry', uout)
       end if
 
+      lnwset(inwglob) = .true.
    end do
 
    deallocate(ronode, rostrand)
@@ -2791,10 +2807,8 @@ end function CheckTooFoldedChain
 !************************************************************************
 !> \page coordinate coordinate.F90
 !! **MakeCrossLink**
-!! *make crosslinks between particles labeled clbeg and particles labeled clend*
+!! *make crosslinks between particles labeled clbeg and particles labeled clend on the basis of their separation*
 !************************************************************************
-
-!     on the basis of their separation
 
 !                     npclbeg, ipclbeg
 !                     npclend, lpclend                nbondcl, bondcl
