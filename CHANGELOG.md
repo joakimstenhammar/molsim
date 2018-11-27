@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.6.1] - 2018-11-27
+### Changed
+- The recursive subroutine `UndoPBC` was replaced by an iterative version.
+### Fixed
+- Due to an overflow of the stack, the recursive subroutine `UndoPBC` crushed for systems with large numbers of particles per chain. The newly implemented version of `UndoPBC` chooses an iterative instead of a recursive strategy and does not suffer from the limited size of the stack.
+
 ## [4.6.0] - 2018-11-09
 ### Added
 - The input variable `lreadbondcl` in `nmlParticle` is introduced. It is a flag for reading cross-linking information when `txstart=zero`.

@@ -214,3 +214,6 @@ amphoteric.counterions.mc.out
 group.weakcharge.fnw.out
 lj.mc.celllist.out
 random.out
+vtfimage.all.mc.out
+vtfimage.all.mc.tcl
+vtfimage.all.mc.vtf
