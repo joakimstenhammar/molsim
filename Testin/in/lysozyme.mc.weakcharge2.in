@@ -1,0 +1,84 @@
+ &nmlSystem
+  txtitle ='1 lysozyme, Rudi, continue run',
+  txmethod='mc',    txensemb='nvt',     txbc ='xyz',    txstart ='continue', txuser = 'rudi'
+  nstep1= 2,        nstep2= 100000,
+  boxlen= 3*100,
+  temp  = 298.0,    prsr = 0.1013,
+  iseed = 992327,
+  lcont =.t.,  laver =.t.,  ldist =.f.,  ldump =.f.,  lgroup=.f.,  lstatic =.t.,limage =.f.,
+  itest = 0,   ipart = 0,   iatom = 1,   iaver = 0,   ishow = 1,   iplot = 1,   ilist = 0,
+ /
+ &nmlScale
+ /
+ &nmlParticle
+  txelec = 'weakcharge'
+  npt   = 1,
+  txpt  = 'protein',
+  nppt  = 1,
+  natpt = 9,
+
+  txat  = 'asp','glu','tyr','c-t','lys','arg','his','n-t','com',
+  massat= 8*0,0, 1430,
+      radat = 8*1.0, 18.54,	 ! not correct since hs overlap within ip = 1
+  radat = 8*0.0, 18.54,
+  zat   = -1,  -1, -1, -1, 1, 1, 1, 1, 0
+  naatpt(1,1) =  7, 2, 3, 1, 6, 11, 1, 1, 1
+
+  txaat(01,1) = 'asp    18',  rain(1,01,1) =  -8.602,  12.428,  -6.717,
+  txaat(02,1) = 'asp    48',  rain(1,02,1) =   8.389,  -7.142,  12.337,
+  txaat(03,1) = 'asp    52',  rain(1,03,1) =  11.645,  -6.551,   9.750,
+  txaat(04,1) = 'asp    66',  rain(1,04,1) =   4.206, -13.252,   8.960,
+  txaat(05,1) = 'asp    87',  rain(1,05,1) =  -8.795, -10.613,  -9.142,
+  txaat(06,1) = 'asp   101',  rain(1,06,1) =  -8.486,  -1.776,  14.086,
+  txaat(07,1) = 'asp   119',  rain(1,07,1) =   2.566,  15.276,  -5.799,
+  txaat(08,1) = 'glu     7',  rain(1,08,1) =   1.956,   0.711, -16.409,
+  txaat(09,1) = 'glu    35',  rain(1,09,1) =  14.865,  -0.636,   7.226,
+  txaat(10,1) = 'tyr    20',  rain(1,10,1) = -14.496,   4.210,   6.762,
+  txaat(11,1) = 'tyr    23',  rain(1,11,1) =  -3.688,  13.485,   8.838,
+  txaat(12,1) = 'tyr    53',  rain(1,12,1) =  -6.366,   7.069, -13.531,
+  txaat(13,1) = 'leu c 129',  rain(1,13,1) =  -7.532,   8.046, -12.333,
+  txaat(14,1) = 'lys     1',  rain(1,14,1) =   5.126, -11.854, -10.333,
+  txaat(15,1) = 'lys    13',  rain(1,15,1) = -10.463,   6.727, -10.902,
+  txaat(16,1) = 'lys    33',  rain(1,16,1) =  13.082,   3.171,  -9.611,
+  txaat(17,1) = 'lys    96',  rain(1,17,1) = -16.474,   0.674,  -1.310,
+  txaat(18,1) = 'lys    97',  rain(1,18,1) = -12.314,  -3.209,  10.566,
+  txaat(19,1) = 'lys   116',  rain(1,19,1) =   5.048,  13.214,   8.571,
+  txaat(20,1) = 'arg     5',  rain(1,20,1) =   3.495,   8.745, -13.597,
+  txaat(21,1) = 'arg    14',  rain(1,21,1) =  -7.570,  -2.096, -14.556,
+  txaat(22,1) = 'arg    21',  rain(1,22,1) =  -9.895,   8.925,   9.797,
+  txaat(23,1) = 'arg    45',  rain(1,23,1) =   8.802, -13.722,   2.795,
+  txaat(24,1) = 'arg    61',  rain(1,24,1) =   5.766,  -6.678,  13.990,
+  txaat(25,1) = 'arg    68',  rain(1,25,1) =   5.670, -13.952,   6.838,
+  txaat(26,1) = 'arg    73',  rain(1,26,1) =  -2.546,  -2.933,  16.078,
+  txaat(27,1) = 'arg   112',  rain(1,27,1) =   8.586,   7.351,  12.076,
+  txaat(28,1) = 'arg   114',  rain(1,28,1) =  15.378,   5.967,  -1.223,
+  txaat(29,1) = 'arg   125',  rain(1,29,1) =   3.171,  13.585,  -8.887,
+  txaat(30,1) = 'arg   128',  rain(1,30,1) =  -1.812,   3.788, -15.998,
+  txaat(31,1) = 'his    15',  rain(1,31,1) = -12.898,  -6.073,  -8.387,
+  txaat(32,1) = 'lys n   1',  rain(1,32,1) =  -0.702,  -7.539, -14.705,
+  txaat(33,1) = 'com',        rain(1,33,1) =  0.0   ,   0.0  ,  0.0   ,
+  latweakcharge =  8*.t.,
+  pK = 10.3, 9.9, 3.9, 11.7, 3.3, 1.9, 8.0, 5.0,
+  pK = 3.7, 4.1, 10.1, 2.3, 10.7, 12.1, 6.0, 9.0
+  pH = 100e-1
+ /
+ &nmlPotential
+  rcut = 67,
+
+  relpermitt = 78.4,
+  lscrc =.true.,       scrlen = 9.6,
+ /
+ &nmlSetConfiguration txsetconf(1) ='random', /
+ &nmlMC pspart = 0, pcharge   = 1, /
+ &nmlIntList inlist = 0, drnlist = 180.0 /
+ &nmlGroup /
+ &nmlStatic
+  istatic = 1,
+  lstaticuser = .t.,
+ /
+ &nmlRDF vtype(2) =.true., 0.0, 100.0, rmax=120.54, func='rcn' /
+ &nmlImage lvrml =.true. /
+ &nmlVRML atsize = 8*2.0, 16.0, rgbcolor =  1,0,0, 0,1,0, 0,0,1, 1,1,0, 1,1,0, 1,0,1, 0,1,1, 0,1,1, 0,0,0 /
+
+
+

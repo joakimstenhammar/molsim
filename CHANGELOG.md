@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.6.2] - 2018-11-28
+### Changed
+- Before, the atom charge `az` was set according to the atom charge state `laz` only for systems, in which Ewald summation was used. Now, the atom charge `az` is always set according to the atom charge state `laz`.
+### Fixed
+- The flawed sampling of the fractional charges in `ChargeAver` upon continuing simulations of systems with weak charges, but without Ewald summation, was fixed by always synchronizing `laz` and `az`, independent of the state of `lewald`.
+
 ## [4.6.1] - 2018-11-27
 ### Changed
 - The recursive subroutine `UndoPBC` was replaced by an iterative version.
