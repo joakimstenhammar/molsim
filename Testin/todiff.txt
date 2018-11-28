@@ -155,6 +155,7 @@ prot.mccl1.ew.out
 daniel.out
 pe.mc.weakcharge.out
 lysozyme.mc.weakcharge.out
+lysozyme.mc.weakcharge2.out
 ipma.mc.weakcharge.out
 penw.mc.ew.out
 penw.mc.finite.out
