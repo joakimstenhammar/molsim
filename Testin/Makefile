@@ -172,6 +172,12 @@ cleanall: clean cleanstable
 %/daniel.cnf:
 	cp $(InDir)/daniel.cnf.save $@
 
+%/lysozyme.mc.weakcharge2.out: %/lysozyme.mc.weakcharge2.in %/lysozyme.mc.weakcharge2.cnf
+	$(molsim) $@
+
+%/lysozyme.mc.weakcharge2.cnf: %/lysozyme.mc.weakcharge.cnf
+	cp $< $@
+
 $(StableDir)/p.bd.ads2.user: $(StableDir)/p.bd.ads.user
 	cp $< $@
 

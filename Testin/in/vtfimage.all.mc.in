@@ -1,0 +1,129 @@
+&nmlSystem
+ txtitle   =   'microgel + star + linear',
+ txmode    = 'simulation',
+ txmethod  =         'mc',
+ txensemb  =        'nvt',
+ txbc      =        'xyz',
+ txstart   =    'setconf',
+ boxlen(1) =         100 ,
+ boxlen(2) =         100 ,
+ boxlen(3) =         100 ,
+ temp      =      298.15 ,
+ prsr      =       1.013 ,
+ iseed     =           1 ,
+ nstep1    =           1 ,
+ nstep2    =           2 ,
+ lcont     = .t.,  laver = .t.,  ldist = .f.,  ldump = .f.,  lgroup = .t.,  lstatic = .f.,  ldynamic = .f.,  limage = .t. ,
+ itest     =  0 ,  ipart =  0 ,  iatom =  0 ,  iaver =  0 ,  ishow  =  0 ,  iplot   =  0 ,  ilist    =  0 ,  ltrace = .f. ,
+ lblockaver = .f.,
+/
+&nmlScale
+/
+&nmlParticle
+ lclink = .true.,
+ nct    = 5 ,
+ npt    = 6 ,
+
+ nnwt          =         1 ,
+ txct(1)       = 'strand_L',
+ ncct(1)       =       184 ,
+ txpt(1)       =   'node L', txpt(2)       = 'mon L',
+ nppt(1)       =        71 , nppt(2)       =   368  ,
+ natpt(1)      =         1 , natpt(2)      =     1  ,
+ txat(1)       =   'node L', txat(2)       = 'mon L',
+ radat(1)      =       2.0 , radat(2)      =   2.0  ,
+ zat(1)        =       0.0 , zat(2)        =  -1.0  ,
+ npptct(1,1)   =         0 , npptct(2,1)   =     2  ,
+ maxnbondcl(1) =         4 , maxnbondcl(2) =     2  ,
+ naatpt(1,1)   =         1 , naatpt(1,2)   =     1  ,
+ txaat(1,1)    =   'node_L', txaat(1,2)    = 'monL' ,
+
+ txct(2:4)     = 'center', 'PDM', 'PPO',
+ ncct(2:4)     = 1, 3, 1
+ npptct(3,2)   = 1,
+ npptct(4,3)   = 50,
+ npptct(5,4)   = 100,
+ txpt(3)       = 'center', 'DM', 'PO',
+ nppt(3)       = 1, 150, 100,
+ natpt(3)      = 1, 1, 1,
+ txat(3)       = 'center', 'DM', 'PO',
+ radat(3)      = 2.0, 2.0, 2.0,
+ naatpt(1,3)   = 1,
+ txaat(1,3)    = 'bead',
+ naatpt(1,4)   = 1,
+ txaat(1,4)    = 'bead',
+ naatpt(1,5)   = 1,
+ txaat(1,5)    = 'bead',
+ maxnbondcl(3) = 4, 1, 1
+ ngen          = 2,
+ ictgen        = 4, 2, 3,
+ nbranch       = 1, 3,
+ ibranchpbeg   = 1, 1,
+ ibranchpinc   = 0, 0,
+
+ txct(5)     = "linear",
+ ncct(5)     = 1,
+ npptct(6,5) = 100,
+ txpt(6)     = "monomer",
+ nppt(6)     = 100,
+ natpt(6)    = 1,
+ txat(6)     = "monomer",
+ radat(6)    = 2.0,
+ naatpt(1,6) = 1,
+ txaat(1,6)  = 1,
+
+ itestpart = 1,
+/
+&nmlNetworkConfiguration
+ nnwnwt(1)    =         1 ,
+ iptclnwt(1)  =         1 ,
+ ncctnwt(1,1) =       184 ,
+ txnwt(1)     = 'microgel',
+ txtoponwt(1) =  'default',
+/
+&nmlPotential
+/
+&nmlPotentialChain
+ bond(1) = 2.4, 2, 5.0,
+ bond(2) = 2.4, 2, 5.0,
+ bond(3) = 2.4, 2, 5.0,
+ bond(4) = 2.4, 2, 5.0,
+ bond(5) = 2.4, 2, 5.0,
+ clink   = 2.4, 2, 5.0,
+/
+&nmlSetConfiguration
+ rnwt(1)        = 44.0 ,
+ txoriginnwt(1) = 'random',
+ txsetconf(1)   = 'network',
+ txsetconf(2)   = 'network',
+ txsetconf(3)   = 3*'hierarchicalrandom',
+ txsetconf(6)   = 'chainrandom',
+/
+&nmlMC
+ isamp = 1,
+ dtran = 6*0.00,
+/
+&nmlGroup
+/
+&nmlIntList
+ inlist  =     1 ,
+ drnlist = 100.0 ,
+/
+&nmlStatic
+/
+&nmlImage
+ iimage =  1 ,
+ lvtf   = .t.,
+/
+&nmlVTF
+ txwhen        = 'after_run',
+ txfile        = 'merge',
+ lframezero    = .false.,
+ bondr         = 0.3,
+ bondres       = 50,
+ sphres        = 50,
+ tximage       = 'frame','undopbc','',
+ rgbcolor(1,1) = 0.25,
+ rgbcolor(2,1) = 0.50,
+ rgbcolor(3,1) = 0.75,
+/

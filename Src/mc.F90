@@ -1701,7 +1701,7 @@ subroutine SPartMove(iStage, loptsso)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -1903,7 +1903,7 @@ subroutine SPartCl2Move(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2141,7 +2141,7 @@ subroutine PivotMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2592,7 +2592,7 @@ subroutine ChainMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2770,7 +2770,7 @@ subroutine SlitherMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -2905,7 +2905,7 @@ subroutine BrushMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -3106,7 +3106,7 @@ subroutine BrushCl2Move(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -3217,7 +3217,7 @@ subroutine HierarchicalMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -3302,7 +3302,7 @@ subroutine NetworkMove(iStage)
 
    if (lweakcharge) then
       laztm(1:natm) = laz(ianatm(1:natm))
-      if (lewald) aztm(1:natm) = az(ianatm(1:natm))
+      aztm(1:natm)  = az(ianatm(1:natm))
    end if
 
    if (itestmc == 2) call TestMCMove(uout)
@@ -3677,8 +3677,8 @@ end subroutine NPartChange
 !  pH-pKa < 0 (low  pH) => reaction shifted left
 !  pH-pKa > 0 (high pH) => reaction shifted right
 
-!  devloped for jatweakcharge = 0:  wihtout counterions
-!               jatweakcharge > 0:  atom type of counter ions (atoms)
+!  developed for jatweakcharge = 0:  without counterions
+!                jatweakcharge > 0:  atom type of counter ions (atoms)
 
 subroutine ChargeChange(iStage)
 
@@ -3737,27 +3737,21 @@ subroutine ChargeChange(iStage)
 
    laztm(1:natm) =.not.laz(ianatm(1:natm))  ! get trial charge states
 
-   if (lewald) then
-      do ialoc = 1, natm
-         ia = ianatm(ialoc)
-         if (laztm(ialoc)) then
-            aztm(ialoc) = zat(iatan(ia))
-         else
-            aztm(ialoc) = Zero
-         end if
-      end do
+   where (laztm(1:natm)) ! set trial charge according to trial charge state
+      aztm(1:natm) = zat(iatan(ianatm(1:natm)))
+   elsewhere
+      aztm(1:natm) = Zero
+   end where
+
+   if (itest == 90) then
+      call writehead(3, txroutine, uout)
+      write(uout,'(a,2i5  )') 'ipnapm(iploc)', (ipnptm(1:nptm))
+      write(uout,'(a,2i5  )') 'ianatm(ialoc)', (ianatm(1:natm))
+      write(uout,'(a,2l5  )') 'laz(ialoc)', (laz(ianatm(1:natm)))
+      write(uout,'(a,2l5  )') 'laztm(ialoc)', (laztm(1:natm))
+      write(uout,'(a,2f5.1)') 'az(ialoc)', (az(ianatm(1:natm)))
+      write(uout,'(a,2f5.1)') 'aztm(ialoc)', (aztm(1:natm))
    end if
-
-if (itest == 90) then
-   call writehead(3, txroutine, uout)
-   write(uout,'(a,2i5)') 'ipnapm(iploc)', (ipnptm(1:nptm))
-   write(uout,'(a,2i5)') 'ianatm(ialoc)', (ianatm(1:natm))
-   write(uout,'(a,2l5)') 'laz(ialoc)', (laz(ianatm(1:natm)))
-   write(uout,'(a,2l5)') 'laztm(ialoc)', (laztm(1:natm))
-end if
-
-
-!   call SetTrialAtomProp
 
    if (ltime) call CpuAdd('stop', txroutine, 1, uout)
 
@@ -3775,12 +3769,6 @@ end if
    if (.not.laz(ianmove)) xsign = -xsign              ! sign to be used in weight
    weight = exp(xsign*log(10.0d0)*pHmpK(iatmove))
 
- !  write(*,*) 'iptmove', iptmove
- !  write(*,*) 'iatmove', iatmove
- !  write(*,*) 'ipnptm', ipnptm(1:nptm)
- !  write(*,*) 'ianmove', ianmove
- !  write(*,*) 'weight', weight
-
 !  ............. decide new configuration .............
 
 200 continue
@@ -3792,21 +3780,23 @@ end if
    if (ievent == imcaccept) then
       call MCUpdate       ! update energies and coordinates
       do ialoc = 1, natm
-         laz(ianatm(ialoc)) = laztm(ialoc)    ! update charge status
-         if (lewald) az(ianatm(ialoc)) = aztm(ialoc) ! update atom charge
+         laz(ianatm(ialoc)) = laztm(ialoc) ! update charge status
+         az(ianatm(ialoc))  = aztm(ialoc)  ! update atom charge
       end do
    end if
 
-if (itest == 90) then
-   call writehead(3, txroutine, uout)
-   write(uout,'(a,e12.5)')  'weight', weight                           !cc
-   write(uout,'(a,i5)')     'ievent', ievent                          !cc
-   write(uout,'(a,10l5)')   'laztm', laztm(1:2)                          !cc
-   write(uout,'(a,10l5)')   'laz', laz(ianatm(1:2))                          !cc
-   write(uout,'(a,10f12.5)')'u%twob(0:nptpt)', real(u%twob(0:nptpt))  !cc
-end if
+   if (itest == 90) then
+      call writehead(3, txroutine, uout)
+      write(uout,'(a,e12.5)')  'weight', weight                          !cc
+      write(uout,'(a,i5)')     'ievent', ievent                          !cc
+      write(uout,'(a,10l5)')   'laztm', laztm(1:2)                       !cc
+      write(uout,'(a,10l5)')   'laz', laz(ianatm(1:2))                   !cc
+      write(uout,'(a,10f5.1)') 'aztm', aztm(1:2)                         !cc
+      write(uout,'(a,10f5.1)') 'az', az(ianatm(1:2))                     !cc
+      write(uout,'(a,10f12.5)')'u%twob(0:nptpt)', real(u%twob(0:nptpt))  !cc
+   end if
 
-   lptmdutwob =.false.                        ! restore lptmdutwob
+   lptmdutwob =.false. ! restore lptmdutwob
 
    if (itestmc == 3) call TestChargeChange2(uout)
 

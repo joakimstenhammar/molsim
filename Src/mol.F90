@@ -203,7 +203,7 @@ module MolModule
 
 ! ... version, date and author
 
-   character(29) :: txVersionDate = 'version 6.4.7, v4.6.0'
+   character(29) :: txVersionDate = 'version 6.4.7, v4.6.2'
    character(9)  :: txAuthor      = 'Per Linse'
 
 ! ... external units
@@ -1107,7 +1107,7 @@ module MolModule
    logical                 :: lvlist       ! flag for neighbour lists
    integer(4), allocatable :: ipnploc(:)   ! particle (local) -> particle (1:np)
    integer(4), allocatable :: nneighpn(:)  ! particle (local) -> number of neighbours
-   integer(2), allocatable :: jpnlist(:,:) ! ineigh (local list) and ip (global or local) -> neigbour particle (1:np)
+   integer(4), allocatable :: jpnlist(:,:) ! ineigh (local list) and ip (global or local) -> neigbour particle (1:np)
    logical                 :: lllist       ! flag for linked lists
    logical   , allocatable :: lcellllist(:)! list of cells to be used for a position (local)
    integer(4), allocatable :: headllist(:) ! head of the linked list
